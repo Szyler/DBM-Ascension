@@ -22,7 +22,7 @@ mod:RegisterEvents(
 local WarnInfernal		= mod:NewSpellAnnounce(30511, 2)
 local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
 local WarnNova			= mod:NewSpellAnnounce(30616, 2)
-local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 5 seconds!")
+local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
 local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
 local specWarnDebris	= mod:NewSpecialWarningYou(85032)
 
