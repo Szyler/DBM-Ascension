@@ -1,0 +1,121 @@
+local mod		= DBM:NewMod("Magtheridon", "DBM-Outlands")
+local L			= mod:GetLocalizedStrings()
+
+mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
+mod:SetCreatureID(17256)
+mod:RegisterCombat("combat")
+
+mod:RegisterEvents(
+		"SPELL_AURA_APPLIED",
+		"SPELL_CAST_START",
+		"SPELL_CAST_SUCCESS",
+		"SPELL_AURA_REMOVED",
+		"CHAT_MSG_MONSTER_YELL",
+		"CHAT_MSG_MONSTER_EMOTE",
+		"CHAT_MSG_RAID_BOSS_EMOTE",
+		"SPELL_DAMAGE",
+		"SPELL_SUMMON",
+		"UNIT_HEALTH",
+		"SPELL_MISSED"
+)
+
+local WarnInfernal		= mod:NewSpellAnnounce(30511, 2)
+local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
+local WarnNova			= mod:NewSpellAnnounce(30616, 2)
+local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 5 seconds!")
+local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
+local specWarnDebris	= mod:NewSpecialWarningYou(85032)
+
+local timerQuake		= mod:NewNextTimer(60, 85026)
+local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
+local Nova				= 1;
+local timerNova			= mod:NewTimer(55, "Blast Nova #%s", 30616)
+
+local isMag				= false;
+local below30			= false;
+
+function mod:OnCombatStart(delay)
+	Nova = 1;
+end
+
+function mod:OnCombatEnd()
+	timerQuake:Cancel()
+	timerSpecialNova:Cancel()
+	timerNova:Cancel()
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(30205) then
+		timerQuake:Start(41)
+		timerNova:Start(66, tostring(Nova))
+		below30 = false;
+		isMag	= true;
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(30528) then
+		WarnHeal:Show()
+	elseif args:IsSpellID(85026) then
+		WarnQuake:Show()
+		timerQuake:Start()
+	elseif args:IsSpellID(30616) then
+		Nova = Nova + 1;
+		WarnNova:Show()
+			if Nova >= 7 then
+				timerSpecialNova:Start()
+				specWarnNova:Schedule(45)
+			else
+				timerNova:Start(55, tostring(Nova))
+			end
+	end
+end
+
+function mod:SPELL_SUMMON(args)
+	if args:IsSpellID(85033) then
+		WarnInfernal:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(30511) then
+		WarnInfernal:Show()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(85031) and args.destName and args:IsPlayer() then
+		specWarnDebris:Show()
+	end
+end
+
+-- function mod:SPELL_DAMAGE(args)
+--	if args:IsSpellID(85032) and args.destName and args:IsPlayer() then
+--		specWarnDebris:Show()
+--	end
+--end
+
+--function mod:SPELL_MISSED(args)
+--	if args:IsSpellID(85031) and args.destName and args:IsPlayer() then
+--		specWarnDebris:Show()
+--	end
+--end
+
+
+function mod:UNIT_HEALTH(unit)
+	if isMag and (not below30) and (mod:GetUnitCreatureId(unit) == 17257) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 30) then
+			local elapsed, total = timerQuake:GetTime();
+			timerQuake:Update(elapsed, total+12);
+				if Nova >= 7 then
+					local elapsed, total = timerSpecialNova:GetTime();
+					timerSpecialNova:Update(elapsed, total+12);
+				else
+					local elapsed, total = timerNova:GetTime(tostring(Nova));
+					timerNova:Update(elapsed, total+12, tostring(Nova));
+				end 
+			below30 = true;
+        end
+    end
+end

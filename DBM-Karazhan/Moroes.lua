@@ -1,0 +1,141 @@
+local mod	= DBM:NewMod("Moroes", "DBM-Karazhan")
+local L		= mod:GetLocalizedStrings()
+
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
+mod:SetCreatureID(15687)--Moroes
+--19875, 19874, 19872, 17007, 19876, 19873--all the adds, for future use
+mod:RegisterCombat("yell", L.DBM_MOROES_YELL_START)
+--mod:RegisterCombat("combat", 15687)
+
+mod:RegisterEvents(
+	"SPELL_CAST_START",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED"
+)
+
+local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
+local warningVanish			= mod:NewSpellAnnounce(29448, 3)
+local warningGarrote		= mod:NewTargetAnnounce(37066, 4)
+local warningGouge			= mod:NewTargetAnnounce(29425, 4)
+local warningBlind			= mod:NewTargetAnnounce(34694, 3)
+local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
+local warningManaBurn		= mod:NewCastAnnounce(29405, 3, nil, false)
+local warningGreaterHeal	= mod:NewCastAnnounce(35096, 3, nil, false)
+local warningHolyLight		= mod:NewCastAnnounce(29562, 3, nil, false)
+local warningPain			= mod:NewTargetAnnounce(85174, 3)
+local warningWall			= mod:NewTargetAnnounce(29390, 3)
+local warningDispel			= mod:NewTargetAnnounce(15090, 3)
+local warningHFire			= mod:NewTargetAnnounce(29563, 3)
+local warningHoJ			= mod:NewTargetAnnounce(13005, 3)
+local warningDShield		= mod:NewTargetAnnounce(29382, 3)
+
+local timerVanishCD			= mod:NewCDTimer(31, 29448)
+local timerGouge			= mod:NewTargetTimer(6, 29425)
+local timerBlind			= mod:NewTargetTimer(10, 34694)
+local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
+local timerHoJ				= mod:NewCDTimer(50, 13005)
+local timerDinner			= mod:NewCDTimer(25, 85090)
+
+local lastVanish = 0
+
+--Ascension Specific
+local warningDinner		= mod:NewSpellAnnounce(85090, 3)
+local warningApple		= mod:NewTargetTimer(30, 85090)
+local warningWine		= mod:NewTargetTimer(30, 85091)
+local warningFruit		= mod:NewTargetTimer(30, 85092)
+local warningBoar		= mod:NewTargetTimer(30, 85093)
+local warningFish		= mod:NewTargetTimer(30, 85094)
+
+function mod:OnCombatStart(delay)
+	timerVanishCD:Start(-delay)
+	warningVanishSoon:Schedule(31-delay)
+	lastVanish = 0
+	lastDinner = GetTime()
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(29405) then
+		warningManaBurn:Show()
+	elseif args:IsSpellID(35096) then
+		warningGreaterHeal:Show()
+	elseif args:IsSpellID(29562) then
+		warningHolyLight:Show()
+	elseif args:IsSpellID(29563) then
+		warningHFire:Show(args.destName)
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(15090) then
+		warningDispel:Show(args.destName)
+	elseif args:IsSpellID(85174) then
+		warningPain:Show(args.destName)
+	end
+end
+	
+
+local foodData = {
+	[85090] = {warning = warningApple, yell = "YellApple"}, -- Sweet / Apple
+	[85091] = {warning = warningWine, yell = "YellWine"}, -- Thirst / Wine
+	[85092] = {warning = warningFruit, yell = "YellFruit"}, -- Tart / Fruit
+	[85093] = {warning = warningBoar, yell = "YellBoar"}, -- Savory / Boar
+	[85094] = {warning = warningFish, yell = "YellFish"}, -- Fishy / Fish
+};
+
+function mod:YellFood()
+	if self.food then
+		SendChatMessage(L[self.food.yell], "YELL");
+	end
+end
+mod:RegisterOnUpdateHandler(mod.YellFood,2);
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(29448) then
+		warningVanish:Show()
+		lastVanish = GetTime()
+	elseif args:IsSpellID(29425) then
+		warningGouge:Show(args.destName)
+		timerGouge:Show(args.destName)
+	elseif args:IsSpellID(34694) then
+		warningBlind:Show(args.destName)
+		timerBlind:Show(args.destName)
+	elseif args:IsSpellID(29382) then
+		warningDShield:Show(args.destName)
+	elseif args:IsSpellID(13005) then
+		warningHoJ:Show(args.destName)
+	elseif args:IsSpellID(29390) then
+		warningWall:Show(args.destName)
+	elseif args:IsSpellID(29572) then
+		warningMortalStrike:Show(args.destName)
+		timerMortalStrike:Show(args.destName)
+	elseif args:IsSpellID(37066) then
+		warningGarrote:Show(args.destName)
+		if (GetTime() - lastVanish) < 20 then
+			timerVanishCD:Start()
+			warningVanishSoon:Schedule(26)
+		end
+	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
+		local food = foodData[args.spellId];
+		food.warning:Show(args.destName);
+		self.food = food;
+		timerDinner:Start()
+		warningDinner:Show()
+	end
+end
+
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(34694) then
+		timerBlind:Cancel(args.destName)
+	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
+		local food = foodData[args.spellId];
+		food.warning:Cancel(args.destName);
+		self.food = nil;
+	end
+end
+
+-----DBM GLOBAL FUNCTIONS-----
+function mod:OnCombatEnd(wipe)
+	self.food = nil;
+	self:Stop();
+end
