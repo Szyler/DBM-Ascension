@@ -18,7 +18,7 @@ local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
 local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
 local specWarnTerminate		= mod:NewSpecialWarningYou(85082)
 
-local timerTerminate	= mod:NewTargetTimer(5, 85082)
+local timerTerminate	= mod:NewTargetTimer(10, 85082)
 local timerTerminateCD	= mod:NewCDTimer(15, 85082) --15 seconds??
 local timerEvo			= mod:NewBuffActiveTimer(20, 30254)
 local timerNextEvo		= mod:NewNextTimer(110, 30254)
@@ -49,6 +49,9 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30403) then
 		warnArcaneInfusion:Show()
+		timerNextEvo:Stop()
+		timerEvo:Stop()
+		warnEvoSoon:Unschedule()
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
 			self:SetIcon(targetname, 8, 5)
