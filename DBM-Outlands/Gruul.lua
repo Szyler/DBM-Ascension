@@ -21,7 +21,7 @@ local warnSilence		= mod:NewSpellAnnounce(36297, 2)
 local warnBoulder		= mod:NewAnnounce("Giant Boulder soon", 3, "Interface\\Icons\\inv_stone_10")
 
 local timerNextSlam		= mod:NewNextTimer(120, 33525)
-local timerShatter		= mod:NewTimer(11, "Shatter", "Interface\\Icons\\Spell_Nature_ThunderClap")
+local timerShatter		= mod:NewTimer(10, "Shatter", "Interface\\Icons\\Spell_Nature_ThunderClap")
 local timerSilence		= mod:NewCDTimer(15, 36297) --inconsistent af
 local timerBoulder		= mod:NewTimer(30, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
 
@@ -62,7 +62,7 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(36300) then
-		Grow = Grow + 1;
+		Grow = Grow + 1;	
 		warnGrow:Show()
 		timerGrow:Start(30, tostring(Grow))
 	end
@@ -82,7 +82,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		BoulderCD = BoulderCD - 1             -- Giant Boulder CD is decaying, starting from 30 seconds after initial one.
 		timerBoulder:Start(BoulderCD)
 		warnBoulder:Schedule(BoulderCD - 5)
-		if BoulderCD < 4       -- Giant Boulder CD is capped at 4 seconds, it does not decay below that.
+		if BoulderCD < 4 then       -- Giant Boulder CD is capped at 4 seconds, it does not decay below that.
 			BoulderCD = 4
 		end
 	end
