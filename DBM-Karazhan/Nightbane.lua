@@ -35,7 +35,7 @@ mod:AddBoolOption("PrewarnGroundPhase", true, "announce")
 
 function mod:OnCombatStart(delay)
 	timerFear:Start(45-delay)
-	timerCharred:Start(18-delay)
+	timerCharred:Start(15-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
