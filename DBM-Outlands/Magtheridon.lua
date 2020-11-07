@@ -24,7 +24,8 @@ local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
 local WarnNova			= mod:NewSpellAnnounce(30616, 2)
 local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
 local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
-local specWarnDebris	= mod:NewSpecialWarningYou(85032)
+local specWarnDebris	= mod:NewSpecialWarningYou(85030)
+local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
 
 local timerQuake		= mod:NewNextTimer(60, 85026)
 local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
@@ -84,8 +85,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85031) and args.destName and args:IsPlayer() then
+	if args:IsSpellID(85030) and args.destName and args:IsPlayer() then
 		specWarnDebris:Show()
+	elseif args:IsSpellID(30168) then
+		warnInterrupt:Show()
 	end
 end
 

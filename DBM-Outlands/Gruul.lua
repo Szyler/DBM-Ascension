@@ -62,7 +62,7 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(36300) then
-		Grow = Grow + 1;	
+		Grow = Grow + 1;
 		warnGrow:Show()
 		timerGrow:Start(30, tostring(Grow))
 	end
@@ -82,7 +82,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		BoulderCD = BoulderCD - 1             -- Giant Boulder CD is decaying, starting from 30 seconds after initial one.
 		timerBoulder:Start(BoulderCD)
 		warnBoulder:Schedule(BoulderCD - 5)
-		if BoulderCD < 4 then       -- Giant Boulder CD is capped at 4 seconds, it does not decay below that.
+		if BoulderCD < 4 then   -- Giant Boulder CD is capped at 4 seconds, it does not decay below that.
 			BoulderCD = 4
 		end
 	end

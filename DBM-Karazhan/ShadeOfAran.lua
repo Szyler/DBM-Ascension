@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON",
 	"SPELL_PERIODIC_DAMAGE"
 )
@@ -24,14 +25,15 @@ local warningFlameTargets	= mod:NewTargetAnnounce(29946, 4)
 local specWarnDontMove		= mod:NewSpecialWarning("DBM_ARAN_DO_NOT_MOVE")
 local specWarnArcane		= mod:NewSpecialWarningRun(29973)
 local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
+local specWarnBossShield	= mod:NewSpecialWarning("DBM_ARAN_VULNERABLE")
 
-local timerSpecial			= mod:NewTimer(30, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
+local timerSpecial			= mod:NewTimer(35, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
 local timerArcaneExplosion	= mod:NewCastTimer(10, 29973)
-local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
+-- local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
 local timerFlame			= mod:NewBuffActiveTimer(20.5, 29946)
-local timerBlizzad			= mod:NewBuffActiveTimer(40, 29951)
-local timerElementals		= mod:NewBuffActiveTimer(90, 37053)
+local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
+-- local timerElementals		= mod:NewBuffActiveTimer(90, 37053)
 local timerChains			= mod:NewTargetTimer(10, 29991)
 local timerShield			= mod:NewBuffActiveTimer(60, 85182)
 
@@ -51,6 +53,7 @@ local function warnFlameWreathTargets()
 end
 
 function mod:OnCombatStart(delay)
+	timerSpecial:Start(8-delay)
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 8
 	table.wipe(WreathTargets)
@@ -66,10 +69,17 @@ function mod:SPELL_CAST_START(args)
 		timerArcaneExplosion:Start()
 		specWarnArcane:Show()
 		timerSpecial:Start()
-	elseif args:IsSpellID(29969) then
+--	elseif args:IsSpellID(29969) then       - deprecated, Ascension's Aran doesn't use CAST_START for Blizzard.
+--		warningBlizzard:Show()
+--		timerBlizzadCast:Show()
+--		timerBlizzad:Schedule(3.7)--may need tweaking
+--		timerSpecial:Start()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(27085) then
 		warningBlizzard:Show()
-		timerBlizzadCast:Show()
-		timerBlizzad:Schedule(3.7)--may need tweaking
 		timerSpecial:Start()
 	end
 end
@@ -92,6 +102,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Schedule(0.3, warnFlameWreathTargets)
 	elseif args:IsSpellID(85182) then
 		timerShield:Start()
+		specWarnBossShield:Schedule(60)
 		end
 	end
 
@@ -116,7 +127,7 @@ do
 		if args:IsSpellID(29962, 37051, 37052, 37053) then -- Summon Water elementals
 			if time() - lastElemental > 5 then
 				warningElementals:Show()
-				timerElementals:Show()
+			--  timerElementals:Show()
 				lastElemental = time()
 				if self.Options.ElementalIcons then
 					resetElementalIconState()

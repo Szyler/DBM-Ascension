@@ -9,22 +9,27 @@ mod:SetMinCombatTime(25)
 mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"CHAT_MSG_MONSTER_YELL",
+	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_RAID_WARNING"
 )
 
-local WarnRoar			= mod:NewAnnounce("DBM_OZ_WARN_ROAR", 2, nil, nil, false)
-local WarnStrawman		= mod:NewAnnounce("DBM_OZ_WARN_STRAWMAN", 2, nil, nil, false)
-local WarnTinhead		= mod:NewAnnounce("DBM_OZ_WARN_TINHEAD", 2, nil, nil, false)
-local WarnTido			= mod:NewAnnounce("DBM_OZ_WARN_TITO", 2, nil, nil, false)
-local WarnCrone			= mod:NewAnnounce("DBM_OZ_WARN_CRONE", 2, nil, nil, false)
+local WarnRoar			= mod:NewAnnounce("Roar", 2, nil, nil, false)
+local WarnStrawman		= mod:NewAnnounce("Strawman", 2, nil, nil, false)
+local WarnTinhead		= mod:NewAnnounce("Tinhead", 2, nil, nil, false)
+local WarnTido			= mod:NewAnnounce("Tito", 2, nil, nil, false)
+local WarnCrone			= mod:NewAnnounce("The Crone", 2, nil, nil, false)
 local warningSpotlight  = mod:NewAnnounce("Spotlight", 3, 54428)
 local WarnCL			= mod:NewCastAnnounce(32337, 3)
+local warnScream		= mod:NewSpellAnnounce(31013, 3)
 
 local timerStageFright	= mod:NewTimer(30, "Spotlight", 85112)
-local timerRoar		= mod:NewTimer(14.5, "DBM_OZ_WARN_ROAR", "Interface\\Icons\\Ability_Druid_ChallangingRoar", nil, false)
-local timerStrawman	= mod:NewTimer(24, "DBM_OZ_WARN_STRAWMAN", "Interface\\Icons\\INV_Helmet_34", nil, false)
-local timerTinhead	= mod:NewTimer(33, "DBM_OZ_WARN_TINHEAD", "Interface\\Icons\\INV_Helmet_02", nil, false)
-local timerTito		= mod:NewTimer(47.5, "DBM_OZ_WARN_TITO", "Interface\\Icons\\Ability_Mount_WhiteDireWolf", nil, false)
+local timerRoar			= mod:NewTimer(14.5, "Roar", "Interface\\Icons\\Ability_Druid_ChallangingRoar", nil, false)
+local timerStrawman		= mod:NewTimer(24, "Strawman", "Interface\\Icons\\INV_Helmet_34", nil, false)
+local timerTinhead		= mod:NewTimer(34, "Tinhead", "Interface\\Icons\\INV_Helmet_02", nil, false)
+local timerTito			= mod:NewTimer(11, "Tito", "Interface\\Icons\\Ability_Mount_WhiteDireWolf", nil, false)
+local timerSpotlight	= mod:NewTimer(11, "Get into Spotlight", 85112)
+local timerScream		= mod:NewTimer(30, "Frightened Scream", 31013)
+local timerCL			= mod:NewCDTimer(10, 32337)
 
 mod:AddBoolOption("AnnounceBosses", true, "announce")
 mod:AddBoolOption("ShowBossTimers", true, "timer")
@@ -36,6 +41,8 @@ function mod:OnCombatStart(delay)
 		timerStrawman:Start(-delay)
 		timerTinhead:Start(-delay)
 		timerTito:Start(-delay)
+		timerStageFright:Start(20)
+		timerScream:Start(15)
 	end
 end
 
@@ -49,6 +56,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 	if msg == L.STAGE_FRIGHT then
 		warningSpotlight:Show()
 		timerStageFright:Start()
+		timerSpotlight:Start()
 	end
 end
 
@@ -75,6 +83,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(31013) then
+		timerScream:Start()
+		warnScream:Show()
+	end
+end
+
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(31014) then
 		if self.Options.AnnounceBosses then
@@ -82,5 +97,6 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(32337) then
 		WarnCL:Show()
+		timerCL:Start()
 		end
 	end

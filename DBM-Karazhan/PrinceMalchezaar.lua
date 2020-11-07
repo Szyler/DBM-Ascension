@@ -36,7 +36,7 @@ local timerNextInfernal			= mod:NewNextTimer(18, 37277)
 local timerEnfeeble				= mod:NewCDTimer(30, 30843)
 local timerDoom					= mod:NewCDTimer(24, 85069)
 local timerShadowRealm			= mod:NewCDTimer(45, 85077)
-local timerAmpDmg				= mod:NewTimer(25, "Amplify Damage #s%", 85207)
+local timerAmpDmg				= mod:NewTimer(25, "Amplify Damage #%s", 85207)
 
 local miscCrystalKill1			= mod:NewAnnounce("Shadow Crystals Destroyed (1/3)", 3, 85078)
 local miscCrystalKill2			= mod:NewAnnounce("Shadow Crystals Destroyed (2/3)", 3, 85078)
@@ -88,7 +88,7 @@ end
 function mod:Infernals()
 	warningInfernal:Show()
 	if Phase == 3 then
-		timerNextInfernal:Start(22.5)
+		timerNextInfernal:Start(9)
 	else		
 		timerNextInfernal:Start()
 	end
@@ -118,9 +118,10 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85069) then
 		warningDoom:Show()
-		timerDoom:Start()
 			if Phase == 3 then
-				timerDoom:Update(12)
+				timerDoom:Start(12)
+			else
+				timerDoom:Start()
 			end
 	elseif args:IsSpellID(85077) then
 		warningShadowRealm:Show(args.destName)
@@ -132,7 +133,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(85207) then
+	if args:IsSpellID(85207) and args:isPlayer() then
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
@@ -148,11 +149,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerNextInfernal:Start(18.5)
 			firstInfernal = true
 		end
-		if Phase == 3 then
-			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
-		else		
-			timerNextInfernal:Update(26.5, 45)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
-		end
+--		if Phase == 3 then
+--			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
+--		else		
+--			timerNextInfernal:Update(26.5, 45)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
+--		end
 	elseif msg == L.DBM_PRINCE_YELL_P3 then
 		phase = 3
 		warnPhase3:Show()

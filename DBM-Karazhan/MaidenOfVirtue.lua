@@ -9,28 +9,29 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_REMOVED",
+	"CHAT_MSG_RAID_WARNING"
 )
 
 local warningRepentanceSoon	= mod:NewSoonAnnounce(85177, 2)
 local warningRepentance		= mod:NewSpellAnnounce(85177, 3)
 local warningHolyFire		= mod:NewTargetAnnounce(85122, 3)
 
-local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
+-- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
 local timerRepentanceCD		= mod:NewCDTimer(46, 85177)
 
 mod:AddBoolOption("RangeFrame", true)
 
 -- Ascension specific
-local warningDesperateSoon	= mod:NewSoonAnnounce(85120, 2)
+local warningSpecDespRun	= mod:NewSpecialWarning("Run away!")
 local warningDesperate		= mod:NewSpellAnnounce(85120, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
 local timerDesperateExplode	= mod:NewBuffActiveTimer(11, 85103)
-local timerDesperateCD		= mod:NewCDTimer(50, 85120)
+local timerDesperateCD		= mod:NewCDTimer(40, 85120)
 
 function mod:OnCombatStart(delay)
 	timerRepentanceCD:Start(40-delay)
-	timerDesperateCD:Start(23-delay)
+	timerDesperateCD:Start(20-delay)
 	warningRepentanceSoon:Schedule(35-delay)
 	warningDesperateSoon:Schedule(18-delay)
 	if self.Options.RangeFrame then
@@ -50,7 +51,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 		warningDesperate:Show()
 		timerDesperateCD:Start()
 		timerDesperateExplode:Start()
-		warningDesperateSoon:Schedule(47)
+		warningSpecDespRun:Schedule(8)
 	end
 end
 
@@ -59,7 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningHolyFire:Show(args.destName)
 	elseif args:IsSpellID(85177) then
 		warningRepentanceSoon:Cancel()
-		timerRepentance:Start()
+--		timerRepentance:Start()
 		timerRepentanceCD:Start()
 		warningRepentanceSoon:Schedule(40)
 		if (GetTime() - lastRepentance) > 10 then--To not spam each target of Repentance

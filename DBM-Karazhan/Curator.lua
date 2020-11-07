@@ -51,7 +51,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnArcaneInfusion:Show()
 		timerNextEvo:Stop()
 		timerEvo:Stop()
-		warnEvoSoon:Unschedule()
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
 			self:SetIcon(targetname, 8, 5)

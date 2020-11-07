@@ -22,6 +22,7 @@ local timerStageFright	= mod:NewTimer(30, "Spotlight", 85112)
 local timerRRH			= mod:NewTargetTimer(20, 30753)
 local timerRRHCD		= mod:NewNextTimer(60, 30753)
 local timerFearCD		= mod:NewNextTimer(24, 30752)
+local timerSpotlight	= mod:NewTimer(11, "Get into Spotlight", 85112)
 
 mod:AddBoolOption("RRHIcon")
 
@@ -36,6 +37,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 	if msg == L.STAGE_FRIGHT then
 		warningSpotlight:Show()
 		timerStageFright:Start()
+		timerSpotlight:Start()
 	end
 
 function mod:SPELL_AURA_APPLIED(args)

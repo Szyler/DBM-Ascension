@@ -31,6 +31,7 @@ local timerHeal			= mod:NewCastTimer(2.5, 30878)
 local timerDaring		= mod:NewTargetTimer(8, 30841)
 local timerDevotion		= mod:NewTargetTimer(10, 30887)
 local timerCombatStart	= mod:NewTimer(55, "TimerCombatStart", 2457)
+local timerSpotlight	= mod:NewTimer(11, "Get into Spotlight", 85112)
 
 mod:AddBoolOption("HealthFrame", true)
 
@@ -103,6 +104,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 	if msg == L.STAGE_FRIGHT then
 		warningSpotlight:Show()
 		timerStageFright:Start()
+		timerSpotlight:Start()
 	end
 end
 

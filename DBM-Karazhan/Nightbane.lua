@@ -26,16 +26,16 @@ local warnCharred			= mod:NewSpellAnnounce(30129, 2)
 local specWarnCharred		= mod:NewSpecialWarningMove(30129)
 
 local timerNightbane		= mod:NewTimer(34, "timerNightbane", "Interface\\Icons\\Ability_Mount_Undeadhorse")
-local timerAirPhase			= mod:NewTimer(50, "timerAirPhase", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerAirPhase			= mod:NewTimer(48, "timerAirPhase", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerFearCD			= mod:NewNextTimer(31.5, 36922)
 local timerFear				= mod:NewCastTimer(1.5, 36922)
-local timerCharred			= mod:NewNextTimer(15, 30129)
+local timerCharred			= mod:NewNextTimer(18, 30129)
 
 mod:AddBoolOption("PrewarnGroundPhase", true, "announce")
 
 function mod:OnCombatStart(delay)
 	timerFear:Start(45-delay)
-	timerCharred:Start(15-delay)
+	timerCharred:Start(18-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
@@ -75,6 +75,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_NB_YELL_AIR then
 		WarnAir:Show()
 		timerAirPhase:Start()
+		timerCharred:Stop()
+		timerFear:Stop()
 		if self.Options.PrewarnGroundPhase then
 			WarnNBDown1:Cancel()
 			WarnNBDown2:Cancel()
@@ -82,7 +84,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			WarnNBDown2:Schedule(52)
 		end
 	elseif msg == L.DBM_NB_YELL_GROUND or msg == L.DBM_NB_YELL_GROUND2 then
-		timerCharred:Start(15)
-		timerFear:Start(45)
+		timerCharred:Start(27)
 	end
 end
