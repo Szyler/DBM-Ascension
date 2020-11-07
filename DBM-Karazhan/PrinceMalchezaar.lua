@@ -100,7 +100,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnSWP:Show()
 		end	
-	elseif args:IsSpellID(85207) then
+	elseif args:IsSpellID(85207) and args:IsPlayer() then
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
@@ -133,7 +133,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(85207) and args:isPlayer() then
+	if args:IsSpellID(85207) and args:IsPlayer() then
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
