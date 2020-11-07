@@ -26,14 +26,12 @@ mod:AddBoolOption("RangeFrame", true)
 local warningSpecDespRun	= mod:NewSpecialWarning("Run away!")
 local warningDesperate		= mod:NewSpellAnnounce(85120, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
-local timerDesperateExplode	= mod:NewBuffActiveTimer(11, 85103)
-local timerDesperateCD		= mod:NewCDTimer(40, 85120)
+local timerDesperateExplode	= mod:NewBuffActiveTimer(14, 85103)
+local timerDesperateCD		= mod:NewCDTimer(44, 85120)
 
 function mod:OnCombatStart(delay)
 	timerRepentanceCD:Start(40-delay)
 	timerDesperateCD:Start(20-delay)
-	warningRepentanceSoon:Schedule(35-delay)
-	warningDesperateSoon:Schedule(18-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
@@ -51,7 +49,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 		warningDesperate:Show()
 		timerDesperateCD:Start()
 		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(8)
+		warningSpecDespRun:Schedule(11)
 	end
 end
 
