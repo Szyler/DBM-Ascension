@@ -41,6 +41,11 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerPortalPhase:Start(62-delay)
 	warningBanishSoon:Schedule(57-delay)
+	self.smol = false;
+end
+
+function mod:OnCombatEnd()
+	self.smol = false;
 end
 
 function mod:SPELL_CAST_START(args)
@@ -70,13 +75,15 @@ function mod:SPELL_AURA_REMOVED(args)
 		warningPortalSoon:Schedule(25)
 		warningPortal:Schedule(31)
 		timerBanishPhase:Start()
+	elseif args:IsSpellID(30421) and args:IsPlayer() then
+		self.smol = false;
 	end
 end
 
 do 
 	local lastVoid = 0
 	function mod:SPELL_PERIODIC_DAMAGE(args)
-		if args:IsSpellID(30533) and args:IsPlayer() and GetTime() - lastVoid > 2 then
+		if args:IsSpellID(30533) and args:IsPlayer() and ((GetTime() - lastVoid) > 2) then
 			specWarnVoid:Show()
 			lastVoid = GetTime()
 		end
@@ -98,7 +105,7 @@ end
 --end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(30421) and args:IsPlayer() and args.amount >= 35 then
+	if args:IsSpellID(30421) and args:IsPlayer() and (args.amount >= 35) then
 		self.smol = true
 	end
 end
