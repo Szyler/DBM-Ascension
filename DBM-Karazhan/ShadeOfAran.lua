@@ -80,6 +80,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(27085) then
 		warningBlizzard:Show()
+		timerBlizzad:Start()
 		timerSpecial:Start()
 	end
 end
