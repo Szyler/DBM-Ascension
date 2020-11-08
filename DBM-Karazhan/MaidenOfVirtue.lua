@@ -16,6 +16,7 @@ mod:RegisterEvents(
 local warningRepentanceSoon	= mod:NewSoonAnnounce(85177, 2)
 local warningRepentance		= mod:NewSpellAnnounce(85177, 3)
 local warningHolyFire		= mod:NewTargetAnnounce(85122, 3)
+local warnWrath				= mod:NewSpellAnnounce(32445, 2)
 
 -- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
 local timerRepentanceCD		= mod:NewCDTimer(46, 85177)
@@ -28,6 +29,7 @@ local warningDesperate		= mod:NewSpellAnnounce(85120, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
 local timerDesperateExplode	= mod:NewBuffActiveTimer(14, 85103)
 local timerDesperateCD		= mod:NewCDTimer(44, 85120)
+local timerWrath			= mod:NewCDTimer(35, 32445)
 
 function mod:OnCombatStart(delay)
 	timerRepentanceCD:Start(40-delay)
@@ -65,6 +67,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			warningRepentance:Show()
 			lastRepentance = GetTime()
 		end
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(32445) then
+		timerWrath:Start()
+		warnWrath:Show()
 	end
 end
 
