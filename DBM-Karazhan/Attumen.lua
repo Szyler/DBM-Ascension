@@ -20,9 +20,11 @@ local warningCurse			= mod:NewSpellAnnounce(85154, 3)
 local warnCharge			= mod:NewTargetAnnounce(85157, 3)
 local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
 local warnSunder			= mod:NewAnnounce("%s on >%s< (%d)", 2, 85178)
+local warnFireball			= mod:NewSpellAnnounce(85209, 2)  -- heroic
 
 local timerCurseCD			= mod:NewNextTimer(31, 85154)
-local timerChargeCD			= mod:NewCDTimer(27, 85157)
+local timerChargeCD			= mod:NewCDTimer(28, 85157)
+local timerFireball			= mod:NewCDTimer(12, 85209)   -- heroic
 
 local Phase	= 1
 local lastCurse = 0
@@ -51,6 +53,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(85157, 85158) then
 		timerChargeCD:Start()
 		warnCharge:Show(args.destName)
+	elseif args:IsSpellID(85209) then   -- heroic
+		warnFireball:Show()
+		timerFireball:Show()
 	end
 end
 

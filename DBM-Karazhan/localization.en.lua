@@ -36,6 +36,7 @@ L:SetOptionLocalization{
 
 L:SetMiscLocalization{
 	DBM_MOROES_YELL_START	= "Hm, unannounced visitors. Preparations must be made...",
+	DBM_MOROES_DINNER		= "Dinner is served!",
 	YellApple				= "Apples",
 	YellWine				= "Wine",
 	YellFruit				= "Oranges",

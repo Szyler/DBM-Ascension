@@ -10,7 +10,8 @@ mod:RegisterCombat("yell", L.DBM_MOROES_YELL_START)
 mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_REMOVED",
+	"CHAT_MSG_MONSTER_YELL"
 )
 
 local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
@@ -29,12 +30,14 @@ local warningHFire			= mod:NewTargetAnnounce(29563, 3)
 local warningHoJ			= mod:NewTargetAnnounce(13005, 3)
 local warningDShield		= mod:NewTargetAnnounce(29382, 3)
 
-local timerVanishCD			= mod:NewCDTimer(31, 29448)
+local specWarnDinner		= mod:NewSpecialWarning("Dinner is served!")
+
+local timerVanishCD			= mod:NewCDTimer(23, 29448)
 local timerGouge			= mod:NewTargetTimer(6, 29425)
 local timerBlind			= mod:NewTargetTimer(10, 34694)
 local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
 local timerHoJ				= mod:NewCDTimer(50, 13005)
-local timerDinner			= mod:NewCDTimer(25, 85090)
+local timerDinner			= mod:NewCDTimer(15, 85090)
 
 local lastVanish = 0
 
@@ -108,11 +111,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(29572) then
 		warningMortalStrike:Show(args.destName)
 		timerMortalStrike:Show(args.destName)
-	elseif args:IsSpellID(37066) then
+	elseif args:IsSpellID(37066, 85223) then
 		warningGarrote:Show(args.destName)
 		if (GetTime() - lastVanish) < 20 then
 			timerVanishCD:Start()
-			warningVanishSoon:Schedule(26)
+--			warningVanishSoon:Schedule(23)
 		end
 	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
 		local food = foodData[args.spellId];
@@ -120,6 +123,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.food = food;
 		timerDinner:Start()
 		warningDinner:Show()
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.DBM_MOROES_DINNER then
+		timerDinner:Start()
+		specWarnDinner:Show()
 	end
 end
 
