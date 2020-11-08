@@ -39,6 +39,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 		timerStageFright:Start()
 		timerSpotlight:Start()
 	end
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30753) then
@@ -60,5 +61,4 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFearCD:Start()
 		lastFear = GetTime()
 	end
-end
 end
