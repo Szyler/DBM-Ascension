@@ -48,7 +48,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85154) then
 		warningCurse:Show()
-	elseif args:IsSpellID(85157) then
+	elseif args:IsSpellID(85157, 85158) then
 		timerChargeCD:Start()
 		warnCharge:Show(args.destName)
 	end
