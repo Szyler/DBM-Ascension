@@ -8,6 +8,7 @@ mod:RegisterKill("yell", L.KillAttumen)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON"
@@ -38,6 +39,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(85178) then
+		warnSunder:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85154) then
