@@ -17,9 +17,11 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warningCurseSoon		= mod:NewSoonAnnounce(85154, 2)
 local warningCurse			= mod:NewSpellAnnounce(85154, 3)
 local warnCharge			= mod:NewTargetAnnounce(85157, 3)
+local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
+local warnSunder			= mod:NewAnnounce("%s on >%s< (%d)", 2, 85178)
 
 local timerCurseCD			= mod:NewNextTimer(31, 85154)
-local timerChargeCD			= mod:NewCDTimer(28, 85157)
+local timerChargeCD			= mod:NewCDTimer(27, 85157)
 
 local Phase	= 1
 local lastCurse = 0
@@ -31,6 +33,8 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(43127, 29833) then
 		warningCurse:Show()
+	elseif args:IsSpellID(85178) then
+		warnSunder:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
@@ -38,7 +42,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85154) then
 		warningCurse:Show()
-	elseif args:IsSpellID(85154) then
+	elseif args:IsSpellID(85157) then
 		timerChargeCD:Start()
 		warnCharge:Show(args.destName)
 	end
@@ -49,6 +53,8 @@ function mod:SPELL_SUMMON(args)
 		Phase = 2
 		warnPhase2:Show()
 		timerChargeCD:Start()
+	elseif args:IsSpellID(29714) then
+		warnAttumen:Show()
 	end
 end
 		
