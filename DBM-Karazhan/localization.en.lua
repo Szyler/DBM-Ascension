@@ -181,6 +181,8 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	timerSpecial			= "Show timer for special ability cooldown",
+	DBM_ARAN_BLIZZARD_1		= "Back to the cold dark with you!",
+	DBM_ARAN_BLIZZARD_2		= "I'll freeze you all!",
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
 	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
 	ElementalIcons			= "Set icons on $spell:37053",

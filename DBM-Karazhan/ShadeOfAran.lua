@@ -12,6 +12,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON",
+	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_PERIODIC_DAMAGE"
 )
 
@@ -25,7 +26,7 @@ local warningFlameTargets	= mod:NewTargetAnnounce(29946, 4)
 local specWarnDontMove		= mod:NewSpecialWarning("DBM_ARAN_DO_NOT_MOVE")
 local specWarnArcane		= mod:NewSpecialWarningRun(29973)
 local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
-local specWarnBossShield	= mod:NewSpecialWarning("DBM_ARAN_VULNERABLE")
+local specWarnBossShield	= mod:NewSpecialWarning("Shade of Aran is vulnerable!")
 
 local timerSpecial			= mod:NewTimer(35, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
@@ -77,13 +78,12 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(27085) then
-		warningBlizzard:Show()
-		timerBlizzad:Start()
-		timerSpecial:Start()
-	end
-end
+--function mod:SPELL_CAST_SUCCESS(args)      - trolled by Bigbigman and his Blizzards on logs.
+--	if args:IsSpellID(27085) then
+--		warningBlizzard:Show()
+--		timerSpecial:Start()
+--	end
+--end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29991) then
@@ -110,6 +110,18 @@ function mod:SPELL_AURA_APPLIED(args)
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29991) then
 		timerChains:Cancel(args.destName)
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.DBM_ARAN_BLIZZARD_1 then
+		warningBlizzard:Show()
+		timerBlizzad:Start()
+		timerSpecial:Start()
+	elseif msg == L.DBM_ARAN_BLIZZARD_2 then
+		warningBlizzard:Show()
+		timerBlizzad:Start()
+		timerSpecial:Start()
 	end
 end
 
