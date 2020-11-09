@@ -60,6 +60,7 @@ function mod:OnCombatStart(delay)
 	updateHealthFrame(1)
 	JulianneDied = 0
 	RomuloDied = 0
+	timerStageFright:Start(20-delay)
 end
 
 function mod:SPELL_CAST_START(args)

@@ -31,6 +31,7 @@ local lastFear = 0
 function mod:OnCombatStart(delay)
 	timerRHHCD:Start(30-delay)
 	timerFearCD:Start(55-delay)
+	timerStageFright:Start(30-delay)
 end
 
 function mod:CHAT_MSG_RAID_WARNING(msg)
