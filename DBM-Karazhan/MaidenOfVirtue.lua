@@ -58,7 +58,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(85122) then
 		warningHolyFire:Show(args.destName)
-	elseif args:IsSpellID(85177) then
+	elseif args:IsSpellID(85177, 85307) then
 		warningRepentanceSoon:Cancel()
 --		timerRepentance:Start()
 		timerRepentanceCD:Start()
