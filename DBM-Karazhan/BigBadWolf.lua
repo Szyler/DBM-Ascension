@@ -29,7 +29,7 @@ mod:AddBoolOption("RRHIcon")
 local lastFear = 0
 
 function mod:OnCombatStart(delay)
-	timerRHHCD:Start(30-delay)
+	timerRRHCD:Start(30-delay)
 	timerFearCD:Start(55-delay)
 	timerStageFright:Start(30-delay)
 end
