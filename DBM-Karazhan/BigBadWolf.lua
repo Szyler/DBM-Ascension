@@ -18,7 +18,7 @@ local warningSpotlight  = mod:NewAnnounce("Spotlight", 3, 54428)
 
 local specWarnRRH		= mod:NewSpecialWarningYou(30753)
 
-local timerStageFright	= mod:NewTimer(30, "Spotlight", 85112)
+local timerStageFright	= mod:NewTimer(15, "Spotlight", 85112)
 local timerRRH			= mod:NewTargetTimer(20, 30753)
 local timerRRHCD		= mod:NewNextTimer(60, 30753)
 local timerFearCD		= mod:NewNextTimer(24, 30752)
@@ -39,6 +39,15 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 		warningSpotlight:Show()
 		timerStageFright:Start()
 		timerSpotlight:Start()
+	else
+		local spellName = msg:match("The Audience does not want to see (.+)!");
+		if spellName then
+			timerStageFright:Start(15,"DO NOT USE: "..spellName);
+			local _,_,spellIcon = GetSpellInfo(spellName);
+			if spellIcon then
+				timerStageFright:UpdateIcon(spellIcon,"DO NOT USE: "..spellName);
+			end
+		end
 	end
 end
 
@@ -61,5 +70,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningFearSoon:Schedule(19)
 		timerFearCD:Start()
 		lastFear = GetTime()
+	--elseif args:IsSpellID(85112) then
 	end
 end
