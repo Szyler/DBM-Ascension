@@ -12,7 +12,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_INSTAKILL",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_SUCCESS",
+	"UNIT_HEALTH"
 )
 
 local warnPhase2				= mod:NewPhaseAnnounce(2)
@@ -30,6 +31,7 @@ local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
 local specWarnNova				= mod:NewSpecialWarningRun(30852)
 local specWarnSWP				= mod:NewSpecialWarningYou(30898)	
 local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
+local specWarnInfernal			= mod:NewSpecialWarning("Next Infernal on you!")
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
 local timerNextInfernal			= mod:NewNextTimer(18.5, 37277)
@@ -48,6 +50,9 @@ local ampDmg = 1
 local enfeebleTargets = {}
 local firstInfernal = false
 local CrystalsKilled = 0
+local InfernalCount = 1
+local isPrince = false;
+local below30 = false;
 
 local function showEnfeebleWarning()
 	warningEnfeeble:Show(table.concat(enfeebleTargets, "<, >"))
@@ -58,6 +63,9 @@ function mod:OnCombatStart(delay)
 	phase = 1
 	CrystalsKilled = 0
 	ampDmg = 1
+	InfernalCount = 1
+	isPrince = true
+	below30 = false
 	timerDoom:Start(30-delay)
 	table.wipe(enfeebleTargets)
 	timerNextInfernal:Start(21-delay)
@@ -125,12 +133,16 @@ function mod:SPELL_CAST_SUCCESS(args)
 			end
 	elseif args:IsSpellID(85077) then
 		warningShadowRealm:Show(args.destName)
-		timerShadowRealm:Start()
 			if args.IsPlayer() then
 				specWarnSRealm:Show()
+			end
+			if mod:IsDifficulty("heroic10") then
+				timerShadowRealm:Start(23)
+			else
+				timerShadowRealm:Start()
+			end
 		end
 	end
-end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(85207) and args:IsPlayer() then
@@ -144,6 +156,8 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
 		warningInfernal:Show()
+		InfernalCount = InfernalCount + 1
+		print("Next infernal is #"..InfernalCount)
 			if phase == 3 then
 				timerNextInfernal:Start(9)
 			else
@@ -154,13 +168,25 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 --		else		
 --			timerNextInfernal:Update(26.5, 45)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
 --		end
-	elseif msg == L.DBM_PRINCE_YELL_P3 then
-		phase = 3
-		warnPhase3:Show()
-		timerAmpDmg:Start(5, tostring(ampDmg))
+--	elseif msg == L.DBM_PRINCE_YELL_P3 then   -- Ascension doesn't use P3 yell.
+--		phase = 3
+--		warnPhase3:Show()
+--		timerAmpDmg:Start(5, tostring(ampDmg))
 	elseif msg == L.DBM_PRINCE_YELL_P2 then
 		phase = 2
 		warnPhase2:Show()
 		timerShadowRealm:Start(15)
 	end
+end
+
+function mod:UNIT_HEALTH(unit)
+	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 30) then
+			phase = 3
+			warnPhase3:Show()
+			timerAmpDmg:Start(5, tostring(ampDmg))
+			below30 = true;
+        end
+    end
 end
