@@ -26,7 +26,7 @@ local timerNextEvo		= mod:NewNextTimer(110, 30254)
 local berserkTimer		= mod:NewBerserkTimer(720)
 local isCurator 		= false
 
-mod:AddBoolOption("CuratorIcon")
+mod:AddBoolOption(L.CuratorIcon)
 mod:AddBoolOption("RangeFrame", true)
 
 function mod:OnCombatStart(delay)
