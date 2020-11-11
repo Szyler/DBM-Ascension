@@ -187,7 +187,9 @@ L:SetOptionLocalization{
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
 	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
 	ElementalIcons			= "Set icons on $spell:37053",
-	WreathIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29946)
+	WreathIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29946),
+	PolyIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273),
+	DBM_ARAN_FULL			= "Ah, the whimsical floes of magic..."
 }
 
 L:SetMiscLocalization{

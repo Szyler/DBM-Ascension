@@ -13,7 +13,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON",
 	"CHAT_MSG_MONSTER_YELL",
-	"SPELL_PERIODIC_DAMAGE"
+	"SPELL_PERIODIC_DAMAGE",
+	"CHAT_MSG_MONSTER_WHISPER"
 )
 
 local warningFlameCast		= mod:NewCastAnnounce(30004, 4)
@@ -22,11 +23,15 @@ local warningBlizzard		= mod:NewSpellAnnounce(29969, 3)
 local warningElementals		= mod:NewSpellAnnounce(37053, 3)
 local warningChains			= mod:NewTargetAnnounce(29991, 2)
 local warningFlameTargets	= mod:NewTargetAnnounce(29946, 4)
+local warningSheepTargets	= mod:NewTargetAnnounce(85273, 3)
+local warningPoly			= mod:NewSpellAnnounce(85273, 3)
 
 local specWarnDontMove		= mod:NewSpecialWarning("DBM_ARAN_DO_NOT_MOVE")
 local specWarnArcane		= mod:NewSpecialWarningRun(29973)
 local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
 local specWarnBossShield	= mod:NewSpecialWarning("Shade of Aran is vulnerable!")
+local specWarnPoly			= mod:NewSpecialWarning("Volatile Polymorph!")
+local specWarnFull			= mod:NewSpecialWarning("Full Room Cover!")
 
 local timerSpecial			= mod:NewTimer(35, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
@@ -41,11 +46,14 @@ local timerShield			= mod:NewBuffActiveTimer(60, 85182)
 local berserkTimer			= mod:NewBerserkTimer(900)
 
 
-mod:AddBoolOption("WreathIcons", true)
-mod:AddBoolOption("ElementalIcons", true)
+mod:AddBoolOption("WreathIcons", false)
+mod:AddBoolOption("ElementalIcons", false)
+mod:AddBoolOption("PolyIcons", false)
 
 local WreathTargets = {}
 local flameWreathIcon = 8
+local PolyTargets = {}
+local PolyIcons = 1
 
 local function warnFlameWreathTargets()
 	warningFlameTargets:Show(table.concat(WreathTargets, "<, >"))
@@ -53,11 +61,19 @@ local function warnFlameWreathTargets()
 	flameWreathIcon = 8
 end
 
+local function warnPolyTargets()
+	warnPolyTargets:Show(table.concat(PolyTargets, "<, >"))
+	table.wipe(PolyTargets)
+	PolyIcons = 1
+end
+
 function mod:OnCombatStart(delay)
 	timerSpecial:Start(8-delay)
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 8
 	table.wipe(WreathTargets)
+	table.wipe(PolyTargets)
+	PolyIcons = 1
 end
 
 function mod:SPELL_CAST_START(args)
@@ -69,6 +85,9 @@ function mod:SPELL_CAST_START(args)
 		warningArcaneCast:Show()
 		timerArcaneExplosion:Start()
 		specWarnArcane:Show()
+		timerSpecial:Start()
+	elseif args:IsSpellID(85273) then
+		specWarnPoly:Show()
 		timerSpecial:Start()
 --	elseif args:IsSpellID(29969) then       - deprecated, Ascension's Aran doesn't use CAST_START for Blizzard.
 --		warningBlizzard:Show()
@@ -104,12 +123,27 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(85182) then
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
+	elseif args:IsSpellID(85273) then
+		warningPoly:Show()
+		PolyTargets[#PolyTargets + 1] = args.destName
+		if self.Options.PolyIcons then
+			self:SetIcon(args.destName, polyIcons, 20)
+			polyIcons = PolyIcons + 1
 		end
+		self:Unschedule(warnPolyTargets)
+		self:Schedule(0.3, warnPolyTargets)
 	end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29991) then
 		timerChains:Cancel(args.destName)
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_WHISPER(msg)
+	if msg == L.DBM_ARAN_FULL then
+		specWarnFull:Show()
 	end
 end
 

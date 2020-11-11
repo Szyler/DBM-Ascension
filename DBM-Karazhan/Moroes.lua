@@ -30,14 +30,14 @@ local warningHFire			= mod:NewTargetAnnounce(29563, 3)
 local warningHoJ			= mod:NewTargetAnnounce(13005, 3)
 local warningDShield		= mod:NewTargetAnnounce(29382, 3)
 
-local specWarnDinner		= mod:NewSpecialWarning("Dinner is served!")
+local specWarnDinner		= mod:NewSpecialWarning("Dinner is Served!")
 
 local timerVanishCD			= mod:NewCDTimer(23, 29448)
 local timerGouge			= mod:NewTargetTimer(6, 29425)
 local timerBlind			= mod:NewTargetTimer(10, 34694)
 local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
 local timerHoJ				= mod:NewCDTimer(50, 13005)
-local timerDinner			= mod:NewCDTimer(15, 85090)
+local timerDinner			= mod:NewCDTimer(24, 85090)
 
 local lastVanish = 0
 
