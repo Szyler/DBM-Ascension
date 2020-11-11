@@ -51,7 +51,7 @@ function mod:CHAT_MSG_RAID_WARNING(msg)
 		warningDesperate:Show()
 		timerDesperateCD:Start()
 		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(11)
+		warningSpecDespRun:Schedule(10)
 	end
 end
 
