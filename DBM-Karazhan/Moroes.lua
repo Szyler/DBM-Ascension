@@ -49,11 +49,23 @@ local warningFruit		= mod:NewTargetTimer(30, 85092)
 local warningBoar		= mod:NewTargetTimer(30, 85093)
 local warningFish		= mod:NewTargetTimer(30, 85094)
 
+local timerDance		= mod:NewAnnounce(27, "Dance (%s)", 85089);
+local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
+local danceCount = 0;
+
 function mod:OnCombatStart(delay)
 	timerVanishCD:Start(-delay)
 	warningVanishSoon:Schedule(31-delay)
 	lastVanish = 0
 	lastDinner = GetTime()
+	danceCount = 0;
+	mod:DanceTimer(22-delay,true);
+end
+
+function mod:DanceTimer(t,noInc)
+	danceCount = danceCount + (noInc and 0 or 1);
+	timerDance:Start(t,danceType[(danceCount % 3)]);
+	self:ScheduleMethod(t,"DanceTimer",27);
 end
 
 function mod:SPELL_CAST_START(args)
@@ -116,6 +128,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		if (GetTime() - lastVanish) < 20 then
 			timerVanishCD:Start()
 --			warningVanishSoon:Schedule(23)
+		end
+	elseif args:IsSpellID(85059) then -- Soul Burst Debuff
+		local elapsed, total = timerDance:GetTime(danceType[(danceCount % 3)]);
+		if elapsed > 10 then
+			self:UnscheduleMethod("DanceTimer");
+			self:DanceTimer(27-2,true);
 		end
 	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
 		local food = foodData[args.spellId];
