@@ -26,6 +26,8 @@ local timerNextEvo		= mod:NewNextTimer(110, 30254)
 local berserkTimer		= mod:NewBerserkTimer(720)
 local isCurator 		= false
 
+mod:SetUsedIcons(5, 6)
+local terminateIcon = 5;
 mod:AddBoolOption(L.CuratorIcon)
 mod:AddBoolOption("RangeFrame", true)
 
@@ -53,7 +55,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerEvo:Stop()
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
-			self:SetIcon(targetname, 8, 5)
+			terminateIcon = (terminateIcon == 5) and 6 or 5;
+			self:SetIcon(targetname, terminateIcon, 5)
 		end
 		warnTerminate:Show(args.destName)
 		timerTerminate:Start(args.destName)
