@@ -17,6 +17,7 @@ local warnEvo				= mod:NewSpellAnnounce(30254, 3)
 local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
 local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
 local specWarnTerminate		= mod:NewSpecialWarningYou(85082)
+local warnBreakCrystal		= mod:NewAnnounce("Break A Crystal", 2);
 
 local timerTerminate	= mod:NewTargetTimer(10, 85082)
 local timerTerminateCD	= mod:NewCDTimer(15, 85082) --15 seconds??
@@ -36,6 +37,7 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextEvo:Start(100-delay)
 	warnEvoSoon:Schedule(95-delay)
+	warnBreakCrystal:Schedule((95-35)-delay);
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
@@ -53,6 +55,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnArcaneInfusion:Show()
 		timerNextEvo:Stop()
 		timerEvo:Stop()
+		warnBreakCrystal:Cancel();
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
 			terminateIcon = (terminateIcon == 6) and 7 or 6;
@@ -74,7 +77,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnEvo:Show()
 		timerNextEvo:Start()
 		timerEvo:Start()
-		warnEvoSoon:Schedule(95)
+		warnEvoSoon:Schedule(95);
+		warnBreakCrystal:Schedule(95-35);
 	end
 end
 
