@@ -131,15 +131,14 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Show range frame (10)"
+	RangeFrame			= "Show range frame (10)",
+	CuratorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082),
 }
 
 L:SetMiscLocalization{
 	DBM_CURA_YELL_PULL		= "The Menagerie is for guests only.",
 	DBM_CURA_YELL_OOM		= "Your request cannot be processed.",
 	YellTermination			= "Termination on ME!",
-	CuratorIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082)
-
 }
 
 
