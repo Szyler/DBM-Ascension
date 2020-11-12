@@ -138,7 +138,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	DBM_CURA_YELL_PULL		= "The Menagerie is for guests only.",
 	DBM_CURA_YELL_OOM		= "Your request cannot be processed.",
-	YellTermination			= "Termination on ME!",
+	YellTermination			= "%s Termination on %s! %s",
 }
 
 
