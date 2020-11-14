@@ -79,9 +79,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29522) then
-		timerHolyFire:Cancel(args.destName)
-	elseif args:IsSpellID(85177) then
-		timerRepentance:Cancel(args.destName)
+		timerHolyFire:Cancel()
 	end
 end
 
