@@ -173,7 +173,8 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!"
+	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!",
+	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!"
 }
 
 L:SetTimerLocalization{
@@ -182,17 +183,16 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	timerSpecial			= "Show timer for special ability cooldown",
-	DBM_ARAN_BLIZZARD_1		= "Back to the cold dark with you!",
-	DBM_ARAN_BLIZZARD_2		= "I'll freeze you all!",
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
-	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
 	ElementalIcons			= "Set icons on $spell:37053",
 	WreathIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29946),
-	PolyIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273),
-	DBM_ARAN_FULL			= "Ah, the whimsical floes of magic..."
+	PolyIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273)
 }
 
 L:SetMiscLocalization{
+	DBM_ARAN_BLIZZARD_1		= "Back to the cold dark with you!",
+	DBM_ARAN_BLIZZARD_2		= "I'll freeze you all!",
+	DBM_ARAN_FULL			= "Ah, the whimsical floes of magic..."
 }
 
 
