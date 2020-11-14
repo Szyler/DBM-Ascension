@@ -14,16 +14,12 @@ local warningFearSoon	= mod:NewSoonAnnounce(30752, 2)
 local warningFear		= mod:NewSpellAnnounce(30752, 3)
 local warningRRHSoon	= mod:NewSoonAnnounce(30753, 3)
 local warningRRH		= mod:NewTargetAnnounce(30753, 4)
-local warningSpotlight  = mod:NewAnnounce("Spotlight", 3, 54428) 
 
 local specWarnRRH		= mod:NewSpecialWarningYou(30753)
 
 local timerRRH			= mod:NewTargetTimer(20, 30753)
 local timerRRHCD		= mod:NewNextTimer(60, 30753)
 local timerFearCD		= mod:NewNextTimer(24, 30752)
-local timerNextSpotlight	= mod:NewTimer(30, "Spotlight", 85112)
-local timerSpotlight	= mod:NewTimer(11, "Get into Spotlight", 85112)
-local timerStageFright	= mod:NewTimer(15, "DO NOT USE: %s", 85112)
 
 mod:AddBoolOption("RRHIcon")
 
@@ -35,22 +31,6 @@ function mod:OnCombatStart(delay)
 	timerNextSpotlight:Start(30-delay)
 end
 
-function mod:CHAT_MSG_RAID_WARNING(msg)
-	if msg == L.STAGE_FRIGHT then
-		warningSpotlight:Show()
-		timerNextSpotlight:Start()
-		timerSpotlight:Start()
-	else
-		local spellName = msg:match("The Audience does not want to see (.+)!");
-		if spellName then
-			timerStageFright:Start(15,spellName);
-			local _,_,spellIcon = GetSpellInfo(spellName);
-			if spellIcon then
-				timerStageFright:UpdateIcon(spellIcon,spellName);
-			end
-		end
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30753) then

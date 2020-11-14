@@ -2,8 +2,9 @@ local mod		= DBM:NewMod("Magtheridon", "DBM-Outlands")
 local L			= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
-mod:SetCreatureID(17256)
+mod:SetCreatureID(17256, 17257)
 mod:RegisterCombat("combat")
+mod:SetMinCombatTime(120)
 
 mod:RegisterEvents(
 		"SPELL_AURA_APPLIED",

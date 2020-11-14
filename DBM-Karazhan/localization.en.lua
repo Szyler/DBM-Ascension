@@ -131,14 +131,15 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Show range frame (10)",
-	CuratorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082),
+	RangeFrame			= "Show range frame (10)"
 }
 
 L:SetMiscLocalization{
 	DBM_CURA_YELL_PULL		= "The Menagerie is for guests only.",
 	DBM_CURA_YELL_OOM		= "Your request cannot be processed.",
-	YellTermination			= "%s Termination on %s! %s",
+	YellTermination			= "Termination on ME!",
+	CuratorIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082)
+
 }
 
 
@@ -173,8 +174,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!",
-	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!"
+	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!"
 }
 
 L:SetTimerLocalization{
@@ -184,9 +184,11 @@ L:SetTimerLocalization{
 L:SetOptionLocalization{
 	timerSpecial			= "Show timer for special ability cooldown",
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
+	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
 	ElementalIcons			= "Set icons on $spell:37053",
 	WreathIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29946),
 	PolyIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273)
+	
 }
 
 L:SetMiscLocalization{
@@ -345,3 +347,18 @@ L = DBM:GetModLocalization("Rokad")
 L:SetGeneralLocalization{
 	name = "Rokad the Ravager"
 }
+
+-- Opera
+
+L = DBM:GetModLocalization("Opera")
+
+L:SetGeneralLocalization{
+	name = "Opera"
+}
+
+L:SetMiscLocalization{
+	STAGE_FRIGHT			= "The audience deserves to be entertained!"
+}
+
+
+
