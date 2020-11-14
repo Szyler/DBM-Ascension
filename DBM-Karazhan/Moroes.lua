@@ -49,7 +49,7 @@ local warningFruit		= mod:NewTargetTimer(30, 85092)
 local warningBoar		= mod:NewTargetTimer(30, 85093)
 local warningFish		= mod:NewTargetTimer(30, 85094)
 
-local timerDance		= mod:NewAnnounce(27, "Dance (%s)", 85089);
+local timerDance		= mod:NewTimer(27, "Dance (%s)", 85089);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
@@ -129,7 +129,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVanishCD:Start()
 --			warningVanishSoon:Schedule(23)
 		end
-	elseif args:IsSpellID(85059) then -- Soul Burst Debuff
+	elseif args:IsSpellID(85089) then -- Soul Burst Debuff
 		local elapsed, total = timerDance:GetTime(danceType[(danceCount % 3)]);
 		if elapsed > 10 then
 			self:UnscheduleMethod("DanceTimer");
