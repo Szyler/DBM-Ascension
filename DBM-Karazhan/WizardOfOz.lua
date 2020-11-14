@@ -38,7 +38,7 @@ function mod:OnCombatStart(delay)
 		timerStrawman:Start(-delay)
 		timerTinhead:Start(-delay)
 		timerTito:Start(-delay)
-		timerNextSpotlight:Start(20)
+		timerSpotlight:Start(20)
 		timerScream:Start(15)
 	end
 end
