@@ -24,6 +24,7 @@ localization.ru.lua
 Attumen.lua
 Moroes.lua
 MaidenOfVirtue.lua
+Opera.lua
 BigBadWolf.lua
 RomuloAndJulianne.lua
 WizardOfOz.lua
