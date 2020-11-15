@@ -47,6 +47,7 @@ function mod:OnCombatStart(delay)
 		DBM.RangeCheck:Show(10)
 	end
 	isCurator = true
+	terminateIcon = 6;
 end
 
 function mod:OnCombatEnd()
@@ -60,7 +61,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnArcaneInfusion:Show()
 		timerNextEvo:Stop()
 		timerEvo:Stop()
-		warnBreakCrystal:Cancel();
+		--warnBreakCrystal:Cancel();
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
 			terminateIcon = (terminateIcon == 6) and 7 or 6;
@@ -71,7 +72,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTerminateCD:Start()
 		if args:IsPlayer() then
 			local myIconText = self.Options.CuratorIcon and iconText[terminateIcon] or "";
-			specWarnTerminate:Show(myIconText,myIconText);
+			local myIconTex = ICON_LIST[terminateIcon].."12:12|t";
+			specWarnTerminate:Show(myIconTex,myIconTex);
 			SendChatMessage(L.YellTermination:format(myIconText,args.destName,myIconText),"YELL");
 		end
 	end
