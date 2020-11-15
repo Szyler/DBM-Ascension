@@ -42,18 +42,16 @@ local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
 -- local timerElementals		= mod:NewBuffActiveTimer(90, 37053)
 local timerChains			= mod:NewTargetTimer(10, 29991)
 local timerShield			= mod:NewBuffActiveTimer(60, 85182)
+local timerPoly				= mod:NewTargetTimer(30, 85273)	
 
 local berserkTimer			= mod:NewBerserkTimer(900)
 
 
 mod:AddBoolOption("WreathIcons", false)
 mod:AddBoolOption("ElementalIcons", false)
-mod:AddBoolOption("PolyIcons", false)
 
 local WreathTargets = {}
 local flameWreathIcon = 8
-local PolyTargets = {}
-local PolyIcons = 1
 
 local function warnFlameWreathTargets()
 	warningFlameTargets:Show(table.concat(WreathTargets, "<, >"))
@@ -61,19 +59,12 @@ local function warnFlameWreathTargets()
 	flameWreathIcon = 8
 end
 
-local function warnPolyTargets()
-	warnPolyTargets:Show(table.concat(PolyTargets, "<, >"))
-	table.wipe(PolyTargets)
-	PolyIcons = 1
-end
 
 function mod:OnCombatStart(delay)
 	timerSpecial:Start(8-delay)
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 8
 	table.wipe(WreathTargets)
-	table.wipe(PolyTargets)
-	PolyIcons = 1
 end
 
 function mod:SPELL_CAST_START(args)
@@ -124,14 +115,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
 	elseif args:IsSpellID(85273) then
-		warningPoly:Show()
-		PolyTargets[#PolyTargets + 1] = args.destName
-		if self.Options.PolyIcons then
-			self:SetIcon(args.destName, polyIcons, 20)
-			polyIcons = PolyIcons + 1
+		warningPoly:Show(args.destName)
+		timerPoly:Start(args.destName)
 		end
-		self:Unschedule(warnPolyTargets)
-		self:Schedule(0.3, warnPolyTargets)
 	end
 end
 
