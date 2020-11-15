@@ -16,7 +16,7 @@ local warnEvoSoon			= mod:NewPreWarnAnnounce(30254, 10, 2)
 local warnEvo				= mod:NewSpellAnnounce(30254, 3)
 local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
 local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
-local specWarnTerminate		= mod:NewSpecialWarningYou("%s"); --,1,85082)
+local specWarnTerminate		= mod:NewSpecialWarning("%s Termination on YOU! %s"); --,1,85082)
 local warnBreakCrystal		= mod:NewAnnounce("Break A Crystal", 2);
 
 local timerTerminate	= mod:NewTargetTimer(10, 85082)
@@ -71,7 +71,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTerminateCD:Start()
 		if args:IsPlayer() then
 			local myIconText = self.Options.CuratorIcon and iconText[terminateIcon] or "";
-			specWarnTerminate:Show(myIconText.." Termination on YOU! "..myIconText);
+			specWarnTerminate:Show(myIconText,myIconText);
 			SendChatMessage(L.YellTermination:format(myIconText,args.destName,myIconText),"YELL");
 		end
 	end
