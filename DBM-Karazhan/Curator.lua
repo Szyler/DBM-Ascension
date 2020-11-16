@@ -40,8 +40,8 @@ local iconText = {
 function mod:OnCombatStart(delay)
 	timerTerminateCD:Start(30-delay)
 	berserkTimer:Start(-delay)
-	timerNextEvo:Start(100-delay)
-	warnEvoSoon:Schedule(95-delay)
+	timerNextEvo:Start(95-delay)
+	warnEvoSoon:Schedule(85-delay)
 	warnBreakCrystal:Schedule((95-35)-delay);
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
