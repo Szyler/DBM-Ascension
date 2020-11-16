@@ -19,7 +19,7 @@ local warningHolyFire		= mod:NewTargetAnnounce(85122, 3)
 local warnWrath				= mod:NewSpellAnnounce(32445, 2)
 
 -- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
-local timerRepentanceCD		= mod:NewCDTimer(46, 85177)
+local timerRepentanceCD		= mod:NewCDTimer(44, 85177)
 
 mod:AddBoolOption("RangeFrame", true)
 
