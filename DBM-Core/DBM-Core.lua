@@ -2458,9 +2458,9 @@ end
 function bossModPrototype:GetDifficulty() 
 	local _, instanceType, difficulty, _, _, playerDifficulty, isDynamicInstance = GetInstanceInfo()
 	if instanceType == "raid" and isDynamicInstance then -- "new" instance (ICC)
-		if difficulty == 1 then -- 10 men
+		if (difficulty == 1) or (difficulty == 3) then -- 10 men
 			return playerDifficulty == 0 and "normal10" or playerDifficulty == 1 and "heroic10" or "unknown"
-		elseif difficulty == 2 then -- 25 men
+		elseif (difficulty == 2) or (difficulty == 4) then -- 25 men
 			return playerDifficulty == 0 and "normal25" or playerDifficulty == 1 and "heroic25" or "unknown"
 		end
 	else -- support for "old" instances
