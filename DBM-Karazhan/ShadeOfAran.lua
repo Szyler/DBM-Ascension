@@ -52,6 +52,8 @@ mod:AddBoolOption("ElementalIcons", false)
 
 local WreathTargets = {}
 local flameWreathIcon = 8
+local SheepTargets = {};
+local sheepIcon = 8;
 
 local function warnFlameWreathTargets()
 	warningFlameTargets:Show(table.concat(WreathTargets, "<, >"))
@@ -59,12 +61,20 @@ local function warnFlameWreathTargets()
 	flameWreathIcon = 8
 end
 
+local function warnSheepTargets()
+	warningSheepTargets:Show(table.concat(SheepTargets, "<, >"));
+	table.wipe(SheepTargets);
+	sheepIcon = 8;
+end
+
 
 function mod:OnCombatStart(delay)
 	timerSpecial:Start(8-delay)
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 8
+	sheepIcon = 8;
 	table.wipe(WreathTargets)
+	table.wipe(SheepTargets);
 end
 
 function mod:SPELL_CAST_START(args)
@@ -114,16 +124,22 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(85182) then
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
-	elseif args:IsSpellID(85273) then
-		warningPoly:Show(args.destName)
-		timerPoly:Start(args.destName)
-		end
+	elseif args:IsSpellID(85273) then -- Volatile Polymorph
+		--warningPoly:Show(args.destName)
+		SheepTargets[#SheepTargets + 1] = args.destName;
+		timerPoly:Start(args.destName);
+		self:SetIcon(args.destName, sheepIcon, 12);
+		sheepIcon = sheepIcon - 1;		
+		self:Unschedule(warnSheepTargets);
+		self:Schedule(0.3, warnSheepTargets);
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29991) then
 		timerChains:Cancel(args.destName)
+	elseif args:IsSpellID(85273) then  -- Volatile Polymorph
+		self:RemoveIcon(args.destName);
 	end
 end
 
