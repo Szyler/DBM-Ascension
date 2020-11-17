@@ -1797,9 +1797,9 @@ function DBM:StartCombat(mod, delay, synced)
 		end
 		table.insert(inCombat, mod)
 		self:AddMsg(DBM_CORE_COMBAT_STARTED:format(mod.combatInfo.name))
-		if mod:IsDifficulty("heroic5", "heroic25") then
+		if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
 			mod.stats.heroicPulls = mod.stats.heroicPulls + 1
-		elseif mod:IsDifficulty("normal5", "heroic10") then
+		elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 			mod.stats.pulls = mod.stats.pulls + 1
 		end
 		mod.inCombat = true
