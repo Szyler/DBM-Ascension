@@ -1849,9 +1849,9 @@ function DBM:EndCombat(mod, wipe)
 		if wipe then
 			local thisTime = GetTime() - mod.combatInfo.pull
 			if thisTime < 30 then
-				if mod:IsDifficulty("heroic5", "heroic25") then
+				if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
 					mod.stats.heroicPulls = mod.stats.heroicPulls - 1
-				elseif mod:IsDifficulty("normal5", "heroic10") then
+				elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 					mod.stats.pulls = mod.stats.pulls - 1
 				end
 			end
@@ -1864,13 +1864,13 @@ function DBM:EndCombat(mod, wipe)
 			fireEvent("wipe", mod)
 		else
 			local thisTime = GetTime() - mod.combatInfo.pull
-			local lastTime = (mod:IsDifficulty("heroic5", "heroic25") and mod.stats.heroicLastTime) or mod:IsDifficulty("normal5", "heroic10") and mod.stats.lastTime
-			local bestTime = (mod:IsDifficulty("heroic5", "heroic25") and mod.stats.heroicBestTime) or mod:IsDifficulty("normal5", "heroic10") and mod.stats.bestTime
-			if mod:IsDifficulty("heroic5", "heroic25") then
+			local lastTime = (mod:IsDifficulty("heroic5", "heroic10", "heroic25") and mod.stats.heroicLastTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.lastTime
+			local bestTime = (mod:IsDifficulty("heroic5", "heroic10", "heroic25") and mod.stats.heroicBestTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.bestTime
+			if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
 				mod.stats.heroicKills = mod.stats.heroicKills + 1
 				mod.stats.heroicLastTime = thisTime
 				mod.stats.heroicBestTime = math.min(bestTime or math.huge, thisTime)
-			elseif mod:IsDifficulty("normal5", "heroic10") then
+			elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 				mod.stats.kills = mod.stats.kills + 1
 				mod.stats.lastTime = thisTime
 				mod.stats.bestTime = math.min(bestTime or math.huge, thisTime)
