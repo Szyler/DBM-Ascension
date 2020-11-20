@@ -43,11 +43,7 @@ local lastVanish = 0
 
 --Ascension Specific
 local warningDinner		= mod:NewSpellAnnounce(85090, 3)
-local warningApple		= mod:NewTargetTimer(30, 85090)
-local warningWine		= mod:NewTargetTimer(30, 85091)
-local warningFruit		= mod:NewTargetTimer(30, 85092)
-local warningBoar		= mod:NewTargetTimer(30, 85093)
-local warningFish		= mod:NewTargetTimer(30, 85094)
+--local warningFood		= mod:NewTargetTimer(30, 85090, "%s");
 
 local timerDance		= mod:NewTimer(27, "Dance (%s)", 85089);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
@@ -90,19 +86,19 @@ end
 	
 
 local foodData = {
-	[85090] = {warning = warningApple, yell = "YellApple"}, -- Sweet / Apple
-	[85091] = {warning = warningWine, yell = "YellWine"}, -- Thirst / Wine
-	[85092] = {warning = warningFruit, yell = "YellFruit"}, -- Tart / Fruit
-	[85093] = {warning = warningBoar, yell = "YellBoar"}, -- Savory / Boar
-	[85094] = {warning = warningFish, yell = "YellFish"}, -- Fishy / Fish
+	[85090] = {name = "Apple", yell = "YellApple"}, -- Sweet / Apple
+	[85091] = {name = "Wine", yell = "YellWine"}, -- Thirst / Wine
+	[85092] = {name = "Fruit", yell = "YellFruit"}, -- Tart / Fruit
+	[85093] = {name = "Boar", yell = "YellBoar"}, -- Savory / Boar
+	[85094] = {name = "Fish", yell = "YellFish"}, -- Fishy / Fish
 };
 
 function mod:YellFood()
 	if self.food then
-		SendChatMessage(L[self.food.yell], "YELL");
+		SendChatMessage(L[self.food.name], "YELL");
+		self:ScheduleMethod(2,"YellFood");
 	end
 end
-mod:RegisterOnUpdateHandler(mod.YellFood,2);
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29448) then
@@ -135,12 +131,15 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:UnscheduleMethod("DanceTimer");
 			self:DanceTimer(27-2,true);
 		end
-	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
-		local food = foodData[args.spellId];
-		food.warning:Show(args.destName);
-		self.food = food;
-		timerDinner:Start()
-		warningDinner:Show()
+	elseif foodData[args.spellId] then
+		if args.destName and args:IsPlayer() then
+			local food = foodData[args.spellId];
+			--warningFood:Show(args.destName);
+			self.food = food;
+			self:ScheduleMethod(2,"YellFood");
+			timerDinner:Start()
+			warningDinner:Show()
+		end
 	end
 end
 
@@ -159,6 +158,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		local food = foodData[args.spellId];
 		food.warning:Cancel(args.destName);
 		self.food = nil;
+		self:UnscheduleMethod("YellFood");
 	end
 end
 
