@@ -32,8 +32,9 @@ local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
 local specWarnBossShield	= mod:NewSpecialWarning("Shade of Aran is vulnerable!")
 local specWarnPoly			= mod:NewSpecialWarning("Volatile Polymorph!")
 local specWarnFull			= mod:NewSpecialWarning("Full Room Cover!")
+local specWarnDoubleCast	= mod:NewSpecialWarning("Double Cast - Interrupt %s!");
 
-local timerSpecial			= mod:NewTimer(35, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
+local timerSpecial			= mod:NewTimer(35, "Special: %s", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
 local timerArcaneExplosion	= mod:NewCastTimer(10, 29973)
 -- local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
@@ -46,50 +47,80 @@ local timerPoly				= mod:NewTargetTimer(30, 85273)
 
 local berserkTimer			= mod:NewBerserkTimer(900)
 
-
 mod:AddBoolOption("WreathIcons", false)
 mod:AddBoolOption("ElementalIcons", false)
+mod:AddBoolOption("SheepIcons", false)
+mod:AddBoolOption("MarkCurrentTarget", false)
+mod:AddBoolOption("InterruptDoubleCast", false)
 
 local WreathTargets = {}
-local flameWreathIcon = 8
+local flameWreathIcon = 7
 local SheepTargets = {};
-local sheepIcon = 8;
+local sheepIcon = 7;
+local lastTarget;
+local specialAbilities = {};
 
 local function warnFlameWreathTargets()
 	warningFlameTargets:Show(table.concat(WreathTargets, "<, >"))
 	table.wipe(WreathTargets)
-	flameWreathIcon = 8
+	flameWreathIcon = 7
 end
 
 local function warnSheepTargets()
 	warningSheepTargets:Show(table.concat(SheepTargets, "<, >"));
 	table.wipe(SheepTargets);
-	sheepIcon = 8;
+	sheepIcon = 7;
 end
 
+function mod:UpdateSpecials(spell)
+	if spell then
+		for k,v in ipairs(specialAbilities) do
+			if v == spell then
+				table.remove(specialAbilities,k);
+				break;
+			end
+		end
+	end
+	if (#specialAbilities == 0) then
+		specialAbilities = {"Blizzard","Wreath","Explosion"};
+		if mod:IsDifficulty("heroic10","heroic25") then
+			table.insert(specialAbilities,"Poly");
+		end
+	end
+	return table.concat(specialAbilities,"/");
+end
 
 function mod:OnCombatStart(delay)
-	timerSpecial:Start(8-delay)
+	timerSpecial:Start(8-delay,self:UpdateSpecials());
 	berserkTimer:Start(-delay)
-	flameWreathIcon = 8
-	sheepIcon = 8;
+	flameWreathIcon = 7
+	sheepIcon = 7;
+	lastTarget = nil;
 	table.wipe(WreathTargets)
 	table.wipe(SheepTargets);
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30004) then
+	if args:IsSpellID(85255, 85251, 85253) then -- Arcane Missiles, Fireball, Frostbolt
+		if self.Options.MarkCurrentTarget then
+			self:SetIcon(args.destName, 8);
+		end
+		if lastTarget and (args.destName == lastTarget) then
+			specWarnDoubleCast:Show(args.spellName);
+		end
+		lastTarget = args.destName;
+	elseif args:IsSpellID(30004) then
 		warningFlameCast:Show()
 		timerFlameCast:Start()
-		timerSpecial:Start()
+		timerSpecial:Start(35,self:UpdateSpecials("Wreath"))
 	elseif args:IsSpellID(29973) then
 		warningArcaneCast:Show()
 		timerArcaneExplosion:Start()
 		specWarnArcane:Show()
-		timerSpecial:Start()
+		timerSpecial:Start(35,self:UpdateSpecials("Explosion"))
 	elseif args:IsSpellID(85273) then
 		specWarnPoly:Show()
-		timerSpecial:Start()
+		timerSpecial:Start(35,self:UpdateSpecials("Poly"))
 --	elseif args:IsSpellID(29969) then       - deprecated, Ascension's Aran doesn't use CAST_START for Blizzard.
 --		warningBlizzard:Show()
 --		timerBlizzadCast:Show()
@@ -128,10 +159,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		--warningPoly:Show(args.destName)
 		SheepTargets[#SheepTargets + 1] = args.destName;
 		timerPoly:Start(args.destName);
-		self:SetIcon(args.destName, sheepIcon, 12);
-		sheepIcon = sheepIcon - 1;		
+		if self.Options.SheepIcons then
+			self:SetIcon(args.destName, sheepIcon, 12);
+			sheepIcon = sheepIcon - 1;		
+		end
 		self:Unschedule(warnSheepTargets);
-		self:Schedule(0.3, warnSheepTargets);
+		if (self:IsDifficulty("heroic10") and (#SheepTargets >= 4)) then
+			self:warnSheepTargets();
+		else
+			self:Schedule(0.3, warnSheepTargets);
+		end
 	end
 end
 
@@ -139,7 +176,9 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29991) then
 		timerChains:Cancel(args.destName)
 	elseif args:IsSpellID(85273) then  -- Volatile Polymorph
-		self:RemoveIcon(args.destName);
+		if self.Options.SheepIcons then
+			self:RemoveIcon(args.destName);
+		end
 	end
 end
 
@@ -150,14 +189,10 @@ function mod:CHAT_MSG_MONSTER_WHISPER(msg)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.DBM_ARAN_BLIZZARD_1 then
+	if (msg == L.DBM_ARAN_BLIZZARD_1) or (msg == L.DBM_ARAN_BLIZZARD_2) then
 		warningBlizzard:Show()
 		timerBlizzad:Start()
-		timerSpecial:Start()
-	elseif msg == L.DBM_ARAN_BLIZZARD_2 then
-		warningBlizzard:Show()
-		timerBlizzad:Start()
-		timerSpecial:Start()
+		timerSpecial:Start(35,self:UpdateSpecials("Blizzard"))
 	end
 end
 

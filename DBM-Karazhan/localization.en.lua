@@ -178,7 +178,7 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	timerSpecial			= "Special ability CD"
+	timerSpecial			= "Special: %s"
 }
 
 L:SetOptionLocalization{
