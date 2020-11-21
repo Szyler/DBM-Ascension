@@ -11,6 +11,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -139,6 +140,15 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:ScheduleMethod(2,"YellFood");
 			timerDinner:Start()
 			warningDinner:Show()
+		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(37066, 85223) then
+		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
+		if (GetTime() - lastVanish) < 20 then
+			timerVanishCD:Start()
 		end
 	end
 end
