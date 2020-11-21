@@ -51,7 +51,6 @@ mod:AddBoolOption("WreathIcons", false)
 mod:AddBoolOption("ElementalIcons", false)
 mod:AddBoolOption("SheepIcons", false)
 mod:AddBoolOption("MarkCurrentTarget", false)
-mod:AddBoolOption("InterruptDoubleCast", false)
 
 local WreathTargets = {}
 local flameWreathIcon = 7
