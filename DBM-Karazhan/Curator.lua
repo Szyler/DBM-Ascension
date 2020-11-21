@@ -87,7 +87,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerEvo:Start()
 		warnEvoSoon:Schedule(95);
 		warnBreakCrystal:Cancel();
-		warnBreakCrystal:Schedule(95-35);
+		warnBreakCrystal:Schedule(110-35);
 	end
 end
 
