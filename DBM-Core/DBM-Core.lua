@@ -1216,6 +1216,14 @@ do
 		DBM:Schedule(5, setRaidWarningPositon)
 	end
 
+	local defaultStats = {
+		kills = 0,
+		pulls = 0,
+		heroic10Kills = 0,
+		heroic25Kills = 0,
+		heroic10Pulls = 0,
+		heroic25Pulls = 0,
+	};
 	function loadModOptions(modId)
 		local savedOptions = _G[modId:gsub("-", "").."_SavedVars"] or {}
 		local savedStats = _G[modId:gsub("-", "").."_SavedStats"] or {}
@@ -1228,12 +1236,10 @@ do
 					end
 				end
 				v.Options = savedOptions[v.id] or {}
-				savedStats[v.id] = savedStats[v.id] or {
-					kills = 0,
-					pulls = 0,
-					heroicKills = 0,
-					heroicPulls = 0,
-				}
+				savedStats[v.id] = savedStats[v.id] or {};
+				for x,y in pairs(defaultStats) do
+					savedStats[v.id][x] = savedStats[v.id][x] or y;
+				end
 				v.stats = savedStats[v.id]
 				if v.OnInitialize then v:OnInitialize() end
 				for i, cat in ipairs(v.categorySort) do -- temporary hack
@@ -1797,8 +1803,10 @@ function DBM:StartCombat(mod, delay, synced)
 		end
 		table.insert(inCombat, mod)
 		self:AddMsg(DBM_CORE_COMBAT_STARTED:format(mod.combatInfo.name))
-		if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
-			mod.stats.heroicPulls = mod.stats.heroicPulls + 1
+		if mod:IsDifficulty("heroic5", "heroic10") then
+			mod.stats.heroic10Pulls = mod.stats.heroic10Pulls + 1
+		elseif mod:IsDifficulty("heroic25") then
+			mod.stats.heroic25Pulls = mod.stats.heroic25Pulls + 1
 		elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 			mod.stats.pulls = mod.stats.pulls + 1
 		end
@@ -1849,8 +1857,10 @@ function DBM:EndCombat(mod, wipe)
 		if wipe then
 			local thisTime = GetTime() - mod.combatInfo.pull
 			if thisTime < 30 then
-				if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
-					mod.stats.heroicPulls = mod.stats.heroicPulls - 1
+				if mod:IsDifficulty("heroic5", "heroic10") then
+					mod.stats.heroic10Pulls = mod.stats.heroic10Pulls - 1
+				elseif mod:IsDifficulty("heroic25") then
+					mod.stats.heroic25Pulls = mod.stats.heroic25Pulls - 1
 				elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 					mod.stats.pulls = mod.stats.pulls - 1
 				end
@@ -1864,12 +1874,16 @@ function DBM:EndCombat(mod, wipe)
 			fireEvent("wipe", mod)
 		else
 			local thisTime = GetTime() - mod.combatInfo.pull
-			local lastTime = (mod:IsDifficulty("heroic5", "heroic10", "heroic25") and mod.stats.heroicLastTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.lastTime
-			local bestTime = (mod:IsDifficulty("heroic5", "heroic10", "heroic25") and mod.stats.heroicBestTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.bestTime
-			if mod:IsDifficulty("heroic5", "heroic10", "heroic25") then
-				mod.stats.heroicKills = mod.stats.heroicKills + 1
-				mod.stats.heroicLastTime = thisTime
-				mod.stats.heroicBestTime = math.min(bestTime or math.huge, thisTime)
+			local lastTime = (mod:IsDifficulty("heroic5", "heroic10") and mod.stats.heroic10LastTime) or (mod:IsDifficulty("heroic25") and mod.stats.heroic25LastTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.lastTime
+			local bestTime = (mod:IsDifficulty("heroic5", "heroic10") and mod.stats.heroic10BestTime) or (mod:IsDifficulty("heroic25") and mod.stats.heroic25BestTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.bestTime
+			if mod:IsDifficulty("heroic5", "heroic10") then
+				mod.stats.heroic10Kills = mod.stats.heroic10Kills + 1
+				mod.stats.heroic10LastTime = thisTime
+				mod.stats.heroic10BestTime = math.min(bestTime or math.huge, thisTime)
+			elseif mod:IsDifficulty("heroic25") then
+				mod.stats.heroic25Kills = mod.stats.heroic25Kills + 1
+				mod.stats.heroic25LastTime = thisTime
+				mod.stats.heroic25BestTime = math.min(bestTime or math.huge, thisTime)
 			elseif mod:IsDifficulty("normal5", "normal10", "normal25") then
 				mod.stats.kills = mod.stats.kills + 1
 				mod.stats.lastTime = thisTime

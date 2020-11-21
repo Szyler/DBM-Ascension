@@ -41,6 +41,8 @@ L.Statistic_Kills			= "Kills:"
 L.Statistic_Wipes			= "Wipes:"
 L.Statistic_BestKill		= "Best Kill:"
 L.Statistic_Heroic			= "Heroic"
+L.Statistic_Heroic10			= "Heroic 10"
+L.Statistic_Heroic25			= "Heroic 25"
 
 -- Tab: General Options
 L.General 					= "General DBM Options"
