@@ -154,11 +154,13 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(34694) then
 		timerBlind:Cancel(args.destName)
-	elseif foodData[args.spellId] and args.destName and args:IsPlayer() then
-		local food = foodData[args.spellId];
-		food.warning:Cancel(args.destName);
-		self.food = nil;
-		self:UnscheduleMethod("YellFood");
+	elseif foodData[args.spellId] then
+		if args.destName and args:IsPlayer() then
+			local food = foodData[args.spellId];
+			--warningFood:Cancel(args.destName);
+			self.food = nil;
+			self:UnscheduleMethod("YellFood");
+		end
 	end
 end
 
