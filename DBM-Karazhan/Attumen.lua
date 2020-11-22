@@ -48,7 +48,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85154) then
+	if args:IsSpellID(85154, 85155, 85156) then     
 		warningCurse:Show()
 	elseif args:IsSpellID(85157, 85158, 85159) then -- 3 different spell IDs? why Ascension?
 		timerChargeCD:Start()
