@@ -120,7 +120,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(29572) then
 		warningMortalStrike:Show(args.destName)
 		timerMortalStrike:Show(args.destName)
-	elseif args:IsSpellID(37066, 85223) then
+	elseif args:IsSpellID(37066, 85223, 85224) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		if (GetTime() - lastVanish) < 20 then
 			timerVanishCD:Start()
@@ -145,7 +145,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(37066, 85223) then
+	if args:IsSpellID(37066, 85223, 85224) then
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		if (GetTime() - lastVanish) < 20 then
 			timerVanishCD:Start()

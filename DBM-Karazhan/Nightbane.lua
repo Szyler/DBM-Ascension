@@ -22,19 +22,21 @@ local WarnAir				= mod:NewAnnounce("DBM_NB_AIR_WARN", 2, "Interface\\AddOns\\DBM
 local WarnNBDown1			= mod:NewAnnounce("DBM_NB_DOWN_WARN", 2, nil, nil, false)
 local WarnNBDown2			= mod:NewAnnounce("DBM_NB_DOWN_WARN2", 3, nil, nil, false)
 local warnCharred			= mod:NewSpellAnnounce(30129, 2)
+local warnFinalHour			= mod:NewSpellAnnouce(85370, 2)
 
 local specWarnCharred		= mod:NewSpecialWarningMove(30129)
 
 local timerNightbane		= mod:NewTimer(34, "timerNightbane", "Interface\\Icons\\Ability_Mount_Undeadhorse")
-local timerAirPhase			= mod:NewTimer(48, "timerAirPhase", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerAirPhase			= mod:NewTimer(51, "timerAirPhase", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerFearCD			= mod:NewNextTimer(31.5, 36922)
 local timerFear				= mod:NewCastTimer(1.5, 36922)
 local timerCharred			= mod:NewNextTimer(18, 30129)
+local timerFinalHour		= mod:NewBuffActiveTimer(60, 85370, 60)
 
 mod:AddBoolOption("PrewarnGroundPhase", true, "announce")
 
 function mod:OnCombatStart(delay)
-	timerFear:Start(45-delay)
+	timerFear:Start(47-delay)
 	timerCharred:Start(15-delay)
 end
 
@@ -51,7 +53,7 @@ function mod:SPELL_CAST_START(args)
 		timerFear:Start()
 		timerFearCD:Start()
 		warningFearSoon:Schedule(29)
-	elseif args:IsSpellID(30129) then
+	elseif args:IsSpellID(30129, 85246) then
 		warnCharred:Show()
 		timerCharred:Start()
 	end
@@ -60,6 +62,12 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(37098) then
 		warningBone:Show()
+	elseif args:IsSpellID(85370) then           -- heroic exclusive
+		warnFinalHour:Show()
+		if mod:IsDifficulty("heroic25") then
+			timerFinalHour:Start(180)
+		else
+			timerFinalHour:Start()
 	end
 end
 
@@ -80,10 +88,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if self.Options.PrewarnGroundPhase then
 			WarnNBDown1:Cancel()
 			WarnNBDown2:Cancel()
-			WarnNBDown1:Schedule(42)
-			WarnNBDown2:Schedule(52)
+			WarnNBDown1:Schedule(36)
+			WarnNBDown2:Schedule(46)
 		end
 	elseif msg == L.DBM_NB_YELL_GROUND or msg == L.DBM_NB_YELL_GROUND2 then
 		timerCharred:Start(27)
+		timerFearCD:Start(48)
 	end
 end
