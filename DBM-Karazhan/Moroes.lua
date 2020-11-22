@@ -62,7 +62,7 @@ end
 function mod:DanceTimer(t,noInc)
 	danceCount = danceCount + (noInc and 0 or 1);
 	timerDance:Start(t,danceType[(danceCount % 3)]);
-	self:ScheduleMethod(t,"DanceTimer",27);
+	self:ScheduleMethod(t,"DanceTimer",28);
 end
 
 function mod:SPELL_CAST_START(args)

@@ -11,7 +11,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"CHAT_MSG_MONSTER_YELL",
-	"CHAT_MSG_MONSTER_EMOTE"
+	"CHAT_MSG_MONSTER_EMOTE",
+	"SPELL_AURA_APPLIED_DOSE"
 )
 
 local warningBone			= mod:NewSpellAnnounce(37098, 3)
@@ -23,6 +24,7 @@ local WarnNBDown1			= mod:NewAnnounce("DBM_NB_DOWN_WARN", 2, nil, nil, false)
 local WarnNBDown2			= mod:NewAnnounce("DBM_NB_DOWN_WARN2", 3, nil, nil, false)
 local warnCharred			= mod:NewSpellAnnounce(30129, 2)
 local warnFinalHour			= mod:NewSpellAnnouce(85370, 2)
+local warnBreath			= mod:NewAnnounce("%s on >%s< (%d)", 3, 85245)
 
 local specWarnCharred		= mod:NewSpecialWarningMove(30129)
 
@@ -68,6 +70,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerFinalHour:Start(180)
 		else
 			timerFinalHour:Start()
+		end
 	end
 end
 
@@ -76,6 +79,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnCharred:Show()
 	elseif args:IsSpellID(30130) then
 		warningAsh:Show(args.destName)
+	elseif args:IsSpellID(85245) then
+		warnBreath:Show(args.SpellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(85245) then
+		warnBreath:Show(args.SpellName, args.destName, args.amount or 1)
 	end
 end
 
