@@ -72,7 +72,9 @@ local function warnSheepTargets()
 end
 
 function mod:UpdateSpecials(spell)
-	if spell then
+	if (spell == true) then
+		wipe(specialAbilities);
+	elseif spell then
 		for k,v in ipairs(specialAbilities) do
 			if v == spell then
 				table.remove(specialAbilities,k);
@@ -90,7 +92,7 @@ function mod:UpdateSpecials(spell)
 end
 
 function mod:OnCombatStart(delay)
-	timerSpecial:Start(8-delay,self:UpdateSpecials());
+	timerSpecial:Start(8-delay,self:UpdateSpecials(true));
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 7
 	sheepIcon = 7;
