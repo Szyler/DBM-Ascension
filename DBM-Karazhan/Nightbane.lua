@@ -23,7 +23,7 @@ local WarnAir				= mod:NewAnnounce("DBM_NB_AIR_WARN", 2, "Interface\\AddOns\\DBM
 local WarnNBDown1			= mod:NewAnnounce("DBM_NB_DOWN_WARN", 2, nil, nil, false)
 local WarnNBDown2			= mod:NewAnnounce("DBM_NB_DOWN_WARN2", 3, nil, nil, false)
 local warnCharred			= mod:NewSpellAnnounce(30129, 2)
-local warnFinalHour			= mod:NewSpellAnnouce(85370, 2)
+local warnFinalHour			= mod:NewSpellAnnounce(85370, 2)
 local warnBreath			= mod:NewAnnounce("%s on >%s< (%d)", 3, 85245)
 
 local specWarnCharred		= mod:NewSpecialWarningMove(30129)
