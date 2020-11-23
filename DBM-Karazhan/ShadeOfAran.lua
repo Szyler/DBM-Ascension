@@ -43,7 +43,8 @@ local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
 -- local timerElementals		= mod:NewBuffActiveTimer(90, 37053)
 local timerChains			= mod:NewTargetTimer(10, 29991)
 local timerShield			= mod:NewBuffActiveTimer(60, 85182)
-local timerPoly				= mod:NewTargetTimer(30, 85273)	
+local timerPoly				= mod:NewTargetTimer(30, 85273)
+local timerBoom				= mod:NewTimer(5, "Boom", "Interface\\Icons\\spell_nature_wispsplode")
 
 local berserkTimer			= mod:NewBerserkTimer(900)
 
@@ -92,7 +93,7 @@ function mod:UpdateSpecials(spell)
 end
 
 function mod:OnCombatStart(delay)
-	timerSpecial:Start(8-delay,self:UpdateSpecials(true));
+	timerSpecial:Start(11-delay,self:UpdateSpecials(true));
 	berserkTimer:Start(-delay)
 	flameWreathIcon = 7
 	sheepIcon = 7;
@@ -186,6 +187,7 @@ end
 function mod:CHAT_MSG_MONSTER_WHISPER(msg)
 	if msg == L.DBM_ARAN_FULL then
 		specWarnFull:Show()
+		timerBoom:Start()
 	end
 end
 
@@ -243,7 +245,7 @@ end
 do 
 	local lastBlizzard = 0
 	function mod:SPELL_PERIODIC_DAMAGE(args)
-		if args:IsSpellID(29951) and args:IsPlayer() and GetTime() - lastBlizzard > 2 then
+		if args:IsSpellID(29951, 85250) and args:IsPlayer() and GetTime() - lastBlizzard > 2 then
 			specWarnBlizzard:Show()
 			lastBlizzard = GetTime()
 		end
