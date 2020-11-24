@@ -27,17 +27,20 @@ local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!
 local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
 local specWarnDebris	= mod:NewSpecialWarningYou(85030)
 local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
+local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
 local timerQuake		= mod:NewNextTimer(60, 85026)
 local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
 local Nova				= 1;
 local timerNova			= mod:NewTimer(55, "Blast Nova #%s", 30616)
+local timerPhaseTwo		= mod:NewTimer(90, "Magtheridon", "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
 local isMag				= false;
 local below30			= false;
 
 function mod:OnCombatStart(delay)
 	Nova = 1;
+	timerPhaseTwo:Start()
 end
 
 function mod:OnCombatEnd()
@@ -52,6 +55,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerNova:Start(66, tostring(Nova))
 		below30 = false;
 		isMag	= true;
+		warnPhaseTwo:Show()
+		timerPhaseTwo:Cancel()
 	end
 end
 
