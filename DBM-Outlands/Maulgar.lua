@@ -38,7 +38,7 @@ local timerFelstalk			= mod:NewNextTimer(30, 33131)
 local timerSpellshield		= mod:NewNextTimer(40, 33054)
 
 
-local miscSoulstone			= mod:NewAnnounce("Soulstone consumed", 3, 85024)
+local miscSoulstone			= mod:NewAnnounce("Soulstone consumed on %s", 3, 85024)
 
 function mod:OnCombatStart(delay)
 	timerNextWhirlwind:Start(30-delay)
@@ -119,7 +119,7 @@ function mod:SPELL_HEAL(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(33061) then
+	if args:IsSpellID(33238) then
 		timerWhirlwind:Cancel()
 		timerNextWhirlwind:Start()
 	end
