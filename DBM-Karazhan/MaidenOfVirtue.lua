@@ -82,7 +82,3 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerHolyFire:Cancel()
 	end
 end
-
-function mod:OnCombatEnd(wipe)
-	self:Stop();
-end

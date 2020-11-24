@@ -91,7 +91,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85030) and args.destName and args:IsPlayer() then
+	if args:IsSpellID(85030) and args:IsPlayer() then
 		specWarnDebris:Show()
 	elseif args:IsSpellID(30168) then
 		warnInterrupt:Show()
