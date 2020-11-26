@@ -27,12 +27,13 @@ local timerNextEvo		= mod:NewNextTimer(110, 30254)
 local berserkTimer		= mod:NewBerserkTimer(720)
 local isCurator 		= false
 
-mod:SetUsedIcons(6, 7)
-local terminateIcon = 6;
+mod:SetUsedIcons(5, 6, 7)
+local terminateIcon = 5;
 mod:AddBoolOption("CuratorIcon")
 mod:AddBoolOption("RangeFrame", true)
 
 local iconText = {
+	[5] = "{Moon}",
 	[6] = "{Square}",
 	[7] = "{Cross}",
 };
@@ -47,7 +48,7 @@ function mod:OnCombatStart(delay)
 		DBM.RangeCheck:Show(10)
 	end
 	isCurator = true
-	terminateIcon = 6;
+	terminateIcon = 5;
 end
 
 function mod:OnCombatEnd()
@@ -64,7 +65,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--warnBreakCrystal:Cancel();
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
-			terminateIcon = (terminateIcon == 6) and 7 or 6;
+			terminateIcon = (terminateIcon <= ((mod:IsDifficulty("heroic25") and 5) or (mod:IsDifficulty("heroic10") and 6) or 7)) and 7 or (terminateIcon - 1);
 			self:SetIcon(args.destName, terminateIcon, 10)
 		end
 		warnTerminate:Show(args.destName)
