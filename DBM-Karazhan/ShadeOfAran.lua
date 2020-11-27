@@ -172,7 +172,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:Schedule(0.3, warnSheepTargets);
 		end
 	elseif args:IsSpellID(29963)  then
-		if args:IsPlayer then
+		if args:IsPlayer() then
 			local elapsed, total = timerSpecial:GetTime(self:UpdateSpecials());
 			timerSpecial:Update(elapsed, total+10, self:UpdateSpecials());
 		end
