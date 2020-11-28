@@ -166,7 +166,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			sheepIcon = sheepIcon - 1;		
 		end
 		self:Unschedule(warnSheepTargets);
-		if (self:IsDifficulty("heroic10") and (#SheepTargets >= 4)) then
+		if (self:IsDifficulty("heroic10") and (#SheepTargets >= 5)) then
 			self:warnSheepTargets();
 		else
 			self:Schedule(0.3, warnSheepTargets);
@@ -183,6 +183,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(29991) then
 		timerChains:Cancel(args.destName)
 	elseif args:IsSpellID(85273) then  -- Volatile Polymorph
+		timerPoly:Cancel(args.destName);
 		if self.Options.SheepIcons then
 			self:RemoveIcon(args.destName);
 		end
