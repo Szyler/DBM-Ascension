@@ -89,7 +89,7 @@ end
 local foodData = {
 	[85090] = {name = "Apple", yell = "YellApple"}, -- Sweet / Apple
 	[85091] = {name = "Wine", yell = "YellWine"}, -- Thirst / Wine
-	[85092] = {name = "Fruit", yell = "YellFruit"}, -- Tart / Fruit
+	[85092] = {name = "Oranges", yell = "YellFruit"}, -- Tart / Oranges
 	[85093] = {name = "Boar", yell = "YellBoar"}, -- Savory / Boar
 	[85094] = {name = "Fish", yell = "YellFish"}, -- Fishy / Fish
 };
