@@ -104,13 +104,16 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(85255, 85251, 85253) then -- Arcane Missiles, Fireball, Frostbolt
-		if self.Options.MarkCurrentTarget then
-			self:SetIcon(args.destName, 8);
+		local destName = self:GetBossTarget();
+		if destName then
+			if self.Options.MarkCurrentTarget then
+				self:SetIcon(destName, 8);
+			end
+			if lastTarget and (destName == lastTarget) then
+				specWarnDoubleCast:Show(args.spellName);
+			end
+			lastTarget = destName;
 		end
-		if lastTarget and (args.destName == lastTarget) then
-			specWarnDoubleCast:Show(args.spellName);
-		end
-		lastTarget = args.destName;
 	elseif args:IsSpellID(30004) then
 		warningFlameCast:Show()
 		timerFlameCast:Start()
