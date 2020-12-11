@@ -7,7 +7,7 @@
 ## RequiredDeps: DBM-Core
 ## SavedVariablesPerCharacter: DBMWorldEvent_SavedVars, DBMWorldEvent_SavedStats
 ## X-DBM-Mod: 1
-## X-DBM-Mod-Category: WotLK
+## X-DBM-Mod-Category: BC
 ## X-DBM-Mod-Name: World Events
 ## X-DBM-Mod-Name-esES: Eventos del Mundo
 ## X-DBM-Mod-Name-ruRU: Игровые события
