@@ -17,12 +17,14 @@ mod:RegisterEvents(
 );
 
 local warnWhirlwind			= mod:NewSpellAnnounce(33238, 2)
+local warnWhirlCast			= mod:NewCastAnnounce(33238, 3, nil, false)
 local warnSpellShield		= mod:NewTargetAnnounce(33054, 3)
 local warnBlast				= mod:NewSpellAnnounce(33061, 2)
 local warnPolymorphCast		= mod:NewCastAnnounce(33173, 2)
 local warnPolymorph			= mod:NewTargetAnnounce(33173, 2)
 local warnShield			= mod:NewTargetAnnounce(33147, 2)
-local warnRenew				= mod:NewTargetAnnounce(85022, 3)
+local warnPermRenew			= mod:NewTargetAnnounce(85022, 3)
+local warnRenew				= mod:NewTargetAnnounce(85379, 3)
 local warnFelstalkCast		= mod:NewCastAnnounce(33131, 3)
 local warnFelstalk			= mod:NewSpellAnnounce(33131, 3)
 local warnSoulstone			= mod:NewTargetAnnounce(85023, 3)
@@ -30,7 +32,10 @@ local warnLShield			= mod:NewTargetAnnounce(85025, 3)
 local warnRShield			= mod:NewTargetAnnounce(85021, 3)
 local warnCharge			= mod:NewTargetAnnounce(26561, 2)
 
-local timerWhirlwind		= mod:NewBuffActiveTimer(15, 33238)
+local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
+local warnHeal				= mod:NewSepcialWarning("Interrupt Heal!")
+
+local timerWhirlwind		= mod:NewBuffActiveTimer(10, 33238)
 local timerNextWhirlwind	= mod:NewNextTimer(55, 33238)
 local timerCharge			= mod:NewNextTimer(20, 26561)
 local timerBlast			= mod:NewNextTimer(90, 33061)
@@ -62,13 +67,13 @@ end
 --			warnLShield:Show(args.destName)
 			
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85022) then
-		warnRenew:Show(args.destName)
+	if args:IsSpellID(85022, 85386, 85385) then
+		warnPermRenew:Show(args.destName)
 	elseif args:IsSpellID(85023) then
 		warnSoulstone:Show(args.destName)
 	elseif args:IsSpellID(85021) then
 		warnRShield:Show(args.destName)
-	elseif args:IsSpellID(85025) then
+	elseif args:IsSpellID(85025, 85381) then
 		warnLShield:Show(args.destName)
 	elseif args:IsSpellID(33147) then
 		warnShield:Show(args.destName)
@@ -79,6 +84,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSpellShield:Show(args.destName)
 	elseif args:IsSpellID(33173) then
 		warnPolymorph:Show(args.destName)
+	elseif args:IsSpellID(85379) then
+		warnRenew:Show(args.destName)
 	end
 end
 
@@ -102,11 +109,17 @@ function mod:SPELL_CAST_START(args)
 		warnFelstalkCast:Show()
 	elseif args:IsSpellID(33173) then
 		warnPolymorphCast:Show()
+	elseif args:IsSpellID(85384) then
+		warnPoH:Show()
+	elseif args:IsSpellID(33238) then
+		warnWhirlCast:Show()
+	elseif args:IsSpellID(85382, 85383) then
+		warnHeal:Show()
 	end
 end
 
 function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(33131) then
+	if args:IsSpellID(33131, 85390) then
 		warnFelstalk:Show()
 		timerFelstalk:Start()
 	end
