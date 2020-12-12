@@ -43,7 +43,7 @@ local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
 local miscCrystalKill2			= mod:NewAnnounce(L.ShadowCrystalDead2, 3, 85078, nil,false)
 local miscCrystalKill3			= mod:NewAnnounce(L.ShadowCrystalDead3, 3, 85078, nil,false)
---newAnnounce(self, announceType, spellId, color, icon, optionDefault, optionName, castTime, preWarnTime)
+
 local phase	= 0
 local ampDmg = 1
 local enfeebleTargets = {}

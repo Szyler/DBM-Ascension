@@ -309,8 +309,7 @@ L:SetWarningLocalization{
 	DBM_NB_DOWN_WARN 		= "Ground Phase in 15 sec",
 	DBM_NB_DOWN_WARN2 		= "Ground Phase in 5 sec",
 	DBM_NB_AIR_WARN			= "Air Phase",
-	SmolderingBreath		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
-	
+	SmolderingBreath		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)	
 }
 
 L:SetTimerLocalization{
