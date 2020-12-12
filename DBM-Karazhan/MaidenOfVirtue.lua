@@ -24,8 +24,8 @@ local timerRepentanceCD		= mod:NewCDTimer(44, 85177)
 mod:AddBoolOption("RangeFrame", true)
 
 -- Ascension specific
-local warningSpecDespRun	= mod:NewSpecialWarning("Run away!")
-local warningDesperate		= mod:NewSpellAnnounce(85120, 2)
+local warningSpecDespRun	= mod:NewSpecialWarning(L.WarnPrayerRun)
+local warningDesperate		= mod:NewSpellAnnounce(85108, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
 local timerDesperateExplode	= mod:NewBuffActiveTimer(14, 85103)
 local timerDesperateCD		= mod:NewCDTimer(44, 85120)

@@ -19,7 +19,7 @@ local warningCurseSoon		= mod:NewSoonAnnounce(85154, 2)
 local warningCurse			= mod:NewSpellAnnounce(85154, 3)
 local warnCharge			= mod:NewTargetAnnounce(85157, 3)
 local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
-local warnSunder			= mod:NewAnnounce("%s on >%s< (%d)", 2, 85178)
+local warnSunder			= mod:NewAnnounce(L.AttSunder, 2, 85178)
 local warnFireball			= mod:NewTargetAnnounce(85209, 2)  -- heroic
 
 local timerCurseCD			= mod:NewNextTimer(31, 85154)

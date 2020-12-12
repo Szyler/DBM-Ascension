@@ -29,12 +29,12 @@ local warningPoly			= mod:NewSpellAnnounce(85273, 3)
 local specWarnDontMove		= mod:NewSpecialWarning("DBM_ARAN_DO_NOT_MOVE")
 local specWarnArcane		= mod:NewSpecialWarningRun(29973)
 local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
-local specWarnBossShield	= mod:NewSpecialWarning("Shade of Aran is vulnerable!")
-local specWarnPoly			= mod:NewSpecialWarning("Volatile Polymorph!")
-local specWarnFull			= mod:NewSpecialWarning("Full Room Cover!")
-local specWarnDoubleCast	= mod:NewSpecialWarning("Double Cast - Interrupt %s!");
+local specWarnBossShield	= mod:NewSpecialWarning(L.DBM_ARAN_VULNERABLE)
+local specWarnPoly			= mod:NewSpecialWarning(L.VolatilePoly)
+local specWarnFull			= mod:NewSpecialWarning(L.ArcaneSpiral)
+local specWarnDoubleCast	= mod:NewSpecialWarning(L.DoubleCast);
 
-local timerSpecial			= mod:NewTimer(35, "Special: %s", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
+local timerSpecial			= mod:NewTimer(35, L.timerSpecial, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
 local timerArcaneExplosion	= mod:NewCastTimer(10, 29973)
 -- local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
@@ -44,7 +44,7 @@ local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
 local timerChains			= mod:NewTargetTimer(10, 29991)
 local timerShield			= mod:NewBuffActiveTimer(60, 85182)
 local timerPoly				= mod:NewTargetTimer(30, 85273)
-local timerBoom				= mod:NewTimer(5, "Boom", "Interface\\Icons\\spell_nature_wispsplode")
+local timerBoom				= mod:NewTimer(5, L.ArcaneSpiralTimer, "Interface\\Icons\\spell_nature_wispsplode")
 
 local berserkTimer			= mod:NewBerserkTimer(900)
 

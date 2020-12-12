@@ -31,20 +31,19 @@ local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
 local specWarnNova				= mod:NewSpecialWarningRun(30852)
 local specWarnSWP				= mod:NewSpecialWarningYou(30898)	
 local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
-local specWarnInfernal			= mod:NewSpecialWarning("Next Infernal on you!")
+--local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
 local timerNextInfernal			= mod:NewNextTimer(18.5, 37277)
 local timerEnfeeble				= mod:NewCDTimer(30, 30843)
 local timerDoom					= mod:NewCDTimer(24, 85069)
 local timerShadowRealm			= mod:NewCDTimer(45, 85077)
-local timerAmpDmg				= mod:NewTimer(25, "Amplify Damage #%s", 85207)
+local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 
-local miscCrystalKill1			= mod:NewAnnounce("Shadow Crystals Destroyed (1/3)", 3, 85078)
-local miscCrystalKill2			= mod:NewAnnounce("Shadow Crystals Destroyed (2/3)", 3, 85078)
-local miscCrystalKill3			= mod:NewAnnounce("Shadow Crystals Destroyed (3/3)", 3, 85078)
-
-
+local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
+local miscCrystalKill2			= mod:NewAnnounce(L.ShadowCrystalDead2, 3, 85078, nil,false)
+local miscCrystalKill3			= mod:NewAnnounce(L.ShadowCrystalDead3, 3, 85078, nil,false)
+--newAnnounce(self, announceType, spellId, color, icon, optionDefault, optionName, castTime, preWarnTime)
 local phase	= 0
 local ampDmg = 1
 local enfeebleTargets = {}
@@ -53,6 +52,8 @@ local CrystalsKilled = 0
 local InfernalCount = 1
 local isPrince = false;
 local below30 = false;
+
+mod:AddBoolOption(L.ShadowCrystal)
 
 local function showEnfeebleWarning()
 	warningEnfeeble:Show(table.concat(enfeebleTargets, "<, >"))
@@ -82,13 +83,19 @@ end
 function mod:SPELL_INSTAKILL(args)
 	if args:IsSpellID(85078) and CrystalsKilled == 0 and args:IsPlayerSource() then
 		CrystalsKilled = CrystalsKilled + 1
-		miscCrystalKill1:Show()
+		if self.Options.ShadowCrystal then
+			miscCrystalKill1:Show()
+		end
 	elseif args:IsSpellID(85078) and CrystalsKilled == 1 and args:IsPlayerSource() then
 		CrystalsKilled = CrystalsKilled + 1
-		miscCrystalKill2:Show()
+		if self.Options.ShadowCrystal then
+			miscCrystalKill2:Show()
+		end
 	elseif args:IsSpellID(85078) and CrystalsKilled == 2 and args:IsPlayerSource() then
 		CrystalsKilled = 0
-		miscCrystalKill3:Show()
+		if self.Options.ShadowCrystal then
+			miscCrystalKill3:Show()
+		end
 	end
 end	
 		

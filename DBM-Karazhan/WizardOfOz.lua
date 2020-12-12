@@ -27,7 +27,7 @@ local timerTinhead			= mod:NewTimer(34, "Tinhead", "Interface\\Icons\\INV_Helmet
 local timerTito				= mod:NewTimer(11, "Tito", "Interface\\Icons\\Ability_Mount_WhiteDireWolf", nil, false)
 local timerScream			= mod:NewTimer(30, "Frightened Scream", 31013)
 local timerCL				= mod:NewCDTimer(10, 32337)
-local timerNextSpotlight	= mod:NewTimer(30, "Spotlight", 85112)
+local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
 mod:AddBoolOption("AnnounceBosses", true, "announce")
 mod:AddBoolOption("ShowBossTimers", true, "timer")
