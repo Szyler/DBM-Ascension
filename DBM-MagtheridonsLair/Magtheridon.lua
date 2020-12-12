@@ -1,4 +1,4 @@
-local mod		= DBM:NewMod("Magtheridon", "DBM-Outlands")
+local mod		= DBM:NewMod("Magtheridon", "DBM-MagtheridonsLair")
 local L			= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
