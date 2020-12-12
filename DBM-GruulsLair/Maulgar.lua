@@ -33,7 +33,7 @@ local warnRShield			= mod:NewTargetAnnounce(85021, 3)
 local warnCharge			= mod:NewTargetAnnounce(26561, 2)
 
 local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
-local warnHeal				= mod:NewSepcialWarning("Interrupt Heal!")
+local warnHeal				= mod:NewSpecialWarning("Interrupt Heal!")
 
 local timerWhirlwind		= mod:NewBuffActiveTimer(10, 33238)
 local timerNextWhirlwind	= mod:NewNextTimer(55, 33238)
