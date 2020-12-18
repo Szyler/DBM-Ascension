@@ -20,7 +20,7 @@ local specWarnRRH		= mod:NewSpecialWarningYou(30753)
 local timerRRH				= mod:NewTargetTimer(20, 30753)
 local timerRRHCD			= mod:NewNextTimer(60, 30753)
 local timerFearCD			= mod:NewNextTimer(24, 30752)
-local timerNextSpotlight	= mod:NewTimer(30, "Spotlight", 85112)
+local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
 mod:AddBoolOption("RRHIcon")
 

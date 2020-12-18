@@ -8,11 +8,11 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_WARNING"
 )
 
-local warningSpotlight		= mod:NewAnnounce("Spotlight", 3, 54428)
+local warningSpotlight		= mod:NewAnnounce(L.OperaSpotlight, 3, 85112)
 
-local timerNextSpotlight	= mod:NewTimer(30, "Spotlight", 85112)
-local timerSpotlight		= mod:NewTimer(11, "Get into Spotlight", 85112)
-local timerStageFright		= mod:NewTimer(15, "DO NOT USE: %s", 85112)
+local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
+local timerSpotlight		= mod:NewTimer(11, L.OperaSpotlightIn, 85112)
+local timerStageFright		= mod:NewTimer(15, L.OperaSpotNotUse, 85112)
 
 function mod:CHAT_MSG_RAID_WARNING(msg)
 	if msg == L.STAGE_FRIGHT then

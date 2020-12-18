@@ -17,7 +17,7 @@ mod:RegisterEvents(
 
 local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
 local warningVanish			= mod:NewSpellAnnounce(29448, 3)
-local warningGarrote		= mod:NewAnnounce("%s on >%s< (%d)", 3, 37066)
+local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 37066)
 local warningGouge			= mod:NewTargetAnnounce(29425, 4)
 local warningBlind			= mod:NewTargetAnnounce(34694, 3)
 local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
@@ -31,7 +31,7 @@ local warningHFire			= mod:NewTargetAnnounce(29563, 3)
 local warningHoJ			= mod:NewTargetAnnounce(13005, 3)
 local warningDShield		= mod:NewTargetAnnounce(29382, 3)
 
-local specWarnDinner		= mod:NewSpecialWarning("Dinner is Served!")
+local specWarnDinner		= mod:NewSpecialWarning(L.DinnerServed)
 
 local timerVanishCD			= mod:NewCDTimer(23, 29448)
 local timerGouge			= mod:NewTargetTimer(6, 29425)
@@ -46,7 +46,7 @@ local lastVanish = 0
 local warningDinner		= mod:NewSpellAnnounce(85090, 3)
 --local warningFood		= mod:NewTargetTimer(30, 85090, "%s");
 
-local timerDance		= mod:NewTimer(27, "Dance (%s)", 85089);
+local timerDance		= mod:NewTimer(27, L.DBM_MOROES_SOULBURST, 85089);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
