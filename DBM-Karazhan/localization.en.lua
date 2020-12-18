@@ -8,9 +8,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+	AttSunder			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
+	AttSunder			= "Show $spell:85178 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
@@ -27,11 +29,20 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	DBM_MOROES_VANISH_FADED	= "Vanish faded"
+	DBM_MOROES_VANISH_FADED	= "Vanish faded",
+	DinnerServed			= "Dinner is Served!",
+	DBM_MOROES_GARROTE		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+}
+
+L:SetTimerLocalization{
+	DBM_MOROES_SOULBURST	= "Dance (%s)" --danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"}
 }
 
 L:SetOptionLocalization{
-	DBM_MOROES_VANISH_FADED	= "Show vanish fade warning"
+	DBM_MOROES_VANISH_FADED	= "Show vanish fade warning",
+	DBM_MOROES_GARROTE		= "Show $spell:37066 targets and stack number warning",
+	DBM_MOROES_SOULBURST	= "Show timer for $spell:85089",
+	DinnerServed			= "Show warning for $spell:85090"
 }
 
 L:SetMiscLocalization{
@@ -53,11 +64,13 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	warnPrayer			= "Run to boss!"
+	warnPrayer			= "Run to boss!",
+	WarnPrayerRun 		= "Run away! (8 yards)"
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Show range frame (10)"
+	RangeFrame			= "Show range frame (10)",
+	WarnPrayerRun 		= "Show warning to run away from $spell:85106"
 }
 
 L:SetMiscLocalization{
@@ -73,16 +86,18 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	warningPosion	= "%s on >%s< (%d)",		-- Mortal Wound on >args.destName< (args.amount)
+	warningPosion		= "%s on >%s< (%d)",		-- Mortal Wound on >args.destName< (args.amount)
 }
 
 L:SetTimerLocalization{
-	TimerCombatStart	= "Combat starts"
+	TimerCombatStart	= "Combat starts",
+	OperaSpotlight 		= "Spotlight"
 }
 
 L:SetOptionLocalization{
 	TimerCombatStart	= "Show time for start of combat",
-	warningPosion	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(30830, GetSpellInfo(30830) or "unknown")
+	OperaSpotlight 		= "Show timers for $spell:85112",
+	warningPosion		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(30830, GetSpellInfo(30830) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -106,8 +121,13 @@ L:SetGeneralLocalization{
 L:SetWarningLocalization{
 }
 
+L:SetTimerLocalization{
+	OperaSpotlight 			= "Spotlight"
+}
+
 L:SetOptionLocalization{
-	RRHIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(30753)
+	RRHIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(30753),
+	OperaSpotlight 			= "Show timers for $spell:85112"
 }
 
 L:SetMiscLocalization{
@@ -125,21 +145,24 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+	TerminationTarget		= "Termination on YOU! %s",
+	BreakCrystalWarning		= "Break A Crystal"
 }
 
 L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Show range frame (10)"
+	RangeFrame				= "Show range frame (10)",
+	TerminationTarget		= "Show warning for $spell:85082 on yourself",
+	BreakCrystalWarning		= "Show warning for when to break crystal for $spell:85084",
+	CuratorIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082)
 }
 
 L:SetMiscLocalization{
 	DBM_CURA_YELL_PULL		= "The Menagerie is for guests only.",
 	DBM_CURA_YELL_OOM		= "Your request cannot be processed.",
 	YellTermination			= "%s Termination on %s! %s",
-	CuratorIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85082)
-
 }
 
 
@@ -174,21 +197,31 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!"
+	DBM_ARAN_DO_NOT_MOVE	= "Flame Wreath - Do not move!",
+	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
+	VolatilePoly			= "Volatile Polymorph!",
+	ArcaneSpiral			= "Full Room Cover!",
+	DoubleCast				= "Double Cast - Interrupt %s!"
 }
 
 L:SetTimerLocalization{
-	timerSpecial			= "Special: %s"
+	timerSpecial			= "Special: %s",
+	ArcaneSpiralTimer		= "Boom"
 }
 
 L:SetOptionLocalization{
 	timerSpecial			= "Show timer for special ability cooldown",
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
-	DBM_ARAN_VULNERABLE		= "Shade of Aran is vulnerable!",
+	DBM_ARAN_VULNERABLE		= "Show special warning when $spell:85182 is removed",
 	ElementalIcons			= "Set icons on $spell:37053",
+	VolatilePoly			= "Show special warning for $spell:85273",
+	ArcaneSpiral			= "Show special warning for full Arcane Spiral",
+	DoubleCast				= "Show special warning for Double Cast",
+	ArcaneSpiralTimer		= "Show timer for full Arcane Spiral",
 	WreathIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29946),
-	PolyIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273)
-	
+	ElementalIcons			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(29962),
+	SheepIcons				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85273),
+	MarkCurrentTarget		= "Set Skull on the current target"
 }
 
 L:SetMiscLocalization{
@@ -242,13 +275,18 @@ L:SetGeneralLocalization{
 L:SetWarningLocalization{
 	ShadowCrystalDead1		= "Shadow Crystals destroyed (1/3)",
 	ShadowCrystalDead2		= "Shadow Crystals destroyed (2/3)",
-	ShadowCrystalDead3		= "Shadow Crystals destroyed (3/3)"
+	ShadowCrystalDead3		= "Shadow Crystals destroyed (3/3)",
+	--InfernalOnYou			= "Next Infernal on you!",
 }
 
 L:SetTimerLocalization{
+	AmplifyDamage			= "Amplify Damage #%s" --ampDmg stacks
 }
 
 L:SetOptionLocalization{
+	ShadowCrystal			= "Show number of Shadow Crystals destroyed",
+	AmplifyDamage			= "Show $spell:85207 targets and stack number warning"
+	--InfernalOnYou			= "Show special warning on Next Infernal on you!",
 }
 
 L:SetMiscLocalization{
@@ -270,7 +308,8 @@ L:SetGeneralLocalization{
 L:SetWarningLocalization{
 	DBM_NB_DOWN_WARN 		= "Ground Phase in 15 sec",
 	DBM_NB_DOWN_WARN2 		= "Ground Phase in 5 sec",
-	DBM_NB_AIR_WARN			= "Air Phase"
+	DBM_NB_AIR_WARN			= "Air Phase",
+	SmolderingBreath		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)	
 }
 
 L:SetTimerLocalization{
@@ -282,7 +321,8 @@ L:SetOptionLocalization{
 	DBM_NB_AIR_WARN			= "Show warning for Air Phase",
 	PrewarnGroundPhase		= "Show pre-warnings for Ground Phase",
 	timerNightbane			= "Show timer for Nightbane summon",
-	timerAirPhase			= "Show timer for Air Phase duration"
+	timerAirPhase			= "Show timer for Air Phase duration",
+	SmolderingBreath		= "Show $spell:85245 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
@@ -305,12 +345,14 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
+	OperaSpotlight 			= "Spotlight"
 }
 
 L:SetOptionLocalization{
 	AnnounceBosses			= "Show warnings for boss spawns",
 	ShowBossTimers			= "Show timers for boss spawns",
-	DBM_OZ_OPTION_1			= "Show range check frame in phase 2"
+	DBM_OZ_OPTION_1			= "Show range check frame in phase 2",
+	OperaSpotlight 			= "Show timers for $spell:85112"
 }
 
 L:SetMiscLocalization{
@@ -354,6 +396,22 @@ L = DBM:GetModLocalization("Opera")
 
 L:SetGeneralLocalization{
 	name = "Opera"
+}
+
+L:SetWarningLocalization{
+	OperaSpotlight 			= "Spotlight"
+}
+
+L:SetTimerLocalization{
+	OperaSpotlight 			= "Spotlight",
+	OperaSpotlightIn		= "Get into Spotlight",
+	OperaSpotNotUse			= "DO NOT USE: %s" --(spellName)
+}
+
+L:SetOptionLocalization{
+	OperaSpotlight 			= "Show timers for $spell:85112",
+	OperaSpotlightIn 		= "Show timers for when to run into $spell:85112",
+	OperaSpotNotUse			= "Show the spell to avoid $spell:85114"
 }
 
 L:SetMiscLocalization{

@@ -1,9 +1,10 @@
-local mod	= DBM:NewMod("High King Maulgar", "DBM-Outlands")
+local mod	= DBM:NewMod("High King Maulgar", "DBM-GruulsLair")
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 161 $"):sub(12, -3))
-mod:SetCreatureID(18831)
-mod:RegisterCombat("combat")
+mod:SetCreatureID(18831, 18832, 18834, 18835, 18836)
+-- mod:RegisterCombat("combat")
+mod:RegisterCombat("yell", "Gronn are the real power in Outland!")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -33,7 +34,7 @@ local warnRShield			= mod:NewTargetAnnounce(85021, 3)
 local warnCharge			= mod:NewTargetAnnounce(26561, 2)
 
 local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
-local warnHeal				= mod:NewSepcialWarning("Interrupt Heal!")
+local warnHeal				= mod:NewSpecialWarning("Interrupt Heal!")
 
 local timerWhirlwind		= mod:NewBuffActiveTimer(10, 33238)
 local timerNextWhirlwind	= mod:NewNextTimer(55, 33238)

@@ -16,8 +16,8 @@ local warnEvoSoon			= mod:NewPreWarnAnnounce(30254, 10, 2)
 local warnEvo				= mod:NewSpellAnnounce(30254, 3)
 local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
 local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
-local specWarnTerminate		= mod:NewSpecialWarning("Termination on YOU! %s"); --,1,85082)
-local warnBreakCrystal		= mod:NewAnnounce("Break A Crystal", 2);
+local specWarnTerminate		= mod:NewSpecialWarning(L.TerminationTarget); --,1,85082)
+local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
 
 local timerTerminate	= mod:NewTargetTimer(10, 85082)
 local timerTerminateCD	= mod:NewCDTimer(15, 85082) --15 seconds??
@@ -29,7 +29,7 @@ local isCurator 		= false
 
 mod:SetUsedIcons(5, 6, 7)
 local terminateIcon = 5;
-mod:AddBoolOption("CuratorIcon")
+mod:AddBoolOption(L.CuratorIcon)
 mod:AddBoolOption("RangeFrame", true)
 
 local iconText = {
