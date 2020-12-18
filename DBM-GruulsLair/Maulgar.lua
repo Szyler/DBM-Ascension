@@ -3,8 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 161 $"):sub(12, -3))
 mod:SetCreatureID(18831, 18832, 18834, 18835, 18836)
-mod:RegisterCombat("combat")
--- mod:RegisterCombat("yell", "Gronn are the real power in Outland!")
+-- mod:RegisterCombat("combat")
+mod:RegisterCombat("yell", "Gronn are the real power in Outland!")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
