@@ -3293,6 +3293,10 @@ do
 	enragePrototype.Stop = enragePrototype.Cancel
 
 	function bossModPrototype:NewBerserkTimer(timer, text, barText, barIcon, spellID)
+		if type(text) == "number" then
+			spellID = text;
+			text = nil;
+		end
 		spellID = spellID or 26662;
 		local spellName,_,spellIcon = GetSpellInfo(spellID);
 		timer = timer or 600
