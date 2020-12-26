@@ -25,6 +25,7 @@ DBM_CORE_OK							= "Okay"
 DBM_CORE_GENERIC_WARNING_BERSERK	= "Berserk in %s %s"
 DBM_CORE_GENERIC_TIMER_BERSERK		= "Berserk"
 DBM_CORE_OPTION_TIMER_BERSERK		= "Show timer for $spell:26662"
+DBM_CORE_OPTION_TIMER_BERSERK_CUSTOM	= "Show timer for |cff71d5ff|Hspell:%d|h%s|h|r"
 DBM_CORE_OPTION_HEALTH_FRAME		= "Show boss health frame"
 
 DBM_CORE_OPTION_CATEGORY_TIMERS		= "Bars"

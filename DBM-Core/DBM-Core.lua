@@ -3292,11 +3292,13 @@ do
 	end
 	enragePrototype.Stop = enragePrototype.Cancel
 
-	function bossModPrototype:NewBerserkTimer(timer, text, barText, barIcon)
+	function bossModPrototype:NewBerserkTimer(timer, text, barText, barIcon, spellID)
+		spellID = spellID or 26662;
+		local spellName,_,spellIcon = GetSpellInfo(spellID);
 		timer = timer or 600
 		local warning1 = self:NewAnnounce(text or DBM_CORE_GENERIC_WARNING_BERSERK, 1, nil, "warning_berserk", false)
 		local warning2 = self:NewAnnounce(text or DBM_CORE_GENERIC_WARNING_BERSERK, 4, nil, "warning_berserk", false)
-		local bar = self:NewTimer(timer or 600, barText or DBM_CORE_GENERIC_TIMER_BERSERK, barIcon or 28131, nil, "timer_berserk")
+		local bar = self:NewTimer(timer or 600, barText or DBM_CORE_GENERIC_TIMER_BERSERK, barIcon or spellIcon or spellID, nil, "timer_berserk")
 		local obj = setmetatable(
 			{
 				warning1 = warning1,
@@ -3307,6 +3309,7 @@ do
 			},
 			mt
 		)
+		self.localization.options.timer_berserk = DBM_CORE_OPTION_TIMER_BERSERK_CUSTOM:format(spellID, spellName or "Berserk");
 		return obj
 	end
 end
