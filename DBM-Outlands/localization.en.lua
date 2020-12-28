@@ -1,6 +1,33 @@
+local L
+
 DBMGUI_TAB_OTHER_BC	= "Outlands" -- do not translate
 
 -- LordKazzak
+L = DBM:GetModLocalization("Kazzak")
+
+L:SetGeneralLocalization{
+	name = "Doom Lord Kazzak"
+}
+
+L:SetWarningLocalization{
+}
+
+L:SetTimerLocalization{
+}
+
+L:SetOptionLocalization{
+    KazzakIcon				    = DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(32960),
+    KazzakWhisper			    = "Whisper the target of Mark of Kazzak to keep their mana up (Only for Assist/RaidLead)"
+}
+
+L:SetMiscLocalization{
+    DBM_KAZZAK_MARK_SPEC_WARN	= "You have the Mark of Kazzak, keep your mana up, or we die!";
+}
+
+
+
+
+
 DBM_KAZZAK_NAME				= "Doom Lord Kazzak";
 DBM_KAZZAK_DESCRIPTION		= "Announces Enrage, Mark of Kazzak and Twisted Reflection.";
 DBM_KAZZAK_OPTION_1			= "Announce Enrage";
@@ -18,7 +45,7 @@ DBM_KAZZAK_SUP_SOON			= "*** Enrage soon ***";
 DBM_KAZZAK_TWISTED_WARN		= "*** Twisted Reflection on >%s< ***";
 DBM_KAZZAK_MARK_WARN		= "*** Mark of Kazzak on >%s< ***";
 DBM_KAZZAK_WARN_ENRAGE		= "*** Enrage ***";
-DBM_KAZZAK_MARK_SPEC_WARN	= "You are the bomb!";
+
 
 -- Doomwalker
 DBM_DOOMW_NAME			= "Doomwalker";
