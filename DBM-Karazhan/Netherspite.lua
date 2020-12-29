@@ -38,7 +38,7 @@ function mod:SaySmol()
 	end
 end
 
-if self.Options.FoodYell then
+if self.Options.SaySmol then
 	mod:RegisterOnUpdateHandler(mod.SaySmol,2);
 end
 
