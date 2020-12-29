@@ -42,7 +42,8 @@ L:SetOptionLocalization{
 	DBM_MOROES_VANISH_FADED	= "Show vanish fade warning",
 	DBM_MOROES_GARROTE		= "Show $spell:37066 targets and stack number warning",
 	DBM_MOROES_SOULBURST	= "Show timer for $spell:85089",
-	DinnerServed			= "Show warning for $spell:85090"
+	DinnerServed			= "Show warning for $spell:85090",
+	FoodYell				= "Yell your given hunger debuff $spell:85090"
 }
 
 L:SetMiscLocalization{

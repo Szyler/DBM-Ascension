@@ -50,6 +50,8 @@ local timerDance		= mod:NewTimer(27, L.DBM_MOROES_SOULBURST, 85089);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
+mod:AddBoolOption(L.FoodYell)
+
 function mod:OnCombatStart(delay)
 	timerVanishCD:Start(-delay)
 	warningVanishSoon:Schedule(31-delay)
@@ -137,7 +139,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			local food = foodData[args.spellId];
 			--warningFood:Show(args.destName);
 			self.food = food;
-			self:ScheduleMethod(2,"YellFood");
+			if self.Options.FoodYell then
+				self:ScheduleMethod(2,"YellFood");
+			end
 			timerDinner:Start()
 			warningDinner:Show()
 		end
