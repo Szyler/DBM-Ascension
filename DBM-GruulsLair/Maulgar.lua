@@ -42,6 +42,7 @@ local timerCharge			= mod:NewNextTimer(20, 26561)
 local timerBlast			= mod:NewNextTimer(90, 33061)
 local timerFelstalk			= mod:NewNextTimer(30, 33131)
 local timerSpellshield		= mod:NewNextTimer(40, 33054)
+local timerPoly				= mod:NewNextTimer(20, 33173)
 
 
 local miscSoulstone			= mod:NewAnnounce("Soulstone consumed on %s", 3, 85024)
@@ -72,10 +73,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnPermRenew:Show(args.destName)
 	elseif args:IsSpellID(85023) then
 		warnSoulstone:Show(args.destName)
+		timerFelstalk:Cancel()
 	elseif args:IsSpellID(85021) then
 		warnRShield:Show(args.destName)
+		timerSpellshield:Cancel()
 	elseif args:IsSpellID(85025, 85381) then
 		warnLShield:Show(args.destName)
+		timerPoly:Cancel()
 	elseif args:IsSpellID(33147) then
 		warnShield:Show(args.destName)
 	elseif args:IsSpellID(33232) then
@@ -108,8 +112,9 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(33131) then
 		warnFelstalkCast:Show()
-	elseif args:IsSpellID(33173) then
+	elseif args:IsSpellID(33173, 85396) then
 		warnPolymorphCast:Show()
+		timerPoly:Start()
 	elseif args:IsSpellID(85384) then
 		warnPoH:Show()
 	elseif args:IsSpellID(33238) then
