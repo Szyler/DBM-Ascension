@@ -50,7 +50,7 @@ local timerDance		= mod:NewTimer(27, L.DBM_MOROES_SOULBURST, 85089);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
-mod:AddBoolOption(L.FoodYell)
+mod:AddBoolOption(L.FoodYell, false)
 
 function mod:OnCombatStart(delay)
 	timerVanishCD:Start(-delay)

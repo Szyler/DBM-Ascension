@@ -30,12 +30,17 @@ local timerBreathCast		= mod:NewCastTimer(2.5, 38523)
 
 local berserkTimer			= mod:NewBerserkTimer(540)
 
+mod:AddBoolOption(L.SaySmol, false)
+
 function mod:SaySmol()
 	if self.smol then
 		SendChatMessage(UnitName("PLAYER"), "SAY");
 	end
 end
-mod:RegisterOnUpdateHandler(mod.SaySmol,2);
+
+if self.Options.FoodYell then
+	mod:RegisterOnUpdateHandler(mod.SaySmol,2);
+end
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)

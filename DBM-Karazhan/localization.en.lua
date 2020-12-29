@@ -257,7 +257,8 @@ L:SetOptionLocalization{
 	warningPortal			= "Show warning for Portal phase",
 	warningBanish			= "Show warning for Banish phase",
 	timerPortalPhase		= "Show timer for Portal Phase duration",
-	timerBanishPhase		= "Show timer for Banish Phase duration"
+	timerBanishPhase		= "Show timer for Banish Phase duration",
+	SaySmol					= "Announce your presence for easier location after reaching 35 stacks of $spell:30421"
 }
 
 L:SetMiscLocalization{
