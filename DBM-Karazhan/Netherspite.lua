@@ -33,14 +33,12 @@ local berserkTimer			= mod:NewBerserkTimer(540)
 mod:AddBoolOption(L.SaySmol, false)
 
 function mod:SaySmol()
-	if self.smol then
+	if self.smol and self.Options.SaySmol then
 		SendChatMessage(UnitName("PLAYER"), "SAY");
 	end
 end
 
-if self.Options.SaySmol then
-	mod:RegisterOnUpdateHandler(mod.SaySmol,2);
-end
+mod:RegisterOnUpdateHandler(mod.SaySmol,2);
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
