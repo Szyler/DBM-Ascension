@@ -10,7 +10,7 @@
 ## SavedVariablesPerCharacter: DBM_SavedOptions, DBT_SavedOptions
 ## LoadOnDemand: 0
 ## DefaultState: enabled
-## Author: Tandanu and Nitram, updated by Junior and Aelixia
+## Author: Tandanu and Nitram, updated by Junior and Szyler.
 ## X-Website: http://www.deadlybossmods.com
 localization.en.lua
 localization.de.lua
