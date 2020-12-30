@@ -8,12 +8,13 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"PLAYER_ALIVE"
 )
 
 local warnPhase2	= mod:NewPhaseAnnounce(2)
 local warnParalyze	= mod:NewTargetAnnounce(25725, 3)
-local timerParalyze	= mod:NewTargetTimer(10, 25725)
+local timerParalyze	= mod:NewTargetTimer(30, 25725)
 
 local warned_P2 = false
 

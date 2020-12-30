@@ -117,6 +117,9 @@ L = DBM:GetModLocalization("Ouro")
 L:SetGeneralLocalization{
 	name = "Ouro"
 }
+L:SetMiscLocalization{
+	Shard = "Mind-Corrupting Shard"
+}
 L:SetWarningLocalization{
 	WarnSubmerge		= "Submerge",
 	WarnEmerge			= "Emerge",

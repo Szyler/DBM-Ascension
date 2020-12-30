@@ -6,38 +6,61 @@ mod:SetCreatureID(15339)
 mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"PLAYER_ALIVE"
 )
 
-local warnSupreme		= mod:NewSpellAnnounce(25176, 4)
-local warnCyclone		= mod:NewTargetAnnounce(25189, 4)
-local warnSupremeSoon	= mod:NewSoonAnnounce(25176, 3)
-local warnVulnerable	= mod:NewAnnounce("WarnVulnerable", 3, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 
-local timerVulnerable	= mod:NewTimer(45, "TimerVulnerable", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
-local timerCyclone		= mod:NewTargetTimer(10, 25189)
+
+local prewarnVoid					= mod:NewAnnounce("Void Singularity Soon", 3, 1002140)
+local prewarnAdds					= mod:NewAnnounce("Adds Soon", 3, 1002126)
+
+local warnVoid						= mod:NewAnnounce("Void Singularity Spawned", 2, 1002140)
+local warnAdds						= mod:NewAnnounce("Adds Spawned", 2, 1002126)
+
+local timerVoid						= mod:NewTimer(45, "Void Singularity Spawn", 1002140)
+local timerAdds						= mod:NewTimer(15, "Next Add Wave", 1002126)
+
+local soundVoid						= mod:SoundAlarm(1002140)
+
+function mod:preVoid()
+	prewarnVoid:Show()
+end
+function mod:preAdds()
+	prewarnAdds:Show()
+end
+function mod:alertVoid()
+	warnVoid:Show()
+	soundVoid:Play()
+end
+function mod:alertAdds()
+	warnAdds:Show()
+end
 
 function mod:OnCombatStart(delay)
-	--warnSupremeSoon:Schedule(25)
+	self:ScheduleMethod(0-delay, "initialAdds")
+	self:ScheduleMethod(0-delay, "repeatVoid")
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(25176) then
-		warnSupreme:Show()
-	elseif args:IsSpellID(25189) then
-		warnCyclone:Show(args.destName)
-		timerCyclone:Start(args.destName)
-	elseif args:IsSpellID(25177, 25178, 25180, 25181) or args:IsSpellID(25183) then
-		warnSupremeSoon:Cancel()
-		warnSupremeSoon:Schedule(40)
-		warnVulnerable:Show(args.spellName)
-		timerVulnerable:Show(args.spellName)
-	end	
+function mod:initialAdds()
+	timer1 = 10
+	timerAdds:Show(timer1)
+	self:ScheduleMethod(timer1-5, "preAdds")
+	self:ScheduleMethod(timer1, "alertAdds")
+	self:ScheduleMethod(timer1, "repeatAdds")
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(25189) then
-		timerCyclone:Cancel(args.destName)
-	end	
+function mod:repeatAdds()
+	timer2 = 15
+	timerAdds:Show(timer2)
+	self:ScheduleMethod(timer2-5, "preAdds")
+	self:ScheduleMethod(timer2, "alertAdds")
+	self:ScheduleMethod(timer2, "repeatAdds")
+end
+
+function mod:repeatVoid()
+	timer4 = 45
+	timerVoid:Show(timer4)
+	self:ScheduleMethod(timer4-5, "preVoid")
+	self:ScheduleMethod(timer4, "alertVoid")
+	self:ScheduleMethod(timer4, "repeatVoid")
 end

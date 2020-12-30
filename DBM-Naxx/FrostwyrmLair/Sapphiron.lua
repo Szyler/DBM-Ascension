@@ -3,36 +3,34 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 2248 $"):sub(12, -3))
 mod:SetCreatureID(15989)
-
 mod:RegisterCombat("combat")
-
 mod:EnableModel()
-
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_SUCCESS",
+	"PLAYER_ALIVE"
 )
 
+-----DRAIN LIFE-----
 local warnDrainLifeNow	= mod:NewSpellAnnounce(28542, 2)
 local warnDrainLifeSoon	= mod:NewSoonAnnounce(28542, 1)
+local timerDrainLife	= mod:NewCDTimer(22, 28542)
+-----DEEP BREATH-----
 local warnAirPhaseSoon	= mod:NewAnnounce("WarningAirPhaseSoon", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 local warnAirPhaseNow	= mod:NewAnnounce("WarningAirPhaseNow", 4, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 local warnLanded		= mod:NewAnnounce("WarningLanded", 4, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-
 local warnDeepBreath	= mod:NewSpecialWarning("WarningDeepBreath")
-
-mod:AddBoolOption("WarningIceblock", true, "announce")
-
-local timerDrainLife	= mod:NewCDTimer(22, 28542)
-local timerAirPhase		= mod:NewTimer(66, "TimerAir", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 local timerLanding		= mod:NewTimer(28.5, "TimerLanding", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerAirPhase		= mod:NewTimer(66, "TimerAir", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 local timerIceBlast		= mod:NewTimer(9.3, "TimerIceBlast", 15876)
-
+mod:AddBoolOption("WarningIceblock", true, "announce")
+-----MISC-----
 local noTargetTime = 0
 local isFlying = false
 
+-----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	noTargetTime = 0
 	isFlying = false

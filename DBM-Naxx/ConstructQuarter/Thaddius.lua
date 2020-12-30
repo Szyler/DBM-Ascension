@@ -1,45 +1,41 @@
--- this file uses the texture Textures/arrow.tga. This image was created by Everaldo Coelho and is licensed under the GNU Lesser General Public License. See Textures/lgpl.txt.
 local mod	= DBM:NewMod("Thaddius", "DBM-Naxx", 2)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 2869 $"):sub(12, -3))
 mod:SetCreatureID(15928)
-
 mod:RegisterCombat("yell", L.Yell)
-
 mod:EnableModel()
-
 mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"UNIT_AURA"
+	"UNIT_AURA",
+	"PLAYER_ALIVE"
 )
-
+-----POLARITY SHIFT-----
+local timerShiftCast		= mod:NewCastTimer(3, 28089)
+local timerNextShift		= mod:NewNextTimer(30, 28089)
 local warnShiftCasting		= mod:NewCastAnnounce(28089, 3)
-local warnChargeChanged		= mod:NewSpecialWarning("WarningChargeChanged")
-local warnChargeNotChanged	= mod:NewSpecialWarning("WarningChargeNotChanged", false)
+-----THROW-----
 local warnThrow				= mod:NewSpellAnnounce(28338, 2)
 local warnThrowSoon			= mod:NewSoonAnnounce(28338, 1)
-
-local enrageTimer			= mod:NewBerserkTimer(365)
-local timerNextShift		= mod:NewNextTimer(30, 28089)
-local timerShiftCast		= mod:NewCastTimer(3, 28089)
 local timerThrow			= mod:NewNextTimer(20.6, 28338)
-
+-----MISC-----
+local warnChargeChanged		= mod:NewSpecialWarning("WarningChargeChanged")
+local warnChargeNotChanged	= mod:NewSpecialWarning("WarningChargeNotChanged", false)
+local enrageTimer			= mod:NewBerserkTimer(365)
 mod:AddBoolOption("ArrowsEnabled", false, "Arrows")
 mod:AddBoolOption("ArrowsRightLeft", false, "Arrows")
 mod:AddBoolOption("ArrowsInverse", false, "Arrows")
 mod:AddBoolOption("HealthFrame", true)
-
 mod:SetBossHealthInfo(
 	15930, L.Boss1,
 	15929, L.Boss2
 )
-
 local currentCharge
 local phase2
 local down = 0
 
+-----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase2 = false
 	currentCharge = nil
@@ -61,7 +57,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:UNIT_AURA(elapsed)
-	if not phase2 or (GetTime() - lastShift) > 5 or (GetTime() - lastShift) < 3 then return end
+	if not phase2 then return end
 	local charge
 	local i = 1
 	while UnitDebuff("player", i) do
@@ -139,6 +135,7 @@ local function arrowOnShow(self)
 	self:SetAlpha(1)
 end
 
+-- this file uses the texture Textures/arrow.tga. This image was created by Everaldo Coelho and is licensed under the GNU Lesser General Public License. See Textures/lgpl.txt.
 local arrowLeft = CreateFrame("Frame", nil, UIParent)
 arrowLeft:Hide()
 local arrowLeftTexture = arrowLeft:CreateTexture(nil, "BACKGROUND")

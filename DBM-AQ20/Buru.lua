@@ -6,33 +6,25 @@ mod:SetCreatureID(15370)
 mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_EMOTE",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"CHAT_MSG_MONSTER_EMOTE"
+	"PLAYER_ALIVE"
 )
 
-local WarnDismember		= mod:NewAnnounce("WarnDismember", 3)
 local warnPursue		= mod:NewAnnounce("WarnPursue", 3)
-
-local specWarnDismember	= mod:NewSpecialWarningStack(96, nil, 5)
 local specWarnPursue	= mod:NewSpecialWarning("SpecWarnPursue")
 
-local timerDismember	= mod:NewTargetTimer(10, 96)
+local berserkTimer	=	mod:NewBerserkTimer(600)
+
+local specWarnWeakened	= mod:NewSpecialWarning("Buru is Weakened!", nil, "Special warning for Buru's weakened phase") 
+
+local eggsDead
 
 function mod:OnCombatStart(delay)
+	berserkTimer:Start()
+	eggsDead = 0 
 end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(96) then
-		if (args.amount or 1) >= 5 and args:IsPlayer() then
-			specWarnDismember:Show(args.amount)
-		end
-		WarnDismember:Show(args.spellName, args.destName, args.amount or 1)
-		timerDismember:Start(args.destName)
-	end
-end
-
-mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:CHAT_MSG_MONSTE_EMOTE(msg)
 	if not msg then return end
@@ -42,5 +34,17 @@ function mod:CHAT_MSG_MONSTE_EMOTE(msg)
 		if target == UnitName("player") then
 			specWarnPursue:Show()
 		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(1002041) then 
+		specWarnWeakened:Show();
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(1002041) then -- Miasma (Eye Tentacles)
+		specWarnWeakened:Show();
 	end
 end

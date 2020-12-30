@@ -21,6 +21,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
+	YellDarkGaze = "Dark Gaze on me!",
 	ArachnophobiaTimer	= "Arachnophobia"
 })
 
@@ -83,7 +84,7 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Teleported",
-	WarningTeleportSoon	= "Teleport in 20 seconds"
+	WarningTeleportSoon	= "Teleport in 10 seconds"
 })
 
 L:SetTimerLocalization({
@@ -122,6 +123,10 @@ L:SetOptionLocalization({
 	TimerTeleport		= "Show timer for Teleport"
 })
 
+L:SetMiscLocalization({
+	YellBurningFever = "Burning Fever on me!",
+})
+
 ---------------
 --  Loatheb  --
 ---------------
@@ -137,9 +142,9 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningHealSoon		= "Show pre-warning for 3-second healing window",
-	WarningHealNow		= "Show warning for 3-second healing window",
-	SporeDamageAlert	= "Send whisper to and announce to raid players who damage spores\n(requires announce to be enabled and leader/promoted status)"
+	WarningHealSoon		= "Show pre-warning for the 3-second healing and mana regen window",
+	WarningHealNow		= "Show warning for the 3-second healing and mana regen window",
+	SporeDamageAlert	= "DISABLED"
 })
 
 -----------------
@@ -240,7 +245,8 @@ L:SetMiscLocalization({
 	Yell1 = "Show them no mercy!",
 	Yell2 = "The time for practice is over! Show me what you have learned!",
 	Yell3 = "Do as I taught you!",
-	Yell4 = "Sweep the leg... Do you have a problem with that?"
+	Yell4 = "Sweep the leg... Do you have a problem with that?",
+	YellKnife = "Jagged Knife on me!"
 })
 
 L:SetOptionLocalization({
@@ -318,7 +324,7 @@ L:SetWarningLocalization({
 
 L:SetMiscLocalization({
 	Korthazz	= "Thane Korth'azz",
-	Rivendare	= "Baron Rivendare",
+	Rivendare	= "Highlord Mograine",
 	Blaumeux	= "Lady Blaumeux",
 	Zeliek		= "Sir Zeliek"
 })

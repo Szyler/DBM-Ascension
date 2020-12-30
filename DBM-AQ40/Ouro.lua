@@ -4,83 +4,94 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(15517)
 mod:RegisterCombat("combat")
-
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_SUMMON",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"UNIT_DIED",
+	"COMBAT_LOG_EVENT_UNFILTERED",
+	"PLAYER_ALIVE"
 )
 
-local warnSubmerge		= mod:NewAnnounce("WarnSubmerge", 3)
-local warnSubmergeSoon	= mod:NewAnnounce("WarnSubmergeSoon", 2)
-local warnEmerge		= mod:NewAnnounce("WarnEmerge", 3)
-local warnEmergeSoon	= mod:NewAnnounce("WarnEmergeSoon", 2)
-local warnSweepSoon		= mod:NewSoonAnnounce(26103, 2)
-local warnBlastSoon		= mod:NewSoonAnnounce(26102, 2)
-local warnEnrage		= mod:NewSpellAnnounce(26615, 3)
-local warnEnrageSoon	= mod:NewSoonAnnounce(26615, 2)
 
-local timerSubmerge		= mod:NewTimer(180, "TimerSubmerge")
-local timerEmerge		= mod:NewTimer(30, "TimerEmerge")
-local timerSweepCD		= mod:NewCDTimer(21, 26103)
-local timerBlast		= mod:NewCastTimer(2, 26102)
-local timerBlastCD		= mod:NewCDTimer(23, 26102)
 
-local summonSpam
-local prewarn_enrage
-local enraged
+local prewarnShard					= mod:NewAnnounce("Shard Spawn Soon", 3, 1002340)
+local warnShard						= mod:NewAnnounce("Mind-Corrupting Shard Spawned", 2, 1002340)
+local timerShard					= mod:NewTimer(35, "Shard Spawn", 1002340)
+local berserkTimer					= mod:NewBerserkTimer(360)
+
+local shardsDead
+local maxShards
+local ouroHealth
+local shardNumber
+
+local soundShards					= mod:SoundAlert(1002340)
+
 function mod:OnCombatStart(delay)
-	timerSubmerge:Start(-delay)
-	warnSubmergeSoon:Schedule(170)
-	prewarn_enrage = false
-	enraged = false
+	berserkTimer:Start()
+	self:ScheduleMethod(0, "initialShardSpawn")
+	self:ScheduleMethod(0.1, "deadShards")
+	maxShards = 1
+	shardNumber = 1
 end
 
-function mod:Submerge()
-	warnEmerge:Show()
-	warnSubmergeSoon:Schedule(170)
-	timerSubmerge:Start()
+function mod:alarmSound()
+	soundShards:Play()
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(26615) then
-		enraged = true
-		warnEnrage:Show()
-		warnSubmergeSoon:Cancel()
-		timerSubmerge:Cancel()
+function mod:preShard()
+	prewarnShard:Show()
+end
+
+function mod:alertShard()
+	warnShard:Show()
+	self:ScheduleMethod(0, "alarmSound")
+end
+
+function mod:initialShardSpawn()
+	shardsDead = 0
+	local timer1 = 30
+	timerShard:Show(timer1)
+	self:ScheduleMethod(timer1-5, "preShard")
+	self:ScheduleMethod(timer1, "alertShard")
+	self:ScheduleMethod(timer1, "checkShards")
+end
+
+function mod:shardSpawn()
+	shardsDead = 0
+	local timer2 = 35	
+	timerShard:Show(timer2)
+	self:ScheduleMethod(timer2-5, "preShard")
+	self:ScheduleMethod(timer2, "alertShard")
+	self:ScheduleMethod(timer2, "checkShards")
+end
+
+function mod:deadShards()
+	if maxShards == 1 and shardsDead == 1 then
+		self:ScheduleMethod(0, "shardSpawn")
+	elseif maxShards == 2 and shardsDead == 2 then
+		self:ScheduleMethod(0, "shardSpawn")
+	elseif maxShards == 3 and shardsDead == 3 then
+		self:ScheduleMethod(0, "shardSpawn")
+	end
+	self:ScheduleMethod(0.1, "deadShards")
+end
+
+function mod:checkShards()
+	if ouroHealth > 75 then
+		maxShards = 1
+	elseif ouroHealth < 75 and ouroHealth > 33 then
+		maxShards = 2	
+	elseif ouroHealth < 33 then
+		maxShards = 3
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(26102) then
-		timerBlastCD:Start()
-		timerBlast:Start()
-		warnBlastSoon:Schedule(18)
-	end
+function mod:UNIT_HEALTH(args)
+    ouroHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(26103) then
-		timerSweepCD:Start()
-		warnSweepSoon:Schedule(16)
-	end
-end
-
-function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(26058) and GetTime() - summonSpam >= 3 and not enraged then
-		summonSpam = GetTime()
-		warnSubmergeSoon:Cancel()
-		warnSubmerge:Show()
-		timerEmerge:Start()
-		self:ScheduleMethod(30, "Submerge")
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.23 and self:GetUnitCreatureId(uId) == 15517 and not prewarn_enrage then
-		prewarn_enrage = true
-		warnEnrageSoon:Show()
+function mod:UNIT_DIED(args)
+	local recapID = self:GetCIDFromGUID(args.destGUID)
+	if recapID == 19045 then
+		shardsDead = shardsDead + 1  
 	end
 end
