@@ -9,8 +9,8 @@ L.TranslationBy 			= "Nitram, Tandanu & Tennberg"
 L.TabCategory_Options	 	= "General Options"
 L.TabCategory_WOTLK 		= "Wrath of the Lich King"
 L.TabCategory_BC 			= "The Burning Crusade"
-L.TabCategory_CLASSIC		= "WoW Classic"
-L.TabCategory_OTHER    		= "Other Boss Mods"
+L.TabCategory_VANILLA		= "Vanilla"
+L.TabCategory_OTHER    		= "Misc Mods"
 
 L.BossModLoaded 			= "%s statistics"
 L.BossModLoad_now 			= [[This boss mod is not loaded. 

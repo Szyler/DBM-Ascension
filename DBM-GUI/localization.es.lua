@@ -10,7 +10,7 @@ L.TranslationBy 	= "Interplay, Snamor"
 L.TabCategory_Options 	= "Opciones"
 L.TabCategory_WOTLK 	= "Wrath of the Lich King"
 L.TabCategory_BC 	= "The Burning Crusade"
-L.TabCategory_CLASSIC 	= "WoW Classic Bosses"
+L.TabCategory_VANILLA 	= "WoW Classic Bosses"
 L.TabCategory_OTHER     = "Otros Boss Mods"
 
 L.BossModLoaded 	= "%s estadisticas"
