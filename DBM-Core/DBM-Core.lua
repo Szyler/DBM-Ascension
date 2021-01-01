@@ -2235,7 +2235,11 @@ do
 			testWarning1 = testMod:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
 			testWarning2 = testMod:NewAnnounce("%s", 2, "Interface\\Icons\\Spell_Shadow_ShadesOfDarkness")
 			testWarning3 = testMod:NewAnnounce("%s", 3, "Interface\\Icons\\Spell_Fire_SelfDestruct")
-			testTimer = testMod:NewTimer(20, "%s")			
+			testTimer = testMod:NewTimer(20, "%s")	
+			testTimer2 = testMod:NewTimer(20, "%s", L.MAGIC_ICON)
+			testTimer3 = testMod:NewTimer(20, "%s", L.INTERRUPT_ICON)
+			testTimer4 = testMod:NewTimer(20, "%s", L.HEALER_ICON)
+			testTimer5 = testMod:NewTimer(20, "%s", L.TANK_ICON)
 			testSpecialWarning = testMod:NewSpecialWarning("%s")
 		end
 		testTimer:Start(20, "Pew Pew Pew...")
@@ -2246,6 +2250,10 @@ do
 		testTimer:UpdateIcon("Interface\\Icons\\Spell_Shadow_ShadesOfDarkness", "Evil Spell")
 		testTimer:Start(60, "Boom!")
 		testTimer:UpdateIcon("Interface\\Icons\\Spell_Fire_SelfDestruct", "Boom!")
+		testTimer2:Start(43, "Evil Debuff")
+		testTimer3:Start(20, "Important Interrupt")
+		testTimer4:Start(35, "Handle your Role")
+		testTimer5:Start(35, "Handle your Role")
 		testWarning1:Cancel()
 		testWarning2:Cancel()
 		testWarning3:Cancel()
@@ -3110,11 +3118,20 @@ do
 		end
 	end
 
+	function timerPrototype:UpdateInline(newInline, ...)
+		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
+		local bar = DBM.Bars:GetBar(id)
+		if bar then
+			local ttext = _G[bar.frame:GetName().."BarName"]:GetText() or ""
+			return bar:SetText(ttext, newInline or self.inlineIcon)
+		end
+	end
+
 	function timerPrototype:UpdateName(name, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 		local bar = DBM.Bars:GetBar(id)
 		if bar then
-			return bar:SetText(name)
+			return bar:SetText(name, self.inlineIcon)
 		end
 	end
 
@@ -3141,7 +3158,15 @@ do
 		end
 	end
 	
-	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, r, g, b)
+	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, inlineIcon r, g, b)
+		if r and type(r) == "string" then
+			DBM:Debug("|cffff0000r probably has inline icon in it and needs to be fixed for |r"..name..r)
+			r = nil--Fix it for users
+		end
+		if inlineIcon and type(inlineIcon) == "number" then
+			DBM:Debug("|cffff0000spellID texture path or colorType is in inlineIcon field and needs to be fixed for |r"..name..inlineIcon)
+			inlineIcon = nil--Fix it for users
+		end
 		local icon = type(icon) == "number" and select(3, GetSpellInfo(icon)) or icon
 		local obj = setmetatable(
 			{
@@ -3149,6 +3174,7 @@ do
 				timer = timer,
 				id = name,
 				icon = icon,
+				inlineIcon = inlineIcon,
 				r = r,
 				g = g,
 				b = b,
@@ -3167,7 +3193,7 @@ do
 	-- todo: disable the timer if the player already has the achievement and when the ACHIEVEMENT_EARNED event is fired
 	-- problem: heroic/normal achievements :[
 	-- local achievementTimers = {}
-	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, texture, r, g, b)
+	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, texture, inlineIcon, r, g, b)
 		-- new argument timerText is optional (usually only required for achievement timers as they have looooong names)
 		if type(timerText) == "boolean" or type(optionDefault) == "string" then -- check if the argument was skipped
 			return newTimer(self, timerType, timer, spellId, nil, timerText, optionDefault, optionName, texture, r, g, b)
@@ -3198,6 +3224,7 @@ do
 				timer = timer,
 				id = id,
 				icon = icon,
+				inlineIcon = inlineIcon,
 				r = r,
 				g = g,
 				b = b,
