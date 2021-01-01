@@ -20,8 +20,6 @@ local warnAdds						= mod:NewAnnounce("Adds Spawned", 2, 1002126)
 local timerVoid						= mod:NewTimer(45, "Void Singularity Spawn", 1002140)
 local timerAdds						= mod:NewTimer(15, "Next Add Wave", 1002126)
 
-local soundVoid						= mod:SoundAlarm(1002140)
-
 function mod:preVoid()
 	prewarnVoid:Show()
 end

@@ -17,7 +17,6 @@ mod:RegisterEvents(
 local warnSporeNow					= mod:NewSpellAnnounce(29234, 3)
 local warnSporeSoon					= mod:NewSoonAnnounce(29234, 2)
 local timerSpore					= mod:NewNextTimer(18, 29234)
-local soundSpore					= mod:SoundInfo(29234)
 local specWarnCloudOfBlight			= mod:NewSpecialWarningMove(79008)
 -----IMPENDING DOOM-----
 local warnDoomNow					= mod:NewSpellAnnounce(29204, 3)
@@ -29,7 +28,6 @@ local timerAura						= mod:NewBuffActiveTimer(17, 55593)
 -----SOFT ENRAGE-----
 local warnSoftEnrageSoon			= mod:NewSpellAnnounce(79009, 3)
 local warnSoftEnrageNow				= mod:NewSoonAnnounce(79009, 2)
-local soundSoftEnrage				= mod:SoundInfoLong(79009)
 local loathebHealth
 local phase
 -----MISC-----

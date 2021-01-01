@@ -18,19 +18,16 @@ mod:RegisterEvents(
 local warnInjection		= mod:NewTargetAnnounce(28169, 2)
 local specWarnInjection	= mod:NewSpecialWarningYou(28169)
 local timerInjection	= mod:NewTargetTimer(10, 28169)
-local soundInjection	= mod:SoundInfo(28169)
 -----POISON CLOUD-----
 local timerCloud		= mod:NewNextTimer(15, 28240)
 local warnCloud			= mod:NewSpellAnnounce(28240, 2)
 local prewarnCloud		= mod:NewSoonAnnounce(28240, 3)
-local soundCloud		= mod:SoundInfo(28240)
 local specWarnPoison1	= mod:NewSpecialWarningMove(28241, true, nil, true)
 local specWarnPoison2	= mod:NewSpecialWarningMove(28158, true, nil, true)
 -----VIVIFYING TOXIN-----
 local timerToxin		= mod:NewNextTimer(45, 79012)
 local warnToxin			= mod:NewSpellAnnounce(79012, 2)
 local prewarnToxin		= mod:NewSoonAnnounce(79012, 3)
-local soundToxin		= mod:SoundInfoLong(79012)
 -----SLIME SPRAY-----
 local timerSpray		= mod:NewCDTimer(15, 28157)
 local warnSpray			= mod:NewSpellAnnounce(28157, 2)

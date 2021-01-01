@@ -20,72 +20,56 @@ mod:RegisterEvents(
 local warnMajorWave		= mod:NewAnnounce("Major Wave Spawned", 2, 1003064, nil, "Show warning for Major Wave spawn")
 local warnMajorWaveSoon	= mod:NewAnnounce("Major Wave Spawns Soon", 3, 1003064, nil, "Show pre-warning for Major Wave spawn")
 local timerMajorWave	= mod:NewTimer(30, "Next Major Wave", 1003064, nil, "Show timer for Major Wave spawn")
-local soundMajorWave	= mod:SoundInfo(1003064, "Play the 'Info' sound effect for Major Wave Spawn")
 -----CONSTRICTING CHAINS-----
 local warnChains		= mod:NewTargetAnnounce(1003114, 2)
-local soundChains		= mod:SoundAlert(1003114)
 -----WAIL OF SOULS-----
 local warnWailSoul		= mod:NewSpellAnnounce(1003115, 2)
 -----PHASE 1 -> 2 TRANSITION-----
 local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
-local warnPhase2Soon	= mod:NewPhaseSoonAnnounce(2, 3)
 local timerPhase2		= mod:NewTimer(153, "Phase Two", 29485, nil, "Show timer for Phase Two")
-local soundPhase2		= mod:SoundInfoLong(29485, "Play the 'Long Info' sound effect for Phase Two")
 -----PHASE 2 -> 3 TRANSITION-----
 local warnPhase3		= mod:NewPhaseAnnounce(3, 3)
-local warnPhase3Soon	= mod:NewPhaseSoonAnnounce(3, 3)
 local timerPhase3		= mod:NewTimer(378, "Phase Three", 29485, nil, "Show timer for Phase Three")
-local soundPhase3		= mod:SoundInfoLong(29485, "Play the 'Long Info' sound effect for Phase Three")
 ----------PHASE 2----------
 -----SHADE OF NAXXRAMAS-----
 local warnNaxxShade		= mod:NewAnnounce("Shade of Naxx Spawned", 2, 25228, nil, "Show warning for Shade of Naxxramas spawn")
 local warnNaxxShadeSoon	= mod:NewAnnounce("Shade of Naxx Spawns Soon", 3, 25228, nil, "Show pre-warning for Shade of Naxxramas spawn")
 local timerNaxxShade	= mod:NewTimer(60, "Next Shade of Naxx", 25228, nil, "Show timer for Shade of Naxxramas spawn")
-local soundNaxxShade	= mod:SoundAlarm(25228, "Play the 'Alarm' sound effect for Shade of Naxxramas Spawn")
 -----DISRUPTING SHOUT-----
 local warnShout			= mod:NewSpellAnnounce(29107, 2)
 local warnShoutSoon		= mod:NewSoonAnnounce(29107, 3)
 local timerShout		= mod:NewCDTimer(16, 29107)
-local soundShout		= mod:SoundInfo(29107)
-local soundShoutCount	= mod:SoundCountdownShort(29107)
 -----SEEING RED-----
 local warnSeeingRed		= mod:NewSpellAnnounce(1003255, 2)
 -----GASTRIC AFFLICTION-----
 local warnGastric		= mod:NewTargetAnnounce(1003086, 2)
 local specWarnGastric	= mod:NewSpecialWarningYou(1003086)
-local soundGastric		= mod:SoundAlert(1003086)
 -----VOID ZONE-----
 local specWarnVoid		= mod:NewSpecialWarningYou(28865)
 -----SAFETY DANCE-----
 local warnDanceSoon		= mod:NewAnnounce("Safety Dance Soon", 2, 46573, nil, "Show pre-warning for the Safetyy Dance")
 local warnDance			= mod:NewAnnounce("Dance Ends Now", 3, 46573, nil, "Show warning for the Safety Dance")
 local timerDance		= mod:NewTimer(22, "Safety Dance Starts", 46573, nil, "Show timer for the Safety Dance")
-local soundDance		= mod:SoundAlarm(46573, "Play the 'Alarm' sound effect at the start of the Safety Dance")
 -----HARVEST SOUL-----
 local warnHarvestSoon	= mod:NewSoonAnnounce(28679, 3)
 local warnHarvest		= mod:NewSpellAnnounce(28679, 2)
 local timerHarvest		= mod:NewNextTimer(15, 28679)
 -----MAEXXNA SPIDERLINGS-----
 local timerSpider		= mod:NewNextTimer(16, 43134)
-local soundSpider		= mod:SoundInfo(43134)
 -----NOTH'S SHADE (UNSCRIPTED)-----
 local warnNothShade		= mod:NewAnnounce("Noth's Shade Spawned", 2, 1003072, nil, "Show warning for Noth's Shade spawn")
 local timerNothShade	= mod:NewTimer(60, "Next Noth's Shade", 1003072, nil, "Show timer for Noth's Shade spawn")
-local soundNothShade	= mod:SoundInfo(1003072, "Play the 'Info' sound effect for Noth's Shade")
 -----FROST BLAST-----
 local warnBlast			= mod:NewSpellAnnounce(29879, 2)
 local timerBlast		= mod:NewCDTimer(16, 29879)
-local soundBlast		= mod:SoundInfo(29879)
 -----DETONATE MANA-----
 local warnMana			= mod:NewSpellAnnounce(27819, 2)
 local timerMana			= mod:NewCDTimer(30, 27819)
-local soundMana			= mod:SoundAlert(27819)
 -----DEATH AND DECAY-----
 local specWarnDnD		= mod:NewSpecialWarningYou(1003113)
 -----CHAINS OF KEL'THUZAD-----
 local warnChains		= mod:NewSpellAnnounce(28410, 2)
 local timerChains		= mod:NewCDTimer(16, 28410)
-local soundChains		= mod:SoundInfo(28410)
 -----RANGE CHECK-----
 mod:AddBoolOption("ShowRange", true)
 ----------BOSS TRACKING----------

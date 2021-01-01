@@ -16,11 +16,9 @@ local warnTeleportNow		= mod:NewAnnounce("Teleport Now", 3, 46573, nil, "Show wa
 local warnTeleportSoon		= mod:NewAnnounce("Teleport in 10 seconds", 1, 46573, nil, "Show pre-warning for Noth teleporting to and from the balcony")
 local timerTeleport			= mod:NewTimer(600, "Teleport to Balcony", 46573, nil, "Show timer for Noth teleporting to the balcony")
 local timerTeleportBack		= mod:NewTimer(600, "Teleport to Raid", 46573, nil, "Show timer for Noth teleporting from the balcony")
-local soundTeleport			= mod:SoundInfoLong(46573, "Play the 'Long Info' sound effect for Noth teleporting to and from the balcony")
 -----CURSE-----
 local warnCurse				= mod:NewSpellAnnounce(29213, 2)
 local specWarnCurse			= mod:NewSpecialWarningYou(29213)
-local soundCurse			= mod:SoundAirHorn(29213)
 -----MISC-----
 local berserkTimer			= mod:NewBerserkTimer(375)
 local phase = 0

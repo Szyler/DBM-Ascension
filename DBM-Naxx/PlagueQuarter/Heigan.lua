@@ -13,12 +13,10 @@ mod:RegisterEvents(
 local warnTeleportSoon			= mod:NewAnnounce("Teleport to Platform Soon", 2, 46573, nil, "Show pre-warning for Heigan teleporting to the platform")
 local warnTeleportNow			= mod:NewAnnounce("Teleport to Platform Now", 3, 46573, nil, "Show warning for Heigan teleporting to the platform")
 local timerTeleport				= mod:NewTimer(90, "Teleport to Platform", 46573, nil, "Show timer for Heigan teleporting to the platform")
-local soundTeleport				= mod:SoundInfoLong(46573, "Play the 'Long Info' sound effect when Heigan teleports to the platform")
 -----DANCE ENDS----
 local timerDanceEnds			= mod:NewTimer(47, "Dance Ends", 46573, nil, "Show timer for the end of the Safety Dance")
 local warnDanceEndsSoon			= mod:NewAnnounce("Dance Ends Soon", 2, 46573, nil, "Show pre-warning for the end of the Safety Dance")
 local warnDanceEnds				= mod:NewAnnounce("Dance Ends Now", 3, 46573, nil, "Show warning for the end of the Safety Dance")
-local soundDanceEnds			= mod:SoundInfoLong(46573, "Play the 'Long Info' sound effect at the end of the Safety Dance")
 -----SPELL DISRUPTION------
 local specWarnSpellDisruption	= mod:NewSpecialWarningYou(29310, false)
 local specWarnBurningFever		= mod:NewSpecialWarningYou(1003068)

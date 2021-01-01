@@ -16,7 +16,6 @@ local hpCounter
 local prewarnEnrage					= mod:NewAnnounce("Soft Enrage Soon", 3, 1002069)
 local warnAdds						= mod:NewAnnounce("Adds Spawned", 2, 985050)
 local warnEnrage					= mod:NewAnnounce("Soft Enrage", 2, 1002069)
-local soundEnrage					= mod:SoundAlarmLong(1002069)
 local timerAdds						= mod:NewTimer(3, "Adds Spawn", 985050)
 
 function mod:OnCombatStart(delay)

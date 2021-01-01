@@ -15,7 +15,6 @@ mod:RegisterEvents(
 mod:AddBoolOption("WarningHateful", false, "announce")
 -----GASTRIC AFFLICTION-----
 local specWarnGastric		= mod:NewSpecialWarningYou(1003086)
-local soundGastric			= mod:SoundAlert(1003086)
 -----MISC-----
 local enrageTimer	= mod:NewBerserkTimer(360)
 local timerAchieve	= mod:NewAchievementTimer(180, 1857, "TimerSpeedKill")

@@ -17,20 +17,16 @@ mod:RegisterEvents(
 local warnWebWrap			= mod:NewTargetAnnounce(28622, 2)
 local timerWebWrapInitial	= mod:NewNextTimer(20, 28622)
 local timerWebWrap			= mod:NewNextTimer(40, 28622)
-local soundWebWrap			= mod:SoundAlert(28622)
 -----WEB SPRAY-----
 local warnWebSpraySoon		= mod:NewSoonAnnounce(29484, 1)
 local warnWebSprayNow		= mod:NewSpellAnnounce(29484, 3)
 local timerWebSpray			= mod:NewNextTimer(40, 29484)
-local soundWebSpray			= mod:SoundAlarm(29484)
 -----SPIDERLINGS-----
 local timerSpiderInitial	= mod:NewNextTimer(8, 43134)
 local timerSpider			= mod:NewNextTimer(16, 43134)
-local soundSpider			= mod:SoundInfo(43134)
 -----SOFT ENRAGE-----
 local warnSoftEnrageSoon	= mod:NewSpellAnnounce(54123, 3)
 local warnSoftEnrageNow		= mod:NewSoonAnnounce(54123, 2)
-local soundSoftEnrage		= mod:SoundInfoLong(54123)
 local maexxnaHealth
 local phase
 

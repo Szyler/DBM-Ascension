@@ -18,8 +18,6 @@ local prewarnBurrow 				= mod:NewAnnounce("Burrow Soon", 3, 1002251)
 local warnBurrow 					= mod:NewAnnounce("Burrow Now", 2, 1002251)
 local timerBurrow					= mod:NewTimer(35, "Vem: Next Burrow", 1002251)
 
-local soundBurrow					= mod:SoundAirHorn(1002251)
-
 local timerCheck
 
 function mod:OnCombatStart(delay)

@@ -68,7 +68,6 @@ local lasttent
 local phase
 local miniadd
 local eldfixglare
-local soundGlare					= mod:SoundRunAway(26029)
 
 ----------JuniorStuff----------
 local specWarnEradicate		= mod:NewSpecialWarning("Eradicate damage too high!", nil, "Special warning when taking >1000 damage from Eradicate", true) -- 4500054

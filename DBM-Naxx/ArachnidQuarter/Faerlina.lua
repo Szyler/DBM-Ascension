@@ -16,17 +16,13 @@ local warnEnrageSoon			= mod:NewSoonAnnounce(28798, 3)
 local warnEnrageNow				= mod:NewSpellAnnounce(28798, 4)
 local timerEnrage				= mod:NewCDTimer(60, 28798)
 -----EMBRACE-----
-local warnEmbraceExpire			= mod:NewBuffEndSoonAnnounce(28732, 2)
-local warnEmbraceExpired		= mod:NewBuffEndNowAnnounce(28732, 3)
 local warnEmbraceActive			= mod:NewSpellAnnounce(28732, 1)
 local timerEmbrace				= mod:NewBuffActiveTimer(20, 28732)
 -----RAIN OF FIRE-----
 local specWarnRainOfFire		= mod:NewSpecialWarningMove(1003054, true, nil, true)
-local soundRainOfFire			= mod:SoundAlert(1003054)
 -----POISON-----
 local specWarnPoisonPool		= mod:NewSpecialWarningMove(869762, true, nil, true)
 local specWarnClingingPoison	= mod:NewSpecialWarningMove(1003060, true, nil, true)
-local soundPoison				= mod:SoundInfo(869762)
 -----MISC-----
 local berserkTimer				= mod:NewBerserkTimer(300)
 local embraceSpam = 0

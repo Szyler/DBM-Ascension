@@ -12,20 +12,16 @@ mod:RegisterEvents(
 )
 
 -----LOCUST SWARM-----
-local prewarnLocustInitial	= mod:NewCooldownAnnounce(28785, 2)
 local prewarnLocust			= mod:NewSoonAnnounce(28785, 2)
 local warnLocust			= mod:NewCastAnnounce(28785, 3)
 local timerLocust			= mod:NewNextTimer(90, 28785)
 local timerLocustInitial	= mod:NewCDTimer(90, 28785)
 local timerLocustRemaining	= mod:NewBuffActiveTimer(15, 28785)
 local specWarnLocust		= mod:NewSpecialWarningSpell(28785)
-local soundLocust			= mod:SoundRunAway(28785)
 -----DARK GAZE-----
 local specWarnDarkGaze		= mod:NewSpecialWarningYou(1003011)
-local soundDarkGaze			= mod:SoundAlarmLong(1003011)
 -----IMPALE------
 local warnImpale			= mod:NewTargetAnnounce(28783, 2)
-local soundImpale			= mod:SoundInfo(28783)
 -----MISC-----
 local berserkTimer			= mod:NewBerserkTimer(600)
 

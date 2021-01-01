@@ -19,7 +19,6 @@ local warnTeleport		= mod:NewSpellAnnounce(800, 3)
 local timerTeleport			= mod:NewNextTimer(30, 800)
 local berserkTimer	=	mod:NewBerserkTimer(600)
 
-local soundTele		= mod:SoundInfo(800)
 
 local specWarnBlizzard		= mod:NewSpecialWarningMove(26607, true, "Special warning when standing in Blizzard", true)
 

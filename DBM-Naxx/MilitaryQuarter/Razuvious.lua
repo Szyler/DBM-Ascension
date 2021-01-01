@@ -20,36 +20,29 @@ mod:RegisterEvents(
 local warnShoutNow			= mod:NewSpellAnnounce(29107, 2)
 local warnShoutSoon			= mod:NewSoonAnnounce(29107, 3)
 local timerShout			= mod:NewCDTimer(10, 29107)
-local soundShout			= mod:SoundInfo(29107)
 local warnShoutNowBackup	= mod:NewSpellAnnounce(29107, 2)
 local warnShoutSoonBackup	= mod:NewSoonAnnounce(29107, 3)
 local timerShoutBackup		= mod:NewCDTimer(10, 29107)
-local soundShoutBackup		= mod:SoundInfo(29107)
 -----SHADOW BURST-----
 local warnShadowBurstNow	= mod:NewSpellAnnounce(1003108, 2)
 local warnShadowBurstSoon	= mod:NewSoonAnnounce(1003108, 3)
 local timerShadowBurst		= mod:NewNextTimer(25, 1003108)
-local soundShadowBurst		= mod:SoundAlert(1003108)
 -----JAGGED KNIFE-----
 local warnKnifeNow			= mod:NewTargetAnnounce(55550, 2)
 local specWarnKnife			= mod:NewSpecialWarningSpell(55550, nil, nil, nil, 10)
-local soundKnife			= mod:SoundAirHorn(55550)
 -----BRUISING BLOW-----
 local warnBlowNow			= mod:NewSpellAnnounce(26613, 2)
 local warnBlowSoon			= mod:NewSoonAnnounce(26613, 3)
 local timerBlow				= mod:NewNextTimer(15, 26613)
-local soundBlow				= mod:SoundInfo(26613)
 -----CURSE OF FEEBLENESS-----
 local warnCurseNow			= mod:NewSpellAnnounce(1003253, 2)
 local warnCurseEndSoon		= mod:NewSoonAnnounce(1003253, 3)
 local timerCurse			= mod:NewBuffActiveTimer(120, 1003253)
-local soundCurse			= mod:SoundAlarmLong(1003253)
 -----MISC-----
 local razHealth
 local phase
 local notKT					= 0
 local warnPhase2			= mod:NewPhaseAnnounce(2)
-local soundPhaseTwo			= mod:SoundInfoLong(29125, "Play the 'Long Info' sound effect on Phase Two.")
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)

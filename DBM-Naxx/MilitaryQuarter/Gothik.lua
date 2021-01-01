@@ -18,7 +18,6 @@ local warnKnightDown			= mod:NewAnnounce("Unrelenting Death Knight Killed", 2, 3
 local warnHarvestSoon			= mod:NewSoonAnnounce(28679, 3)
 local warnHarvest				= mod:NewSpellAnnounce(28679, 2)
 local timerHarvest				= mod:NewNextTimer(15, 28679)
-local soundTeleport				= mod:SoundInfoLong(46573, "Play the 'Long Info' sound effect when Heigan teleports to the platform")
 -----COMBAT START----
 local timerCombatStart			= mod:NewTimer(25, "Combat Starts", 2457, nil, "Show timer for the start of combat")
 local warnCombatStartSoon		= mod:NewAnnounce("Combat Starts Soon", 2, 2457, nil, "Show pre-warning for the end of the Safety Dance")
@@ -27,7 +26,6 @@ local warnCombatStart			= mod:NewAnnounce("Combat Starts Now", 3, 2457, nil, "Sh
 local timerGothik				= mod:NewTimer(45, "Gothik Arrives", 46573, nil, "Show timer for the arrival of Gothik")
 local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "Show pre-warning for the arrival of Gothik")
 local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 3, 46573, nil, "Show warning for the arrival of Gothik")
-local soundGothik				= mod:SoundInfoLong(46573, "Play the 'Long Info' sound effect for the arrival of Gothik")
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
