@@ -3158,7 +3158,7 @@ do
 		end
 	end
 	
-	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, inlineIcon r, g, b)
+	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, inlineIcon, r, g, b)
 		if r and type(r) == "string" then
 			DBM:Debug("|cffff0000r probably has inline icon in it and needs to be fixed for |r"..name..r)
 			r = nil--Fix it for users

@@ -194,28 +194,28 @@ DBM_ARROW_ERROR_USAGE	= {
 }
 
 --Role Icons
-L.TANK_ICON							= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:6:21:7:27|t"
-L.DAMAGE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:39:55:7:27|t"
-L.HEALER_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:70:86:7:27|t"
+TANK_ICON							= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:6:21:7:27|t"
+DAMAGE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:39:55:7:27|t"
+HEALER_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:70:86:7:27|t"
 
-L.TANK_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:6:21:7:27|t"
-L.DAMAGE_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:39:55:7:27|t"
-L.HEALER_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:70:86:7:27|t"
+TANK_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:6:21:7:27|t"
+DAMAGE_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:39:55:7:27|t"
+HEALER_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:70:86:7:27|t"
 --Importance Icons
-L.HEROIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:102:118:7:27|t"
-L.DEADLY_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:133:153:7:27|t"
-L.IMPORTANT_ICON					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:168:182:7:27|t"
-L.MYTHIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:133:153:40:58|t"
+HEROIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:102:118:7:27|t"
+DEADLY_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:133:153:7:27|t"
+IMPORTANT_ICON					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:168:182:7:27|t"
+MYTHIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:22:22:0:0:255:66:133:153:40:58|t"
 
-L.HEROIC_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:14:14:0:0:255:66:102:118:7:27|t"
-L.DEADLY_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:14:14:0:0:255:66:133:153:7:27|t"
-L.IMPORTANT_ICON_SMALL				= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:168:182:7:27|t"
+HEROIC_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:14:14:0:0:255:66:102:118:7:27|t"
+DEADLY_ICON_SMALL					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:14:14:0:0:255:66:133:153:7:27|t"
+IMPORTANT_ICON_SMALL				= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:12:12:0:0:255:66:168:182:7:27|t"
 --Type Icons
-L.INTERRUPT_ICON					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:198:214:7:27|t"
-L.MAGIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:229:247:7:27|t"
-L.CURSE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:6:21:40:58|t"
-L.POISON_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:39:55:40:58|t"
-L.DISEASE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:70:86:40:58|t"
-L.ENRAGE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:102:118:40:58|t"
-L.BLEED_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:168:182:40:58|t"
+INTERRUPT_ICON					= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:198:214:7:27|t"
+MAGIC_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:229:247:7:27|t"
+CURSE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:6:21:40:58|t"
+POISON_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:39:55:40:58|t"
+DISEASE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:70:86:40:58|t"
+ENRAGE_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:102:118:40:58|t"
+BLEED_ICON						= "|TInterface\\AddOns\\DBM-Core\\textures\\ui-ej-icons.blp:20:20:0:0:255:66:168:182:40:58|t"
 
