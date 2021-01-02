@@ -2223,11 +2223,11 @@ function DBM:AddMsg(text, prefix)
 	prefix = prefix or (self.localization and self.localization.general.name) or "Deadly Boss Mods"
 	DEFAULT_CHAT_FRAME:AddMessage(("|cffff7d0a<|r|cffffd200%s|r|cffff7d0a>|r %s"):format(tostring(prefix), tostring(text)), 0.41, 0.8, 0.94)
 end
-
+ 
 do
 	local testMod
 	local testWarning1, testWarning2, testWarning3
-	local testTimer
+	local testTimer, testTimer2, testTimer3, testTimer4, testTimer5
 	local testSpecialWarning
 	function DBM:DemoMode()
 		if not testMod then
@@ -2236,10 +2236,10 @@ do
 			testWarning2 = testMod:NewAnnounce("%s", 2, "Interface\\Icons\\Spell_Shadow_ShadesOfDarkness")
 			testWarning3 = testMod:NewAnnounce("%s", 3, "Interface\\Icons\\Spell_Fire_SelfDestruct")
 			testTimer = testMod:NewTimer(20, "%s")	
-			testTimer2 = testMod:NewTimer(20, "%s", MAGIC_ICON)
-			testTimer3 = testMod:NewTimer(20, "%s", INTERRUPT_ICON)
-			testTimer4 = testMod:NewTimer(20, "%s", HEALER_ICON)
-			testTimer5 = testMod:NewTimer(20, "%s", TANK_ICON)
+			testTimer2 = testMod:NewTimer(20, "%s", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, MAGIC_ICON)
+			testTimer3 = testMod:NewTimer(20, "%s", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, INTERRUPT_ICON)
+			testTimer4 = testMod:NewTimer(20, "%s", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, HEALER_ICON)
+			testTimer5 = testMod:NewTimer(20, "%s", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, TANK_ICON)
 			testSpecialWarning = testMod:NewSpecialWarning("%s")
 		end
 		testTimer:Start(20, "Pew Pew Pew...")
@@ -3158,13 +3158,13 @@ do
 		end
 	end
 	
-	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, inlineIcon, r, g, b)
+	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, r, g, b, inlineIcon)
 		if r and type(r) == "string" then
-			DBM:Debug("|cffff0000r probably has inline icon in it and needs to be fixed for |r"..name..r)
+			print("|cffff0000r probably has inline icon in it and needs to be fixed for |r"..name..r)
 			r = nil--Fix it for users
 		end
 		if inlineIcon and type(inlineIcon) == "number" then
-			DBM:Debug("|cffff0000spellID texture path or colorType is in inlineIcon field and needs to be fixed for |r"..name..inlineIcon)
+			print("|cffff0000spellID texture path or colorType is in inlineIcon field and needs to be fixed for |r"..name..inlineIcon)
 			inlineIcon = nil--Fix it for users
 		end
 		local icon = type(icon) == "number" and select(3, GetSpellInfo(icon)) or icon
@@ -3174,10 +3174,10 @@ do
 				timer = timer,
 				id = name,
 				icon = icon,
-				inlineIcon = inlineIcon,
 				r = r,
 				g = g,
 				b = b,
+				inlineIcon = inlineIcon,
 				startedTimers = {},
 				mod = self,
 			},
@@ -3193,7 +3193,7 @@ do
 	-- todo: disable the timer if the player already has the achievement and when the ACHIEVEMENT_EARNED event is fired
 	-- problem: heroic/normal achievements :[
 	-- local achievementTimers = {}
-	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, texture, inlineIcon, r, g, b)
+	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, texture, r, g, b, inlineIcon)
 		-- new argument timerText is optional (usually only required for achievement timers as they have looooong names)
 		if type(timerText) == "boolean" or type(optionDefault) == "string" then -- check if the argument was skipped
 			return newTimer(self, timerType, timer, spellId, nil, timerText, optionDefault, optionName, texture, r, g, b)
@@ -3224,10 +3224,10 @@ do
 				timer = timer,
 				id = id,
 				icon = icon,
-				inlineIcon = inlineIcon,
 				r = r,
 				g = g,
 				b = b,
+				inlineIcon = inlineIcon,
 				startedTimers = {},
 				mod = self,
 			},
