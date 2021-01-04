@@ -85,6 +85,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(33232) then
 		timerNextWhirlwind:Cancel()
 		timerCharge:Start(5)
+	elseif args:IsSpellID(33238) then
+		warnWhirlwind:Show()
+		timerWhirlwind:Start()
 	elseif args:IsSpellID(33054) then
 		warnSpellShield:Show(args.destName)
 	elseif args:IsSpellID(33173) then
@@ -98,9 +101,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(33061) then
 		warnBlast:Show()
 		timerBlast:Start()
-	elseif args:IsSpellID(33238) then
-		warnWhirlwind:Show()
-		timerWhirlwind:Start()
 	elseif args:IsSpellID(26561) then
 		warnCharge:Show(args.destName)
 		timerCharge:Start()
