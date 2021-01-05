@@ -314,8 +314,14 @@ do
 	end
 	
 	function DBT:LoadOptions(id)
-		DBT_SavedOptions[id] = DBT_SavedOptions[id] or {}
-		self.options = setmetatable(DBT_SavedOptions[id], optionMT)
+		local savedOptions;
+		if type(id) == "table" then
+			savedOptions = id;
+		else
+			DBT_SavedOptions[id] = DBT_SavedOptions[id] or {};
+			savedOptions = DBT_SavedOptions[id];
+		end
+		self.options = setmetatable(savedOptions, optionMT)
 		self.mainAnchor:ClearAllPoints()
 		self.secAnchor:ClearAllPoints()
 		self.mainAnchor:SetPoint(self.options.TimerPoint, UIParent, self.options.TimerPoint, self.options.TimerX, self.options.TimerY)
