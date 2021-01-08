@@ -112,7 +112,18 @@ DBM.DefaultOptions = {
 --	HelpMessageShown = false,
 }
 
-DBM.Bars = DBT:New()
+DBM.BarGroups = {};
+function DBM:CreateBarGroup(id)
+	local barGroup = DBT:New();
+	DBM.BarGroups[id] = barGroup;
+	return barGroup;
+end
+DBM.Bars = DBM:CreateBarGroup("DBM");
+
+function DBM:GetBarGroup(id)
+	return DBM.BarGroups[id] or DBM.Bars;
+end
+
 DBM.Mods = {}
 
 ------------------------
@@ -683,7 +694,9 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 	elseif cmd == "ver2" or cmd == "version2" then
 		DBM:ShowVersions(true)
 	elseif cmd == "unlock" or cmd == "move" then
-		DBM.Bars:ShowMovableBar()
+		for id,barGroup in pairs(DBM.BarGroups) do
+			barGroup:ShowMovableBar()
+		end
 	elseif cmd == "help" then
 		for i, v in ipairs(DBM_CORE_SLASHCMD_HELP) do DBM:AddMsg(v) end
 	elseif cmd:sub(1, 5) == "timer" then
@@ -1283,7 +1296,10 @@ do
 	function DBM:ADDON_LOADED(modname)
 		if modname == "DBM-Core" then
 			loadOptions()
-			DBM.Bars:LoadOptions("DBM")
+			DBM.Bars:LoadOptions("DBM");
+			--for id,barGroup in pairs(DBM.BarGroups) do
+			--	barGroup:LoadOptions(id)
+			--end
 			DBM.Arrow:LoadPosition()
 			if not DBM.Options.ShowMinimapButton then DBM:HideMinimapButton() end
 			self.AddOns = {}
@@ -3029,7 +3045,8 @@ do
 		if not self.option or self.mod.Options[self.option] then
 			local timer = timer and ((timer > 0 and timer) or self.timer + timer) or self.timer
 			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-			local bar = DBM.Bars:CreateBar(timer, id, self.icon)
+			local barGroup = self.mod.barGroup or DBM.Bars;
+			local bar = barGroup:CreateBar(timer, id, self.icon)
 			if not bar then
 				return false, "error" -- creating the timer failed somehow, maybe hit the hard-coded timer limit of 15
 			end
@@ -3057,16 +3074,17 @@ do
 	end
 
 	function timerPrototype:Stop(...)
+		local barGroup = self.mod.barGroup or DBM.Bars;
 		if select("#", ...) == 0 then
 			for i = #self.startedTimers, 1, -1 do
-				DBM.Bars:CancelBar(self.startedTimers[i])
+				barGroup:CancelBar(self.startedTimers[i])
 				self.startedTimers[i] = nil
 			end
 		else
 			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 			for i = #self.startedTimers, 1, -1 do
 				if self.startedTimers[i] == id then
-					DBM.Bars:CancelBar(id)
+					barGroup:CancelBar(id)
 					table.remove(self.startedTimers, i)
 				end
 			end
@@ -3080,13 +3098,15 @@ do
 
 	function timerPrototype:GetTime(...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		return bar and (bar.totalTime - bar.timer) or 0, (bar and bar.totalTime) or 0
 	end
 	
 	function timerPrototype:IsStarted(...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		return bar and true
 	end
 	
@@ -3099,12 +3119,14 @@ do
 			self:Start(totalTime, ...)
 		end
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		return DBM.Bars:UpdateBar(id, elapsed, totalTime)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		return barGroup:UpdateBar(id, elapsed, totalTime)
 	end
 
 	function timerPrototype:UpdateIcon(icon, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		if bar then
 			return bar:SetIcon((type(icon) == "number" and select(3, GetSpellInfo(icon))) or icon)
 		end
@@ -3112,7 +3134,8 @@ do
 
 	function timerPrototype:UpdateName(name, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		if bar then
 			return bar:SetText(name)
 		end
@@ -3120,7 +3143,8 @@ do
 
 	function timerPrototype:SetColor(c, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		if bar then
 			return bar:SetColor(c)
 		end
@@ -3128,7 +3152,8 @@ do
 	
 	function timerPrototype:DisableEnlarge(...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-		local bar = DBM.Bars:GetBar(id)
+		local barGroup = self.mod.barGroup or DBM.Bars;
+		local bar = barGroup:GetBar(id)
 		if bar then
 			bar.small = true
 		end

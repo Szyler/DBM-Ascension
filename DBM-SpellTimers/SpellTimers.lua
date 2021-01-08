@@ -79,7 +79,8 @@ local default_settings = {
 		{ spell = 11420, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Thunder Bluff
 		{ spell = 32667, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Silvermoon
 		{ spell = 49361, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Stonard
-	}
+	},
+	DBT = {},
 }
 DBM_SpellTimers_Settings = {}
 local settings = default_settings
@@ -318,7 +319,10 @@ do
 			else
 				SpellBars = DBM.Bars
 			end --]]
-			SpellBars = DBM.Bars
+			--SpellBars = DBM.Bars
+			
+			SpellBars = DBM:CreateBarGroup("SpellTimers");
+			SpellBars:LoadOptions(settings.DBT);
 
 
 			if UnitFactionGroup("player") == "Alliance" then
