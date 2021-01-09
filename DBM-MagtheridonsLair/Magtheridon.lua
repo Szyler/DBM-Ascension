@@ -35,12 +35,14 @@ local HandTarget = ""
 local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
 local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.." to soak", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
+local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local FingerTarget = ""
 local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
 local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." or die", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
+local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
 -- local 
 -- /script print(GetSpellLink(85407))
@@ -54,6 +56,39 @@ local timerPhaseTwo		= mod:NewTimer(90, "Magtheridon", "Interface\\Icons\\Achiev
 
 local isMag				= false;
 local below30			= false;
+local extraTimer = 0;
+
+function mod:Hand(extraTimer)
+	-- SendChatMessage("triggered Hand", "SAY")
+	local target = mod:GetBossTarget(17257)
+	HandTarget = target
+	SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
+	if(target == UnitName("player")) then
+		SendChatMessage("Hand of Death on me, COME TO ME!", "YELL")
+		specWarnYouHand:Show()
+	else
+		warnHandofDeath:Show(target) 
+	end
+	timerHandofDeath:Start(target)
+	self:SetIcon(target, 8, 4)
+	timerNextHandofDeath:Start(30+extraTimer)
+end
+
+function mod:Finger(extraTimer)
+	-- SendChatMessage("triggered Finger", "SAY")
+	local target = mod:GetBossTarget(17257)
+	FingerTarget = target
+	SendChatMessage("Finger Target: "..FingerTarget.." boss target: "..target, "SAY")
+	if(target == UnitName("player")) then
+		SendChatMessage("Finger of Death on me, RUN AWAY!", "YELL")
+		specWarnYouFinger:Show()
+	else
+		warnFingerofDeath:Show(target)
+	end
+	timerFingerofDeath:Start(target)
+	self:SetIcon(target, 8, 4)
+	timerNextFingerofDeath:Start(30+extraTimer)
+end
 
 function mod:OnCombatStart(delay)
 	Nova = 1;
@@ -70,6 +105,8 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(30205) then
 		timerQuake:Start(41)
 		timerNova:Start(66, tostring(Nova))
+		timerNextFingerofDeath:Start(21)
+		timerNextHandofDeath:Start(36)
 		below30 = false;
 		isMag	= true;
 		warnPhaseTwo:Show()
@@ -94,26 +131,18 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(85437) then
 		-- AnnounceHandofDeath:Show(args.destName)
-		local target = mod:GetBossTarget(17257)
-		HandTarget = target
-		if(target == UnitName("player")) then
-			specWarnYouHand:Show()
+		if Nova <= 2 then
+			self:ScheduleMethod(0.5, "Hand", 30)
 		else
-			warnHandofDeath:Show(target) 
+			self:ScheduleMethod(0.5, "Hand")
 		end
-		timerHandofDeath:Start(target)
-		self:SetIcon(target, 8, 4)
 	elseif args:IsSpellID(85408) then
-		-- AnnounceHandofDeath:Show(args.destName)
-		local target = mod:GetBossTarget(17257)
-		FingerTarget = target
-		if(target == UnitName("player")) then
-			specWarnYouFinger:Show()
+		-- AnnounceFingerofDeath:Show(args.destName)
+		if Nova >= 4 then
+			self:ScheduleMethod(0.5, "Finger", 30)
 		else
-			warnFingerofDeath:Show(target) 
+			self:ScheduleMethod(0.5, "Finger")
 		end
-		timerFingerofDeath:Start(target)
-		self:SetIcon(target, 8, 4)
 	end
 end
 
