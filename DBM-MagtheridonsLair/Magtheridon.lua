@@ -30,17 +30,20 @@ local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\
 local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
 --Heroic
-local HandTarget
-local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
+local HandTarget = ""
+local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
 local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.." to soak", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
 
-local FingerTarget
-local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
+local FingerTarget = ""
+local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
 local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." or die", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
+
+-- local 
+-- /script print(GetSpellLink(85407))
 --
 
 local timerQuake		= mod:NewNextTimer(60, 85026)
@@ -91,24 +94,26 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(85437) then
 		-- AnnounceHandofDeath:Show(args.destName)
-		HandTarget = args.destName
-		if(args.destName == You) then
+		local target = mod:GetBossTarget(17257)
+		HandTarget = target
+		if(target == UnitName("player")) then
 			specWarnYouHand:Show()
 		else
-			warnHandofDeath:Show(args.destName) 
+			warnHandofDeath:Show(target) 
 		end
-		timerHandofDeath:Start(args.destName)
-		self:SetIcon(args.destName, 8, 4)
+		timerHandofDeath:Start(target)
+		self:SetIcon(target, 8, 4)
 	elseif args:IsSpellID(85408) then
 		-- AnnounceHandofDeath:Show(args.destName)
-		FingerTarget = args.destName
-		if(args.destName == You) then
-			specWarnYouHand:Show()
+		local target = mod:GetBossTarget(17257)
+		FingerTarget = target
+		if(target == UnitName("player")) then
+			specWarnYouFinger:Show()
 		else
-			warnFingerofDeath:Show(args.destName) 
+			warnFingerofDeath:Show(target) 
 		end
-		timerFingerofDeath:Start(args.destName)
-		self:SetIcon(args.destName, 8, 4)
+		timerFingerofDeath:Start(target)
+		self:SetIcon(target, 8, 4)
 	end
 end
 
