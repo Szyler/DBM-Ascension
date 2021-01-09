@@ -62,7 +62,7 @@ function mod:Hand(extraTimer)
 	-- SendChatMessage("triggered Hand", "SAY")
 	local target = mod:GetBossTarget(17257)
 	HandTarget = target
-	SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
+	-- SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
 	if(target == UnitName("player")) then
 		SendChatMessage("Hand of Death on me, COME TO ME!", "YELL")
 		specWarnYouHand:Show()
@@ -78,7 +78,7 @@ function mod:Finger(extraTimer)
 	-- SendChatMessage("triggered Finger", "SAY")
 	local target = mod:GetBossTarget(17257)
 	FingerTarget = target
-	SendChatMessage("Finger Target: "..FingerTarget.." boss target: "..target, "SAY")
+	-- SendChatMessage("Finger Target: "..FingerTarget.." boss target: "..target, "SAY")
 	if(target == UnitName("player")) then
 		SendChatMessage("Finger of Death on me, RUN AWAY!", "YELL")
 		specWarnYouFinger:Show()
