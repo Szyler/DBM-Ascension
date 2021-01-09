@@ -29,6 +29,20 @@ local specWarnDebris	= mod:NewSpecialWarningYou(85030)
 local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
 local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
+--Heroic
+local HandTarget
+local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
+-- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
+local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.." to soak", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
+
+local FingerTarget
+local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
+-- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
+local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." or die", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
+--
+
 local timerQuake		= mod:NewNextTimer(60, 85026)
 local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
 local Nova				= 1;
@@ -69,12 +83,32 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(30616) then
 		Nova = Nova + 1;
 		WarnNova:Show()
-			if Nova >= 7 then
-				timerSpecialNova:Start()
-				specWarnNova:Schedule(45)
-			else
-				timerNova:Start(55, tostring(Nova))
-			end
+		if Nova >= 7 then
+			timerSpecialNova:Start()
+			specWarnNova:Schedule(45)
+		else
+			timerNova:Start(55, tostring(Nova))
+		end
+	elseif args:IsSpellID(85437) then
+		-- AnnounceHandofDeath:Show(args.destName)
+		HandTarget = args.destName
+		if(args.destName == You) then
+			specWarnYouHand:Show()
+		else
+			warnHandofDeath:Show(args.destName) 
+		end
+		timerHandofDeath:Start(args.destName)
+		self:SetIcon(args.destName, 8, 4)
+	elseif args:IsSpellID(85408) then
+		-- AnnounceHandofDeath:Show(args.destName)
+		FingerTarget = args.destName
+		if(args.destName == You) then
+			specWarnYouHand:Show()
+		else
+			warnFingerofDeath:Show(args.destName) 
+		end
+		timerFingerofDeath:Start(args.destName)
+		self:SetIcon(args.destName, 8, 4)
 	end
 end
 
