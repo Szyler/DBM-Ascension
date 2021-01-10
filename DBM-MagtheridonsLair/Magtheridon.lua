@@ -46,6 +46,8 @@ local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
 local specWarnYouFelShock		= mod:NewSpecialWarningYou(85405)
 local timerNextFelShock			= mod:NewNextTimer(11, 85405)
+
+local warnMortalCleave			= mod:NewAnnounce(L.MagCleave, 2, 85178)
 -- local 
 -- /script print(GetSpellLink(85407))
 --
@@ -114,6 +116,14 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnYouFelShock:Show()
 		end
 		timerNextFelShock:Start()
+	elseif args:IsSpellID(30619) then
+		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(30619) and args.amount >= 4 then
+		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
