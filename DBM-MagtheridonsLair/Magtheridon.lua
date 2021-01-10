@@ -44,6 +44,8 @@ local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." o
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
 local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
+local specWarnYouFelShock		= mod:NewSpecialWarningYou(85405)
+local timerNextFelShock			= mod:NewNextTimer(11, 85405)
 -- local 
 -- /script print(GetSpellLink(85407))
 --
@@ -99,6 +101,20 @@ function mod:OnCombatEnd()
 	timerQuake:Cancel()
 	timerSpecialNova:Cancel()
 	timerNova:Cancel()
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(85030) and args:IsPlayer() then
+		specWarnDebris:Show()
+	elseif args:IsSpellID(30168) then
+		warnInterrupt:Show()
+	elseif args:IsSpellID(85405) then
+		 if args.destName == UnitName("player") then
+			SendChatMessage("Fel Shock on me, stack on me!", "YELL")
+			specWarnYouFelShock:Show()
+		end
+		timerNextFelShock:Start()
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
@@ -160,13 +176,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85030) and args:IsPlayer() then
-		specWarnDebris:Show()
-	elseif args:IsSpellID(30168) then
-		warnInterrupt:Show()
-	end
-end
 
 -- function mod:SPELL_DAMAGE(args)
 --	if args:IsSpellID(85032) and args.destName and args:IsPlayer() then
