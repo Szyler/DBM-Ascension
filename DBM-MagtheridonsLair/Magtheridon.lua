@@ -131,14 +131,16 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(85437) then
 		-- AnnounceHandofDeath:Show(args.destName)
-		if Nova <= 2 then
+		-- if Nova <= 2 then
+		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
 			self:ScheduleMethod(0.1, "Hand", 30)
 		else
 			self:ScheduleMethod(0.1, "Hand", 0)
 		end
 	elseif args:IsSpellID(85408) then
 		-- AnnounceFingerofDeath:Show(args.destName)
-		if Nova >= 3 then
+		-- if Nova >= 3 then
+		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
 			self:ScheduleMethod(0.1, "Finger", 30)
 		else
 			self:ScheduleMethod(0.1, "Finger", 0)
