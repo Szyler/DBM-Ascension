@@ -29,6 +29,29 @@ local specWarnDebris	= mod:NewSpecialWarningYou(85030)
 local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
 local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
+--Heroic
+-- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
+local HandTarget = ""
+local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
+local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.." to soak", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
+local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
+
+-- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
+local FingerTarget = ""
+local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
+local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." or die", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
+local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
+
+local specWarnYouFelShock		= mod:NewSpecialWarningYou(85405)
+local timerNextFelShock			= mod:NewNextTimer(11, 85405)
+
+local warnMortalCleave			= mod:NewAnnounce(L.MagCleave, 2, 85178)
+-- local 
+-- /script print(GetSpellLink(85407))
+--
+
 local timerQuake		= mod:NewNextTimer(60, 85026)
 local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
 local Nova				= 1;
@@ -37,6 +60,39 @@ local timerPhaseTwo		= mod:NewTimer(90, "Magtheridon", "Interface\\Icons\\Achiev
 
 local isMag				= false;
 local below30			= false;
+local extraTimer = 0;
+
+function mod:Hand(extraTimer)
+	-- SendChatMessage("triggered Hand", "SAY")
+	local target = mod:GetBossTarget(17257)
+	HandTarget = target
+	-- SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
+	if(target == UnitName("player")) then
+		SendChatMessage("Hand of Death on me, COME TO ME!", "YELL")
+		specWarnYouHand:Show()
+	else
+		warnHandofDeath:Show(target) 
+	end
+	timerHandofDeath:Start(target)
+	self:SetIcon(target, 8, 4)
+	timerNextHandofDeath:Start(30+extraTimer)
+end
+
+function mod:Finger(extraTimer)
+	-- SendChatMessage("triggered Finger", "SAY")
+	local target = mod:GetBossTarget(17257)
+	FingerTarget = target
+	-- SendChatMessage("Finger Target: "..FingerTarget.." boss target: "..target, "SAY")
+	if(target == UnitName("player")) then
+		SendChatMessage("Finger of Death on me, RUN AWAY!", "YELL")
+		specWarnYouFinger:Show()
+	else
+		warnFingerofDeath:Show(target)
+	end
+	timerFingerofDeath:Start(target)
+	self:SetIcon(target, 8, 4)
+	timerNextFingerofDeath:Start(30+extraTimer)
+end
 
 function mod:OnCombatStart(delay)
 	Nova = 1;
@@ -49,10 +105,34 @@ function mod:OnCombatEnd()
 	timerNova:Cancel()
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(85030) and args:IsPlayer() then
+		specWarnDebris:Show()
+	elseif args:IsSpellID(30168) then
+		warnInterrupt:Show()
+	elseif args:IsSpellID(85405) then
+		 if args.destName == UnitName("player") then
+			SendChatMessage("Fel Shock on me, stack on me!", "YELL")
+			specWarnYouFelShock:Show()
+		end
+		timerNextFelShock:Start()
+	elseif args:IsSpellID(30619) then
+		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(30619) and args.amount >= 4 then
+		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(30205) then
 		timerQuake:Start(41)
 		timerNova:Start(66, tostring(Nova))
+		timerNextFingerofDeath:Start(21)
+		timerNextHandofDeath:Start(36)
 		below30 = false;
 		isMag	= true;
 		warnPhaseTwo:Show()
@@ -69,12 +149,28 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(30616) then
 		Nova = Nova + 1;
 		WarnNova:Show()
-			if Nova >= 7 then
-				timerSpecialNova:Start()
-				specWarnNova:Schedule(45)
-			else
-				timerNova:Start(55, tostring(Nova))
-			end
+		if Nova >= 7 then
+			timerSpecialNova:Start()
+			specWarnNova:Schedule(45)
+		else
+			timerNova:Start(55, tostring(Nova))
+		end
+	elseif args:IsSpellID(85437) then
+		-- AnnounceHandofDeath:Show(args.destName)
+		-- if Nova <= 2 then
+		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
+			self:ScheduleMethod(0.1, "Hand", 30)
+		else
+			self:ScheduleMethod(0.1, "Hand", 0)
+		end
+	elseif args:IsSpellID(85408) then
+		-- AnnounceFingerofDeath:Show(args.destName)
+		-- if Nova >= 3 then
+		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
+			self:ScheduleMethod(0.1, "Finger", 30)
+		else
+			self:ScheduleMethod(0.1, "Finger", 0)
+		end
 	end
 end
 
@@ -90,13 +186,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85030) and args:IsPlayer() then
-		specWarnDebris:Show()
-	elseif args:IsSpellID(30168) then
-		warnInterrupt:Show()
-	end
-end
 
 -- function mod:SPELL_DAMAGE(args)
 --	if args:IsSpellID(85032) and args.destName and args:IsPlayer() then
