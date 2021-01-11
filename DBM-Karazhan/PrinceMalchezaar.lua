@@ -34,7 +34,7 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 --local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
-local timerNextInfernal			= mod:NewNextTimer(18.5, 37277)
+local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
 local timerEnfeeble				= mod:NewCDTimer(30, 30843)
 local timerDoom					= mod:NewCDTimer(24, 85069)
 local timerShadowRealm			= mod:NewCDTimer(45, 85077)
@@ -164,11 +164,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
 		warningInfernal:Show()
 		InfernalCount = InfernalCount + 1
-		print("Next infernal is #"..InfernalCount)
+--		print("Next infernal is #"..InfernalCount)
 			if phase == 3 then
-				timerNextInfernal:Start(9)
+				timerNextInfernal:Start(9, tostring(InfernalCount))
 			else
-				timerNextInfernal:Start()
+				timerNextInfernal:Start(tostring(InfernalCount))
 			end
 --		if Phase == 3 then
 --			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
