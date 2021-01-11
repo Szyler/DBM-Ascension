@@ -110,7 +110,7 @@ end
 --end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30854, 30898) then
+	if args:IsSpellID(30854, 30898, 85291) then
 		warningSWP:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnSWP:Show()
