@@ -16,7 +16,7 @@ L.TranslationBy 	= "Diablohu & yleaf"
 L.TabCategory_Options 	= "综合设置"
 L.TabCategory_WOTLK 	= "巫妖王之怒"
 L.TabCategory_BC 	= "燃烧的远征"
-L.TabCategory_CLASSIC 	= "经典旧世"
+L.TabCategory_VANILLA 	= "经典旧世"
 L.TabCategory_OTHER     = "其它"
 
 L.BossModLoaded 	= "%s状态"

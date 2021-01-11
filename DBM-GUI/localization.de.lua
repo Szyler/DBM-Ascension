@@ -9,7 +9,7 @@ L.TranslationBy 	= "Nitram & Tandanu"
 L.TabCategory_Options 	= "Allgemeine Einstellungen"
 L.TabCategory_WOTLK 	= "Wrath of the Lich King"
 L.TabCategory_BC		= "The Burning Crusade"
-L.TabCategory_CLASSIC 	= "WoW-Classic-Bosse"
+L.TabCategory_VANILLA 	= "WoW-Classic-Bosse"
 L.TabCategory_OTHER     = "Sonstige Boss-Mods"
 
 L.BossModLoaded 	= "Statistiken von %s"
