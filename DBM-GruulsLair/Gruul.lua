@@ -26,6 +26,8 @@ local timerShatter		= mod:NewTimer(10, "Shatter", "Interface\\Icons\\Spell_Natur
 local timerSilence		= mod:NewCDTimer(15, 36297) --inconsistent af
 local timerBoulder		= mod:NewTimer(30, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
 
+local timerNextHateful	= mod:NewNextTimer(8, 33813)--, mod:IsTank() or mod:IsHealer())
+
 -- grow timer placed here because DBM hates me
 local Grow				= 1;
 local timerGrow			= mod:NewTimer(30, "Grow #%s", 36300)
@@ -88,4 +90,10 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		end
 	end
 end
-		
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(33813) then
+		-----Hateful Strike-----
+		timerNextHateful:Start()
+	end
+end

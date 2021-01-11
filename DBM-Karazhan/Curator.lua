@@ -19,13 +19,15 @@ local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
 local specWarnTerminate		= mod:NewSpecialWarning(L.TerminationTarget); --,1,85082)
 local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
 
-local timerTerminate	= mod:NewTargetTimer(10, 85082)
-local timerTerminateCD	= mod:NewCDTimer(15, 85082) --15 seconds??
-local timerEvo			= mod:NewBuffActiveTimer(20, 30254)
-local timerNextEvo		= mod:NewNextTimer(110, 30254)
+local timerTerminate		= mod:NewTargetTimer(10, 85082)
+local timerTerminateCD		= mod:NewCDTimer(15, 85082) --15 seconds??
+local timerEvo				= mod:NewBuffActiveTimer(20, 30254)
+local timerNextEvo			= mod:NewNextTimer(110, 30254)
+local timerNextHateful		= mod:NewNextTimer(12, 30383)--, mod:IsTank() or mod:IsHealer())
+local timerNextHatefulHc	= mod:NewNextTimer(12, 85267)--, mod:IsTank() or mod:IsHealer())
 
-local berserkTimer		= mod:NewBerserkTimer(720)
-local isCurator 		= false
+local berserkTimer			= mod:NewBerserkTimer(720)
+local isCurator 			= false
 
 mod:SetUsedIcons(5, 6, 7)
 local terminateIcon = 5;
@@ -98,3 +100,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(33813, 85267) then
+		-----Hateful Strike-----
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextHatefulHc:Start()
+		else
+			timerNextHateful:Start()
+		end
+	end
+end
