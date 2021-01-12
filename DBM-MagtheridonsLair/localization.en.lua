@@ -1,3 +1,5 @@
+local L
+
 DBMGUI_TAB_OTHER_BC	= "Outlands" -- do not translate
 
 -- Magtheridon
@@ -22,3 +24,20 @@ DBM_MAG_WARN_NOVA_SOON	= "Get ready for Blast Nova!";
 DBM_MAG_WARN_QUAKE		= "*** Quake ***";
 PreQuakeNova			= "*** PRE-QUAKE BLAST NOVA ***";
 
+--Magtheridon
+L = DBM:GetModLocalization("Magtheridon")
+
+L:SetGeneralLocalization{
+	name = "Magtheridon"
+}
+
+L:SetWarningLocalization{
+	MagCleave			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+}
+
+L:SetOptionLocalization{
+	MagCleave			= "Show $spell:30619 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+}
+
+L:SetMiscLocalization{
+}
