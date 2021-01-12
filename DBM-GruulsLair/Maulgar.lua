@@ -43,6 +43,7 @@ local timerBlast			= mod:NewNextTimer(90, 33061)
 local timerFelstalk			= mod:NewNextTimer(30, 33131)
 local timerSpellshield		= mod:NewNextTimer(40, 33054)
 local timerPoly				= mod:NewNextTimer(20, 33173)
+local TimerEnrage			= mod:NewBerserkTimer(720)
 
 
 local miscSoulstone			= mod:NewAnnounce("Soulstone consumed on %s", 3, 85024)
@@ -51,6 +52,7 @@ function mod:OnCombatStart(delay)
 	timerNextWhirlwind:Start(30-delay)
 	timerBlast:Start(30-delay)
 	timerFelstalk:Start(15-delay)
+	timerMaulgarEnrage:Start(-delay)
 end
 
 function mod:OnCombatEnd()

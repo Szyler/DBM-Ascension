@@ -1,0 +1,8 @@
+v5.0 29/12/2020
+- Initial release
+----------------------------------------------------------------------------------------------------
+v5.1 x/01/2021
+- Added hateful strikes to Gruul/Curator
+- Added Magtheridon Heroic
+- SpellTimers (player cooldowns) are now separate bars from boss timers
+----------------------------------------------------------------------------------------------------

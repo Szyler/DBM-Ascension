@@ -32,7 +32,7 @@ local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
 local specWarnBossShield	= mod:NewSpecialWarning(L.DBM_ARAN_VULNERABLE)
 local specWarnPoly			= mod:NewSpecialWarning(L.VolatilePoly)
 local specWarnFull			= mod:NewSpecialWarning(L.ArcaneSpiral)
-local specWarnDoubleCast	= mod:NewSpecialWarning(L.DoubleCast);
+--local specWarnDoubleCast	= mod:NewSpecialWarning(L.DoubleCast);
 
 local timerSpecial			= mod:NewTimer(35, L.timerSpecial, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
 local timerFlameCast		= mod:NewCastTimer(5, 30004)
@@ -103,22 +103,22 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(85255, 85251, 85253) then -- Arcane Missiles, Fireball, Frostbolt
-		local destName = self:GetBossTarget();
-		if destName then
-			if self.Options.MarkCurrentTarget then
-				self:SetIcon(destName, 8);
-			end
-			if lastTarget and (destName == lastTarget) then
-				specWarnDoubleCast:Show(args.spellName);
-			end
-			lastTarget = destName;
-		end
-	elseif args:IsSpellID(30004) then
+--	if args:IsSpellID(85255, 85251, 85253) then -- Arcane Missiles, Fireball, Frostbolt
+--		local destName = self:GetBossTarget();
+--		if destName then
+--			if self.Options.MarkCurrentTarget then
+--				self:SetIcon(destName, 8);
+--			end
+--			if lastTarget and (destName == lastTarget) then
+--				specWarnDoubleCast:Show(args.spellName);
+--			end
+--			lastTarget = destName;
+--		end
+	if args:IsSpellID(30004) then
 		warningFlameCast:Show()
 		timerFlameCast:Start()
 		timerSpecial:Start(35,self:UpdateSpecials("Wreath"))
-	elseif args:IsSpellID(29973) then
+	elseif args:IsSpellID(29973, 85436) then
 		warningArcaneCast:Show()
 		timerArcaneExplosion:Start()
 		specWarnArcane:Show()
