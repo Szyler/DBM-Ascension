@@ -53,8 +53,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		Grow = Grow + 1;
 		warnGrow:Show()
 		timerGrow:Start(30, tostring(Grow))
-	elseif args:IsSpellID(36240) and args:IsPlayer() then
+	elseif args:IsSpellID(36240, 85376) and args:IsPlayer() then
 		specWarnCave:Show()
+		SendChatMessage("Cave in on me!", "YELL")
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
 		timerSilence:Start()
