@@ -26,6 +26,7 @@ local warningAmpMagic			= mod:NewSpellAnnounce(39095, 3)
 local warningSWP				= mod:NewTargetAnnounce(30898, 2, nil, false)
 local warningDoom				= mod:NewSpellAnnounce(85069, 1)
 local warningShadowRealm		= mod:NewTargetAnnounce(85077, 3)
+local warnSunder				= mod:NewAnnounce(L.Sunder, 3, 85198)
 
 local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
 local specWarnNova				= mod:NewSpecialWarningRun(30852)
@@ -34,7 +35,7 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 --local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
-local timerNextInfernal			= mod:NewNextTimer(18.5, 37277)
+local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
 local timerEnfeeble				= mod:NewCDTimer(30, 30843)
 local timerDoom					= mod:NewCDTimer(24, 85069)
 local timerShadowRealm			= mod:NewCDTimer(45, 85077)
@@ -110,7 +111,7 @@ end
 --end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30854, 30898) then
+	if args:IsSpellID(30854, 30898, 85291) then
 		warningSWP:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnSWP:Show()
@@ -127,6 +128,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		self:Unschedule(showEnfeebleWarning)
 		self:Schedule(0.3, showEnfeebleWarning)
+	elseif args:IsSpellID(85198) then
+		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end	
 end
 
@@ -164,11 +167,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
 		warningInfernal:Show()
 		InfernalCount = InfernalCount + 1
-		print("Next infernal is #"..InfernalCount)
+--		print("Next infernal is #"..InfernalCount)
 			if phase == 3 then
-				timerNextInfernal:Start(9)
+				timerNextInfernal:Start(9, tostring(InfernalCount))
 			else
-				timerNextInfernal:Start()
+				timerNextInfernal:Start(tostring(InfernalCount))
 			end
 --		if Phase == 3 then
 --			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
