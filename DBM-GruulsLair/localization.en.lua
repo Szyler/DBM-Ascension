@@ -1,3 +1,23 @@
+local L
+
+--Gruul
+L = DBM:GetModLocalization("Gruul")
+
+L:SetGeneralLocalization{
+	name = "Gruul the Dragonkiller"
+}
+
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
+    CaveinYellOpt           = "Yell when you are affected by $spell:36240"
+}
+
+L:SetMiscLocalization{
+    CaveinYell			    = "Cave in on me!",
+}
+
 DBMGUI_TAB_OTHER_BC	= "Outlands" -- do not translate
 
 -- Maulgar
