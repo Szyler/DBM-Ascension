@@ -34,7 +34,7 @@ local timerGrow			= mod:NewTimer(30, "Grow #%s", 36300)
 
 local BoulderCD			= 31;
 
-
+mod:AddBoolOption(L.CaveinYellOpt)
 
 function mod:OnCombatStart(delay)
 	Grow = 1
@@ -57,7 +57,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerGrow:Start(30, tostring(Grow))
 	elseif args:IsSpellID(36240, 85376) and args:IsPlayer() then
 		specWarnCave:Show()
-		SendChatMessage("Cave in on me!", "YELL")
+		if self.Options.CaveinYellOpt then
+			SendChatMessage(L.CaveinYell, "YELL")
+		end
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
 		timerSilence:Start()
