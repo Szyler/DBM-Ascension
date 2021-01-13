@@ -33,7 +33,7 @@ local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Ico
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
 local HandTarget = ""
 local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
-local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath")
+local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Shadow_ChillTouch")
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
 local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
