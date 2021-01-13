@@ -10,7 +10,7 @@ L.TranslationBy 			= "Игорь Бутвин & Vampik & Swix"
 L.TabCategory_Options	 	= "Общие параметры"
 L.TabCategory_WOTLK 		= "Wrath of the Lich King"
 L.TabCategory_BC 			= "The Burning Crusade"
-L.TabCategory_CLASSIC		= "Классическая игра"
+L.TabCategory_VANILLA		= "Классическая игра"
 L.TabCategory_OTHER    		= "Другие боссы"
 
 L.BossModLoaded 			= "%s - статистика"

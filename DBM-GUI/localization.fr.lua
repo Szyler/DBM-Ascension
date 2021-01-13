@@ -10,7 +10,7 @@ L.TranslationBy 	= "Psyco Alias Exodius & Vranwen@EU-Kirin Tor"
 L.TabCategory_Options 	= "Options Générales"
 L.TabCategory_WOTLK 	= "Wrath of the Lich King"
 L.TabCategory_BC 		= "The Burning Crusade"
-L.TabCategory_CLASSIC 	= "WoW Classique"
+L.TabCategory_VANILLA 	= "WoW Classique"
 L.TabCategory_OTHER     = "Autres Boss Mods"
 
 L.BossModLoaded 	= "%s statistiques"
