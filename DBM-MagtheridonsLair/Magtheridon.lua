@@ -33,14 +33,14 @@ local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Ico
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
 local HandTarget = ""
 local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
-local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.." to soak", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath")
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
 local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local FingerTarget = ""
 local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
-local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.." or die", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath")
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
 local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
@@ -68,7 +68,7 @@ function mod:Hand(extraTimer)
 	HandTarget = target
 	-- SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
 	if(target == UnitName("player")) then
-		SendChatMessage("Hand of Death on me, COME TO ME!", "YELL")
+		SendChatMessage("Hand of Death on "..UnitName("PLAYER")..", STACK ON ME!", "YELL")
 		specWarnYouHand:Show()
 	else
 		warnHandofDeath:Show(target) 
@@ -84,7 +84,7 @@ function mod:Finger(extraTimer)
 	FingerTarget = target
 	-- SendChatMessage("Finger Target: "..FingerTarget.." boss target: "..target, "SAY")
 	if(target == UnitName("player")) then
-		SendChatMessage("Finger of Death on me, RUN AWAY!", "YELL")
+		SendChatMessage("Finger of Death on "..UnitName("PLAYER")..", RUN AWAY!", "YELL")
 		specWarnYouFinger:Show()
 	else
 		warnFingerofDeath:Show(target)
@@ -112,7 +112,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnInterrupt:Show()
 	elseif args:IsSpellID(85405) then
 		 if args.destName == UnitName("player") then
-			SendChatMessage("Fel Shock on me, stack on me!", "YELL")
+			SendChatMessage("Fel Shock on "..UnitName("PLAYER")..", STACK ON ME!", "YELL")
 			specWarnYouFelShock:Show()
 		end
 		timerNextFelShock:Start()
