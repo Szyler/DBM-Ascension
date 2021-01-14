@@ -10,4 +10,5 @@ v5.01 13/01/2021
 - Fixed Heroic Prince
 - Fixed Heroic Illhoof
 - SpellTimers (player cooldowns) are now separate bars from boss timers
+- Added vanilla mods from ABM
 ----------------------------------------------------------------------------------------------------
