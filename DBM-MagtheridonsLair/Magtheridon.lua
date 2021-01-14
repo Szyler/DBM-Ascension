@@ -26,28 +26,29 @@ local WarnNova			= mod:NewSpellAnnounce(30616, 2)
 local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
 local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
 local specWarnDebris	= mod:NewSpecialWarningYou(85030)
+local warnMortalCleave	= mod:NewAnnounce(L.MagCleave, 2, 85178)
 local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
 local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
 --Heroic
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
 local HandTarget = ""
-local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
+local specWarnYouHand			= mod:NewSpecialWarningYou(85437, nil, 3)
 local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Shadow_ChillTouch")
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
 local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local FingerTarget = ""
-local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
+local specWarnYouFinger			= mod:NewSpecialWarningYou(85408, nil, 3)
 local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath")
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
 local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
-local specWarnYouFelShock		= mod:NewSpecialWarningYou(85405)
+local specWarnYouFelShock		= mod:NewSpecialWarningYou(85405, nil, 3)
 local timerNextFelShock			= mod:NewNextTimer(11, 85405)
 
-local warnMortalCleave			= mod:NewAnnounce(L.MagCleave, 2, 85178)
+
 -- local 
 -- /script print(GetSpellLink(85407))
 --

@@ -2870,6 +2870,7 @@ do
 	end
 
 	function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, noSound, runSound)
+		local difficultyIcon = ""
 		local obj = setmetatable(
 			{
 				text = self.localization.warnings[text], 
@@ -2891,6 +2892,17 @@ do
 	local function newSpecialWarning(self, announceType, spellId, stacks, optionDefault, optionName, noSound, runSound)
 		spellName = GetSpellInfo(spellId) or "unknown"
 		local text = DBM_CORE_AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName) 
+		local difficultyIcon = ""
+		if type(optionName == "number") then
+			--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
+			--Likely 1 and 2 will never be used, but being prototyped just in case
+			if optionName == 3 then
+				difficultyIcon = "|TInterface\\Icons\\Ability_Creature_Cursed_02:18:18:0:0:255:66:133:153:40:58|t"
+			elseif optionName == 4 then
+				difficultyIcon = "|TInterface\\Icons\\inv_relics_hourglass:18:18:0:0:255:66:133:153:40:58|t"
+			end
+			optionName = nil
+		end
 		local obj = setmetatable( -- todo: fix duplicate code
 			{
 				text = text,
@@ -2908,9 +2920,9 @@ do
 		end
 		table.insert(self.specwarns, obj)
 		if announceType == "stack" then
-			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(stacks or 3, spellId)
+			self.localization.options[text] = difficultyIcon..DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(stacks or 3, spellId)
 		else
-			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(spellId)
+			self.localization.options[text] = difficultyIcon..DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(spellId)
 		end
 		return obj
 	end
