@@ -35,8 +35,9 @@ local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Ico
 local HandTarget = "the target of $spell:85437"
 local specWarnYouHand			= mod:NewSpecialWarningYou(85437, nil, 3)
 local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Shadow_ChillTouch", nil, 3)
-local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
-local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
+local timerHandofDeath			= mod:NewTargetTimer(4, 85437, nil, nil, 3)
+local timerNextHandofDeath		= mod:NewNextTimer(30, 85437, nil, nil, 3)
+local timerTimerTest			= mod:NewTimer(30, 85437, nil, nil, 3)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local FingerTarget = "the target of $spell:85408"
@@ -54,7 +55,7 @@ local timerNextFelShock			= mod:NewNextTimer(11, 85405)
 --
 
 local timerQuake		= mod:NewNextTimer(60, 85026)
-local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616)
+local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 30616, nil, 3)
 local Nova				= 1;
 local timerNova			= mod:NewTimer(55, "Blast Nova #%s", 30616)
 local timerPhaseTwo		= mod:NewTimer(90, "Magtheridon", "Interface\\Icons\\Achievement_Boss_Magtheridon")
