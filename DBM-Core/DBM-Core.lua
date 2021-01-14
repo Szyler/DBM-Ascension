@@ -2679,6 +2679,17 @@ do
 
 	-- old constructor (no auto-localize)
 	function bossModPrototype:NewAnnounce(text, color, icon, optionDefault, optionName)
+		local difficultyIcon = ""
+		if type(optionName == "number") then
+			--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
+			--Likely 1 and 2 will never be used, but being prototyped just in case
+			if optionName == 3 then
+				difficultyIcon = "|TInterface\\Icons\\Ability_Creature_Cursed_02:18:18:0:0:255:66:133:153:40:58|t"
+			elseif optionName == 4 then
+				difficultyIcon = "|TInterface\\Icons\\inv_relics_hourglass:18:18:0:0:255:66:133:153:40:58|t"
+			end
+			optionName = nil
+		end
 		local obj = setmetatable(
 			{
 				text = self.localization.warnings[text],
@@ -2692,9 +2703,10 @@ do
 		if optionName == false then
 			obj.option = nil
 		else
-			self:AddBoolOption(optionName or text, optionDefault, "announce")
+			self:AddBoolOption(optionName or difficultyIcon..text, optionDefault, "announce")
 		end
 		table.insert(self.announces, obj)
+		-- self.localization.options[text] = difficultyIcon..DBM_CORE_AUTO_ANNOUNCE_OPTIONS[announceType]:format(spellId, spellName)
 		return obj
 	end
 	
@@ -2718,6 +2730,17 @@ do
 		else
 			text = DBM_CORE_AUTO_ANNOUNCE_TEXTS[announceType]:format(spellName)
 		end
+		local difficultyIcon = ""
+		if type(optionName == "number") then
+			--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
+			--Likely 1 and 2 will never be used, but being prototyped just in case
+			if optionName == 3 then
+				difficultyIcon = "|TInterface\\Icons\\Ability_Creature_Cursed_02:18:18:0:0:255:66:133:153:40:58|t"
+			elseif optionName == 4 then
+				difficultyIcon = "|TInterface\\Icons\\inv_relics_hourglass:18:18:0:0:255:66:133:153:40:58|t"
+			end
+			optionName = nil
+		end
 		local obj = setmetatable( -- todo: fix duplicate code
 			{
 				text = text,
@@ -2735,7 +2758,7 @@ do
 			self:AddBoolOption(optionName or text, optionDefault, "announce")
 		end
 		table.insert(self.announces, obj)
-		self.localization.options[text] = DBM_CORE_AUTO_ANNOUNCE_OPTIONS[announceType]:format(spellId, spellName)
+		self.localization.options[text] = difficultyIcon..DBM_CORE_AUTO_ANNOUNCE_OPTIONS[announceType]:format(spellId, spellName)
 		return obj
 	end
 	
