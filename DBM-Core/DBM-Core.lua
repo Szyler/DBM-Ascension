@@ -3204,16 +3204,16 @@ do
 	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, r, g, b)
 		local icon = type(icon) == "number" and select(3, GetSpellInfo(icon)) or icon
 		local difficultyIcon = ""
-		if type(optionName == "number") then
-			--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
-			--Likely 1 and 2 will never be used, but being prototyped just in case
-			if optionName == 3 then
-				difficultyIcon = "|TInterface\\Icons\\Ability_Creature_Cursed_02:18:18:0:0:255:66:133:153:40:58|t"
-			elseif optionName == 4 then
-				difficultyIcon = "|TInterface\\Icons\\inv_relics_hourglass:18:18:0:0:255:66:133:153:40:58|t"
-			end
-			optionName = nil
-		end
+		-- if type(optionName == "number") then
+		-- 	--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
+		-- 	--Likely 1 and 2 will never be used, but being prototyped just in case
+		-- 	if optionName == 3 then
+		-- 		difficultyIcon = "|TInterface\\Icons\\Ability_Creature_Cursed_02:18:18:0:0:255:66:133:153:40:58|t"
+		-- 	elseif optionName == 4 then
+		-- 		difficultyIcon = "|TInterface\\Icons\\inv_relics_hourglass:18:18:0:0:255:66:133:153:40:58|t"
+		-- 	end
+		-- 	optionName = nil
+		-- end
 		local obj = setmetatable(
 			{
 				text = difficultyIcon..self.localization.timers[name],
