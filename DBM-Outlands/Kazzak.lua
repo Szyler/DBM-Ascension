@@ -36,7 +36,7 @@ local TimerNextTwisted		= mod:NewNextTimer(30, 21063)
 -- local TimerShadowBoltCD	= mod:NewCDTimer(20, 32963)
 local TimerMark			= mod:NewTargetTimer(10, 32960)
 local TimerTwisted		= mod:NewTargetTimer(15, 21063)
-local TimerEnrage		= mod:NewBerserkTimer(60, "Berserk Shadowbolt Volley", "Berserk Shadowbolt Volley", nil, 32964)
+local TimerEnrage		= mod:NewBerserkTimer(30, "Berserk Shadowbolt Volley", "Berserk Shadowbolt Volley", nil, 32964)
 
 mod:SetUsedIcons(8)
 
@@ -66,7 +66,7 @@ function mod:OnCombatStart(delay)
 	if (GetTime() - LastPull) < 20 then
 		delay = GetTime() - LastPull; -- use more accurate delay if possible
 	end
-	TimerEnrage:Start(-delay)
+	TimerEnrage:Start(60-delay)
 	WarnEnrageSoon:Schedule(55-delay)
 	TimerNextShadowBolt:Start(6)
 	TimerNextThunderclap:Start(16)
