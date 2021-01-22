@@ -3294,6 +3294,8 @@ do
 		-- todo: move the string creation to the GUI with SetFormattedString...
 		if timerType == "achievement" then
 			self.localization.options[id] = difficultyIcon..DBM_CORE_AUTO_TIMER_OPTIONS[timerType]:format(GetAchievementLink(spellId):gsub("%[(.+)%]", "%1"))
+		elseif timerType == "phase" then
+			self.localization.options[id] = difficultyIcon..DBM_CORE_AUTO_TIMER_OPTIONS[timerType]:format(spellId, timerText)
 		else
 			self.localization.options[id] = difficultyIcon..DBM_CORE_AUTO_TIMER_OPTIONS[timerType]:format(spellId, spellName)
 		end
@@ -3329,6 +3331,10 @@ do
 	
 	function bossModPrototype:NewAchievementTimer(...)
 		return newTimer(self, "achievement", ...)
+	end
+	
+	function bossModPrototype:NewPhaseTimer(...)
+		return newTimer(self, "phase", ...)
 	end
 	
 	function bossModPrototype:GetLocalizedTimerText(timerType, spellId)
