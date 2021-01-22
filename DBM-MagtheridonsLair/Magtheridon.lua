@@ -72,7 +72,7 @@ function mod:Hand(extraTimer)
 	end
 	timerHandofDeath:Start(target)
 	self:SetIcon(target, 8, 4)
-	timerNextHandofDeath:Start(30+extraTimer)
+	timerNextHandofDeath:Start(30+extraTimer-1)
 end
 
 function mod:Finger(extraTimer)
@@ -88,7 +88,7 @@ function mod:Finger(extraTimer)
 	end
 	timerFingerofDeath:Start(target)
 	self:SetIcon(target, 8, 4)
-	timerNextFingerofDeath:Start(30+extraTimer)
+	timerNextFingerofDeath:Start(30+extraTimer-1)
 end
 
 function mod:OnCombatStart(delay)
@@ -174,17 +174,17 @@ function mod:SPELL_CAST_START(args)
 		-- AnnounceHandofDeath:Show(args.destName)
 		-- if Nova <= 2 then
 		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
-			self:ScheduleMethod(0.25, "Hand", 30)
+			self:ScheduleMethod(1, "Hand", 30)
 		else
-			self:ScheduleMethod(0.25, "Hand", 0)
+			self:ScheduleMethod(1, "Hand", 0)
 		end
 	elseif args:IsSpellID(85408) then
 		-- AnnounceFingerofDeath:Show(args.destName)
 		-- if Nova >= 3 then
 		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
-			self:ScheduleMethod(0.25, "Finger", 30)
+			self:ScheduleMethod(1, "Finger", 30)
 		else
-			self:ScheduleMethod(0.25, "Finger", 0)
+			self:ScheduleMethod(1, "Finger", 0)
 		end
 	end
 end
