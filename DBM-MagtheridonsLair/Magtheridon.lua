@@ -19,7 +19,7 @@ mod:RegisterEvents(
 		"UNIT_HEALTH",
 		"SPELL_MISSED",
 		"UNIT_AURA",
-		"UNIT_TARGET",
+		"UNIT_TARGET"
 )
 
 local WarnInfernal		= mod:NewSpellAnnounce(30511, 2)
