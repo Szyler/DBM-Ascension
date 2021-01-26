@@ -36,7 +36,7 @@ local TimerNextTwisted		= mod:NewNextTimer(30, 21063)
 -- local TimerShadowBoltCD	= mod:NewCDTimer(20, 32963)
 local TimerMark			= mod:NewTargetTimer(10, 32960)
 local TimerTwisted		= mod:NewTargetTimer(15, 21063)
-local TimerEnrage		= mod:NewBerserkTimer(60)
+local TimerEnrage		= mod:NewBerserkTimer(30, "Berserk Shadowbolt Volley", "Berserk Shadowbolt Volley", nil, 32964)
 
 mod:SetUsedIcons(8)
 
@@ -59,14 +59,14 @@ function mod:EnrageRepeat()
 	self:Unschedule("WarnEnrageSoon")
 
 	TimerEnrage:Start(-6)
-	WarnEnrageSoon:Schedule(54-6)
+	WarnEnrageSoon:Schedule(30-6)
 end
 
 function mod:OnCombatStart(delay)
 	if (GetTime() - LastPull) < 20 then
 		delay = GetTime() - LastPull; -- use more accurate delay if possible
 	end
-	TimerEnrage:Start(-delay)
+	TimerEnrage:Start(60-delay)
 	WarnEnrageSoon:Schedule(55-delay)
 	TimerNextShadowBolt:Start(6)
 	TimerNextThunderclap:Start(16)
@@ -95,12 +95,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		WarnTwisted:Show(args.destName)
 		TimerTwisted:Start(args.destName)
 	elseif args:IsSpellID(32960) then
-		local target = tostring(args.destName)
+		-- local target = tostring(args.destName)
 		if args.destName == UnitName("player") then 
 			WarnMarkYou:Show()
 		else
 			if self.Options.KazzakWhisper and DBM:GetRaidRank() >= 1 then
-				self:sendWhisper(target, DBM_KAZZAK_MARK_SPEC_WARN);
+				SendChatMessage(L.DBM_KAZZAK_MARK_SPEC_WARN, "WHISPER", "COMMON", args.destName)
+				-- self:sendWhisper(target, DBM_KAZZAK_MARK_SPEC_WARN);
 			end
 		end
 		WarnMark:Show(args.destName)
@@ -110,7 +111,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(32964) then
 		WarnEnrage:Show()
-		self:ScheduleMethod(6,"EnrageRepeat");
+		mod:EnrageRepeat()
+		-- self:ScheduleMethod(6,"EnrageRepeat");
 	end
 end
 
@@ -122,9 +124,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.KazzakIcon then
 			self:RemoveIcon(args.destName);
 		end
-	elseif args:IsSpellID(32964) then
-		WarnEnrage:Show()
-		self:ScheduleMethod(6,"EnrageRepeat");
+	-- elseif args:IsSpellID(32964) then
+	-- 	WarnEnrage:Show()
+	-- 	-- self:ScheduleMethod(6,"EnrageRepeat");
 	end
 end
 
@@ -134,12 +136,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-function mod:CHAT_MSG_MONSTER_EMOTE(msg)
-	if arg1 == DBM_KAZZAK_EMOTE_ENRAGE and arg2 == DBM_KAZZAK_NAME then
-
-		self:ScheduleMethod(6,"EnrageRepeat");
-	end
-end
+-- function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+-- 	if arg1 == DBM_KAZZAK_EMOTE_ENRAGE and arg2 == DBM_KAZZAK_NAME then
+-- 		mod:EnrageRepeat()
+-- 		-- self:ScheduleMethod(6,"EnrageRepeat");
+-- 	end
+-- end
 
 
 -- function Kazzak:OnCombatStart(delay) -- I don't want to use the yell for start detection because this would trigger the boss mod every time someone pulls Kazzak while you are in hellfire peninsula
