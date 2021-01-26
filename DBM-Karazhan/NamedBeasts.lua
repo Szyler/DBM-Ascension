@@ -3,6 +3,31 @@ local L		= mod1:GetLocalizedStrings()
 mod1:SetCreatureID(16180)
 mod1:RegisterCombat("combat")
 
+mod1:RegisterEvents(
+    "SPELL_AURA_APPLIED",
+    "SPELL_CAST_SUCCESS"
+)
+
+local warningDive			= mod1:NewTargetAnnounce(29903, 3)
+local DiveCD   			    = mod1:NewCDTimer(30, 29903)
+local timerSilence			= mod1:NewCDTimer(10, 29904)
+local timerKnockback   		= mod1:NewCDTimer(8, 29905)
+
+function mod2:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(29904) then
+        timerSilence:Start()
+    end
+end
+
+function mod2:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(29903) then
+        warningDive:Show(args.destName)
+        DiveCD:Start()
+    elseif args:IsSpellID(29905) then
+        timerKnockback:Start()
+    end
+end
+
 local mod2	= DBM:NewMod("Hyakiss", "DBM-Karazhan")
 local L		= mod2:GetLocalizedStrings()
 mod2:SetCreatureID(16179)
@@ -37,8 +62,7 @@ mod3:SetCreatureID(16181)
 mod3:RegisterCombat("combat")
 
 mod3:RegisterEvents(
-    "SPELL_AURA_APPLIED",
-    "SPELL_CAST_SUCCESS"
+    "SPELL_AURA_APPLIED"
 )
 
 local warnHowlCurse			= mod2:NewTargetAnnounce(29896, 3)
