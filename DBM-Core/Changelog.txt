@@ -14,5 +14,6 @@ v5.01 13/01/2021
 ----------------------------------------------------------------------------------------------------
 v5.02 26/01/2021
 - Fixed the timers on Maulgar
-
+- Fixed the berserk timer on Kazzak
+- Raidleaders/assist can now opt in to autmatically whisper the target of the Kazzak bomb
 ----------------------------------------------------------------------------------------------------
