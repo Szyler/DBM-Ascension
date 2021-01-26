@@ -112,6 +112,7 @@ DBM_CORE_AUTO_TIMER_TEXTS = {
 	cd = "%s CD",
 	next = "Next %s",
 	achievement = "%s",
+	phase = "Phase %s",
 }
 
 DBM_CORE_AUTO_TIMER_OPTIONS = {
@@ -121,6 +122,7 @@ DBM_CORE_AUTO_TIMER_OPTIONS = {
 	cd = "Show timer for |cff71d5ff|Hspell:%d|h%s|h|r cooldown",
 	next = "Show timer for next |cff71d5ff|Hspell:%d|h%s|h|r",
 	achievement = "Show timer for %s",
+	phase = "Show timer for phase |cff71d5ff|Hspell:%d|h%s|h|r",
 }
 
 -- Auto-generated Warning Localizations
