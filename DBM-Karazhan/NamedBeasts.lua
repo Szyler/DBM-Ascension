@@ -25,7 +25,7 @@ function mod2:SPELL_AURA_APPLIED(args)
     end
 end
 
-function mod:SPELL_AURA_APPLIED_DOSE(args)
+function mod2:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(29901) and args.amount > 2 then
         warnAcidicFang:Show(args.spellName, args.destName, args.amount or 1)
 	end
@@ -35,3 +35,22 @@ local mod3	= DBM:NewMod("Rokad", "DBM-Karazhan")
 local L		= mod3:GetLocalizedStrings()
 mod3:SetCreatureID(16181)
 mod3:RegisterCombat("combat")
+
+mod3:RegisterEvents(
+    "SPELL_AURA_APPLIED",
+    "SPELL_CAST_SUCCESS"
+)
+
+local warnHowlCurse			= mod2:NewTargetAnnounce(29896, 3)
+local warnBleed			    = mod2:NewTargetAnnounce(85356, 3)
+local warnEnrage			= mod2:NewAnnounce("Soft Enrage", 2, 29691)
+
+function mod3:SPELL_AURA_APPLIED(args)
+    if args:IsSpellID(29304) then
+        warnHowlCurse:Show(args.destName)
+    elseif args:IsSpellID(85356) then
+        warnBleed:Show(args.destName)
+    elseif args:IsSpellID(29691) then
+        warnEnrage:Show(args.destName)
+	end
+end
