@@ -24,6 +24,7 @@ local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
 local warningManaBurn		= mod:NewCastAnnounce(29405, 3, nil, false)
 local warningGreaterHeal	= mod:NewCastAnnounce(35096, 3, nil, false)
 local warningHolyLight		= mod:NewCastAnnounce(29562, 3, nil, false)
+local warningPWS			= mod:NewCastAnnounce(85217, 3, nil, false)
 local warningPain			= mod:NewTargetAnnounce(85174, 3)
 local warningWall			= mod:NewTargetAnnounce(29390, 3)
 local warningDispel			= mod:NewTargetAnnounce(15090, 3)
@@ -76,6 +77,8 @@ function mod:SPELL_CAST_START(args)
 		warningHolyLight:Show()
 	elseif args:IsSpellID(29563) then
 		warningHFire:Show(args.destName)
+	elseif args:IsSpellID(85217) then
+		warningPWS:Show(args.destName)
 	end
 end
 
