@@ -14,7 +14,8 @@ mod:RegisterEvents(
 	"SPELL_MISSED",
 	"SPELL_SUMMON",
 	"SPELL_HEAL",
-	"UNIT_DIED"
+	"UNIT_DIED",
+	"SPELL_AURA_REMOVED"
 );
 
 local warnWhirlwind			= mod:NewSpellAnnounce(33238, 2)
@@ -37,13 +38,13 @@ local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
 local warnHeal				= mod:NewSpecialWarning("Interrupt Heal!")
 
 local timerWhirlwind		= mod:NewBuffActiveTimer(10, 33238)
-local timerNextWhirlwind	= mod:NewNextTimer(55, 33238)
+local timerNextWhirlwind	= mod:NewNextTimer(45, 33238)
 local timerCharge			= mod:NewNextTimer(20, 26561)
 local timerBlast			= mod:NewNextTimer(90, 33061)
 local timerFelstalk			= mod:NewNextTimer(30, 33131)
 local timerSpellshield		= mod:NewNextTimer(40, 33054)
 local timerPoly				= mod:NewNextTimer(20, 33173)
-local TimerEnrage			= mod:NewBerserkTimer(720, 44427)
+local timerMaulgarEnrage	= mod:NewBerserkTimer(720, 44427)
 
 
 local miscSoulstone			= mod:NewAnnounce("Soulstone consumed on %s", 3, 85024)
