@@ -13,13 +13,13 @@ local DiveCD   			    = mod1:NewCDTimer(30, 29903)
 local timerSilence			= mod1:NewCDTimer(10, 29904)
 local timerKnockback   		= mod1:NewCDTimer(8, 29905)
 
-function mod2:SPELL_AURA_APPLIED(args)
+function mod1:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29904) then
         timerSilence:Start()
     end
 end
 
-function mod2:SPELL_CAST_SUCCESS(args)
+function mod1:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(29903) then
         warningDive:Show(args.destName)
         DiveCD:Start()
@@ -65,9 +65,9 @@ mod3:RegisterEvents(
     "SPELL_AURA_APPLIED"
 )
 
-local warnHowlCurse			= mod2:NewTargetAnnounce(29896, 3)
-local warnBleed			    = mod2:NewTargetAnnounce(85356, 3)
-local warnEnrage			= mod2:NewAnnounce("Soft Enrage", 2, 29691)
+local warnHowlCurse			= mod3:NewTargetAnnounce(29896, 3)
+local warnBleed			    = mod3:NewTargetAnnounce(85356, 3)
+local warnEnrage			= mod3:NewAnnounce("Soft Enrage", 2, 29691)
 
 function mod3:SPELL_AURA_APPLIED(args)
     if args:IsSpellID(29304) then
