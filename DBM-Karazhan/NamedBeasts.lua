@@ -65,9 +65,9 @@ mod3:RegisterEvents(
     "SPELL_AURA_APPLIED"
 )
 
-local warnHowlCurse			= mod2:NewTargetAnnounce(29896, 3)
-local warnBleed			    = mod2:NewTargetAnnounce(85356, 3)
-local warnEnrage			= mod2:NewAnnounce("Soft Enrage", 2, 29691)
+local warnHowlCurse			= mod3:NewTargetAnnounce(29896, 3)
+local warnBleed			    = mod3:NewTargetAnnounce(85356, 3)
+local warnEnrage			= mod3:NewAnnounce("Soft Enrage", 2, 29691)
 
 function mod3:SPELL_AURA_APPLIED(args)
     if args:IsSpellID(29304) then
