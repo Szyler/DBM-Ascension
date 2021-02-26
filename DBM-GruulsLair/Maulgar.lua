@@ -44,7 +44,7 @@ local timerBlast			= mod:NewNextTimer(90, 33061)
 local timerFelstalk			= mod:NewNextTimer(30, 33131)
 local timerSpellshield		= mod:NewNextTimer(40, 33054)
 local timerPoly				= mod:NewNextTimer(20, 33173)
-local timerMaulgarEnrage	= mod:NewBerserkTimer(720, 44427)
+local timerMaulgarEnrage	= mod:NewTimer(720, "Berserk", 44427)
 
 
 local miscSoulstone			= mod:NewAnnounce("Soulstone consumed on %s", 3, 85024)
@@ -122,6 +122,7 @@ function mod:SPELL_CAST_START(args)
 		warnPoH:Show()
 	elseif args:IsSpellID(33238) then
 		warnWhirlCast:Show()
+		timerNextWhirlwind:Start()
 	elseif args:IsSpellID(85382, 85383) then
 		warnHeal:Show()
 	end
@@ -137,12 +138,5 @@ end
 function mod:SPELL_HEAL(args)
 	if args:IsSpellID(85024) then
 		miscSoulstone:Show(args.destName)
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(33238) then
-		timerWhirlwind:Cancel()
-		timerNextWhirlwind:Start()
 	end
 end
