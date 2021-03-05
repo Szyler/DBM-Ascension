@@ -25,9 +25,9 @@ local warnBoulder		= mod:NewAnnounce("Giant Boulder soon", 3, "Interface\\Icons\
 local timerNextSlam		= mod:NewNextTimer(120, 33525)
 local timerShatter		= mod:NewTimer(10, "Shatter", "Interface\\Icons\\Spell_Nature_ThunderClap")
 local timerSilence		= mod:NewCDTimer(15, 36297)
-local timerMaybeSilence	= mod:NewTimer(10, "Incoming Silence", "Interface\Icons\Spell_Holy_ImprovedResistanceAuras")
+local timerMaybeSilence	= mod:NewTimer(10, "Incoming Silence", "Interface\\Icons\\Spell_Holy_ImprovedResistanceAuras")
 local timerBoulder		= mod:NewTimer(24, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
-local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\Icons\INV_Ammo_Bullet_02")
+local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\\Icons\\INV_Ammo_Bullet_02")
 
 local timerNextHateful	= mod:NewNextTimer(8, 33813)--, mod:IsTank() or mod:IsHealer())
 
@@ -50,7 +50,7 @@ function mod:OnCombatStart(delay)
 	DBM.RangeCheck:Show(15)
 end
 
-function mod:Silence
+function mod:Silence()
 	timerMaybeSilence:Start()
 end
 
@@ -71,7 +71,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
 		timerSilence:Start()
-		self:ScheduleMethod("Silence",15);
+		self:ScheduleMethod(15,"Silence");
 	end
 end
 
@@ -112,9 +112,10 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85376) then
-	CaveInCD = CaveInCD - 1
-	timerCaveIn:Start(CaveInCD)
-	if CaveInCD < 4 then	-- Cave In CD is capped at 4 seconds, it does not decay below that.
-		CaveInCD = 4
+		CaveInCD = CaveInCD - 1
+		timerCaveIn:Start(CaveInCD)
+		if CaveInCD < 4 then	-- Cave In CD is capped at 4 seconds, it does not decay below that.
+			CaveInCD = 4
+		end
 	end
 end
