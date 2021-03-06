@@ -1,5 +1,23 @@
 ﻿local L
 
+--AnimalBosses
+L = DBM:GetModLocalization("Hyakiss")
+
+L:SetGeneralLocalization{
+	name = "Hyakiss the Lurker"
+}
+
+L:SetWarningLocalization{
+	WarnAcidicFang			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+}
+
+L:SetOptionLocalization{
+	WarnAcidicFang			= "Show $spell:29901 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+}
+
+L:SetMiscLocalization{
+}
+
 --Attumen
 L = DBM:GetModLocalization("Attumen")
 
