@@ -24,6 +24,7 @@ local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
 local warningManaBurn		= mod:NewCastAnnounce(29405, 3, nil, false)
 local warningGreaterHeal	= mod:NewCastAnnounce(35096, 3, nil, false)
 local warningHolyLight		= mod:NewCastAnnounce(29562, 3, nil, false)
+local warningPWS			= mod:NewTargetAnnounce(85217, 3)
 local warningPain			= mod:NewTargetAnnounce(85174, 3)
 local warningWall			= mod:NewTargetAnnounce(29390, 3)
 local warningDispel			= mod:NewTargetAnnounce(15090, 3)
@@ -122,6 +123,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(29572) then
 		warningMortalStrike:Show(args.destName)
 		timerMortalStrike:Show(args.destName)
+	elseif args:IsSpellID(85217) then
+		warningPWS:Show(args.destName)
 	elseif args:IsSpellID(37066, 85223, 85224) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		if (GetTime() - lastVanish) < 20 then
