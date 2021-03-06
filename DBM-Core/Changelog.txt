@@ -17,3 +17,14 @@ v5.02 26/01/2021
 - Fixed the berserk timer on Kazzak
 - Raidleaders/assist can now opt in to autmatically whisper the target of the Kazzak bomb
 ----------------------------------------------------------------------------------------------------
+v5.03 06/03/2021
+- Added Animal bosses in Karazhan
+- Added warning for Magtheridon debris
+- Added timer for Infernals on Magtheridon
+- Added sunder armor stacks on Prince
+- Fixed Moroes PWS cast trigger
+- Improved heroic Magtheridon targeting search for fingers and hands casts.
+- Fixed new Gruul timers
+- Fixed timers running too long on Illhoof
+
+----------------------------------------------------------------------------------------------------
