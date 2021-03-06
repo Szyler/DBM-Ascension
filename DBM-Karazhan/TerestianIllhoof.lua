@@ -64,6 +64,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningWeakened:Show(args.destName)
 		timerWeakened:Start()
 		warningImpSoon:Schedule(26)
+		timerLink:Cancel()
+		timerAmplifyCD:Cancel()
 	elseif args:IsSpellID(85275) then
 		warnCurse:Show(args.destName)
 		timerCurse:Start(args.destName)

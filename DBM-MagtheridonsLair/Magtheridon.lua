@@ -144,6 +144,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFelShock:Start()
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(85432) then
+		timerInfernal:Start(15)
 	end
 end
 
@@ -215,6 +217,7 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(85033) then
 		WarnInfernal:Show()
+		timerInfernal:Start()
 	end
 end
 
@@ -247,6 +250,7 @@ function mod:UNIT_HEALTH(unit)
 				if Nova >= 7 then
 					local elapsed, total = timerSpecialNova:GetTime();
 					timerSpecialNova:Update(elapsed, total+12);
+					specWarnNova:Update(elapsed, total+12);
 				else
 					local elapsed, total = timerNova:GetTime(tostring(Nova));
 					timerNova:Update(elapsed, total+12, tostring(Nova));

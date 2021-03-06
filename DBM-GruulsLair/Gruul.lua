@@ -12,7 +12,8 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_WARNING",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_CAST_START"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warnShatter		= mod:NewSpellAnnounce(33525, 3)
@@ -21,20 +22,25 @@ local warnGrow			= mod:NewSpellAnnounce(36300, 3)
 local warnSilence		= mod:NewSpellAnnounce(36297, 2)
 local warnBoulder		= mod:NewAnnounce("Giant Boulder soon", 3, "Interface\\Icons\\inv_stone_10")
 
-local timerNextSlam		= mod:NewNextTimer(120, 33525)
+local timerNextSlam		= mod:NewNextTimer(110, 33525)
 local timerShatter		= mod:NewTimer(10, "Shatter", "Interface\\Icons\\Spell_Nature_ThunderClap")
-local timerSilence		= mod:NewCDTimer(15, 36297) --inconsistent af
-local timerBoulder		= mod:NewTimer(30, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
+local timerSilence		= mod:NewCDTimer(15, 36297)
+local timerMaybeSilence	= mod:NewTimer(10, "Incoming Silence", "Interface\\Icons\\Spell_Holy_ImprovedResistanceAuras", false, "Show the cast window of $spell:36297 as a bar timer")
+local timerBoulder		= mod:NewTimer(24, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
+local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\\Icons\\INV_Ammo_Bullet_02")
 
-local timerNextHateful	= mod:NewNextTimer(8, 33813)--, mod:IsTank() or mod:IsHealer())
+local timerNextHateful		= mod:NewNextTimer(6, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
+-- local timerNextHatefulHC	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
 
 -- grow timer placed here because DBM hates me
 local Grow				= 1;
-local timerGrow			= mod:NewTimer(30, "Grow #%s", 36300)
+local timerGrow			= mod:NewTimer(24, "Grow #%s", 36300)
 
-local BoulderCD			= 31;
+local BoulderCD			= 25;
+local CaveInCD			= 25;
 
 mod:AddBoolOption(L.CaveinYellOpt)
+mod:AddBoolOption(L.SilenceWindow, false)
 
 function mod:OnCombatStart(delay)
 	Grow = 1
@@ -46,6 +52,10 @@ function mod:OnCombatStart(delay)
 	DBM.RangeCheck:Show(15)
 end
 
+function mod:SilenceWindow()
+	timerMaybeSilence:Start()
+end
+
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
@@ -54,7 +64,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(36300) then
 		Grow = Grow + 1;
 		warnGrow:Show()
-		timerGrow:Start(30, tostring(Grow))
+		timerGrow:Start(24, tostring(Grow))
 	elseif args:IsSpellID(36240, 85376) and args:IsPlayer() then
 		specWarnCave:Show()
 		if self.Options.CaveinYellOpt then
@@ -62,7 +72,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
-		timerSilence:Start()
+		timerSilence:Start()		
+		self:UnscheduleMethod("SilenceWindow");
+		if self.Options.SilenceWindow then
+			self:ScheduleMethod(15,"SilenceWindow");
+		end
 	end
 end
 
@@ -70,7 +84,12 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(36300) then
 		Grow = Grow + 1;
 		warnGrow:Show()
-		timerGrow:Start(30, tostring(Grow))
+		timerGrow:Start(24, tostring(Grow))
+	elseif args:IsSpellID(36240, 85376) and args:IsPlayer() then
+		specWarnCave:Show()
+		if self.Options.CaveinYellOpt then
+			SendChatMessage(L.CaveinYell, "YELL")
+		end
 	end
 end
 	
@@ -94,8 +113,14 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	end
 end
 
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(33813) then
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(85376) then
+		CaveInCD = CaveInCD - 1
+		timerCaveIn:Start(CaveInCD)
+		if CaveInCD < 4 then	-- Cave In CD is capped at 4 seconds, it does not decay below that.
+			CaveInCD = 4
+		end
+	elseif args:IsSpellID(33813) then
 		-----Hateful Strike-----
 		timerNextHateful:Start()
 	end

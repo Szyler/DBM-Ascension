@@ -111,7 +111,7 @@ end
 --end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30854, 30898, 85291) then
+	if args:IsSpellID(30854, 85317, 85291) then
 		warningSWP:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnSWP:Show()
@@ -159,6 +159,8 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
+	elseif args:IsSpellID(85198) then
+		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end
 end
 		
