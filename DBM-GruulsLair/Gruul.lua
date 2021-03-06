@@ -25,12 +25,12 @@ local warnBoulder		= mod:NewAnnounce("Giant Boulder soon", 3, "Interface\\Icons\
 local timerNextSlam		= mod:NewNextTimer(110, 33525)
 local timerShatter		= mod:NewTimer(10, "Shatter", "Interface\\Icons\\Spell_Nature_ThunderClap")
 local timerSilence		= mod:NewCDTimer(15, 36297)
-local timerMaybeSilence	= mod:NewTimer(10, "Incoming Silence", "Interface\\Icons\\Spell_Holy_ImprovedResistanceAuras")
+local timerMaybeSilence	= mod:NewTimer(10, "Incoming Silence", "Interface\\Icons\\Spell_Holy_ImprovedResistanceAuras", false, "Show the cast window of $spell:36297 as a bar timer")
 local timerBoulder		= mod:NewTimer(24, "Giant Boulder CD", "Interface\\Icons\\inv_stone_10")
 local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\\Icons\\INV_Ammo_Bullet_02")
 
-local timerNextHateful		= mod:NewNextTimer(6, 33813)--, mod:IsTank() or mod:IsHealer())
-local timerNextHatefulHC	= mod:NewNextTimer(3, 33813)--, mod:IsTank() or mod:IsHealer())
+local timerNextHateful		= mod:NewNextTimer(6, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
+-- local timerNextHatefulHC	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
 
 -- grow timer placed here because DBM hates me
 local Grow				= 1;
@@ -73,6 +73,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
 		timerSilence:Start()		
+		self:UnscheduleMethod("SilenceWindow");
 		if self.Options.SilenceWindow then
 			self:ScheduleMethod(15,"SilenceWindow");
 		end
