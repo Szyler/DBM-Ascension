@@ -12,7 +12,7 @@ DBM_MAG_OPTION_4		= "Announce Quake";
 DBM_MAG_OPTION_5		= "Announce Blast Nova that happens before Quake";
 
 DBM_MAG_EMOTE_PULL		= "%s is nearly free of his bonds!";
-DBM_MAG_YELL_PHASE2		= "I... am... unleashed!"
+
 DBM_MAG_EMOTE_NOVA		= "%s begins to cast Blast Nova!";
 
 DBM_MAG_PHASE2_WARN		= "*** Phase 2 in %s sec ***";
@@ -32,12 +32,13 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	MagCleave			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+	MagCleave				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
-	MagCleave			= "Show $spell:30619 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+	MagCleave				= "Show $spell:30619 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
+	DBM_MAG_YELL_PHASE2		= "I... am... unleashed!"
 }
