@@ -11,7 +11,8 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    CaveinYellOpt           = "Yell when you are affected by $spell:36240"
+    CaveinYellOpt           = "Yell when you are affected by $spell:36240",
+    SilenceWindow           = "Show the cast window of $spell:36297 as a bar timer"
 }
 
 L:SetMiscLocalization{
