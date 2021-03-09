@@ -19,6 +19,12 @@ function mod1:SPELL_AURA_APPLIED(args)
     end
 end
 
+function mod1:SPELL_CAST_START(args)
+	if args:IsSpellID(29905) then
+        timerKnockback:Start()
+    end
+end
+
 function mod1:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(29903) then
         warningDive:Show(args.destName)
@@ -65,7 +71,7 @@ mod3:RegisterEvents(
     "SPELL_AURA_APPLIED"
 )
 
-local warnHowlCurse			= mod3:NewTargetAnnounce(29896, 3)
+local warnHowlCurse			= mod3:NewTargetAnnounce(29304, 3)
 local warnBleed			    = mod3:NewTargetAnnounce(85356, 3)
 local warnEnrage			= mod3:NewAnnounce("Soft Enrage", 2, 29691)
 
