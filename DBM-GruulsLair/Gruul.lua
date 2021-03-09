@@ -73,7 +73,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(36297) and args:IsPlayer() then
 		warnSilence:Show()
 		timerSilence:Start()		
-		self:UnscheduleMethod("SilenceWindow");
+		timerMaybeSilence:Cancel()
 		if self.Options.SilenceWindow then
 			self:ScheduleMethod(15,"SilenceWindow");
 		end
