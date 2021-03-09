@@ -70,7 +70,7 @@ function mod:OnCombatStart(delay)
 	below30 = false
 	timerDoom:Start(30-delay)
 	table.wipe(enfeebleTargets)
-	timerNextInfernal:Start(21-delay)
+	timerNextInfernal:Start(21-delay, tostring(1))
 end
 
 function mod:SPELL_CAST_START(args)
