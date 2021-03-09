@@ -245,6 +245,7 @@ function mod:UNIT_HEALTH(unit)
 	if isMag and (not below30) and (mod:GetUnitCreatureId(unit) == 17257) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 30) then
+			below30 = true
 			local elapsed, total = timerQuake:GetTime();
 			timerQuake:Update(elapsed, total+12);
 				if Nova >= 7 then
