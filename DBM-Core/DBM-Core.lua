@@ -3069,7 +3069,7 @@ do
 			else				
 				bar:SetText(pformat(self.text, ...))
 			end
-			fireEvent("DBM_TimerStart", id, msg, timer, self.icon, self.type, self.spellId, colorId, self.mod.id, self.keep, self.fade, self.name, guid)
+			fireEvent("DBM_TimerStart", id, msg, timer, self.icon, colorId)
 			table.insert(self.startedTimers, id)
 			self.mod:Unschedule(removeEntry, self.startedTimers, id)
 			self.mod:Schedule(timer, removeEntry, self.startedTimers, id)
