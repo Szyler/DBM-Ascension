@@ -256,7 +256,6 @@ function mod:UNIT_HEALTH(unit)
 					local elapsed, total = timerNova:GetTime(tostring(Nova));
 					timerNova:Update(elapsed, total+12, tostring(Nova));
 				end 
-			below30 = true;
         end
     end
 end
