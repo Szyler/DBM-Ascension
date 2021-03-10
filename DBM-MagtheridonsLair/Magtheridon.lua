@@ -145,7 +145,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(85432) then
-		timerInfernal:Start(15)
+		-- timerInfernal:Start(15)
 	end
 end
 
@@ -217,7 +217,7 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(85033) then
 		WarnInfernal:Show()
-		timerInfernal:Start()
+		-- timerInfernal:Start()
 	end
 end
 
