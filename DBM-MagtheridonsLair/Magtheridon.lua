@@ -114,6 +114,7 @@ end
 function mod:OnCombatStart(delay)
 	Nova = 1;
 	timerPhaseTwo:Start()
+	below30 = false;
 end
 
 function mod:OnCombatEnd()
