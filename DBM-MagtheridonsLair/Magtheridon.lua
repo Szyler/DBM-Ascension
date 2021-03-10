@@ -249,14 +249,14 @@ function mod:UNIT_HEALTH(unit)
 			below30 = true
 			local elapsed, total = timerQuake:GetTime();
 			timerQuake:Update(elapsed, total+12);
-				if Nova >= 7 then
-					local elapsed, total = timerSpecialNova:GetTime();
-					timerSpecialNova:Update(elapsed, total+12);
-					specWarnNova:Update(elapsed, total+12);
-				else
-					local elapsed, total = timerNova:GetTime(tostring(Nova));
-					timerNova:Update(elapsed, total+12, tostring(Nova));
-				end 
+			if Nova >= 7 then
+				local elapsed, total = timerSpecialNova:GetTime();
+				timerSpecialNova:Update(elapsed, total+12);
+				specWarnNova:Update(elapsed, total+12);
+			else
+				local elapsed, total = timerNova:GetTime(tostring(Nova));
+				timerNova:Update(elapsed, total+12, tostring(Nova));
+			end 
         end
     end
 end
