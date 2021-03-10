@@ -114,6 +114,7 @@ end
 function mod:OnCombatStart(delay)
 	Nova = 1;
 	timerPhaseTwo:Start()
+	below30 = false;
 end
 
 function mod:OnCombatEnd()
@@ -145,7 +146,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(85432) then
-		timerInfernal:Start(15)
+		-- timerInfernal:Start(15)
 	end
 end
 
@@ -217,7 +218,7 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(85033) then
 		WarnInfernal:Show()
-		timerInfernal:Start()
+		-- timerInfernal:Start()
 	end
 end
 
@@ -245,17 +246,17 @@ function mod:UNIT_HEALTH(unit)
 	if isMag and (not below30) and (mod:GetUnitCreatureId(unit) == 17257) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 30) then
+			below30 = true
 			local elapsed, total = timerQuake:GetTime();
 			timerQuake:Update(elapsed, total+12);
-				if Nova >= 7 then
-					local elapsed, total = timerSpecialNova:GetTime();
-					timerSpecialNova:Update(elapsed, total+12);
-					specWarnNova:Update(elapsed, total+12);
-				else
-					local elapsed, total = timerNova:GetTime(tostring(Nova));
-					timerNova:Update(elapsed, total+12, tostring(Nova));
-				end 
-			below30 = true;
+			if Nova >= 7 then
+				local elapsed, total = timerSpecialNova:GetTime();
+				timerSpecialNova:Update(elapsed, total+12);
+				specWarnNova:Update(elapsed, total+12);
+			else
+				local elapsed, total = timerNova:GetTime(tostring(Nova));
+				timerNova:Update(elapsed, total+12, tostring(Nova));
+			end 
         end
     end
 end
