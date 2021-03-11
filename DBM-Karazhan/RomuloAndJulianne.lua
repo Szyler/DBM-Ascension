@@ -23,12 +23,16 @@ local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warningHeal		= mod:NewCastAnnounce(30878, 4)
 local warningDaring		= mod:NewTargetAnnounce(30841, 3)
 local warningDevotion	= mod:NewTargetAnnounce(30887, 3)
-local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer() or mod:IsTank())
+local warningPosion		= mod:NewAnnounce(L.warningPosion, 2, 30830) --, mod:IsHealer() or mod:IsTank()
+
+-- Heroic
+local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
+local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
 
 local timerHeal				= mod:NewCastTimer(2.5, 30878)
 local timerDaring			= mod:NewTargetTimer(8, 30841)
 local timerDevotion			= mod:NewTargetTimer(10, 30887)
-local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
+local timerCombatStart		= mod:NewTimer(55, L.TimerCombatStart, 2457)
 local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
 mod:AddBoolOption("HealthFrame", true)
@@ -77,6 +81,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30887) then
 		warningDevotion:Show(args.destName)
 		timerDevotion:Start(args.destName)
+	elseif args:IsSpellID(85237) and args.amount >= 20 then -- Heartbroken
+		WarnHeartbroken:Show(args.amount or 20, args.spellName)
+	elseif args:IsSpellID(85236) and args.amount >= 20 then -- The Power of Love
+		WarnLove:Show(args.amount or 20, args.spellName)
 	end
 end
 
