@@ -3187,7 +3187,7 @@ do
 		end
 	end
 	
-	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, r, g, b)
+	function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, colorType, r, g, b)
 		local icon = type(icon) == "number" and select(3, GetSpellInfo(icon)) or icon
 		local obj = setmetatable(
 			{
@@ -3195,6 +3195,7 @@ do
 				timer = timer,
 				id = name,
 				icon = icon,
+				colorType = colorType,
 				r = r,
 				g = g,
 				b = b,
@@ -3213,10 +3214,10 @@ do
 	-- todo: disable the timer if the player already has the achievement and when the ACHIEVEMENT_EARNED event is fired
 	-- problem: heroic/normal achievements :[
 	-- local achievementTimers = {}
-	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, texture, r, g, b)
+	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, colorType, texture, r, g, b)
 		-- new argument timerText is optional (usually only required for achievement timers as they have looooong names)
 		if type(timerText) == "boolean" or type(optionDefault) == "string" then -- check if the argument was skipped
-			return newTimer(self, timerType, timer, spellId, nil, timerText, optionDefault, optionName, texture, r, g, b)
+			return newTimer(self, timerType, timer, spellId, nil, timerText, optionDefault, optionName, colorType, texture, r, g, b)
 		end
 		local spellName, icon
 		if timerType == "achievement" then
@@ -3244,6 +3245,7 @@ do
 				timer = timer,
 				id = id,
 				icon = icon,
+				colorType = colorType,
 				r = r,
 				g = g,
 				b = b,
