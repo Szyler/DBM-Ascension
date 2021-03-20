@@ -22,9 +22,10 @@ mod:RegisterEvents(
 -----START DEFINES-----
 	local WarnAbyssal		= mod:NewSpellAnnounce(30511, 2)
 	local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
-	local timerHeal			= mod:NewCastTimer(2, 30528)
-	local timerNextQuake	= mod:NewNextTimer(60,85026)
+	local timerHeal			= mod:NewCastTimer(2, 30528, nil, false, nil, 3)
+	local timerNextQuake	= mod:NewNextTimer(12,85026)
 	local timerNovaSoon		= mod:NewTimer(4, "Interrupt with Cubes soon!", 30616)
+	local timerTerminate		= mod:NewTargetTimer(10, 85082, nil, false, nil, 5)
 	local specWarnConflag	= mod:NewSpecialWarningMove(6117)
 
 -----PHASE 3-----
@@ -56,6 +57,13 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(6117) and args:IsPlayer() then
 		specWarnConflag:Show()
+		timerNovaSoon:Start()
+	elseif args:IsSpellID(978700) and args:IsPlayer() then
+		WarnAbyssal:Show()
+		timerHeal:Start()
+	elseif args:IsSpellID(28176) and args:IsPlayer() then
+		WarnHeal:Show()
+		timerTerminate:Start()
 	elseif args:IsSpellID(5384) and args:IsPlayer() then
 		self:Stop();
 	end
