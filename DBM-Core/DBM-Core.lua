@@ -3059,20 +3059,21 @@ do
 		if not self.option or self.mod.Options[self.option] then
 			local timer = timer and ((timer > 0 and timer) or self.timer + timer) or self.timer
 			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
-			local msg = id
 			local barGroup = self.mod.barGroup or DBM.Bars;
 			local bar = barGroup:CreateBar(timer, id, self.icon)
 			if not bar then
 				return false, "error" -- creating the timer failed somehow, maybe hit the hard-coded timer limit of 15
 			end
 			if self.type and not self.text then
-				local msg = (pformat(self.mod:GetLocalizedTimerText(self.type, self.spellId), ...))
-				bar:SetText(msg)
+				msg = pformat(self.mod:GetLocalizedTimerText(self.type, self.spellId), ...)
 			else				
-				local msg = (pformat(self.text, ...))
-				bar:SetText(msg)
+				msg = pformat(self.text, ...)
 			end
-			fireEvent("DBM_TimerStart", id, msg, timer, self.icon, colorId)
+			bar:SetText(msg)
+			if not msg then
+				msg = "Something went wrong"
+			end
+			fireEvent("DBM_TimerStart", id, msg, timer, self.icon, self.type, self.spellId, colorId)
 			table.insert(self.startedTimers, id)
 			self.mod:Unschedule(removeEntry, self.startedTimers, id)
 			self.mod:Schedule(timer, removeEntry, self.startedTimers, id)
