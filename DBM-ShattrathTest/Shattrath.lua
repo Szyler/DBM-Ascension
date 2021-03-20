@@ -22,10 +22,10 @@ mod:RegisterEvents(
 -----START DEFINES-----
 	local WarnAbyssal		= mod:NewSpellAnnounce(30511, 2)
 	local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
-	local timerHeal			= mod:NewCastTimer(2, 30528, nil, false, nil, 3)
+	local timerHeal			= mod:NewCastTimer(2, 30528)
 	local timerNextQuake	= mod:NewNextTimer(12,85026)
 	local timerNovaSoon		= mod:NewTimer(4, "Interrupt with Cubes soon!", 30616)
-	local timerTerminate		= mod:NewTargetTimer(10, 85082, nil, false, nil, 5)
+	local timerTerminate		= mod:NewTargetTimer(10, 85082)
 	local specWarnConflag	= mod:NewSpecialWarningMove(6117)
 
 -----PHASE 3-----
