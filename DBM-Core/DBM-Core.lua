@@ -1378,7 +1378,7 @@ end
 
 function DBM:LFG_PROPOSAL_SHOW()
 	DBM.Bars:CreateBar(40, DBM_LFG_INVITE, "Interface\\Icons\\Spell_Holy_BorrowedTime")
-	fireEvent("DBM_TimerStart", "DBMLFGTimer", L.LFG_INVITE, 40, "237538", "extratimer", nil, 0)
+	fireEvent("DBM_TimerStart", "DBMLFGTimer", "Dungeon Finder", 40, "237538", "extratimer", nil, 0)
 end
 
 function DBM:LFG_PROPOSAL_FAILED()
