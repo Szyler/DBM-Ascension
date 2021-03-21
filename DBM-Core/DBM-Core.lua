@@ -3219,6 +3219,9 @@ do
 		if type(timerText) == "boolean" or type(optionDefault) == "string" then -- check if the argument was skipped
 			return newTimer(self, timerType, timer, spellId, nil, timerText, optionDefault, optionName, colorType, texture, r, g, b)
 		end
+		if type(colorType) == "number" and colorType > 7 then
+			DBM:Debug("|cffff0000texture is in the colorType arg for: |r"..spellId)
+		end
 		local spellName, icon
 		if timerType == "achievement" then
 			spellName = select(2, GetAchievementInfo(spellId))
