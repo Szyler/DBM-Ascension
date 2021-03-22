@@ -1902,6 +1902,7 @@ function DBM:EndCombat(mod, wipe)
 				sendWhisper(k, msg)
 			end
 			fireEvent("wipe", mod)
+			fireEvent("DBM_Wipe", mod)
 		else
 			local thisTime = GetTime() - mod.combatInfo.pull
 			local lastTime = (mod:IsDifficulty("heroic5", "heroic10") and mod.stats.heroic10LastTime) or (mod:IsDifficulty("heroic25") and mod.stats.heroic25LastTime) or mod:IsDifficulty("normal5", "normal10", "normal25") and mod.stats.lastTime
@@ -1932,6 +1933,7 @@ function DBM:EndCombat(mod, wipe)
 				sendWhisper(k, msg)
 			end
 			fireEvent("kill", mod)
+			fireEvent("DBM_Kill", mod)
 		end
 		table.wipe(autoRespondSpam)
 		if mod.OnCombatEnd then mod:OnCombatEnd(wipe) end
@@ -3111,7 +3113,7 @@ do
 			end
 		end
 	end
-	
+
 	function timerPrototype:Cancel(...)
 		self:Stop(...)
 		self:Unschedule(...)
@@ -3141,6 +3143,7 @@ do
 		end
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 		local barGroup = self.mod.barGroup or DBM.Bars;
+		fireEvent("DBM_TimerUpdate", id, elapsed, totalTime)
 		return barGroup:UpdateBar(id, elapsed, totalTime)
 	end
 
