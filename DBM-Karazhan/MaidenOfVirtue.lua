@@ -71,7 +71,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(32445) then
+	if args:IsSpellID(32445, 85228, 85229) then
 		timerWrath:Start()
 		warnWrath:Show()
 	end
