@@ -1,4 +1,4 @@
-local mod	= ABM:NewMod("Onyxia", "DBM-Onyxia")
+local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 3763 $"):sub(12, -3))
