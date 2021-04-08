@@ -1,0 +1,14 @@
+## Interface: 30300
+## Title:|cffffffff<|r|cffa335eeABM-Classic|r|cffffffff>|r |cffffffffOnyxia|r
+## LoadOnDemand: 1
+## RequiredDeps: ABM-Core
+## SavedVariablesPerCharacter: DBMOnyxia_SavedVars, DBMOnyxia_SavedStats
+
+## X-ABM-Mod: 1
+## X-ABM-Mod-Category: Vanilla
+## X-ABM-Mod-Has-Heroic-Mode: 0
+## X-ABM-Mod-Sort: 112
+## X-ABM-Mod-Name: Onyxia's Lair
+## X-ABM-Mod-LoadZone: Onyxia's Lair
+localization.en.lua
+Onyxia.lua
