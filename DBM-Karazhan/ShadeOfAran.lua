@@ -170,7 +170,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		self:Unschedule(warnSheepTargets);
 		if (self:IsDifficulty("heroic10") and (#SheepTargets >= 5)) then
-			self:warnSheepTargets();
+			self:Schedule(0, warnSheepTargets);
 		else
 			self:Schedule(0.3, warnSheepTargets);
 		end
