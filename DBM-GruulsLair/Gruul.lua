@@ -36,15 +36,16 @@ local timerNextHateful		= mod:NewNextTimer(6, 33813, nil, false)--, mod:IsTank()
 local Grow				= 1;
 local timerGrow			= mod:NewTimer(24, "Grow #%s", 36300)
 
-local BoulderCD			= 25;
-local CaveInCD			= 25;
+local BoulderCD			= 24;
+local CaveInCD			= 24;
 
 mod:AddBoolOption(L.CaveinYellOpt)
 mod:AddBoolOption(L.SilenceWindow, false)
 
 function mod:OnCombatStart(delay)
 	Grow = 1
-	BoulderCD = 31
+	BoulderCD = 24
+	CaveInCD = 24
 	timerNextSlam:Start(90-delay)
 	timerSilence:Start(115-delay)
 	timerBoulder:Start(115-delay)
