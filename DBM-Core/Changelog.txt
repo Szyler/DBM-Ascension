@@ -25,8 +25,14 @@ v5.02 06/03/2021
 - Fixed the berserk timer on Kazzak
 - Raidleaders/assist can now opt in to autmatically whisper the target of the Kazzak bomb
 ----------------------------------------------------------------------------------------------------
-v5.03 10/03/2021
+v5.03 09/04/2021
+- Added Heroic Romulo and Julianne mechanic
+- Added missing onyxia vanilla module
 - Fixed error on Magtheridon's Infernals
 - Fixed wrong spell name on Rokad (Animal boss)
 - Fixed the first infernal timer of Prince
+- Fixed an error on Heroic Aran
+- Fixed a missing translation on Opera in Karazhan
+- Fixed timer for Holy Wrath on Maiden
+- Fixed the Black Morass portal timer
 ----------------------------------------------------------------------------------------------------
