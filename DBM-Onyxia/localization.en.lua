@@ -3,7 +3,7 @@ local L
 --------------
 --  Onyxia  --
 --------------
-L = ABM:GetModLocalization("Onyxia")
+L = DBM:GetModLocalization("Onyxia")
 
 L:SetGeneralLocalization{
 	name = "Onyxia"
