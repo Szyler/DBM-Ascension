@@ -170,7 +170,7 @@ function mod:SPELL_CAST_START(args)
 		else
 			timerNova:Start(55, tostring(Nova))
 		end
-	elseif args:IsSpellID(85437) then
+	elseif args:IsSpellID(85437, 85409) then
 		-- AnnounceHandofDeath:Show(args.destName)
 		-- if Nova <= 2 then
 		if timerNova:GetTime() < 34 and timerNova:GetTime() > 26 then
