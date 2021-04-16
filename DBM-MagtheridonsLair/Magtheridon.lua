@@ -39,20 +39,20 @@ local timerPhaseTwo		= mod:NewPhaseTimer(120, 30205, "Magtheridon breaks free")
 --Heroic
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
 local HandTarget = "the target of $spell:85437"
-local specWarnYouHand			= mod:NewSpecialWarningYou(85437, nil, 3)
-local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Shadow_ChillTouch", nil, 3)
-local timerHandofDeath			= mod:NewTargetTimer(4, 85437, nil, nil, 3)
-local timerNextHandofDeath		= mod:NewNextTimer(30, 85437, nil, nil, 3)
+local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
+local warnHandofDeath			= mod:NewAnnounce("Stack on "..HandTarget.."", 3, "Interface\\Icons\\Shadow_ChillTouch")
+local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
+local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local FingerTarget = "the target of $spell:85408"
-local specWarnYouFinger			= mod:NewSpecialWarningYou(85408, nil, 3)
-local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath", nil, 3)
-local timerFingerofDeath		= mod:NewTargetTimer(4, 85408, nil, nil, 3)
-local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408, nil, nil, 3)
+local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
+local warnFingerofDeath			= mod:NewAnnounce("Move away from "..FingerTarget.."", 3, "Interface\\Icons\\Spell_Shadow_FingerOfDeath")
+local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
+local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
-local specWarnYouFelShock		= mod:NewSpecialWarningYou(85407, nil, 3)
-local timerNextFelShock			= mod:NewNextTimer(11, 85407, nil, nil, 3)
+local specWarnYouFelShock		= mod:NewSpecialWarningYou(85407)
+local timerNextFelShock			= mod:NewNextTimer(11, 85407)
 
 -- local 
 local isMag				= false;
