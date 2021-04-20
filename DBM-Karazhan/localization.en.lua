@@ -297,7 +297,7 @@ L:SetWarningLocalization{
 	ShadowCrystalDead2		= "Shadow Crystals destroyed (2/3)",
 	ShadowCrystalDead3		= "Shadow Crystals destroyed (3/3)",
 	--InfernalOnYou			= "Next Infernal on you!",
-	Sunder					= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)	
+	PriSunder				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)	
 }
 
 L:SetTimerLocalization{
