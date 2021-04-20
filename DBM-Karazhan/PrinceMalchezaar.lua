@@ -26,7 +26,7 @@ local warningAmpMagic			= mod:NewSpellAnnounce(39095, 3)
 local warningSWP				= mod:NewTargetAnnounce(30898, 2, nil, false)
 local warningDoom				= mod:NewSpellAnnounce(85069, 1)
 local warningShadowRealm		= mod:NewTargetAnnounce(85077, 3)
-local warnSunder				= mod:NewAnnounce(L.Sunder, 3, 85198)
+local priWarnSunder				= mod:NewAnnounce(L.PriSunder, 3, 85198)
 
 local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
 local specWarnNova				= mod:NewSpecialWarningRun(30852)
@@ -129,7 +129,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(showEnfeebleWarning)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
-		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end	
 end
 
@@ -160,7 +160,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
 	elseif args:IsSpellID(85198) then
-		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end
 end
 		
