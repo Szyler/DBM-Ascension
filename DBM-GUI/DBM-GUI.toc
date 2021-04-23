@@ -17,7 +17,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: Nitram and Tandanu
-## URL: http://www.deadlybossmods.com
+## URL: https://discord.gg/4ZHfgskSvM
 localization.en.lua
 localization.de.lua
 localization.cn.lua
