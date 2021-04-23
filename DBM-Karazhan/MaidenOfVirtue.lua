@@ -30,11 +30,13 @@ local warningDesperate		= mod:NewSpellAnnounce(85108, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
 local timerDesperateExplode	= mod:NewBuffActiveTimer(14, 85103)
 local timerDesperateCD		= mod:NewCDTimer(44, 85120)
-local timerWrath			= mod:NewCDTimer(35, 32445)
+local timerWrath			= mod:NewCDTimer(16, 32445)
+local timerWrathSkipped		= mod:NewCDTimer(12, 32445)
 
 function mod:OnCombatStart(delay)
 	timerRepentanceCD:Start(40-delay)
 	timerDesperateCD:Start(20-delay)
+	timerWrath:Start(15-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
@@ -73,7 +75,9 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(32445, 85228, 85229) then
+		self:Unschedule(timerWrathSkipped);
 		timerWrath:Start()
+		timerWrathSkipped:Schedule(20)
 		warnWrath:Show()
 	end
 end
