@@ -60,6 +60,7 @@ function mod:OnCombatStart(delay)
 	lastDinner = GetTime()
 	danceCount = 0;
 	mod:DanceTimer(22-delay,true);
+	self.vb.phase = 1
 end
 
 function mod:DanceTimer(t,noInc)
@@ -147,6 +148,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			timerDinner:Start()
 			warningDinner:Show()
+			self.vb.phase = 2
 		end
 	end
 end

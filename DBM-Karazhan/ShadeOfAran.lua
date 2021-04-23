@@ -100,6 +100,7 @@ function mod:OnCombatStart(delay)
 	lastTarget = nil;
 	table.wipe(WreathTargets)
 	table.wipe(SheepTargets);
+	self.vb.phase = 1
 end
 
 function mod:SPELL_CAST_START(args)
@@ -190,6 +191,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SheepIcons then
 			self:RemoveIcon(args.destName);
 		end
+	elseif args:IsSpellID(85182) then 
+		self.vb.phase = 2
 	end
 end
 
