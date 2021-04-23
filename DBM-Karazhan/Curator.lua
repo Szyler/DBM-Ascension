@@ -104,7 +104,7 @@ function mod:SPELL_DAMAGE(args)
 	-----Hateful Strike-----
 	if args:IsSpellID(33813) then
 		timerNextHateful:Start()
-	elseif args:IsSpellID(85267)
+	elseif args:IsSpellID(85267) then
 		timerNextHatefulHc:Start()
 	end
 end
