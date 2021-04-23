@@ -40,6 +40,8 @@ mod:AddBoolOption("HealthFrame", true)
 local phases = {}
 local JulianneDied = 0
 local RomuloDied = 0
+local LoversSpam = 0
+local heartbrokenStacks = 0
 
 local function updateHealthFrame(phase)--WIP
 	if phases[phase] then
@@ -63,6 +65,7 @@ function mod:OnCombatStart(delay)
 	JulianneDied = 0
 	RomuloDied = 0
 	timerNextSpotlight:Start(20-delay)
+	heartbrokenStacks = 0
 end
 
 function mod:SPELL_CAST_START(args)
@@ -81,10 +84,21 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30887) then
 		warningDevotion:Show(args.destName)
 		timerDevotion:Start(args.destName)
-	elseif args:IsSpellID(85237) and args.amount >= 20 then -- Heartbroken
-		WarnHeartbroken:Show(args.amount or 20, args.spellName)
-	elseif args:IsSpellID(85236) and args.amount >= 20 then -- The Power of Love
-		WarnLove:Show(args.amount or 20, args.spellName)
+	elseif args:IsSpellID(85237) then  -- Heartbroken
+		heartbrokenStacks = args.amount
+		if args.amount and (GetTime() - LoversSpam) > 5 and args.amount >= 10 and args.amount % 5 == 0 then
+			LoversSpam = GetTime()
+			WarnHeartbroken:Show(args.amount, args.spellName)
+		end
+	elseif args:IsSpellID(85236) then
+		if heartbrokenStacks > 0 then
+			heartbrokenStacks = heartbrokenStacks - 0.5
+		end
+
+		if args.amount and (GetTime() - LoversSpam) > 5 and heartbrokenStacks <= 5 and args.amount % 5 == 0 and args.amount >= 15 then -- The Power of Love
+			LoversSpam = GetTime()
+			WarnLove:Show(args.amount, args.spellName)
+		end 
 	end
 end
 
