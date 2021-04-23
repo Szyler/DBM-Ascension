@@ -37,6 +37,7 @@ function mod:OnCombatStart(delay)
 	timerRepentanceCD:Start(40-delay)
 	timerDesperateCD:Start(20-delay)
 	timerWrath:Start(15-delay)
+	timerWrathSkipped:Schedule(35)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
