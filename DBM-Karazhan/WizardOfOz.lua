@@ -41,6 +41,7 @@ function mod:OnCombatStart(delay)
 		timerTito:Start(-delay)
 		timerNextSpotlight:Start(20-delay)
 		timerScream:Start(15-delay)
+		self.vb.phase = 1
 	end
 end
 
@@ -69,6 +70,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 		if self.Options.DBM_OZ_OPTION_1 then
 			DBM.RangeCheck:Show(10)
+			self.vb.phase = 2
 		end
 	end
 end
