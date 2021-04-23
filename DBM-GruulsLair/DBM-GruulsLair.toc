@@ -1,7 +1,7 @@
 ﻿## Interface: 30300
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruul's Lair|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruul's Lair|r
-## Author: Tandanu and Nitram
+## Author: Tandanu and Nitram, updated by Junior and Szyler.
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core, DBM-BurningCrusade
 ## SavedVariablesPerCharacter: DBMGruul_SavedVars, DBMGruul_SavedStats
