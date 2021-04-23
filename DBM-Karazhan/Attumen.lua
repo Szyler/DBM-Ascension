@@ -31,6 +31,7 @@ local lastCurse = 0
 
 function mod:OnCombatStart(delay)
 	Phase = 1
+	self.vb.phase = 1
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -62,6 +63,7 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(29799) then
 		Phase = 2
+		self.vb.phase = 2
 		warnPhase2:Show()
 		timerChargeCD:Start()
 	elseif args:IsSpellID(29714) then
