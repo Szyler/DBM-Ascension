@@ -69,6 +69,7 @@ function mod:OnCombatStart(delay)
 	InfernalCount = 1
 	isPrince = true
 	below30 = false
+	timerEnfeeble:Start(32-delay)
 	timerDoom:Start(30-delay)
 	table.wipe(enfeebleTargets)
 	timerNextInfernal:Start(21-delay, tostring(1))
