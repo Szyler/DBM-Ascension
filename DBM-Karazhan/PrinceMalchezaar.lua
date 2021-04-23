@@ -36,10 +36,10 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
 local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
-local timerEnfeeble				= mod:NewCDTimer(30, 30843)
-local timerDoom					= mod:NewCDTimer(24, 85069)
+local timerEnfeeble				= mod:NewNextTimer(30, 30843)
+local timerDoom					= mod:NewNextTimer(24, 85069)
 local timerNova					= mod:NewNextTimer(30, 30852)
-local timerShadowRealm			= mod:NewCDTimer(45, 85077)
+local timerShadowRealm			= mod:NewNextTimer(45, 85077)
 local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 
 local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
@@ -149,7 +149,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 				specWarnSRealm:Show()
 			end
 			if mod:IsDifficulty("heroic10") then
-				timerShadowRealm:Start(23)
+				timerShadowRealm:Start(22)
 			else
 				timerShadowRealm:Start()
 			end
