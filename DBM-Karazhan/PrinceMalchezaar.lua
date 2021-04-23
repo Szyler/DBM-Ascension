@@ -38,6 +38,7 @@ local timerNovaCast				= mod:NewCastTimer(2, 30852)
 local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
 local timerEnfeeble				= mod:NewCDTimer(30, 30843)
 local timerDoom					= mod:NewCDTimer(24, 85069)
+local timerNova					= mod:NewNextTimer(30, 30852)
 local timerShadowRealm			= mod:NewCDTimer(45, 85077)
 local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 
@@ -74,8 +75,9 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30852) then
+	if args:IsSpellID(30852, 85293) then
 		warningNovaCast:Show()
+		timerNova:Start()
 		timerNovaCast:Start()
 		specWarnNova:Show()
 	end
