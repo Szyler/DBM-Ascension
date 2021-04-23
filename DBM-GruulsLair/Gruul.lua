@@ -30,7 +30,7 @@ local timerBoulder		= mod:NewTimer(24, "Giant Boulder CD", "Interface\\Icons\\in
 local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\\Icons\\INV_Ammo_Bullet_02")
 
 local timerNextHateful		= mod:NewNextTimer(6, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
--- local timerNextHatefulHC	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
+local timerNextHatefulHC	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
 
 -- grow timer placed here because DBM hates me
 local Grow				= 1;
@@ -122,6 +122,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif args:IsSpellID(33813) then
 		-----Hateful Strike-----
-		timerNextHateful:Start()
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextHatefulHC:Start()
+		else
+			timerNextHateful:Start()
+		end
 	end
 end

@@ -101,12 +101,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(33813, 85267) then
-		-----Hateful Strike-----
-		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerNextHatefulHc:Start()
-		else
-			timerNextHateful:Start()
-		end
+	-----Hateful Strike-----
+	if args:IsSpellID(33813) then
+		timerNextHateful:Start()
+	elseif args:IsSpellID(85267)
+		timerNextHatefulHc:Start()
 	end
 end
