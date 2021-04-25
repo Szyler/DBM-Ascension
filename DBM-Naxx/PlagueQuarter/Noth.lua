@@ -19,13 +19,18 @@ local timerTeleportBack		= mod:NewTimer(600, "Teleport to Raid", 46573, nil, "Sh
 -----CURSE-----
 local warnCurse				= mod:NewSpellAnnounce(29213, 2)
 local specWarnCurse			= mod:NewSpecialWarningYou(29213)
+-----Adds-----
+local timerSkeletons		= mod:NewNextTimer(30, 52611)
+--Rise, my soldiers! Rise and fight once more!
 -----MISC-----
-local berserkTimer			= mod:NewBerserkTimer(375)
+-- local berserkTimer			= mod:NewBerserkTimer(375)
 local phase = 0
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	berserkTimer:Start(375-delay)
+	-- berserkTimer:Start(375-delay)
+	timerSkeletons:Start(15-delay)
+	timerSkeletons:Schedule(15)
 	phase = 0
 	self:BackInRoom()
 end
@@ -40,6 +45,8 @@ function mod:Balcony()
 	warnTeleportSoon:Schedule(timer - 10)
 	warnTeleportNow:Schedule(timer)
 	self:ScheduleMethod(timer, "BackInRoom")
+	timerSkeletons:Start(5)
+	timerSkeletons:Schedule(5)
 end
 
 function mod:BackInRoom()
@@ -53,6 +60,8 @@ function mod:BackInRoom()
 	warnTeleportSoon:Schedule(timer - 10)
 	warnTeleportNow:Schedule(timer)
 	self:ScheduleMethod(timer, "Balcony")
+	timerSkeletons:Start(15)
+	timerSkeletons:Schedule(15)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
