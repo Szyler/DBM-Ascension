@@ -20,6 +20,7 @@ local timerLocustRemaining	= mod:NewBuffActiveTimer(16, 28785)
 -----DARK GAZE-----
 local specWarnDarkGaze		= mod:NewSpecialWarningYou(1003011)
 -----IMPALE------
+local timerImpale			= mod:NewCDTimer(10, 28783)
 local warnImpale			= mod:NewTargetAnnounce(28783, 2)
 -----MISC-----
 local berserkTimer			= mod:NewBerserkTimer(600)
@@ -49,6 +50,7 @@ function mod:SPELL_CAST_START(args)
 		prewarnLocust:Schedule(85)
 		timerLocustRemaining:Schedule(3)
 	elseif args:IsSpellID(28783) then
+		timerImpale:Start()
 		tankName = mod:GetBossTarget(15956)
 		self:ScheduleMethod(0.1, "anubImpale")
 	end
