@@ -15,14 +15,12 @@ mod:RegisterEvents(
 
 -----WEB WRAP-----
 local warnWebWrap			= mod:NewTargetAnnounce(28622, 2)
-local timerWebWrapInitial	= mod:NewNextTimer(20, 28622)
 local timerWebWrap			= mod:NewNextTimer(40, 28622)
 -----WEB SPRAY-----
 local warnWebSpraySoon		= mod:NewSoonAnnounce(29484, 1)
 local warnWebSprayNow		= mod:NewSpellAnnounce(29484, 3)
 local timerWebSpray			= mod:NewNextTimer(40, 29484)
 -----SPIDERLINGS-----
-local timerSpiderInitial	= mod:NewNextTimer(8, 43134)
 local timerSpider			= mod:NewNextTimer(16, 43134)
 -----SOFT ENRAGE-----
 local warnSoftEnrageSoon	= mod:NewSpellAnnounce(54123, 3)
@@ -34,8 +32,8 @@ local phase
 function mod:OnCombatStart(delay)
 	warnWebSpraySoon:Schedule(35 - delay)
 	timerWebSpray:Start(40 - delay)
-	timerWebWrapInitial:Start(20-delay)
-	timerSpiderInitial:Start(8 - delay)
+	timerWebWrap:Start(20-delay)
+	timerSpider:Start(8 - delay)
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
@@ -52,11 +50,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args.destName == UnitName("player") then
 			SendChatMessage(L.YellWebWrap, "YELL")
 		end
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(29484, 54125) then -- Web Spray
+	elseif args:IsSpellID(29484, 54125) then -- Web Spray
 		timer = 40
 		warnWebSprayNow:Show()
 		warnWebSpraySoon:Schedule(timer-5)
