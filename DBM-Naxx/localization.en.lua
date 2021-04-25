@@ -36,12 +36,16 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningEmbraceExpire	= "Widow's Embrace ends in 5 seconds",
-	WarningEmbraceExpired	= "Widow's Embrace faded"
+	WarningEmbraceExpired	= "Widow's Embrace faded",
+	FaerlinaMalicious		= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+	FaerlinaFrenzy			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetOptionLocalization({
 	WarningEmbraceExpire	= "Show pre-warning for Widow's Embrace fade",
-	WarningEmbraceExpired	= "Show warning for Widow's Embrace fade"
+	WarningEmbraceExpired	= "Show warning for Widow's Embrace fade",
+	FaerlinaMalicious		= "Show $spell:350250 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	FaerlinaFrenzy			= "Show warning for $spell:28798 stacks on Faerlina", --(args.spellName, args.destName, args.amount or 1)
 })
 
 ---------------
