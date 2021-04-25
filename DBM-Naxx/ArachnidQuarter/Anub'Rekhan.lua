@@ -30,6 +30,7 @@ local tankName = ''
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerLocust:Start(-delay)
+	prewarnLocust:Schedule(85-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -45,7 +46,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(28785) then
 		timerLocust:Start()
 		specWarnLocust:Show()
-		specWarnLocust:Schedule(90-5)
+		prewarnLocust:Schedule(85)
 		timerLocustRemaining:Schedule(3)
 	elseif args:IsSpellID(28783) then
 		tankName = mod:GetBossTarget(15956)
