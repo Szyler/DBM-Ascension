@@ -16,7 +16,7 @@ local warnMarkSoon			= mod:NewAnnounce("WarningMarkSoon", 1, 28835, false)
 local warnMarkNow			= mod:NewAnnounce("WarningMarkNow", 2, 28835)
 local specWarnMarkOnPlayer	= mod:NewSpecialWarning("SpecialWarningMarkOnPlayer", nil, false, true)
 -----MISC-----
-local berserkTimer			= mod:NewBerserkTimer(510)
+local berserkTimer			= mod:NewBerserkTimer(600)
 mod:AddBoolOption("HealthFrame", true)
 mod:SetBossHealthInfo(
 	16064, L.Korthazz,
