@@ -7,12 +7,16 @@ mod:RegisterCombat("combat")
 mod:EnableModel()
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_SUCCESS",
 	"PLAYER_ALIVE",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_HEALTH"
 )
 
+-----Necrotic Poison-----
+local timerNecrotic				= mod:NewNextTimer(60, 28798)
+local warnNecrotic				= mod:NewAnnounce(L.MaexxnaNecrotic, 2, 28798)
 -----WEB WRAP-----
 local warnWebWrap			= mod:NewTargetAnnounce(28622, 2)
 local timerWebWrap			= mod:NewNextTimer(40, 28622)
@@ -50,11 +54,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args.destName == UnitName("player") then
 			SendChatMessage(L.YellWebWrap, "YELL")
 		end
-	elseif args:IsSpellID(29484, 54125) then -- Web Spray
+	elseif args:IsSpellID(29484, 54125, 350287) then -- Web Spray
 		timer = 40
 		warnWebSprayNow:Show()
 		warnWebSpraySoon:Schedule(timer-5)
 		timerWebSpray:Start(timer)
+	elseif args:IsSpellID(28776) then
+		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
+		timerNecrotic:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(28776) then
+		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 

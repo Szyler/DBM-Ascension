@@ -59,21 +59,23 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningSpidersSoon	= "Maexxna Spiderlings in 5 seconds",
-	WarningSpidersNow	= "Maexxna Spiderlings spawned"
+	WarningSpidersNow	= "Maexxna Spiderlings spawned",
+	MaexxnaNecrotic		= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetTimerLocalization({
-	TimerSpider	= "Next Maexxna Spiderlings"
+	TimerSpider			= "Next Maexxna Spiderlings"
 })
 
 L:SetOptionLocalization({
 	WarningSpidersSoon	= "Show pre-warning for Maexxna Spiderlings",
 	WarningSpidersNow	= "Show warning for Maexxna Spiderlings",
-	TimerSpider			= "Show timer for next Maexxna Spiderlings"
+	TimerSpider			= "Show timer for next Maexxna Spiderlings",
+	MaexxnaNecrotic		= "Show $spell:350250 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetMiscLocalization({
-	YellWebWrap	= "I'm wrapped! Help me!",
+	YellWebWrap			= "I'm wrapped! Help me!",
 	ArachnophobiaTimer	= "Arachnophobia"
 })
 
