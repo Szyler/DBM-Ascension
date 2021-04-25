@@ -35,7 +35,6 @@ function mod:DancePhase()
 	timerDanceEnds:Show(timer)
 	warnDanceEndsSoon:Schedule(timer-10, 10)
 	warnDanceEnds:Schedule(timer)
-	soundDanceEnds:Schedule(timer)
 	self:ScheduleMethod(timer, "SlowDancePhase")
 end
 
@@ -44,7 +43,6 @@ function mod:SlowDancePhase()
 	timerTeleport:Show(timer)
 	warnTeleportSoon:Schedule(timer-15, 15)
 	warnTeleportNow:Schedule(timer)
-	soundTeleport:Schedule(timer)
 	self:ScheduleMethod(timer, "DancePhase")
 end
 
@@ -57,7 +55,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnBurningFever:Show();
 			SendChatMessage(L.YellBurningFever, "YELL")
-			soundBurningFever:Play();
 		end	
 	end
 end
@@ -71,7 +68,6 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args:IsPlayer() then
 			specWarnBurningFever:Show();
 			SendChatMessage(L.YellBurningFever, "YELL")
-			soundBurningFever:Play();
 		end
 	end
 end

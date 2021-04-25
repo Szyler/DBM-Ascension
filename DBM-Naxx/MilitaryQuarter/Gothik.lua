@@ -45,7 +45,6 @@ function mod:OnCombatStart(delay)
 	timerGothik:Start(gothikTimer)
 	warnGothikSoon:Schedule(gothikTimer-5)
 	warnGothik:Schedule(gothikTimer)
-	soundGothik:Schedule(gothikTimer)
 
 end
 
@@ -54,7 +53,6 @@ function mod:HarvestSoul()
 	timerHarvest:Start(timer)
 	warnHarvestSoon:Schedule(timer-3, 15)
 	warnHarvest:Schedule(timer)
-	soundTeleport:Schedule(timer-3)
 	self:ScheduleMethod(timer, "HarvestSoul")
 end
 

@@ -68,19 +68,16 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(1003054) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show(5);
-			soundRainOfFire:Play();
 		end
 	end
 	if args:IsSpellID(869762) then 
 		if args:IsPlayer() then
 			specWarnPoisonPool:Show(5);
-			soundPoison:Play();
 		end
 	end
 	if args:IsSpellID(1003060) then 
 		if args:IsPlayer() then
 			specWarnClingingPoison:Show(5);
-			soundPoison:Play();
 		end
 	end
 end
@@ -89,19 +86,16 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(1003054) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show(5);
-			soundRainOfFire:Play();
 		end
 	end
 	if args:IsSpellID(869762) then 
 		if args:IsPlayer() then
 			specWarnPoisonPool:Show(5);
-			soundPoison:Play();
 		end
 	end
 	if args:IsSpellID(1003060) then 
 		if args:IsPlayer() then
 			specWarnClingingPoison:Show(5);
-			soundPoison:Play();
 		end
 	end
 end

@@ -146,7 +146,6 @@ function mod:timerMajorWaveRepeat()
 	warnMajorWave:Schedule(timer)
 	warnMajorWaveSoon:Schedule(timer-5)
 	timerMajorWave:Start(timer)
-	soundMajorWave:Schedule(timer)
 end
 
 function mod:phase2Transition()
@@ -154,7 +153,6 @@ function mod:phase2Transition()
 	warnPhase2:Schedule(timer)
 	warnPhase2Soon:Schedule(timer-10)
 	timerPhase2:Start(timer)
-	soundPhase2:Schedule(timer)
 	self:ScheduleMethod(timer, "phaseTwo")
 end
 
@@ -183,7 +181,6 @@ function mod:phase3Transition()
 	warnPhase3:Schedule(timer)
 	warnPhase3Soon:Schedule(timer-10)
 	timerPhase3:Start(timer)
-	soundPhase3:Schedule(timer)
 	self:ScheduleMethod(timer, "phaseThree")
 end
 
@@ -197,12 +194,8 @@ function mod:phaseThree()
 	timerChains:Start(90)
 end
 
-function mod:warnShoutSound()
-	soundShout:Play()
 end
 
-function mod:warnShoutSoundCountdown()
-	soundShoutCount:Play()
 end
 
 function mod:timerNaxxShadeRepeat()
@@ -210,27 +203,21 @@ function mod:timerNaxxShadeRepeat()
 		timer = 34
 		warnNaxxShade:Schedule(timer)
 		warnNaxxShadeSoon:Schedule(timer-10)
-		soundNaxxShade:Schedule(timer)
 		timerNaxxShade:Start(timer)
 		shadesSpawned = shadesSpawned+1
 		warnShout:Schedule(timer+16)
 		warnShoutSoon:Schedule(timer+11)
 		timerShout:Start(timer+16)
-		self:ScheduleMethod(timer+16, "warnShoutSound")
-		self:ScheduleMethod(timer+13, "warnShoutSoundCountdown")
 	else
 		timer = 60
 		warnNaxxShade:Schedule(timer)
 		warnNaxxShadeSoon:Schedule(timer-10)
-		soundNaxxShade:Schedule(timer)
 		timerNaxxShade:Start(timer)
 		shadesSpawned = shadesSpawned+1
 		if hasShoutCast == 0 then
 			warnShout:Schedule(timer+16)
 			warnShoutSoon:Schedule(timer+11)
 			timerShout:Start(timer+16)
-			self:ScheduleMethod(timer+16, "warnShoutSound")
-			self:ScheduleMethod(timer+13, "warnShoutSoundCountdown")
 		end
 	end
 end
@@ -240,7 +227,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(1003114) then
 		warnChains:Show(args.destName)
 		if args.destName == UnitName("player") then
-			soundChains:Play()
 		end
 	end
 	-----HARVEST SOUL-----
@@ -261,7 +247,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnGastric:Show(args.destName)
 		if args.destName == UnitName("player") then
 			specWarnGastric:Show()
-			soundGastric:Play()
 		end
 	end
 	-----VOID ZONE-----
@@ -293,7 +278,6 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warnGastric:Show(args.destName)
 		if args.destName == UnitName("player") then
 			specWarnGastric:Show()
-			soundGastric:Play()
 		end
 	end
 	-----VOID ZONE-----
@@ -319,8 +303,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			warnShout:Show()
 			warnShoutSoon:Schedule(timer-5)
 			timerShout:Start(timer)
-			soundShout:Play()
-			self:ScheduleMethod(timer-3, "warnShoutSoundCountdown")
 			hasShoutCast = 1
 		end
 	-----WAIL OF SOULS-----
@@ -329,17 +311,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 	-----FROST BLAST-----
 	elseif args:IsSpellID(29879) then 
 		warnBlast:Show()
-		soundBlast:Play()
 		timerBlast:Start(45)
 	-----MANA DETONATION-----
 	elseif args:IsSpellID(27819) then
 		warnMana:Show()
-		soundMana:Play()
 		timerMana:Start(30)
 	-----CHAINS-----
 	elseif args:IsSpellID(28410) then
 		warnChains:Show()
-		soundChains:Play()
 		timerChains:Start(90)
 	end
 	--[[
@@ -466,7 +445,6 @@ function mod:checkHealth()
 		maexx = spiderBoss
 		timer = 8
 		timerSpider:Start(timer)
-		soundSpider:Schedule(timer)
 		self:ScheduleMethod(timer, "spiderTimerRepeat")
 	elseif spiderHealth == 0 then
 		maexx = 0
@@ -483,7 +461,6 @@ function mod:checkHealth()
 			timerDance:Start(timer)
 			warnDance:Schedule(timer)
 			warnDanceSoon:Schedule(timer-5)
-			soundDance:Schedule(timer)
 		end		
 	elseif plagueHealth > 34 and spiderHealth < 1 then
 		heigan = 0
@@ -533,7 +510,6 @@ function mod:spiderTimerRepeat()
 	else
 		timer = 16
 		timerSpider:Start(timer)
-		soundSpider:Schedule(timer)
 		self:ScheduleMethod(timer, "spiderTimerRepeat")
 	end
 end

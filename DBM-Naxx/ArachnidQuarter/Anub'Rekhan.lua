@@ -39,7 +39,6 @@ function mod:locustRepeat()
 	timerLocust:Show(timer)
 	prewarnLocust:Schedule(timer-5)
 	warnLocust:Schedule(timer)
-	soundLocust:Schedule(timer)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -47,7 +46,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			timer = 10
 			specWarnDarkGaze:Show(timer);
-			soundDarkGaze:Play();
 			SendChatMessage(L.YellDarkGaze, "YELL")
 		end
 	end	
@@ -69,14 +67,12 @@ function mod:anubImpale()
 	if target then
 		warnImpale:Show(target)
 		if target == UnitName("player") then 
-			soundImpale:Play()
 		end
 	end
 	local targetShade = mod:GetBossTarget(1003012)
 	if targetShade then
 		warnImpale:Show(targetShade)
 		if targetShade == UnitName("player") then 
-			soundImpale:Play()
 		end
 	end
 end

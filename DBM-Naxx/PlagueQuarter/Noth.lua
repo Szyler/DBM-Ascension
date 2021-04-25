@@ -36,7 +36,6 @@ function mod:Balcony()
 	elseif phase == 2 then timer = 72
 	elseif phase == 3 then timer = 72 
 	else return	end
-	soundTeleport:Schedule(timer)
 	timerTeleportBack:Show(timer)
 	warnTeleportSoon:Schedule(timer - 10)
 	warnTeleportNow:Schedule(timer)
@@ -50,7 +49,6 @@ function mod:BackInRoom()
 	elseif phase == 2 then timer = 43 
 	elseif phase == 3 then timer = 28 
 	else return end
-	soundTeleport:Schedule(timer)
 	timerTeleport:Show(timer)
 	warnTeleportSoon:Schedule(timer - 10)
 	warnTeleportNow:Schedule(timer)
@@ -67,13 +65,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29213) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
-			soundCurse:Play();
 		end
 	end
 	if args:IsSpellID(54835) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
-			soundCurse:Play();
 		end
 	end
 end
@@ -82,13 +78,11 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(29213) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
-			soundCurse:Play();
 		end
 	end
 	if args:IsSpellID(54835) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
-			soundCurse:Play();
 		end
 	end
 end

@@ -36,21 +36,18 @@ function mod:OnCombatStart(delay)
 	timerWebSpray:Start(40 - delay)
 	timerWebWrapInitial:Start(20-delay)
 	timerSpiderInitial:Start(8 - delay)
-	soundSpider:Schedule(8-delay)
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find(L.Spiderlings) then
 		timer = 16
 		timerSpider:Start(timer)
-		soundSpider:Schedule(timer)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(28622) then -- Web Wrap
 		warnWebWrap:Show(args.destName)
-		soundWebWrap:Play();
 		timerWebWrap:Start()
 		if args.destName == UnitName("player") then
 			SendChatMessage(L.YellWebWrap, "YELL")
@@ -62,7 +59,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(29484, 54125) then -- Web Spray
 		timer = 40
 		warnWebSprayNow:Show()
-		soundWebSpray:Play();
 		warnWebSpraySoon:Schedule(timer-5)
 		timerWebSpray:Start(timer)
 	end
@@ -77,6 +73,5 @@ function mod:UNIT_HEALTH(args)
 	elseif maexxnaHealth < 20 and phase == 2 then
 		phase = 3
 		warnSoftEnrageNow:Show()
-		soundSoftEnrage:Play()
 	end
 end
