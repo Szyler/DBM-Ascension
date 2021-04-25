@@ -32,9 +32,9 @@ end
 
 function mod:Balcony()
 	local timer
-	if phase == 1 then timer = 72
-	elseif phase == 2 then timer = 72
-	elseif phase == 3 then timer = 72 
+	if phase == 1 then timer = 60
+	elseif phase == 2 then timer = 60
+	elseif phase == 3 then timer = 60 
 	else return	end
 	timerTeleportBack:Show(timer)
 	warnTeleportSoon:Schedule(timer - 10)
@@ -45,9 +45,9 @@ end
 function mod:BackInRoom()
 	phase = phase + 1
 	local timer
-	if phase == 1 then timer = 60
-	elseif phase == 2 then timer = 43 
-	elseif phase == 3 then timer = 28 
+	if phase == 1 then timer = 75
+	elseif phase == 2 then timer = 75 
+	elseif phase == 3 then timer = 75 
 	else return end
 	timerTeleport:Show(timer)
 	warnTeleportSoon:Schedule(timer - 10)
@@ -56,18 +56,13 @@ function mod:BackInRoom()
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(29213, 54835) then	-- Curse of the Plaguebringer
+	if args:IsSpellID(29213, 54835, 350288) then	-- Curse of the Plaguebringer
 		warnCurse:Show()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(29213) then 
-		if args:IsPlayer() then
-			specWarnCurse:Show();
-		end
-	end
-	if args:IsSpellID(54835) then 
+	if args:IsSpellID(29213, 54835, 350288) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
 		end
@@ -75,12 +70,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(29213) then 
-		if args:IsPlayer() then
-			specWarnCurse:Show();
-		end
-	end
-	if args:IsSpellID(54835) then 
+	if args:IsSpellID(29213, 54835, 350288) then 
 		if args:IsPlayer() then
 			specWarnCurse:Show();
 		end
