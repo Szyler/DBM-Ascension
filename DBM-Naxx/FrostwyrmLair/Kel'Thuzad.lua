@@ -26,7 +26,7 @@ local warnChains		= mod:NewTargetAnnounce(1003114, 2)
 local warnWailSoul		= mod:NewSpellAnnounce(1003115, 2)
 -----PHASE 1 -> 2 TRANSITION-----
 local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
-local timerPhase2		= mod:NewTimer(153, "Phase Two", 29485, nil, "Show timer for Phase Two")
+local timerPhase2		= mod:NewTimer(180, "Phase Two", 29485, nil, "Show timer for Phase Two")
 -----PHASE 2 -> 3 TRANSITION-----
 local warnPhase3		= mod:NewPhaseAnnounce(3, 3)
 local timerPhase3		= mod:NewTimer(378, "Phase Three", 29485, nil, "Show timer for Phase Three")
@@ -149,7 +149,7 @@ function mod:timerMajorWaveRepeat()
 end
 
 function mod:phase2Transition()
-	timer = 153
+	timer = 180
 	warnPhase2:Schedule(timer)
 	warnPhase2Soon:Schedule(timer-10)
 	timerPhase2:Start(timer)
@@ -162,22 +162,22 @@ function mod:phaseTwo()
 		mod:RangeTogglePhaseTwo()
 	end
 	-----SHADE SPAWNS-----
-	mod:timerNaxxShadeRepeat()
+	-- mod:timerNaxxShadeRepeat()
 	mod:phase3Transition()
-	timer = 34
-	self:ScheduleMethod(timer, "timerNaxxShadeRepeat")
-	self:ScheduleMethod(timer+60, "timerNaxxShadeRepeat")
-	self:ScheduleMethod(timer+120, "timerNaxxShadeRepeat")
+	-- timer = 34
+	-- self:ScheduleMethod(timer, "timerNaxxShadeRepeat")
+	-- self:ScheduleMethod(timer+60, "timerNaxxShadeRepeat")
+	-- self:ScheduleMethod(timer+120, "timerNaxxShadeRepeat")
 	-----HEALTH CHECK DEBUGS-----
-	local shade1 = UnitGUID("boss1")
-	local shade2 = UnitGUID("boss2")
-	local shade3 = UnitGUID("boss3")
-	local shade4 = UnitGUID("boss4")
-	mod:checkHealth()
+	-- local shade1 = UnitGUID("boss1")
+	-- local shade2 = UnitGUID("boss2")
+	-- local shade3 = UnitGUID("boss3")
+	-- local shade4 = UnitGUID("boss4")
+	-- mod:checkHealth()
 end
 
 function mod:phase3Transition()
-	timer = 378
+	timer = 600
 	warnPhase3:Schedule(timer)
 	warnPhase3Soon:Schedule(timer-10)
 	timerPhase3:Start(timer)
@@ -194,29 +194,39 @@ function mod:phaseThree()
 	timerChains:Start(90)
 end
 
-function mod:timerNaxxShadeRepeat()
-	if shadesSpawned == 0 then
-		timer = 34
-		warnNaxxShade:Schedule(timer)
-		warnNaxxShadeSoon:Schedule(timer-10)
-		timerNaxxShade:Start(timer)
-		shadesSpawned = shadesSpawned+1
-		warnShout:Schedule(timer+16)
-		warnShoutSoon:Schedule(timer+11)
-		timerShout:Start(timer+16)
-	else
-		timer = 60
-		warnNaxxShade:Schedule(timer)
-		warnNaxxShadeSoon:Schedule(timer-10)
-		timerNaxxShade:Start(timer)
-		shadesSpawned = shadesSpawned+1
-		if hasShoutCast == 0 then
-			warnShout:Schedule(timer+16)
-			warnShoutSoon:Schedule(timer+11)
-			timerShout:Start(timer+16)
-		end
+function mod:SPELL_CAST_START()
+	if args:IsSpellID(28478) and phase == 2 then
+		self:Unschedule("warnPhase3")
+		self:Unschedule("warnPhase3Soon")
+		self:UnscheduleMethod("phaseThree")
+		timerPhase3:Stop()
+		mod:phaseThree()
 	end
 end
+
+-- function mod:timerNaxxShadeRepeat()
+-- 	if shadesSpawned == 0 then
+-- 		timer = 34
+-- 		warnNaxxShade:Schedule(timer)
+-- 		warnNaxxShadeSoon:Schedule(timer-10)
+-- 		timerNaxxShade:Start(timer)
+-- 		shadesSpawned = shadesSpawned+1
+-- 		warnShout:Schedule(timer+16)
+-- 		warnShoutSoon:Schedule(timer+11)
+-- 		timerShout:Start(timer+16)
+-- 	else
+-- 		timer = 60
+-- 		warnNaxxShade:Schedule(timer)
+-- 		warnNaxxShadeSoon:Schedule(timer-10)
+-- 		timerNaxxShade:Start(timer)
+-- 		shadesSpawned = shadesSpawned+1
+-- 		if hasShoutCast == 0 then
+-- 			warnShout:Schedule(timer+16)
+-- 			warnShoutSoon:Schedule(timer+11)
+-- 			timerShout:Start(timer+16)
+-- 		end
+-- 	end
+-- end
 
 function mod:SPELL_AURA_APPLIED(args)
 	-----CONSTRICTING CHAINS-----
