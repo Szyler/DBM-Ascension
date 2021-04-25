@@ -20,6 +20,9 @@ local warnDanceEnds				= mod:NewAnnounce("Dance Ends Now", 3, 46573, nil, "Show 
 -----SPELL DISRUPTION------
 local specWarnSpellDisruption	= mod:NewSpecialWarningYou(29310, false)
 local specWarnBurningFever		= mod:NewSpecialWarningYou(1003068)
+-----Touch of the Unclean-----
+local warnTouch					= mod:NewAnnounce(L.HeiganTouch, 2, 196780)-- 196791 heroic
+local warnTouchHC				= mod:NewAnnounce(L.HeiganTouchHC, 2, 196791)
 -----MISC-----
 local berserkTimer				= mod:NewBerserkTimer(540)
 
@@ -56,6 +59,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBurningFever:Show();
 			SendChatMessage(L.YellBurningFever, "YELL")
 		end	
+	elseif args:IsSpellID(196780) then
+		warnTouch:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(196791) then
+		warnTouchHC:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
@@ -69,5 +76,9 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 			specWarnBurningFever:Show();
 			SendChatMessage(L.YellBurningFever, "YELL")
 		end
+	elseif args:IsSpellID(196780) then
+		warnTouch:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(196791) then
+		warnTouchHC:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end

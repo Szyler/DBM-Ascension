@@ -117,6 +117,8 @@ L:SetGeneralLocalization({
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Teleported",
 	WarningTeleportSoon	= "Teleport in %d seconds"
+	HeiganTouch			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+	HeiganTouchHC		= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetTimerLocalization({
@@ -127,6 +129,8 @@ L:SetOptionLocalization({
 	WarningTeleportNow	= "Show warning for Teleport",
 	WarningTeleportSoon	= "Show pre-warning for Teleport",
 	TimerTeleport		= "Show timer for Teleport"
+	HeiganTouch			= "Show $spell:196780 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	HeiganTouchHC		= "Heroic: Show $spell:196791 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetMiscLocalization({
