@@ -41,15 +41,15 @@ function mod:OnCombatStart(delay)
 	table.wipe(mutateIcons)
 	enrageTimer:Start(-delay)
 	-----Poison Cloud-----
-	timerCloud:Play(15-delay)
+	timerCloud:Start(15-delay)
 	warnCloud:Schedule(15-delay)
 	prewarnCloud:Schedule(10-delay)
 	-----Vivifying Toxin-----
-	timerToxin:Play(10-delay)
+	timerToxin:Start(10-delay)
 	warnToxin:Schedule(10-delay)
 	prewarnToxin:Schedule(5-delay)
 	-----Slime Spray-----
-	timerSpray:Play(15-delay)
+	timerSpray:Start(15-delay)
 end
 
 local function addIcon()
@@ -120,12 +120,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		prewarnCloud:Schedule(timer-5)
 	elseif args:IsSpellID(79012) then
 		timer = 42.5
-		timerToxin:Play(timer)
+		timerToxin:Start(timer)
 		warnToxin:Schedule(timer)
 		prewarnToxin:Schedule(timer-5)
-	elseif args:IsSpellID(28157) then
+	elseif args:IsSpellID(28157, 196884) then
 		timer = 15
-		timerSpray:Play(timer)
+		timerSpray:Start(timer)
 		warnSpray:Show()
 	end
 end
