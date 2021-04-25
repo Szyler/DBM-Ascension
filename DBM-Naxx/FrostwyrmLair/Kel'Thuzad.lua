@@ -194,10 +194,6 @@ function mod:phaseThree()
 	timerChains:Start(90)
 end
 
-end
-
-end
-
 function mod:timerNaxxShadeRepeat()
 	if shadesSpawned == 0 then
 		timer = 34
