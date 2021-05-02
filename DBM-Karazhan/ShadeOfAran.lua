@@ -135,12 +135,6 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
---function mod:SPELL_CAST_SUCCESS(args)      - trolled by Bigbigman and his Blizzards on logs.
---	if args:IsSpellID(27085) then
---		warningBlizzard:Show()
---		timerSpecial:Start()
---	end
---end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29991) then
@@ -161,6 +155,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(85182) then
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
+		timerSpecial:Cancel()
 	elseif args:IsSpellID(85273) then -- Volatile Polymorph
 		--warningPoly:Show(args.destName)
 		SheepTargets[#SheepTargets + 1] = args.destName;
