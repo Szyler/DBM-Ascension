@@ -159,6 +159,7 @@ end
 
 function mod:OnCombatStart(delay)
 	phase = 1 
+	self.vb.phase = 1
 	etent = 1
 	lasttent = 3
 	miniadd = 1
@@ -343,6 +344,7 @@ function mod:fixweaknessTimers()
 end
 function mod:phaseTwo()
 	warnPhase2:Show()
+	self.vb.phase = 2
 	if lasttent == 1 then
 		etent = 2
 	elseif lasttent == 2 then

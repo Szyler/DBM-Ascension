@@ -156,6 +156,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
 		timerSpecial:Cancel()
+		self.vb.phase = 2
 	elseif args:IsSpellID(85273) then -- Volatile Polymorph
 		--warningPoly:Show(args.destName)
 		SheepTargets[#SheepTargets + 1] = args.destName;
@@ -186,8 +187,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SheepIcons then
 			self:RemoveIcon(args.destName);
 		end
-	elseif args:IsSpellID(85182) then 
-		self.vb.phase = 2
 	end
 end
 

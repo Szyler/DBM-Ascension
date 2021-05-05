@@ -38,6 +38,7 @@ local down = 0
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase2 = false
+	self.vb.phase = 1
 	currentCharge = nil
 	down = 0
 	self:ScheduleMethod(20.6 - delay, "TankThrow")
@@ -49,6 +50,7 @@ local lastShift = 0
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(28089) then
 		phase2 = true
+		self.vb.phase = 2
 		timerNextShift:Start()
 		timerShiftCast:Start()
 		warnShiftCasting:Show()

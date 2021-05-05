@@ -47,6 +47,7 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase = 1
+	self.vb.phase = 1
 	RealRazuv = 1
 	-----Shout-----
 	warnShoutNow:Schedule(16 - delay)
@@ -128,6 +129,7 @@ function mod:UNIT_HEALTH(args)
     razHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
 	if razHealth < 45 and phase == 1 then
 		phase = 2
+		self.vb.phase = 2
 		warnPhase2:Show();
 		soundPhaseTwo:Play();
 		-----Shadow Burst-----
