@@ -87,7 +87,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnShield:Show(args.destName)
 	elseif args:IsSpellID(33232) then
 		if mod:IsDifficulty("normal25") then
-		timerNextWhirlwind:Cancel()
+			timerNextWhirlwind:Cancel()
 		end
 		timerCharge:Start(5)
 	elseif args:IsSpellID(33238) then
