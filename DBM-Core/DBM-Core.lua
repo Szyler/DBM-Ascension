@@ -2364,6 +2364,7 @@ do
 				id = name,
 				announces = {},
 				specwarns = {},
+				vb = {}, -- variables table, used by details to check phase
 				timers = {},
 				modId = modId,
 				revision = 0,
@@ -2683,6 +2684,7 @@ do
 				end
 			end
 			PlaySoundFile(DBM.Options.RaidWarningSound)
+			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 		end
 	end
 
@@ -2875,6 +2877,7 @@ do
 			if self.sound then
 				PlaySoundFile(DBM.Options.SpecialWarningSound)
 			end
+			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 		end
 	end
 
@@ -3080,6 +3083,7 @@ do
 			table.insert(self.startedTimers, id)
 			self.mod:Unschedule(removeEntry, self.startedTimers, id)
 			self.mod:Schedule(timer, removeEntry, self.startedTimers, id)
+			self.mod:Schedule(timer, fireEvent, "DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 			return bar
 		else
 			return false, "disabled"
@@ -3096,6 +3100,7 @@ do
 	end
 
 	function timerPrototype:Stop(...)
+		fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 		local barGroup = self.mod.barGroup or DBM.Bars;
 		if select("#", ...) == 0 then
 			for i = #self.startedTimers, 1, -1 do

@@ -100,6 +100,7 @@ function mod:OnCombatStart(delay)
 	lastTarget = nil;
 	table.wipe(WreathTargets)
 	table.wipe(SheepTargets);
+	self.vb.phase = 1
 end
 
 function mod:SPELL_CAST_START(args)
@@ -155,6 +156,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
 		timerSpecial:Cancel()
+		self.vb.phase = 2
 	elseif args:IsSpellID(85273) then -- Volatile Polymorph
 		--warningPoly:Show(args.destName)
 		SheepTargets[#SheepTargets + 1] = args.destName;

@@ -43,12 +43,15 @@ local function updateHealthFrame(phase)--WIP
 	end
 	phases[phase] = true
 	if phase == 1 then
+		self.vb.phase = 1
 		DBM.BossHealth:Clear()
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 	elseif phase == 2 then--UNIT_DIED event triggers not tested yet
+		self.vb.phase = 2
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 		warnPhase2:Show()
 	elseif phase == 3 then
+		self.vb.phase = 3
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 	end
@@ -59,6 +62,7 @@ function mod:OnCombatStart(delay)
 	JulianneDied = 0
 	RomuloDied = 0
 	timerNextSpotlight:Start(20-delay)
+	self.vb.phase = 1
 end
 
 function mod:SPELL_CAST_START(args)

@@ -109,6 +109,7 @@ function mod:OnCombatStart(delay)
 	mod:phaseOne()
 	berserkTimer:Start(1140)
 	notRealRazuv = 1
+	self.vb.phase = 1
 end
 
 function mod:phaseOne()
@@ -160,6 +161,7 @@ end
 
 function mod:phaseTwo()
 	phase = 2	
+	self.vb.phase = 2
 	if self.Options.ShowRange then
 		mod:RangeTogglePhaseTwo()
 	end
@@ -189,6 +191,7 @@ end
 
 function mod:phaseThree()
 	phase = 3
+	self.vb.phase = 3
 	if self.Options.ShowRange then
 		mod:RangeTogglePhaseThree()
 	end

@@ -94,6 +94,8 @@ end
 function mod:OnCombatStart(delay)
 	Nova = 1;
 	timerPhaseTwo:Start()
+	below30 = false;
+	self.vb.phase = 1
 end
 
 function mod:OnCombatEnd()
@@ -144,6 +146,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextFingerofDeath:Cancel()
 		timerNextHandofDeath:Cancel()
 		timerPhaseTwo:Cancel()
+		self.vb.phase = 2
 
 		timerQuake:Start(41)
 		timerNova:Start(66, tostring(Nova))
@@ -219,6 +222,7 @@ function mod:UNIT_HEALTH(unit)
 	if isMag and (not below30) and (mod:GetUnitCreatureId(unit) == 17257) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 30) then
+			self.vb.phase = 3
 			local elapsed, total = timerQuake:GetTime();
 			timerQuake:Update(elapsed, total+12);
 				if Nova >= 7 then

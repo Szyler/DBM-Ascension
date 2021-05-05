@@ -63,6 +63,7 @@ end
 
 function mod:OnCombatStart(delay)
 	phase = 1
+	self.vb.phase = 1
 	CrystalsKilled = 0
 	ampDmg = 1
 	InfernalCount = 1
@@ -186,6 +187,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 --		timerAmpDmg:Start(5, tostring(ampDmg))
 	elseif msg == L.DBM_PRINCE_YELL_P2 then
 		phase = 2
+		self.vb.phase = 2
 		warnPhase2:Show()
 		timerShadowRealm:Start(15)
 	end
@@ -196,6 +198,7 @@ function mod:UNIT_HEALTH(unit)
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 30) then
 			phase = 3
+			self.vb.phase = 3
 			warnPhase3:Show()
 			timerAmpDmg:Start(5, tostring(ampDmg))
 			below30 = true;
