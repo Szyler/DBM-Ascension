@@ -20,6 +20,7 @@ local warned_P2 = false
 
 function mod:OnCombatStart(delay)
 	warned_P2 = false
+	self.vb.phase = 1
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -39,5 +40,6 @@ function mod:UNIT_HEALTH(uId)
 	if not warned_P2 and self:GetUnitCreatureId(uId) == 15369 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.70 then
 		warned_P2 = true
 		warnPhase2:Show()
+		self.vb.phase = 2
 	end
 end
