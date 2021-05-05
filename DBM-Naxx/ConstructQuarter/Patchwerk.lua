@@ -34,7 +34,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			timer = 5
 			specWarnGastric:Show(timer);
-			soundGastric:Play();
 		end
 	end	
 end	

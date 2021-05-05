@@ -23,15 +23,15 @@ local timerCombatStart			= mod:NewTimer(25, "Combat Starts", 2457, nil, "Show ti
 local warnCombatStartSoon		= mod:NewAnnounce("Combat Starts Soon", 2, 2457, nil, "Show pre-warning for the end of the Safety Dance")
 local warnCombatStart			= mod:NewAnnounce("Combat Starts Now", 3, 2457, nil, "Show warning for the end of the Safety Dance")
 -----GOTHIK ARRIVES----
-local timerGothik				= mod:NewTimer(45, "Gothik Arrives", 46573, nil, "Show timer for the arrival of Gothik")
+local timerGothik				= mod:NewTimer(100, "Gothik Arrives", 46573, nil, "Show timer for the arrival of Gothik")
 local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "Show pre-warning for the arrival of Gothik")
 local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 3, 46573, nil, "Show warning for the arrival of Gothik")
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	self:ScheduleMethod(60, "HarvestSoul")
+	self:ScheduleMethod(115, "HarvestSoul")
 	-----HARVEST SOUL-----
-	harvestSoulIntiialTimer = 60
+	harvestSoulIntiialTimer = 115
 	warnHarvestSoon:Schedule(harvestSoulIntiialTimer-5)
 	warnHarvest:Schedule(harvestSoulIntiialTimer)
 	timerHarvest:Start(harvestSoulIntiialTimer)
@@ -41,11 +41,10 @@ function mod:OnCombatStart(delay)
 	warnCombatStartSoon:Schedule(combatStartTimer-5)
 	warnCombatStart:Schedule(combatStartTimer)
 	-----GOTHIK ARRIVES----
-	gothikTimer = 45
+	gothikTimer = 100
 	timerGothik:Start(gothikTimer)
 	warnGothikSoon:Schedule(gothikTimer-5)
 	warnGothik:Schedule(gothikTimer)
-	soundGothik:Schedule(gothikTimer)
 
 end
 
@@ -54,7 +53,6 @@ function mod:HarvestSoul()
 	timerHarvest:Start(timer)
 	warnHarvestSoon:Schedule(timer-3, 15)
 	warnHarvest:Schedule(timer)
-	soundTeleport:Schedule(timer-3)
 	self:ScheduleMethod(timer, "HarvestSoul")
 end
 
