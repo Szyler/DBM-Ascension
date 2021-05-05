@@ -25,6 +25,10 @@ local warningDaring		= mod:NewTargetAnnounce(30841, 3)
 local warningDevotion	= mod:NewTargetAnnounce(30887, 3)
 local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer() or mod:IsTank())
 
+-- Heroic
+local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
+local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
+
 local timerHeal				= mod:NewCastTimer(2.5, 30878)
 local timerDaring			= mod:NewTargetTimer(8, 30841)
 local timerDevotion			= mod:NewTargetTimer(10, 30887)
@@ -36,6 +40,8 @@ mod:AddBoolOption("HealthFrame", true)
 local phases = {}
 local JulianneDied = 0
 local RomuloDied = 0
+local LoversSpam = 0
+local heartbrokenStacks = 0
 
 local function updateHealthFrame(phase)--WIP
 	if phases[phase] then
@@ -63,6 +69,7 @@ function mod:OnCombatStart(delay)
 	RomuloDied = 0
 	timerNextSpotlight:Start(20-delay)
 	self.vb.phase = 1
+	heartbrokenStacks = 0
 end
 
 function mod:SPELL_CAST_START(args)
@@ -81,6 +88,21 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30887) then
 		warningDevotion:Show(args.destName)
 		timerDevotion:Start(args.destName)
+	elseif args:IsSpellID(85237) then  -- Heartbroken
+		heartbrokenStacks = args.amount
+		if args.amount and (GetTime() - LoversSpam) > 5 and args.amount >= 10 and args.amount % 5 == 0 then
+			LoversSpam = GetTime()
+			WarnHeartbroken:Show(args.amount, args.spellName)
+		end
+	elseif args:IsSpellID(85236) then
+		if heartbrokenStacks > 0 then
+			heartbrokenStacks = heartbrokenStacks - 0.5
+		end
+
+		if args.amount and (GetTime() - LoversSpam) > 5 and heartbrokenStacks <= 5 and args.amount % 5 == 0 and args.amount >= 15 then -- The Power of Love
+			LoversSpam = GetTime()
+			WarnLove:Show(args.amount, args.spellName)
+		end 
 	end
 end
 
