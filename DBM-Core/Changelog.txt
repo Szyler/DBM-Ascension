@@ -36,3 +36,19 @@ v5.03 09/04/2021
 - Fixed timer for Holy Wrath on Maiden
 - Fixed the Black Morass portal timer
 ----------------------------------------------------------------------------------------------------
+v5.04 05/05/2021
+- Added support for phases for vanilla and T4 bosses in Details!
+- Added support for Raid Ability Timeline (WeakAura2)
+- Added support for /Pull as an alias for /dbm pull
+- Added a backup CD timer for Maiden's Holy Wrath
+- Fixed a bunch of bosses for Naxxramas
+- Fixed a bunch of lua errors in vanilla raids
+- Fixed Whirlwind timers for Maulgar
+- Fixed Magtheridon back to working state
+- Fixed missing start timers on Prince
+- Fixed broken Sunder warning on Prince
+- Fixed Into Shadow Realm timer for Heroic 25 man Prince
+- Fixed heroic Romulo and Julianne mechanic
+- Fixed Boulder and Cave in CD timers for Gruul
+- Added different versions for heroic Hateful Strike/Hateful Bolt on Gruul/Curator
+----------------------------------------------------------------------------------------------------
