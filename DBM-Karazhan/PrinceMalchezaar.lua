@@ -26,7 +26,7 @@ local warningAmpMagic			= mod:NewSpellAnnounce(39095, 3)
 local warningSWP				= mod:NewTargetAnnounce(30898, 2, nil, false)
 local warningDoom				= mod:NewSpellAnnounce(85069, 1)
 local warningShadowRealm		= mod:NewTargetAnnounce(85077, 3)
-local warnSunder				= mod:NewAnnounce(L.Sunder, 3, 85198)
+local priWarnSunder				= mod:NewAnnounce(L.PriSunder, 3, 85198)
 
 local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
 local specWarnNova				= mod:NewSpecialWarningRun(30852)
@@ -36,9 +36,10 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
 local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
-local timerEnfeeble				= mod:NewCDTimer(30, 30843)
-local timerDoom					= mod:NewCDTimer(24, 85069)
-local timerShadowRealm			= mod:NewCDTimer(45, 85077)
+local timerEnfeeble				= mod:NewNextTimer(30, 30843)
+local timerDoom					= mod:NewNextTimer(24, 85069)
+local timerNova					= mod:NewNextTimer(30, 30852)
+local timerShadowRealm			= mod:NewNextTimer(45, 85077)
 local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 
 local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
@@ -69,14 +70,16 @@ function mod:OnCombatStart(delay)
 	InfernalCount = 1
 	isPrince = true
 	below30 = false
+	timerEnfeeble:Start(32-delay)
 	timerDoom:Start(30-delay)
 	table.wipe(enfeebleTargets)
 	timerNextInfernal:Start(21-delay, tostring(1))
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30852) then
+	if args:IsSpellID(30852, 85293) then
 		warningNovaCast:Show()
+		timerNova:Start()
 		timerNovaCast:Start()
 		specWarnNova:Show()
 	end
@@ -130,7 +133,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(showEnfeebleWarning)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
-		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end	
 end
 
@@ -161,7 +164,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
 	elseif args:IsSpellID(85198) then
-		warnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
 	end
 end
 		
