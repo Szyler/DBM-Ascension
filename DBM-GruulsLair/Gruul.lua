@@ -49,6 +49,7 @@ function mod:OnCombatStart(delay)
 	timerNextSlam:Start(90-delay)
 	timerSilence:Start(115-delay)
 	timerBoulder:Start(115-delay)
+	timerCaveIn:Start(-delay)
 	timerGrow:Start(-delay, tostring(Grow))
 	DBM.RangeCheck:Show(15)
 end
