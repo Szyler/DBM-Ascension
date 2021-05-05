@@ -11,7 +11,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: Tandanu and Nitram, updated by Junior and Szyler.
-## X-Website: http://www.deadlybossmods.com
+## X-Website: https://discord.gg/4ZHfgskSvM
 localization.en.lua
 localization.de.lua
 localization.cn.lua

@@ -10,8 +10,8 @@
 ## LoadOnDemand: 0
 ## RequiredDeps: DBM-Core
 ## DefaultState: enabled
-## Author: Nitram and Tandanu
-## URL: http://www.deadlybossmods.com
+## Author: Nitram and Tandanu, updated by Junior and Szyler.
+## URL: https://discord.gg/4ZHfgskSvM
 ## SavedVariables: DBM_SpellTimers_Settings
 localization.en.lua
 localization.de.lua

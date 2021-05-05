@@ -4,8 +4,8 @@
 ## LoadOnDemand: 0
 ## RequiredDeps: DBM-Core
 ## DefaultState: enabled
-## Author: Tandanu and Nitram
-## X-Website: http://www.deadlybossmods.com/
+## Author: Tandanu and Nitram, updated by Junior and Szyler.
+## X-Website: https://discord.gg/4ZHfgskSvM
 localization.en.lua
 localization.cn.lua
 localization.tw.lua
