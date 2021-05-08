@@ -12,9 +12,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
 	"SPELL_AURA_APPLIED_DOSE",
+	"UNIT_HEALTH",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
+local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
 local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
 local warningVanish			= mod:NewSpellAnnounce(29448, 3)
 local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 37066)
@@ -34,12 +36,13 @@ local warningDShield		= mod:NewTargetAnnounce(29382, 3)
 
 local specWarnDinner		= mod:NewSpecialWarning(L.DinnerServed)
 
-local timerVanishCD			= mod:NewCDTimer(23, 29448)
+local timerVanish			= mod:NewNextTimer(23, 29448)
 local timerGouge			= mod:NewTargetTimer(6, 29425)
 local timerBlind			= mod:NewTargetTimer(10, 34694)
 local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
 local timerHoJ				= mod:NewCDTimer(50, 13005)
 local timerDinner			= mod:NewCDTimer(24, 85090)
+local timerDinner25m		= mod:NewCDTimer(36, 85090)
 
 local lastVanish = 0
 
@@ -52,12 +55,14 @@ local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
 mod:AddBoolOption(L.FoodYell, false)
+mod.vb.warned_preP2 = false
 
 function mod:OnCombatStart(delay)
-	timerVanishCD:Start(-delay)
-	warningVanishSoon:Schedule(31-delay)
+	self.vb.warned_preP2 = false
+	timerVanish:Start(-delay)
+	warningVanishSoon:Schedule(20-delay)
 	lastVanish = 0
-	lastDinner = GetTime()
+	-- lastDinner = GetTime()
 	danceCount = 0;
 	mod:DanceTimer(22-delay,true);
 	self.vb.phase = 1
@@ -129,7 +134,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(37066, 85223, 85224) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		if (GetTime() - lastVanish) < 20 then
-			timerVanishCD:Start()
+			timerVanish:Start()
 --			warningVanishSoon:Schedule(23)
 		end
 	elseif args:IsSpellID(85089) then -- Soul Burst Debuff
@@ -146,7 +151,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			if self.Options.FoodYell then
 				self:ScheduleMethod(2,"YellFood");
 			end
-			timerDinner:Start()
+			if mod:IsDifficulty("heroic25") then
+				timerDinner25m:Start()				
+			else
+				timerDinner:Start()				
+			end
 			warningDinner:Show()
 			self.vb.phase = 2
 		end
@@ -157,14 +166,18 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(37066, 85223, 85224) then
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		if (GetTime() - lastVanish) < 20 then
-			timerVanishCD:Start()
+			timerVanish:Start()
 		end
 	end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_MOROES_DINNER then
-		timerDinner:Start()
+		if mod:IsDifficulty("heroic25") then
+			timerDinner25m:Start()				
+		else
+			timerDinner:Start()				
+		end
 		specWarnDinner:Show()
 	end
 end
@@ -180,6 +193,13 @@ function mod:SPELL_AURA_REMOVED(args)
 			self.food = nil;
 			self:UnscheduleMethod("YellFood");
 		end
+	end
+end
+
+function mod:UNIT_HEALTH(uId)
+	if not self.vb.warned_preP2 and self:GetUnitCreatureId(uId) == 15687 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.80 then
+		self.vb.warned_preP2 = true
+		warnPhase2Soon:Show()
 	end
 end
 
