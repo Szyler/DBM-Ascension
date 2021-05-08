@@ -94,6 +94,7 @@ end
 function mod:OnCombatStart(delay)
 	Nova = 1;
 	timerPhaseTwo:Start()
+	below30 = false;
 	self.vb.phase = 1
 end
 

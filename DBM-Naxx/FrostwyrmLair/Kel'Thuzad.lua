@@ -26,7 +26,7 @@ local warnChains		= mod:NewTargetAnnounce(1003114, 2)
 local warnWailSoul		= mod:NewSpellAnnounce(1003115, 2)
 -----PHASE 1 -> 2 TRANSITION-----
 local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
-local timerPhase2		= mod:NewTimer(153, "Phase Two", 29485, nil, "Show timer for Phase Two")
+local timerPhase2		= mod:NewTimer(180, "Phase Two", 29485, nil, "Show timer for Phase Two")
 -----PHASE 2 -> 3 TRANSITION-----
 local warnPhase3		= mod:NewPhaseAnnounce(3, 3)
 local timerPhase3		= mod:NewTimer(378, "Phase Three", 29485, nil, "Show timer for Phase Three")
@@ -147,15 +147,13 @@ function mod:timerMajorWaveRepeat()
 	warnMajorWave:Schedule(timer)
 	warnMajorWaveSoon:Schedule(timer-5)
 	timerMajorWave:Start(timer)
-	soundMajorWave:Schedule(timer)
 end
 
 function mod:phase2Transition()
-	timer = 153
+	timer = 180
 	warnPhase2:Schedule(timer)
 	warnPhase2Soon:Schedule(timer-10)
 	timerPhase2:Start(timer)
-	soundPhase2:Schedule(timer)
 	self:ScheduleMethod(timer, "phaseTwo")
 end
 
@@ -166,26 +164,25 @@ function mod:phaseTwo()
 		mod:RangeTogglePhaseTwo()
 	end
 	-----SHADE SPAWNS-----
-	mod:timerNaxxShadeRepeat()
+	-- mod:timerNaxxShadeRepeat()
 	mod:phase3Transition()
-	timer = 34
-	self:ScheduleMethod(timer, "timerNaxxShadeRepeat")
-	self:ScheduleMethod(timer+60, "timerNaxxShadeRepeat")
-	self:ScheduleMethod(timer+120, "timerNaxxShadeRepeat")
+	-- timer = 34
+	-- self:ScheduleMethod(timer, "timerNaxxShadeRepeat")
+	-- self:ScheduleMethod(timer+60, "timerNaxxShadeRepeat")
+	-- self:ScheduleMethod(timer+120, "timerNaxxShadeRepeat")
 	-----HEALTH CHECK DEBUGS-----
-	local shade1 = UnitGUID("boss1")
-	local shade2 = UnitGUID("boss2")
-	local shade3 = UnitGUID("boss3")
-	local shade4 = UnitGUID("boss4")
-	mod:checkHealth()
+	-- local shade1 = UnitGUID("boss1")
+	-- local shade2 = UnitGUID("boss2")
+	-- local shade3 = UnitGUID("boss3")
+	-- local shade4 = UnitGUID("boss4")
+	-- mod:checkHealth()
 end
 
 function mod:phase3Transition()
-	timer = 378
+	timer = 600
 	warnPhase3:Schedule(timer)
 	warnPhase3Soon:Schedule(timer-10)
 	timerPhase3:Start(timer)
-	soundPhase3:Schedule(timer)
 	self:ScheduleMethod(timer, "phaseThree")
 end
 
@@ -200,50 +197,45 @@ function mod:phaseThree()
 	timerChains:Start(90)
 end
 
-function mod:warnShoutSound()
-	soundShout:Play()
-end
-
-function mod:warnShoutSoundCountdown()
-	soundShoutCount:Play()
-end
-
-function mod:timerNaxxShadeRepeat()
-	if shadesSpawned == 0 then
-		timer = 34
-		warnNaxxShade:Schedule(timer)
-		warnNaxxShadeSoon:Schedule(timer-10)
-		soundNaxxShade:Schedule(timer)
-		timerNaxxShade:Start(timer)
-		shadesSpawned = shadesSpawned+1
-		warnShout:Schedule(timer+16)
-		warnShoutSoon:Schedule(timer+11)
-		timerShout:Start(timer+16)
-		self:ScheduleMethod(timer+16, "warnShoutSound")
-		self:ScheduleMethod(timer+13, "warnShoutSoundCountdown")
-	else
-		timer = 60
-		warnNaxxShade:Schedule(timer)
-		warnNaxxShadeSoon:Schedule(timer-10)
-		soundNaxxShade:Schedule(timer)
-		timerNaxxShade:Start(timer)
-		shadesSpawned = shadesSpawned+1
-		if hasShoutCast == 0 then
-			warnShout:Schedule(timer+16)
-			warnShoutSoon:Schedule(timer+11)
-			timerShout:Start(timer+16)
-			self:ScheduleMethod(timer+16, "warnShoutSound")
-			self:ScheduleMethod(timer+13, "warnShoutSoundCountdown")
-		end
+function mod:SPELL_CAST_START()
+	if args:IsSpellID(28478) and phase == 2 then
+		self:Unschedule("warnPhase3")
+		self:Unschedule("warnPhase3Soon")
+		self:UnscheduleMethod("phaseThree")
+		timerPhase3:Stop()
+		mod:phaseThree()
 	end
 end
+
+-- function mod:timerNaxxShadeRepeat()
+-- 	if shadesSpawned == 0 then
+-- 		timer = 34
+-- 		warnNaxxShade:Schedule(timer)
+-- 		warnNaxxShadeSoon:Schedule(timer-10)
+-- 		timerNaxxShade:Start(timer)
+-- 		shadesSpawned = shadesSpawned+1
+-- 		warnShout:Schedule(timer+16)
+-- 		warnShoutSoon:Schedule(timer+11)
+-- 		timerShout:Start(timer+16)
+-- 	else
+-- 		timer = 60
+-- 		warnNaxxShade:Schedule(timer)
+-- 		warnNaxxShadeSoon:Schedule(timer-10)
+-- 		timerNaxxShade:Start(timer)
+-- 		shadesSpawned = shadesSpawned+1
+-- 		if hasShoutCast == 0 then
+-- 			warnShout:Schedule(timer+16)
+-- 			warnShoutSoon:Schedule(timer+11)
+-- 			timerShout:Start(timer+16)
+-- 		end
+-- 	end
+-- end
 
 function mod:SPELL_AURA_APPLIED(args)
 	-----CONSTRICTING CHAINS-----
 	if args:IsSpellID(1003114) then
 		warnChains:Show(args.destName)
 		if args.destName == UnitName("player") then
-			soundChains:Play()
 		end
 	end
 	-----HARVEST SOUL-----
@@ -264,7 +256,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnGastric:Show(args.destName)
 		if args.destName == UnitName("player") then
 			specWarnGastric:Show()
-			soundGastric:Play()
 		end
 	end
 	-----VOID ZONE-----
@@ -296,7 +287,6 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warnGastric:Show(args.destName)
 		if args.destName == UnitName("player") then
 			specWarnGastric:Show()
-			soundGastric:Play()
 		end
 	end
 	-----VOID ZONE-----
@@ -322,8 +312,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			warnShout:Show()
 			warnShoutSoon:Schedule(timer-5)
 			timerShout:Start(timer)
-			soundShout:Play()
-			self:ScheduleMethod(timer-3, "warnShoutSoundCountdown")
 			hasShoutCast = 1
 		end
 	-----WAIL OF SOULS-----
@@ -332,17 +320,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 	-----FROST BLAST-----
 	elseif args:IsSpellID(29879) then 
 		warnBlast:Show()
-		soundBlast:Play()
 		timerBlast:Start(45)
 	-----MANA DETONATION-----
 	elseif args:IsSpellID(27819) then
 		warnMana:Show()
-		soundMana:Play()
 		timerMana:Start(30)
 	-----CHAINS-----
 	elseif args:IsSpellID(28410) then
 		warnChains:Show()
-		soundChains:Play()
 		timerChains:Start(90)
 	end
 	--[[
@@ -469,7 +454,6 @@ function mod:checkHealth()
 		maexx = spiderBoss
 		timer = 8
 		timerSpider:Start(timer)
-		soundSpider:Schedule(timer)
 		self:ScheduleMethod(timer, "spiderTimerRepeat")
 	elseif spiderHealth == 0 then
 		maexx = 0
@@ -486,7 +470,6 @@ function mod:checkHealth()
 			timerDance:Start(timer)
 			warnDance:Schedule(timer)
 			warnDanceSoon:Schedule(timer-5)
-			soundDance:Schedule(timer)
 		end		
 	elseif plagueHealth > 34 and spiderHealth < 1 then
 		heigan = 0
@@ -536,7 +519,6 @@ function mod:spiderTimerRepeat()
 	else
 		timer = 16
 		timerSpider:Start(timer)
-		soundSpider:Schedule(timer)
 		self:ScheduleMethod(timer, "spiderTimerRepeat")
 	end
 end

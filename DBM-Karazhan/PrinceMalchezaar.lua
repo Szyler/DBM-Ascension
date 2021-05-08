@@ -150,7 +150,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			if args.IsPlayer() then
 				specWarnSRealm:Show()
 			end
-			if mod:IsDifficulty("heroic10") then
+			if mod:IsDifficulty("heroic10", "heroic25") then
 				timerShadowRealm:Start(22)
 			else
 				timerShadowRealm:Start()

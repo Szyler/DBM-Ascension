@@ -85,7 +85,6 @@ end
 function mod:SporeSpawn(args)
 	timer = 14
 	warnSporeNow:Show()
-	soundSpore:Play();
 	timerSpore:Start(timer)
 	warnSporeSoon:Schedule(timer-3)
 	self:ScheduleMethod(timer, "SporeSpawn")
@@ -100,6 +99,5 @@ function mod:UNIT_HEALTH(args)
 	elseif loathebHealth < 20 and phase == 2 then
 		phase = 3
 		warnSoftEnrageNow:Show()
-		soundSoftEnrage:Play()
 	end
 end

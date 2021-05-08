@@ -13,15 +13,15 @@ mod:RegisterEvents(
 -----DECIMATE-----
 local warnDecimateSoon	= mod:NewSoonAnnounce(54426, 2)
 local warnDecimateNow	= mod:NewSpellAnnounce(54426, 3)
-local timerDecimate		= mod:NewCDTimer(104, 54426)
+local timerDecimate		= mod:NewNextTimer(120, 54426)
 -----MISC-----
 local enrageTimer		= mod:NewBerserkTimer(480)
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(480 - delay)
-	timerDecimate:Start(110 - delay)
-	warnDecimateSoon:Schedule(100 - delay)
+	timerDecimate:Start(120 - delay)
+	warnDecimateSoon:Schedule(115 - delay)
 end
 
 local decimateSpam = 0
@@ -30,6 +30,6 @@ function mod:SPELL_DAMAGE(args)
 		decimateSpam = GetTime()
 		warnDecimateNow:Show()
 		timerDecimate:Start()
-		warnDecimateSoon:Schedule(96)
+		warnDecimateSoon:Schedule(115)
 	end
 end

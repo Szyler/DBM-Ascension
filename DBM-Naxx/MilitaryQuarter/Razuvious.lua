@@ -57,12 +57,10 @@ function mod:OnCombatStart(delay)
 	warnShadowBurstNow:Schedule(25-delay)
 	warnShadowBurstSoon:Schedule(20-delay)
 	timerShadowBurst:Start(25-delay)
-	soundShadowBurst:Schedule(25-delay)
 	-----Bruising Blow-----
 	warnBlowNow:Schedule(15-delay)
 	warnBlowSoon:Schedule(10-delay)
 	timerBlow:Start(15-delay)
-	soundBlow:Schedule(15-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -70,7 +68,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnKnifeNow:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnKnife:Show(10);
-			soundKnife:Play();
 			SendChatMessage(L.YellKnife, "YELL")
 			notKT = 1
 		end
@@ -90,7 +87,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			warnBlowNow:Schedule(timer)
 			warnBlowSoon:Schedule(timer-5)
 			timerBlow:Start(timer)
-			soundBlow:Schedule(timer)
 
 		elseif args:IsSpellID(29107) then
 			if notKT == 1 then
@@ -98,18 +94,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 
 				self:Unschedule("warnShoutNowBackup")
 				self:Unschedule("warnShoutSoonBackup")
-				self:Unschedule("soundShoutBackup")
 				timerShoutBackup:Stop()
 
 				warnShoutNow:Schedule(timer)
 				warnShoutSoon:Schedule(timer-3)
 				timerShout:Start(timer)
-				soundShout:Schedule(timer-1)
 				
 				warnShoutNowBackup:Schedule(timer*2)
 				warnShoutSoonBackup:Schedule(timer*2-3)
 				timerShoutBackup:Start(timer*2)
-				soundShoutBackup:Schedule(timer*2-1)
 			end
 		end
 	end
@@ -121,21 +114,18 @@ function mod:SPELL_CAST_START(args)
 		warnShadowBurstNow:Schedule(timer)
 		warnShadowBurstSoon:Schedule(timer-5)
 		timerShadowBurst:Start(timer)
-		soundShadowBurst:Schedule(timer)
 	end
 end
 
 function mod:UNIT_HEALTH(args)
     razHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-	if razHealth < 45 and phase == 1 then
+	if razHealth < 40 and phase == 1 then
 		phase = 2
 		self.vb.phase = 2
 		warnPhase2:Show();
-		soundPhaseTwo:Play();
 		-----Shadow Burst-----
 		warnShadowBurstNow:Cancel();
 		warnShadowBurstSoon:Cancel();
 		timerShadowBurst:Cancel();
-		soundShadowBurst:Cancel();
 	end
 end

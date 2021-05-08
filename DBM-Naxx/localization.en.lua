@@ -36,12 +36,16 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningEmbraceExpire	= "Widow's Embrace ends in 5 seconds",
-	WarningEmbraceExpired	= "Widow's Embrace faded"
+	WarningEmbraceExpired	= "Widow's Embrace faded",
+	FaerlinaMalicious		= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+	FaerlinaFrenzy			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetOptionLocalization({
 	WarningEmbraceExpire	= "Show pre-warning for Widow's Embrace fade",
-	WarningEmbraceExpired	= "Show warning for Widow's Embrace fade"
+	WarningEmbraceExpired	= "Show warning for Widow's Embrace fade",
+	FaerlinaMalicious		= "Show $spell:350250 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	FaerlinaFrenzy			= "Show warning for $spell:28798 stacks on Faerlina", --(args.spellName, args.destName, args.amount or 1)
 })
 
 ---------------
@@ -55,21 +59,23 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningSpidersSoon	= "Maexxna Spiderlings in 5 seconds",
-	WarningSpidersNow	= "Maexxna Spiderlings spawned"
+	WarningSpidersNow	= "Maexxna Spiderlings spawned",
+	MaexxnaNecrotic		= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetTimerLocalization({
-	TimerSpider	= "Next Maexxna Spiderlings"
+	TimerSpider			= "Next Maexxna Spiderlings"
 })
 
 L:SetOptionLocalization({
 	WarningSpidersSoon	= "Show pre-warning for Maexxna Spiderlings",
 	WarningSpidersNow	= "Show warning for Maexxna Spiderlings",
-	TimerSpider			= "Show timer for next Maexxna Spiderlings"
+	TimerSpider			= "Show timer for next Maexxna Spiderlings",
+	MaexxnaNecrotic		= "Show $spell:350250 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetMiscLocalization({
-	YellWebWrap	= "I'm wrapped! Help me!",
+	YellWebWrap			= "I'm wrapped! Help me!",
 	ArachnophobiaTimer	= "Arachnophobia"
 })
 
@@ -110,7 +116,9 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Teleported",
-	WarningTeleportSoon	= "Teleport in %d seconds"
+	WarningTeleportSoon	= "Teleport in %d seconds",
+	HeiganTouch			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+	HeiganTouchHC		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetTimerLocalization({
@@ -120,7 +128,9 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	WarningTeleportNow	= "Show warning for Teleport",
 	WarningTeleportSoon	= "Show pre-warning for Teleport",
-	TimerTeleport		= "Show timer for Teleport"
+	TimerTeleport		= "Show timer for Teleport",
+	HeiganTouch			= "Show $spell:196780 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	HeiganTouchHC		= "Heroic: Show $spell:196791 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 })
 
 L:SetMiscLocalization({
@@ -381,7 +391,6 @@ L:SetOptionLocalization({
 	TimerPhase2		= "Show timer for Phase 2",
 	specwarnP2Soon	= "Show special warning 10 seconds before Kel'Thuzad engages",
 	warnAddsSoon	= "Show pre-warning for Guardians of Icecrown",
-	BlastAlarm		= "Play custom siren sound when Frost Blast is being cast",
 	ShowRange		= "Show range frame when Phase 2 starts"
 })
 

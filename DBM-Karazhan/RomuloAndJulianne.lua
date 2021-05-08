@@ -68,8 +68,8 @@ function mod:OnCombatStart(delay)
 	JulianneDied = 0
 	RomuloDied = 0
 	timerNextSpotlight:Start(20-delay)
-	heartbrokenStacks = 0
 	self.vb.phase = 1
+	heartbrokenStacks = 0
 end
 
 function mod:SPELL_CAST_START(args)
