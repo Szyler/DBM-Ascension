@@ -16,7 +16,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
+local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
 local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
 local warningVanish			= mod:NewSpellAnnounce(29448, 3)
 local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 37066)
