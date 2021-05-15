@@ -139,7 +139,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(showEnfeebleWarning)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
-		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
 	end	
 end
 
@@ -170,7 +170,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
 	elseif args:IsSpellID(85198) then
-		priWarnSunder:Show(args.SpellName, args.destName, args.amount or 1)
+		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
 	end
 end
 		
