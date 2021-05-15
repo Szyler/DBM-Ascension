@@ -35,16 +35,19 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 --local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
-local timerNextInfernal			= mod:NewTimer(18.5, "Summon Infernal #%s", 37277)
+local timerNextInfernal			= mod:NewTimer(16.5, "Summon Infernal #%s", 37277)
 local timerEnfeeble				= mod:NewNextTimer(30, 30843)
 local timerDoom					= mod:NewNextTimer(24, 85069)
 local timerNova					= mod:NewNextTimer(30, 30852)
 local timerShadowRealm			= mod:NewNextTimer(45, 85077)
+local timerShadowRealmTank		= mod:NewNextTimer(45, 85077)
 local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
 
 local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
 local miscCrystalKill2			= mod:NewAnnounce(L.ShadowCrystalDead2, 3, 85078, nil,false)
 local miscCrystalKill3			= mod:NewAnnounce(L.ShadowCrystalDead3, 3, 85078, nil,false)
+
+local berserkTimer				= mod:NewBerserkTimer(900)
 
 local phase	= 0
 local ampDmg = 1
@@ -70,8 +73,11 @@ function mod:OnCombatStart(delay)
 	InfernalCount = 1
 	isPrince = true
 	below30 = false
-	timerEnfeeble:Start(32-delay)
-	timerDoom:Start(30-delay)
+	berserkTimer:Start(-delay)
+	if mod:IsDifficulty("Normal25", "heroic10", "heroic25") then
+		timerEnfeeble:Start(32-delay)
+		timerDoom:Start(30-delay)
+	end
 	table.wipe(enfeebleTargets)
 	timerNextInfernal:Start(21-delay, tostring(1))
 end
@@ -177,7 +183,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			if phase == 3 then
 				timerNextInfernal:Start(9, tostring(InfernalCount))
 			else
-				timerNextInfernal:Start(tostring(InfernalCount))
+				if mod:IsDifficulty("heroic10", "heroic25") then
+					timerNextInfernal:Start(17.5, tostring(InfernalCount))
+				else
+					timerNextInfernal:Start(tostring(InfernalCount))
+				end
 			end
 --		if Phase == 3 then
 --			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
@@ -193,6 +203,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.phase = 2
 		warnPhase2:Show()
 		timerShadowRealm:Start(15)
+		timerEnfeeble:Stop()
 	end
 end
 
@@ -203,6 +214,12 @@ function mod:UNIT_HEALTH(unit)
 			phase = 3
 			self.vb.phase = 3
 			warnPhase3:Show()
+			timerShadowRealm:Stop()
+			if mod:IsDifficulty("heroic10", "heroic25") then
+				timerShadowRealm:Start(22)
+			else
+				timerShadowRealm:Start(33)
+			end
 			timerAmpDmg:Start(5, tostring(ampDmg))
 			below30 = true;
         end
