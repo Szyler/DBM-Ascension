@@ -38,7 +38,8 @@ local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
 local warnHeal				= mod:NewSpecialWarning("Interrupt Heal!")
 
 local timerWhirlwind		= mod:NewBuffActiveTimer(10, 33238)
-local timerNextWhirlwind	= mod:NewNextTimer(55, 33238)
+local timerNextWhirlwind	= mod:NewNextTimer(40, 33238)
+local timerMightyBlow		= mod:NewCDTimer(30, 33238, nil, false)
 local timerCharge			= mod:NewNextTimer(20, 26561)
 local timerBlast			= mod:NewNextTimer(90, 33061)
 local timerFelstalk			= mod:NewNextTimer(30, 33131)
@@ -111,6 +112,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerCharge:Start()
 	elseif args:IsSpellID(33054) then
 		timerSpellshield:Start()
+	elseif args:IsSpellID(33230) then
+		timerMightyBlow:Start()
 	end
 end
 
