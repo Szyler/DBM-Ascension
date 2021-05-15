@@ -16,11 +16,11 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
+local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
 local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
 local warningVanish			= mod:NewSpellAnnounce(29448, 3)
 local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 37066)
-local warningGouge			= mod:NewTargetAnnounce(29425, 4)
+-- local warningGouge			= mod:NewTargetAnnounce(29425, 4)
 local warningBlind			= mod:NewTargetAnnounce(34694, 3)
 local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
 local warningManaBurn		= mod:NewCastAnnounce(29405, 3, nil, false)
@@ -36,15 +36,15 @@ local warningDShield		= mod:NewTargetAnnounce(29382, 3)
 
 local specWarnDinner		= mod:NewSpecialWarning(L.DinnerServed)
 
-local timerVanish			= mod:NewNextTimer(23, 29448)
-local timerGouge			= mod:NewTargetTimer(6, 29425)
+local timerVanish			= mod:NewNextTimer(30, 29448)
+-- local timerGouge			= mod:NewTargetTimer(6, 29425)
 local timerBlind			= mod:NewTargetTimer(10, 34694)
 local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
 local timerHoJ				= mod:NewCDTimer(50, 13005)
 local timerDinner			= mod:NewCDTimer(24, 85090)
 local timerDinner25m		= mod:NewCDTimer(36, 85090)
 
-local lastVanish = 0
+-- local lastVanish = 0
 
 --Ascension Specific
 local warningDinner		= mod:NewSpellAnnounce(85090, 3)
@@ -61,7 +61,7 @@ function mod:OnCombatStart(delay)
 	self.vb.warned_preP2 = false
 	timerVanish:Start(-delay)
 	warningVanishSoon:Schedule(20-delay)
-	lastVanish = 0
+	-- lastVanish = 0
 	-- lastDinner = GetTime()
 	danceCount = 0;
 	mod:DanceTimer(22-delay,true);
@@ -113,10 +113,10 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(29448) then
 		warningVanish:Show()
-		lastVanish = GetTime()
-	elseif args:IsSpellID(29425) then
-		warningGouge:Show(args.destName)
-		timerGouge:Show(args.destName)
+		-- lastVanish = GetTime()
+	-- elseif args:IsSpellID(29425) then
+	-- 	warningGouge:Show(args.destName)
+	-- 	timerGouge:Show(args.destName)
 	elseif args:IsSpellID(34694) then
 		warningBlind:Show(args.destName)
 		timerBlind:Show(args.destName)
@@ -133,10 +133,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningPWS:Show(args.destName)
 	elseif args:IsSpellID(37066, 85223, 85224) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
-		if (GetTime() - lastVanish) < 20 then
-			timerVanish:Start()
+		-- if (GetTime() - lastVanish) < 20 then
+		timerVanish:Start()
 --			warningVanishSoon:Schedule(23)
-		end
+		-- end
 	elseif args:IsSpellID(85089) then -- Soul Burst Debuff
 		local elapsed, total = timerDance:GetTime(danceType[(danceCount % 3)]);
 		if elapsed > 10 then
@@ -165,9 +165,9 @@ end
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(37066, 85223, 85224) then
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
-		if (GetTime() - lastVanish) < 20 then
-			timerVanish:Start()
-		end
+		-- if (GetTime() - lastVanish) < 20 then
+		timerVanish:Start()
+		-- end
 	end
 end
 

@@ -10,15 +10,15 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_WARNING"
 )
 
-local warningFearSoon	= mod:NewSoonAnnounce(30752, 2)
-local warningFear		= mod:NewSpellAnnounce(30752, 3)
-local warningRRHSoon	= mod:NewSoonAnnounce(30753, 3)
-local warningRRH		= mod:NewTargetAnnounce(30753, 4)
+local warningFearSoon		= mod:NewSoonAnnounce(30752, 2)
+local warningFear			= mod:NewSpellAnnounce(30752, 3)
+local warningRRHSoon		= mod:NewSoonAnnounce(30753, 3)
+local warningRRH			= mod:NewTargetAnnounce(30753, 4)
 
-local specWarnRRH		= mod:NewSpecialWarningYou(30753)
+local specWarnRRH			= mod:NewSpecialWarningYou(30753)
 
 local timerRRH				= mod:NewTargetTimer(20, 30753)
-local timerRRHCD			= mod:NewNextTimer(60, 30753)
+local timerRRH				= mod:NewNextTimer(60, 30753)
 local timerFearCD			= mod:NewNextTimer(24, 30752)
 local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
@@ -27,8 +27,8 @@ mod:AddBoolOption("RRHIcon")
 local lastFear = 0
 
 function mod:OnCombatStart(delay)
-	timerRRHCD:Start(30-delay)
-	timerFearCD:Start(55-delay)
+	timerRRH:Start(30-delay)
+	timerFearCD:Start(25-delay)
 	timerNextSpotlight:Start(30-delay)
 end
 
@@ -37,7 +37,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30753) then
 		warningRRH:Show(args.destName)
 		timerRRH:Start(args.destName)
-		timerRRHCD:Start()
+		timerRRH:Start()
 		warningRRHSoon:Cancel()
 		warningRRHSoon:Schedule(25)
 		if args:IsPlayer() then

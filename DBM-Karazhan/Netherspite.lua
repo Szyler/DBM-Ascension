@@ -26,7 +26,7 @@ local specWarnBreath		= mod:NewSpecialWarningYou(38523)
 
 local timerPortalPhase		= mod:NewTimer(50, "timerPortalPhase", "Interface\\Icons\\Spell_Arcane_PortalIronForge")
 local timerBanishPhase		= mod:NewTimer(31, "timerBanishPhase", "Interface\\Icons\\Spell_Shadow_Cripple")
-local timerBreathCast		= mod:NewCastTimer(2.5, 38523)
+local timerBreathCast		= mod:NewCastTimer(4, 38523)
 
 local berserkTimer			= mod:NewBerserkTimer(540)
 

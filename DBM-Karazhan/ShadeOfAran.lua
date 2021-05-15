@@ -34,8 +34,8 @@ local specWarnPoly			= mod:NewSpecialWarning(L.VolatilePoly)
 local specWarnFull			= mod:NewSpecialWarning(L.ArcaneSpiral)
 --local specWarnDoubleCast	= mod:NewSpecialWarning(L.DoubleCast);
 
-local timerSpecial			= mod:NewTimer(35, L.timerSpecial, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
-local timerFlameCast		= mod:NewCastTimer(5, 30004)
+local timerSpecial			= mod:NewTimer(30, L.timerSpecial, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
+local timerFlameCast		= mod:NewCastTimer(4, 30004)
 local timerArcaneExplosion	= mod:NewCastTimer(10, 29973)
 -- local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
 local timerFlame			= mod:NewBuffActiveTimer(20.5, 29946)
