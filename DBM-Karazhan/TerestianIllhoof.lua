@@ -34,8 +34,8 @@ local specWarnCurse		= mod:NewSpecialWarningYou(85275)
 local timerWeakened		= mod:NewBuffActiveTimer(31, 30065)
 local timerSacrifice	= mod:NewTargetTimer(30, 85190)
 local timerSacrificeCD	= mod:NewNextTimer(43, 85190)
-local timerCurse		= mod:NewTargetTimer(15, 85275)
-local timerCurseCD		= mod:NewNextTimer(40, 85275)
+local TimerCurseDur		= mod:NewTargetTimer(10, 85275)
+local timerNextCurse	= mod:NewNextTimer(20, 85275)
 local timerLink			= mod:NewTargetTimer(10, 85277)
 local timerAmplifyCD	= mod:NewNextTimer(9, 85289)
 
@@ -46,7 +46,7 @@ mod:AddBoolOption("HealthFrame", true)
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerSacrificeCD:Start(30-delay)
-	timerCurseCD:Start(20-delay)
+	timerNextCurse:Start(20-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -68,8 +68,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerAmplifyCD:Cancel()
 	elseif args:IsSpellID(85275) then
 		warnCurse:Show(args.destName)
-		timerCurse:Start(args.destName)
-		timerCurseCD:Start()
+		TimerCurseDur:Start(args.destName)
+		timerNextCurse:Start()
 		if args:IsPlayer() then
 			specWarnCurse:Show()
 		end
