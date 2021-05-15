@@ -29,7 +29,7 @@ local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer()
 local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
 local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
 
-local timerHeal				= mod:NewCastTimer(2.5, 30878)
+local timerHeal				= mod:NewCastTimer(5, 30878)
 local timerDaring			= mod:NewTargetTimer(8, 30841)
 local timerDevotion			= mod:NewTargetTimer(10, 30887)
 local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
@@ -75,7 +75,11 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(30878) then
 		warningHeal:Show()
-		timerHeal:Start()
+		if mod:IsDifficulty("normal25", "heroic10", "heroic25") then
+			timerHeal:Start()
+		else
+			timerHeal:Start(2)
+		end
 	end
 end
 
