@@ -35,7 +35,7 @@ local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
 --local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
 local timerNovaCast				= mod:NewCastTimer(2, 30852)
-local timerNextInfernal			= mod:NewTimer(16.5, "Summon Infernal #%s", 37277)
+local timerNextInfernal			= mod:NewTimer(20, "Summon Infernal #%s", 37277)
 local timerEnfeeble				= mod:NewNextTimer(30, 30843)
 local timerDoom					= mod:NewNextTimer(24, 85069)
 local timerNova					= mod:NewNextTimer(30, 30852)
@@ -55,8 +55,6 @@ local enfeebleTargets = {}
 local firstInfernal = false
 local CrystalsKilled = 0
 local InfernalCount = 1
-local isPrince = false;
-local below30 = false;
 
 mod:AddBoolOption(L.ShadowCrystal)
 
@@ -71,23 +69,19 @@ function mod:OnCombatStart(delay)
 	CrystalsKilled = 0
 	ampDmg = 1
 	InfernalCount = 1
-	isPrince = true
-	below30 = false
 	berserkTimer:Start(-delay)
-	if mod:IsDifficulty("Normal25", "heroic10", "heroic25") then
-		timerEnfeeble:Start(32-delay)
-		timerDoom:Start(30-delay)
-	end
 	table.wipe(enfeebleTargets)
 	timerNextInfernal:Start(21-delay, tostring(1))
+	timerNova:Start(34-delay)
+	timerEnfeeble:Start(30-delay)
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(30852, 85293) then
 		warningNovaCast:Show()
-		timerNova:Start()
 		timerNovaCast:Start()
 		specWarnNova:Show()
+		timerNova:Start()
 	end
 end
 
@@ -140,7 +134,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
-	end	
+	end
+	elseif args:IsSpellID(85069) then
+		phase = 3
+		self.vb.phase = 3
+		warnPhase3:Show()
+		timerAmpDmg:Start(5, tostring(ampDmg))
+		timerNova:Stop()
+        end
+    end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -179,12 +181,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
 		warningInfernal:Show()
 		InfernalCount = InfernalCount + 1
---		print("Next infernal is #"..InfernalCount)
+--		print("Next infernal is #"..InfernalCount)        -- debug
 			if phase == 3 then
-				timerNextInfernal:Start(9, tostring(InfernalCount))
+				timerNextInfernal:Start(10, tostring(InfernalCount))
 			else
 				if mod:IsDifficulty("heroic10", "heroic25") then
-					timerNextInfernal:Start(17.5, tostring(InfernalCount))
+					timerNextInfernal:Start(20, tostring(InfernalCount))
 				else
 					timerNextInfernal:Start(tostring(InfernalCount))
 				end
@@ -198,30 +200,31 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 --		phase = 3
 --		warnPhase3:Show()
 --		timerAmpDmg:Start(5, tostring(ampDmg))
-	elseif msg == L.DBM_PRINCE_YELL_P2 then
+	elseif msg == L.DBM_PRINCE_YELL_P2 then             
 		phase = 2
 		self.vb.phase = 2
 		warnPhase2:Show()
 		timerShadowRealm:Start(15)
 		timerEnfeeble:Stop()
+		timerDoom:Start(30)
 	end
 end
 
-function mod:UNIT_HEALTH(unit)
-	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
-		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 30) then
-			phase = 3
-			self.vb.phase = 3
-			warnPhase3:Show()
-			timerShadowRealm:Stop()
-			if mod:IsDifficulty("heroic10", "heroic25") then
-				timerShadowRealm:Start(22)
-			else
-				timerShadowRealm:Start(33)
-			end
-			timerAmpDmg:Start(5, tostring(ampDmg))
-			below30 = true;
-        end
-    end
+--function mod:UNIT_HEALTH(unit)                        -- Not necessary anymore, track with spell_aura_applied instead.
+--	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
+		-- local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		-- if (hp <= 30) then
+			-- phase = 3
+			-- self.vb.phase = 3
+			-- warnPhase3:Show()
+			-- timerShadowRealm:Stop()
+			-- if mod:IsDifficulty("heroic10", "heroic25") then
+				-- timerShadowRealm:Start(22)
+			-- else
+				-- timerShadowRealm:Start(33)
+			-- end
+			-- timerAmpDmg:Start(5, tostring(ampDmg))
+			-- below30 = true;
+        -- end
+    -- end
 end
