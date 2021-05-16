@@ -22,7 +22,7 @@ local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
 local warnSunder			= mod:NewAnnounce(L.AttSunder, 2, 85178)
 local warnFireball			= mod:NewTargetAnnounce(85209, 2)  -- heroic
 
-local timerCurseCD			= mod:NewNextTimer(31, 85154)
+local timerCurseCD			= mod:NewNextTimer(30, 85154)
 local timerChargeCD			= mod:NewCDTimer(28, 85157)
 local timerFireball			= mod:NewCDTimer(12, 85209)   -- heroic
 
@@ -51,6 +51,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85154, 85155, 85156) then     
 		warningCurse:Show()
+		timerCurseCD:Start()
 	elseif args:IsSpellID(85157, 85158, 85159) then -- 3 different spell IDs? why Ascension?
 		timerChargeCD:Start()
 		warnCharge:Show(args.destName)
