@@ -319,6 +319,7 @@ L:SetMiscLocalization{
 	DBM_PRINCE_YELL_P3		= "How can you hope to stand against such overwhelming power?",
 	DBM_PRINCE_YELL_INF1	= "All realities, all dimensions are open to me!",
 	DBM_PRINCE_YELL_INF2	= "You face not Malchezaar alone, but the legions I command!"
+	DBM_PRINCE_YELL_INF3	= "The cerestial forces are mine to manipulate."
 }
 
 
