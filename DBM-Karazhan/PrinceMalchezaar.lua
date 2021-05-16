@@ -71,9 +71,11 @@ function mod:OnCombatStart(delay)
 	InfernalCount = 1
 	berserkTimer:Start(-delay)
 	table.wipe(enfeebleTargets)
+	if mod:IsDifficulty("Normal25", "heroic10", "heroic25") then
+		timerEnfeeble:Start(30-delay)
+	end
 	timerNextInfernal:Start(21-delay, tostring(1))
 	timerNova:Start(34-delay)
-	timerEnfeeble:Start(30-delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -134,14 +136,18 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
-	end
 	elseif args:IsSpellID(85069) then
 		phase = 3
 		self.vb.phase = 3
 		warnPhase3:Show()
 		timerAmpDmg:Start(5, tostring(ampDmg))
 		timerNova:Stop()
-        end
+		timerShadowRealm:Stop()
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerShadowRealm:Start(22)
+		else
+			timerShadowRealm:Start(33)
+		end
     end
 end
 
@@ -217,12 +223,6 @@ end
 			-- phase = 3
 			-- self.vb.phase = 3
 			-- warnPhase3:Show()
-			-- timerShadowRealm:Stop()
-			-- if mod:IsDifficulty("heroic10", "heroic25") then
-				-- timerShadowRealm:Start(22)
-			-- else
-				-- timerShadowRealm:Start(33)
-			-- end
 			-- timerAmpDmg:Start(5, tostring(ampDmg))
 			-- below30 = true;
         -- end
