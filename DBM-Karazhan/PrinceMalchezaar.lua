@@ -178,7 +178,7 @@ end
 		
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
+	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 or DBM_PRINCE_YELL_INF3 then
 		warningInfernal:Show()
 		InfernalCount = InfernalCount + 1
 --		print("Next infernal is #"..InfernalCount)        -- debug
