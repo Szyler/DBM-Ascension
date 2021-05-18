@@ -43,6 +43,7 @@ local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
 local timerHoJ				= mod:NewCDTimer(50, 13005)
 local timerDinner			= mod:NewCDTimer(24, 85090)
 local timerDinner25m		= mod:NewCDTimer(36, 85090)
+local timerMoroesEnrage		= mod:NewTimer(600, "Frenzy", 351007)
 
 -- local lastVanish = 0
 
@@ -58,6 +59,7 @@ mod:AddBoolOption(L.FoodYell, false)
 mod.vb.warned_preP2 = false
 
 function mod:OnCombatStart(delay)
+	timerMoroesEnrage:Start(-delay)
 	self.vb.warned_preP2 = false
 	timerVanish:Start(-delay)
 	warningVanishSoon:Schedule(20-delay)
