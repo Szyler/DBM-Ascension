@@ -30,7 +30,7 @@ local timerBoulder		= mod:NewTimer(24, "Giant Boulder CD", "Interface\\Icons\\in
 local timerCaveIn		= mod:NewTimer(24, "Cave In CD", "Interface\\Icons\\INV_Ammo_Bullet_02")
 
 local timerNextHateful		= mod:NewNextTimer(6, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
-local timerNextHatefulHC	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
+local timerNextHatefulAscended	= mod:NewNextTimer(3, 33813, nil, false)--, mod:IsTank() or mod:IsHealer())
 
 -- grow timer placed here because DBM hates me
 local Grow				= 1;
@@ -116,7 +116,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85376) then
+	if args:IsSpellID(85376, 36240, 351074) then
 		CaveInCD = CaveInCD - 1
 		timerCaveIn:Start(CaveInCD)
 		if CaveInCD < 4 then	-- Cave In CD is capped at 4 seconds, it does not decay below that.
@@ -125,7 +125,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(33813) then
 		-----Hateful Strike-----
 		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerNextHatefulHC:Start()
+			timerNextHatefulAscended:Start()
 		else
 			timerNextHateful:Start()
 		end
