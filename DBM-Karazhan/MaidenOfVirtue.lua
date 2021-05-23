@@ -41,7 +41,6 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
-	lastRepentance = GetTime()
 end
 
 function mod:OnCombatEnd()
@@ -53,15 +52,6 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(85122) then
 		warningHolyFire:Show(args.destName)
-	elseif args:IsSpellID(85177, 85307, 196743) then
-		warningRepentanceSoon:Cancel()
-		timerRepentanceCast:Start()
-		timerRepentance:Start()
-		warningRepentanceSoon:Schedule(40)
-		if (GetTime() - lastRepentance) > 10 then--To not spam each target of Repentance
-			warningRepentance:Show()
-			lastRepentance = GetTime()
-		end
 	end
 end
 
@@ -80,6 +70,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerDesperate:Start()
 			timerDesperateExplode:Start()
 			warningSpecDespRun:Schedule(10)
+	--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
+	elseif args:IsSpellID(196718, 196754, 196719) then -- Cast start of Repentance (3s)
+		warningRepentanceSoon:Cancel()
+		timerRepentanceCast:Start()
+		timerRepentance:Start()
+		warningRepentanceSoon:Schedule(48)
 	end
 end
 
