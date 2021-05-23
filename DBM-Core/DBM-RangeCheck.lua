@@ -490,14 +490,15 @@ function createRadarFrame()
 	text:Show()
 	radarFrame.text = text
 
---	for i=1, 40 do
---		local dot = CreateFrame("Frame", "DBMRangeCheckRadarDot"..i, radarFrame, "WorldMapPartyUnitTemplate")
---		dot:SetWidth(24)
---		dot:SetHeight(24)
---		dot:SetFrameStrata("TOOLTIP")
---		dot:Hide()
---		dots[i] = {dot = dot}
---	end
+	radarFrame.dots = {}
+	for i = 1, 40 do
+		local dot = radarFrame:CreateTexture(nil, "OVERLAY")
+		dot:SetSize(24, 24)
+		dot:SetTexture(249183) -- "Interface\\Minimap\\PartyRaidBlips"
+		dot:Hide()
+		radarFrame.dots[i] = dot
+	end
+	
 	for i=1, 8 do
 		local charm = radarFrame:CreateTexture("DBMRangeCheckRadarCharm"..i, "OVERLAY")
 		charm:SetTexture("interface\\targetingframe\\UI-RaidTargetingIcons.blp")
