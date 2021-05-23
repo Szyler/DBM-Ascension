@@ -150,8 +150,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 
 		timerQuake:Start(41)
 		timerNova:Start(66, tostring(Nova))
-		timerNextFingerofDeath:Start(21)
-		timerNextHandofDeath:Start(36)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextFingerofDeath:Start(21)
+			timerNextHandofDeath:Start(36)
+		end
 		below30 = false;
 		isMag	= true;
 		warnPhaseTwo:Show()
