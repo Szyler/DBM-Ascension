@@ -34,6 +34,7 @@ local warnLShield			= mod:NewTargetAnnounce(85025, 3)
 local warnRShield			= mod:NewTargetAnnounce(85021, 3)
 local warnCharge			= mod:NewTargetAnnounce(26561, 2)
 
+local warnPWS				= mod:NewSpecialWarning("Purge Greater Power Word: Shield!")
 local warnPoH				= mod:NewSpecialWarning("Interrupt Prayer of Healing!")
 local warnHeal				= mod:NewSpecialWarning("Interrupt Heal!")
 
@@ -85,6 +86,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerPoly:Cancel()
 	elseif args:IsSpellID(33147) then
 		warnShield:Show(args.destName)
+		warnPWS:Show()
 	elseif args:IsSpellID(33232) then
 		if mod:IsDifficulty("normal25") then
 			timerNextWhirlwind:Cancel()
