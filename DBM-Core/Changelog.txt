@@ -52,3 +52,26 @@ v5.04 05/05/2021
 - Fixed Boulder and Cave in CD timers for Gruul
 - Added different versions for heroic Hateful Strike/Hateful Bolt on Gruul/Curator
 ----------------------------------------------------------------------------------------------------
+v5.05 23/05/2021
+- Added special warning to purge Power word: Shield on Maulgar
+- Added Repentance cast timer to Maiden
+- Added Moroes enrage timer
+- Added a phase 2 warning on Moroes
+- Fixed whirlwind timers on Maulgar
+- Fixed Fingers and Hands timer on Magtheridon to only show on Ascended
+- Added a timer for Attumen curse
+- Fixed Moroes Vanish timer
+- Fixed Desperate prayer on heroic Flex
+- Fixed Romulo and Julianne lua error
+- Fixed timers for Howl and Red riding hood on Big Bad Wolf 
+- Fixed Julianne heal cast time per difficutly
+- Fixed Hateful timer in phase 2 Curator
+- Fixed Smoldering announce text
+- Fixed Illhoof curse timer
+- Fixed cast timer on Netherspite's Breath
+- Fixed Aran Flame Wreath cast timer
+- Fixed Phase 3 warning on Prince
+- Fixed different timers on Prince per difficulty
+- Fixed Infernal timers on Prince
+- Fixed Sunder armor announce on Prince
+----------------------------------------------------------------------------------------------------
