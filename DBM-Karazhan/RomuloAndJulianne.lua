@@ -49,15 +49,12 @@ local function updateHealthFrame(phase)--WIP
 	end
 	phases[phase] = true
 	if phase == 1 then
-		self.vb.phase = 1
 		DBM.BossHealth:Clear()
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 	elseif phase == 2 then--UNIT_DIED event triggers not tested yet
-		self.vb.phase = 2
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 		warnPhase2:Show()
 	elseif phase == 3 then
-		self.vb.phase = 3
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 	end
@@ -124,6 +121,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_RJ_PHASE2_YELL or msg:find(L.DBM_RJ_PHASE2_YELL) then
 		warnPhase3:Show()
 		updateHealthFrame(3)
+		self.vb.phase = 3
 	elseif msg == L.Event or msg:find(L.Event) then
 		timerCombatStart:Start()
 	end
@@ -141,6 +139,7 @@ function mod:UNIT_DIED(args)
 		else
 			DBM.BossHealth:RemoveBoss(cid)
 			updateHealthFrame(2)
+			self.vb.phase = 2
 		end
 	elseif cid == 17533 then
 		if phase == 3 then--Only want to remove from boss health frame first time they die, and kill only in phase 3.

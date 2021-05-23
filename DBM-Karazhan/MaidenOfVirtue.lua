@@ -10,8 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_REMOVED",
-	"CHAT_MSG_RAID_WARNING"
+	"SPELL_AURA_REMOVED"
 )
 
 local warningRepentanceSoon	= mod:NewSoonAnnounce(85177, 2)
@@ -42,7 +41,6 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
-	lastRepentance = GetTime()
 end
 
 function mod:OnCombatEnd()
@@ -51,27 +49,9 @@ function mod:OnCombatEnd()
 	end
 end	
 
-function mod:CHAT_MSG_RAID_WARNING(msg)
-	if msg == L.DesperatePrayer then
-		warningDesperate:Show()
-		timerDesperate:Start()
-		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(10)
-	end
-end
-
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(85122) then
 		warningHolyFire:Show(args.destName)
-	elseif args:IsSpellID(85177, 85307, 196743) then
-		warningRepentanceSoon:Cancel()
-		timerRepentanceCast:Start()
-		timerRepentance:Start()
-		warningRepentanceSoon:Schedule(40)
-		if (GetTime() - lastRepentance) > 10 then--To not spam each target of Repentance
-			warningRepentance:Show()
-			lastRepentance = GetTime()
-		end
 	end
 end
 
@@ -85,6 +65,17 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		-- timerWrathSkipped:Schedule(20)
 		warnWrath:Show()
+	elseif args:IsSpellID(85120) then
+			warningDesperate:Show()
+			timerDesperate:Start()
+			timerDesperateExplode:Start()
+			warningSpecDespRun:Schedule(10)
+	--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
+	elseif args:IsSpellID(196718, 196754, 196719) then -- Cast start of Repentance (3s)
+		warningRepentanceSoon:Cancel()
+		timerRepentanceCast:Start()
+		timerRepentance:Start()
+		warningRepentanceSoon:Schedule(48)
 	end
 end
 

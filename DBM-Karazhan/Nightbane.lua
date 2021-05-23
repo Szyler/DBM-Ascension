@@ -80,13 +80,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30130) then
 		warningAsh:Show(args.destName)
 	elseif args:IsSpellID(85245) then
-		warnBreath:Show(args.SpellName, args.destName, args.amount or 1)
+		warnBreath:Show("Smoldering Breath", args.destName, args.amount or 1)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(85245) then
-		warnBreath:Show(args.SpellName, args.destName, args.amount or 1)
+		warnBreath:Show("Smoldering Breath", args.destName, args.amount or 1)
 	end
 end
 
