@@ -10,8 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_REMOVED",
-	"CHAT_MSG_RAID_WARNING"
+	"SPELL_AURA_REMOVED"
 )
 
 local warningRepentanceSoon	= mod:NewSoonAnnounce(85177, 2)
@@ -20,7 +19,8 @@ local warningHolyFire		= mod:NewTargetAnnounce(85122, 3)
 local warnWrath				= mod:NewSpellAnnounce(32445, 2)
 
 -- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
-local timerRepentanceCD		= mod:NewCDTimer(44, 85177)
+local timerRepentance		= mod:NewNextTimer(53, 85177)
+local timerRepentanceCast	= mod:NewCastTimer(3, 85177)
 
 mod:AddBoolOption("RangeFrame", true)
 
@@ -29,19 +29,18 @@ local warningSpecDespRun	= mod:NewSpecialWarning(L.WarnPrayerRun)
 local warningDesperate		= mod:NewSpellAnnounce(85108, 2)
 local timerDesperate		= mod:NewBuffActiveTimer(3, 85120)
 local timerDesperateExplode	= mod:NewBuffActiveTimer(14, 85103)
-local timerDesperateCD		= mod:NewCDTimer(44, 85120)
-local timerWrath			= mod:NewCDTimer(16, 32445)
-local timerWrathSkipped		= mod:NewCDTimer(12, 32445)
+local timerDesperate		= mod:NewNextTimer(53, 85120)
+local timerWrath			= mod:NewNextTimer(12, 32445)
+-- local timerWrathSkipped		= mod:NewCDTimer(12, 32445)
 
 function mod:OnCombatStart(delay)
-	timerRepentanceCD:Start(40-delay)
-	timerDesperateCD:Start(20-delay)
-	timerWrath:Start(15-delay)
-	timerWrathSkipped:Schedule(35)
+	timerRepentance:Start(20-delay)
+	timerDesperate:Start(40-delay)
+	timerWrath:Start(7-delay)
+	-- timerWrathSkipped:Schedule(26)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
-	lastRepentance = GetTime()
 end
 
 function mod:OnCombatEnd()
@@ -50,36 +49,33 @@ function mod:OnCombatEnd()
 	end
 end	
 
-function mod:CHAT_MSG_RAID_WARNING(msg)
-	if msg == L.DesperatePrayer then
-		warningDesperate:Show()
-		timerDesperateCD:Start()
-		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(10)
-	end
-end
-
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(85122) then
 		warningHolyFire:Show(args.destName)
-	elseif args:IsSpellID(85177, 85307) then
-		warningRepentanceSoon:Cancel()
---		timerRepentance:Start()
-		timerRepentanceCD:Start()
-		warningRepentanceSoon:Schedule(40)
-		if (GetTime() - lastRepentance) > 10 then--To not spam each target of Repentance
-			warningRepentance:Show()
-			lastRepentance = GetTime()
-		end
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(32445, 85228, 85229) then
-		self:Unschedule(timerWrathSkipped);
-		timerWrath:Start()
-		timerWrathSkipped:Schedule(20)
+		-- self:Unschedule(timerWrathSkipped);
+		if timerDesperate:GetTime() < 12 then
+			timerWrath:Start(29)
+		else
+			timerWrath:Start()
+		end
+		-- timerWrathSkipped:Schedule(20)
 		warnWrath:Show()
+	elseif args:IsSpellID(85120) then
+			warningDesperate:Show()
+			timerDesperate:Start()
+			timerDesperateExplode:Start()
+			warningSpecDespRun:Schedule(10)
+	--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
+	elseif args:IsSpellID(196718, 196754, 196719) then -- Cast start of Repentance (3s)
+		warningRepentanceSoon:Cancel()
+		timerRepentanceCast:Start()
+		timerRepentance:Start()
+		warningRepentanceSoon:Schedule(48)
 	end
 end
 

@@ -29,7 +29,7 @@ local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer()
 local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
 local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
 
-local timerHeal				= mod:NewCastTimer(2.5, 30878)
+local timerHeal				= mod:NewCastTimer(5, 30878)
 local timerDaring			= mod:NewTargetTimer(8, 30841)
 local timerDevotion			= mod:NewTargetTimer(10, 30887)
 local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
@@ -49,15 +49,12 @@ local function updateHealthFrame(phase)--WIP
 	end
 	phases[phase] = true
 	if phase == 1 then
-		self.vb.phase = 1
 		DBM.BossHealth:Clear()
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 	elseif phase == 2 then--UNIT_DIED event triggers not tested yet
-		self.vb.phase = 2
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 		warnPhase2:Show()
 	elseif phase == 3 then
-		self.vb.phase = 3
 		DBM.BossHealth:AddBoss(17534, L.Julianne)
 		DBM.BossHealth:AddBoss(17533, L.Romulo)
 	end
@@ -75,7 +72,11 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(30878) then
 		warningHeal:Show()
-		timerHeal:Start()
+		if mod:IsDifficulty("normal25", "heroic10", "heroic25") then
+			timerHeal:Start()
+		else
+			timerHeal:Start(2)
+		end
 	end
 end
 
@@ -120,6 +121,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_RJ_PHASE2_YELL or msg:find(L.DBM_RJ_PHASE2_YELL) then
 		warnPhase3:Show()
 		updateHealthFrame(3)
+		self.vb.phase = 3
 	elseif msg == L.Event or msg:find(L.Event) then
 		timerCombatStart:Start()
 	end
@@ -137,6 +139,7 @@ function mod:UNIT_DIED(args)
 		else
 			DBM.BossHealth:RemoveBoss(cid)
 			updateHealthFrame(2)
+			self.vb.phase = 2
 		end
 	elseif cid == 17533 then
 		if phase == 3 then--Only want to remove from boss health frame first time they die, and kill only in phase 3.

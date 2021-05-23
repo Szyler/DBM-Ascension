@@ -23,8 +23,8 @@ local timerTerminate		= mod:NewTargetTimer(10, 85082)
 local timerTerminateCD		= mod:NewCDTimer(15, 85082) --15 seconds??
 local timerEvo				= mod:NewBuffActiveTimer(20, 30254)
 local timerNextEvo			= mod:NewNextTimer(110, 30254)
-local timerNextHateful		= mod:NewNextTimer(12, 30383)--, mod:IsTank() or mod:IsHealer())
-local timerNextHatefulHc	= mod:NewNextTimer(12, 85267)--, mod:IsTank() or mod:IsHealer())
+local timerNextHateful		= mod:NewNextTimer(6, 30383)--, mod:IsTank() or mod:IsHealer())
+local timerNextHatefulHc	= mod:NewNextTimer(6, 85267)--, mod:IsTank() or mod:IsHealer())
 
 local berserkTimer			= mod:NewBerserkTimer(720)
 local isCurator 			= false
@@ -57,6 +57,7 @@ function mod:OnCombatStart(delay)
 	end
 	isCurator = true
 	terminateIcon = 5;
+	self.vb.phase = 1;
 end
 
 function mod:OnCombatEnd()
@@ -70,6 +71,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnArcaneInfusion:Show()
 		timerNextEvo:Stop()
 		timerEvo:Stop()
+		self.vb.phase = 2
 		--warnBreakCrystal:Cancel();
 	elseif args:IsSpellID(85082) then
 		if self.Options.CuratorIcon then
@@ -103,8 +105,16 @@ end
 function mod:SPELL_DAMAGE(args)
 	-----Hateful Strike-----
 	if args:IsSpellID(33813) then
-		timerNextHateful:Start()
+		if self.vb.phase == 2 then 
+			timerNextHateful:Start()
+		else
+			timerNextHateful:Start(4)
+		end
 	elseif args:IsSpellID(85267) then
-		timerNextHatefulHc:Start()
+		if self.vb.phase == 2 then 
+			timerNextHatefulHc:Start()
+		else
+			timerNextHatefulHc:Start(4)
+		end
 	end
 end

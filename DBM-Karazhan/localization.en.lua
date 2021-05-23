@@ -306,7 +306,8 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	ShadowCrystal			= "Show number of Shadow Crystals destroyed",
-	AmplifyDamage			= "Show $spell:85207 targets and stack number warning"
+	AmplifyDamage			= "Show $spell:85207 targets and stack number warning",
+	PriSunder				= "Show $spell:85198 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 	--InfernalOnYou			= "Show special warning on Next Infernal on you!",
 }
 
@@ -315,7 +316,8 @@ L:SetMiscLocalization{
 	DBM_PRINCE_YELL_P2		= "Simple fools! Time is the fire in which you'll burn!",
 	DBM_PRINCE_YELL_P3		= "How can you hope to stand against such overwhelming power?",
 	DBM_PRINCE_YELL_INF1	= "All realities, all dimensions are open to me!",
-	DBM_PRINCE_YELL_INF2	= "You face not Malchezaar alone, but the legions I command!"
+	DBM_PRINCE_YELL_INF2	= "You face not Malchezaar alone, but the legions I command!",
+	DBM_PRINCE_YELL_INF3	= "The celestial forces are mine to manipulate."
 }
 
 
