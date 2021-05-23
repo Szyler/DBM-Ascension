@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_INSTAKILL",
 	"SPELL_CAST_SUCCESS",
@@ -136,41 +137,54 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Schedule(0.3, showEnfeebleWarning)
 	elseif args:IsSpellID(85198) then
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
-	elseif args:IsSpellID(85069) then
-		phase = 3
-		self.vb.phase = 3
-		warnPhase3:Show()
-		timerAmpDmg:Start(5, tostring(ampDmg))
-		timerNova:Stop()
-		timerShadowRealm:Stop()
-		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerShadowRealm:Start(22)
-		else
-			timerShadowRealm:Start(33)
-		end
-    end
+	-- elseif args:IsSpellID(85208) then -- Aura doesn't show in combatlog, can't be tracked
+	-- 	phase = 2
+	-- 	self.vb.phase = 2
+	-- 	warnPhase2:Show()
+	-- 	timerShadowRealm:Start(15)
+	-- 	timerEnfeeble:Stop()
+	-- 	timerDoom:Start(30)
+	end
 end
+
+-- function mod:SPELL_AURA_REMOVED(args) -- Aura doesn't show in combatlog, can't be tracked
+-- 	if args:IsSpellID(85208) then
+-- 		phase = 3
+-- 		self.vb.phase = 3
+-- 		warnPhase3:Show()
+-- 		timerAmpDmg:Start(5, tostring(ampDmg))
+-- 		timerDoom:Stop()
+-- 		timerDoom:Start(12)
+-- 		timerNova:Stop()
+-- 		timerShadowRealm:Stop()
+-- 		if mod:IsDifficulty("heroic10", "heroic25") then
+-- 			timerShadowRealm:Start(22)
+-- 		else
+-- 			timerShadowRealm:Start(33)
+-- 		end
+-- 	end
+-- end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85069) then
 		warningDoom:Show()
-			if phase == 3 then
-				timerDoom:Start(12)
-			else
-				timerDoom:Start()
-			end
+		if phase == 3 then
+			timerDoom:Start(12)
+		else
+			timerDoom:Start()
+		end
 	elseif args:IsSpellID(85077) then
 		warningShadowRealm:Show(args.destName)
-			if args.IsPlayer() then
-				specWarnSRealm:Show()
-			end
-			if mod:IsDifficulty("heroic10", "heroic25") then
-				timerShadowRealm:Start(22)
-			else
-				timerShadowRealm:Start()
-			end
+		if args.IsPlayer() then
+			specWarnSRealm:Show()
+		end
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerShadowRealm:Start(22)
+		else
+			timerShadowRealm:Start()
 		end
 	end
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(85207) and args:IsPlayer() then
@@ -181,22 +195,17 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
 	end
 end
-		
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 or DBM_PRINCE_YELL_INF3 then
 		warningInfernal:Show()
 		InfernalCount = InfernalCount + 1
 --		print("Next infernal is #"..InfernalCount)        -- debug
-			if phase == 3 then
-				timerNextInfernal:Start(10, tostring(InfernalCount))
-			else
-				if mod:IsDifficulty("heroic10", "heroic25") then
-					timerNextInfernal:Start(20, tostring(InfernalCount))
-				else
-					timerNextInfernal:Start(tostring(InfernalCount))
-				end
-			end
+		if phase == 3 then
+			timerNextInfernal:Start(10, tostring(InfernalCount))
+		else
+			timerNextInfernal:Start(tostring(InfernalCount))
+		end
 --		if Phase == 3 then
 --			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
 --		else		
@@ -216,15 +225,24 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
---function mod:UNIT_HEALTH(unit)                        -- Not necessary anymore, track with spell_aura_applied instead.
---	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
-		-- local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		-- if (hp <= 30) then
-			-- phase = 3
-			-- self.vb.phase = 3
-			-- warnPhase3:Show()
-			-- timerAmpDmg:Start(5, tostring(ampDmg))
-			-- below30 = true;
-        -- end
-    -- end
--- end
+function mod:UNIT_HEALTH(unit)
+	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 30) then
+			below30 = true;
+			phase = 3
+			self.vb.phase = 3
+			warnPhase3:Show()
+			timerAmpDmg:Start(5, tostring(ampDmg))
+			timerDoom:Stop()
+			timerDoom:Start(12)
+			timerNova:Stop()
+			timerShadowRealm:Stop()
+			if mod:IsDifficulty("heroic10", "heroic25") then
+				timerShadowRealm:Start(22)
+			else
+				timerShadowRealm:Start(33)
+			end
+        end
+    end
+end
