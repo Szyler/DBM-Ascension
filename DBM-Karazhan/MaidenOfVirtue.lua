@@ -10,8 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_REMOVED",
-	"CHAT_MSG_RAID_WARNING"
+	"SPELL_AURA_REMOVED"
 )
 
 local warningRepentanceSoon	= mod:NewSoonAnnounce(85177, 2)
@@ -51,15 +50,6 @@ function mod:OnCombatEnd()
 	end
 end	
 
-function mod:CHAT_MSG_RAID_WARNING(msg)
-	if msg == L.DesperatePrayer then
-		warningDesperate:Show()
-		timerDesperate:Start()
-		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(10)
-	end
-end
-
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(85122) then
 		warningHolyFire:Show(args.destName)
@@ -85,6 +75,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		-- timerWrathSkipped:Schedule(20)
 		warnWrath:Show()
+	elseif args:IsSpellID(85120) then
+			warningDesperate:Show()
+			timerDesperate:Start()
+			timerDesperateExplode:Start()
+			warningSpecDespRun:Schedule(10)
 	end
 end
 
