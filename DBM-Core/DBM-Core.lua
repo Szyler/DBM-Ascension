@@ -764,11 +764,17 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		if DBM:GetRaidRank() == 0 then
 			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
+		DBM:Unschedule(SendChatMessage)
+		fireEvent("DBM_TimerStop", "DBMPizzaTimer")
+		if DBM:GetRaidRank() >= 1 then
+			sendSync("DBMv4-Pizza-Cancel")
+		end
 		local timer = tonumber(cmd:sub(5)) or 10
 		local pullMessage = string.lower(cmd:sub(6) or "")
 		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
 		if timer > 1 then SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel) end
+		if timer > 10 then DBM:Schedule(timer - 10, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(10), channel) end
 		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
 		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
 		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
