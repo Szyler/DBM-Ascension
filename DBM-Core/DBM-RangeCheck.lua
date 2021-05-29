@@ -530,19 +530,19 @@ function onUpdate(self, elapsed)
 	self:SetText(DBM_CORE_RANGECHECK_HEADER:format(self.range), 1, 1, 1)
 	if initRangeCheck(self.range) then
 		if GetNumRaidMembers() > 0 then
-		for i = 1, GetNumRaidMembers() do
-			local uId = "raid"..i
-			if not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and self.checkFunc(uId, self.range) and (not self.filter or self.filter(uId)) then
-				j = j + 1
-				color = RAID_CLASS_COLORS[select(2, UnitClass(uId))] or NORMAL_FONT_COLOR
-				local icon = GetRaidTargetIndex(uId)
-				local text = icon and ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t %s"):format(icon, UnitName(uId)) or UnitName(uId)
-				self:AddLine(text, color.r, color.g, color.b)
-				if j >= 5 then
-					break
+			for i = 1, GetNumRaidMembers() do
+				local uId = "raid"..i
+				if not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and self.checkFunc(uId, self.range) and (not self.filter or self.filter(uId)) then
+					j = j + 1
+					color = RAID_CLASS_COLORS[select(2, UnitClass(uId))] or NORMAL_FONT_COLOR
+					local icon = GetRaidTargetIndex(uId)
+					local text = icon and ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t %s"):format(icon, UnitName(uId)) or UnitName(uId)
+					self:AddLine(text, color.r, color.g, color.b)
+					if j >= 5 then
+						break
+					end
 				end
 			end
-		end
 		elseif GetNumPartyMembers() > 0 then
 			for i = 1, GetNumPartyMembers() do
 				local uId = "party"..i
