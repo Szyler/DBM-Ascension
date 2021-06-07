@@ -409,6 +409,7 @@ function createFrame()
 end
 
 function createRadarFrame()
+	print("test: createRadarFrame")
 	local elapsed = 0
 --[[	local updateRate
 	if DBM.Options.RangeFrameUpdates == "Slow" then
@@ -524,6 +525,7 @@ end
 
 local soundUpdate = 0
 function onUpdate(self, elapsed)
+	-- print("test: onUpdate")
 	local color
 	local j = 0
 	self:ClearLines()
@@ -572,6 +574,7 @@ end
 do
 	local rotation, pixelsperyard, prevNumPlayers, range, isInSupportedArea
 	local function createDot(id)
+		print("test: createDot")
 		local dot = radarFrame:CreateTexture("DBMRangeCheckRadarDot"..id, "OVERLAY")
 		dot:SetTexture([[Interface\AddOns\DBM-Core\textures\blip]])
 		dot:SetWidth(16)
@@ -583,6 +586,7 @@ do
 	end
 
 	local function setDotColor(id, class)
+		print("test: setDotColor")
 		if not class then -- set to white color, dont set .class so we can try again later when class returns properly i guess?
 			dots[id].dot:SetVertexColor(unpack(vertexColors["PRIEST"]))
 			return 
@@ -594,6 +598,7 @@ do
 	end
 
 	local function setDot(id, icon, filtered)
+		print("test: setDot")
 		local dot = dots[id].dot or createDot(id)		-- load the dot, or create a new one if none exists yet (creating new probably never happens as the dots are created when the frame is created)
 		local x = dots[id].x
 		local y = dots[id].y
@@ -645,6 +650,7 @@ do
 	end
 
 	function onUpdateRadar(self, elapsed)
+		print("test1")
 		if initRangeCheck(frame.range) then--This is basically fixing a bug with map not being on right dungeon level half the time.
 			pixelsperyard = min(radarFrame:GetWidth(), radarFrame:GetHeight()) / (frame.range * 3)
 			radarFrame.circle:SetSize(frame.range * pixelsperyard * 2, frame.range * pixelsperyard * 2)
