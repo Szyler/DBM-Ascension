@@ -7,4 +7,35 @@ mod:SetCreatureID(16808)
 mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_DAMAGE"
 )
+
+local timerBladeDance		= mod:NewNextTimer(30, 30739)
+local warnBladeDance	    = mod:NewSpellAnnounce(30739, 3)
+local timerCharge	    	= mod:NewNextTimer(30, 30600)
+
+function mod:OnCombatStart(delay)
+	timerBladeDance:Start(35)
+	timerCharge:Start(48)
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args.spellId == 30739 then
+		timerBladeDance:Start()
+	elseif args.spellId == 25821 then
+		timerCharge:Start()
+	end
+end
+
+local BladeDanceSpam = 0
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(28375) and (GetTime() - BladeDanceSpam) > 20 then
+		BladeDanceSpam = GetTime()
+		warnBladeDance:Show()
+		timerBladeDance:Start()
+	end
+end
+
+-- 30739 - Blade Dance
+-- 25821 - Charge
