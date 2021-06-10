@@ -17,7 +17,7 @@ local warningRRH			= mod:NewTargetAnnounce(30753, 4)
 
 local specWarnRRH			= mod:NewSpecialWarningYou(30753)
 
-local timerRRH				= mod:NewTargetTimer(20, 30753)
+local timerTargetRRH		= mod:NewTargetTimer(20, 30753)
 local timerRRH				= mod:NewNextTimer(60, 30753)
 local timerFearCD			= mod:NewNextTimer(24, 30752)
 local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
@@ -36,13 +36,14 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30753) then
 		warningRRH:Show(args.destName)
-		timerRRH:Start(args.destName)
+		timerTargetRRH:Start(args.destName)
 		timerRRH:Start()
 		warningRRHSoon:Cancel()
-		warningRRHSoon:Schedule(25)
+		warningRRHSoon:Schedule(55)
 		if args:IsPlayer() then
 			specWarnRRH:Show()
 		end
+		RRHTimerStart = GetTime()
 		if self.Options.RRHIcon then
 			self:SetIcon(targetname, 8, 20)
 		end
@@ -53,5 +54,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFearCD:Start()
 		lastFear = GetTime()
 	--elseif args:IsSpellID(85112) then
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(30753) then
+		local RRHRunDuration = GetTime() - RRHTimerStart
+		if RRHRunDuration < 20 then
+			local elapsed, total = timerRRH:GetTime();
+			timerQuake:Update(elapsed, total+20-RRHRunTimerGetTime)
+		end
 	end
 end
