@@ -22,7 +22,7 @@ local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
 local timerTerminate		= mod:NewTargetTimer(10, 85082)
 local timerTerminateCD		= mod:NewCDTimer(15, 85082) --15 seconds??
 local timerEvo				= mod:NewBuffActiveTimer(20, 30254)
-local timerNextEvo			= mod:NewNextTimer(110, 30254)
+local timerNextEvo			= mod:NewNextTimer(130, 30254)
 local timerNextHateful		= mod:NewNextTimer(6, 30383)--, mod:IsTank() or mod:IsHealer())
 local timerNextHatefulHc	= mod:NewNextTimer(6, 85267)--, mod:IsTank() or mod:IsHealer())
 
