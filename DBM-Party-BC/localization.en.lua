@@ -393,12 +393,14 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
+	ShirrakBite			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1) 
 })
 
 L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
+	ShirrakBite			= "Show $spell:39382 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 })
 
 -----------------------
