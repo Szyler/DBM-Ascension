@@ -11,9 +11,10 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local WarnSummon    = mod:NewAnnounce("WarnSummon")
-local WarnNet        = mod:NewTargetAnnounce(35107)
-local timerNet      = mod:NewTargetTimer(6, 35107)
+local WarnSummon    			= mod:NewAnnounce("WarnSummon")
+local WarnNet        			= mod:NewTargetAnnounce(35107)
+local timerNet     				= mod:NewTargetTimer(6, 35107)
+-- local timerNextAdds   			= mod:NewNextTimer(10, 32371) Spawns at 70/50/25% health
 
 local enrageTimer	= mod:NewBerserkTimer(300)
 
@@ -35,3 +36,5 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		WarnSummon:Show()
 	end
 end
+
+-- 31485 - Super Shrink Ray

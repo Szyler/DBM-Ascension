@@ -12,15 +12,23 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
-local warningCloud = mod:NewSpellAnnounce(25033)
-local warningWinds = mod:NewTargetAnnounce(31718)
-local warningBurst = mod:NewTargetAnnounce(31481)
-local timerWinds   = mod:NewTargetTimer(6, 31718)
-local timerBurst   = mod:NewTargetTimer(10, 31481)
+local warningCloud 				= mod:NewSpellAnnounce(25033)
+local timerNextCloud			= mod:NewNextTimer(20, 25033)
+local warningBurst 				= mod:NewTargetAnnounce(31481)
+local timerBurst   				= mod:NewTargetTimer(10, 31481)
+local warningWinds 				= mod:NewTargetAnnounce(31718)
+local timerWinds   				= mod:NewTargetTimer(6, 31718)
+local timerNextWinds			= mod:NewNextTimer(20, 31718)
+
+function mod:OnCombatStart(delay)
+	timerNextCloud:Start(-delay)
+	timerNextWinds:Start(-delay)
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(25033) then
 		warningCloud:Show()
+		timerNextCloud:Start()
 	end
 end
 
@@ -28,6 +36,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(31718) then
 		warningWinds:Show(args.destName)
 		timerWinds:Start(args.destName)
+		timerNextWinds:Start()
 	elseif args:IsSpellID(31481) then
 		warningBurst:Show(args.destName)
 		timerBurst:Start(args.destName)

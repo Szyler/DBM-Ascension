@@ -15,9 +15,9 @@ mod:RegisterEvents(
 local warnChain		 			= mod:NewSpellAnnounce(831717, 3)
 local timerLightningCast		= mod:NewCastTimer(4, 831717)
 local timerNextLightning		= mod:NewNextTimer(8, 831717)
-local timerStatic				= mod:NewTargetTimer(12, 831623)
-local timerNextStatic			= mod:NewNextTimer(8, 831623)
-local warnStatic		 		= mod:NewSpellAnnounce(831623, 3)
+local timerStatic				= mod:NewTargetTimer(12, 831715)
+local timerNextStatic			= mod:NewNextTimer(8, 831715)
+local warnStatic		 		= mod:NewSpellAnnounce(831715, 3)
 local timerNextLevitate			= mod:NewNextTimer(29, 31704)
 
 function mod:OnCombatStart(delay)
@@ -28,15 +28,17 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 831717 then
-		warnTrap:Show()
+		warnChain:Show()
+		timerLightningCast:Start()
 		if timerNextLevitate:GetTime() < 8 then
-			timerLightningCast:Start(13)
+			timerNextLightning:Start(13)
 		else
-			timerLightningCast:Start()
+			timerNextLightning:Start()
 		end
 	elseif args.spellId == 831715 then
 		warnStatic:Show()
 		timerStatic:Start(args.destName)
+		timerNextStatic:Start()
 	elseif args.spellId == 31704 then
 		timerNextLevitate:Start()
 	end
