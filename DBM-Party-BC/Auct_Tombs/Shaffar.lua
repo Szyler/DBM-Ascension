@@ -18,6 +18,8 @@ local timerNextEthereal   			= mod:NewNextTimer(10, 32371)
 function mod:OnCombatStart(delay)
 	timerNextBlink:Start(15-delay)
 	timerNextNova:Start(14-delay)
+	timerNextEthereal:Start(-delay)
+	self:ScheduleMethod(10-delay, "NewAdds")
 	timerNextEthereal:Start(10-delay)
 end
 
@@ -28,6 +30,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnNova:Show()
 		timerNextNova:Start()
 	end
+end
+
+function mod:NewAdds()
+	timerNextEthereal:Start()
+	self:ScheduleMethod(10, "NewAdds")
 end
 
 -- 34605 - Blink
