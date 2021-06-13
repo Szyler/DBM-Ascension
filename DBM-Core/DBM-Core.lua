@@ -764,16 +764,32 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		if DBM:GetRaidRank() == 0 then
 			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
+		DBM:Unschedule(SendChatMessage)
+		fireEvent("DBM_TimerStop", "DBMPizzaTimer")
+		if DBM:GetRaidRank() >= 1 then
+			sendSync("DBMv4-Pizza-Cancel")
+		end
 		local timer = tonumber(cmd:sub(5)) or 10
+		local pullMessage = string.lower(cmd:sub(6) or "")
 		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
-		SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
+		if timer > 1 then SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel) end
+		if timer > 10 then DBM:Schedule(timer - 10, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(10), channel) end
 		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
 		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
 		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
 		if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
 		if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
-		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
+		if timer > 1 then DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel) end
+		if timer < 1 or pullMessage == "cancel" then 
+			DBM:Unschedule(SendChatMessage)
+			fireEvent("DBM_TimerStop", "DBMPizzaTimer")
+			if DBM:GetRaidRank() >= 1 then
+				sendSync("DBMv4-Pizza-Cancel")
+			end
+			SendChatMessage(DBM_CORE_ANNOUNCE_PULL_CANCEL..pullMessage, channel)
+		end
+		if timer == 0 then  end
 	elseif cmd:sub(1, 5) == "arrow" then
 		if not DBM:IsInRaid() then
 			DBM:AddMsg(DBM_ARROW_NO_RAIDGROUP)
@@ -919,8 +935,13 @@ do
 		if sender and ignore[sender] then return end
 		text = text:sub(1, 16)
 		text = text:gsub("%%t", UnitName("target") or "<no target>")
-		self.Bars:CreateBar(time, text)
-		fireEvent("DBM_TimerStart", "DBMPizzaTimer", text, time, "237538", "pizzatimer", nil, 0)
+		if text == DBM_CORE_TIMER_PULL then
+			self.Bars:CreateBar(time, text, "Interface\\Icons\\Ability_Warrior_Charge")
+			fireEvent("DBM_TimerStart", "DBMPizzaTimer", text, time, "Interface\\Icons\\Ability_Warrior_Charge", 0)
+		else
+			self.Bars:CreateBar(time, text)
+			fireEvent("DBM_TimerStart", "DBMPizzaTimer", text, time, "Interface\\Icons\\_DeathCoilV2_Red", 0)
+		end
 		if broadcast and self:GetRaidRank() >= 1 then
 			sendSync("DBMv4-Pizza", ("%s\t%s"):format(time, text))
 		end
@@ -1556,6 +1577,14 @@ do
 		if time and text then
 			DBM:CreatePizzaTimer(time, text, nil, sender)
 		end
+	end
+
+	syncHandlers["DBMv4-Pizza-Cancel"] = function(msg, channel, sender)
+		if select(2, IsInInstance()) == "pvp" then return end
+		if DBM:GetRaidRank(sender) == 0 then return end
+		if sender == UnitName("player") then return end
+		DBM:Unschedule(SendChatMessage)
+		fireEvent("DBM_TimerStop", "DBMPizzaTimer")
 	end
 
 	whisperSyncHandlers["DBMv4-RequestTimers"] = function(msg, channel, sender)
