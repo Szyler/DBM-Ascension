@@ -11,14 +11,16 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warnArcaneExplosion   = mod:NewCastAnnounce(38197)
-local timerArcaneExplosion  = mod:NewCastTimer(5, 38197)
-local warnSheep             = mod:NewTargetAnnounce(12826)
+local warnArcaneExplosion   			= mod:NewCastAnnounce(38197)
+local timerArcaneExplosion  			= mod:NewCastTimer(5, 38197)
+local timerCDExplosion   				= mod:NewCDTimer(30, 32365)
+local warnSheep             			= mod:NewTargetAnnounce(12826)
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(38197, 40425) then
 		warnArcaneExplosion:Show()
 		timerArcaneExplosion:Start()
+		timerCDExplosion:Start()
 	end
 end
 
@@ -27,3 +29,5 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSheep:Show(args.destName)
 	end
 end
+
+-- 43309 - Polymorph
