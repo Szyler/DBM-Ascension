@@ -75,3 +75,19 @@ v5.05 23/05/2021
 - Fixed Infernal timers on Prince
 - Fixed Sunder armor announce on Prince
 ----------------------------------------------------------------------------------------------------
+v5.06 13/06/2021
+- Added "/pull 0" and "/pull cancel" as commands to stop a pull timer. 
+    (Requires everyone to update for everyone to see the timer cancelled)
+- Added mechanics in the following Mythic Dungeons:
+    - Shattered Halls
+    - Underbog
+    - Steamvault
+    - Auchenai Crypts
+    - Mana Tombs
+    - Sethekk Halls
+    - Shadow Labs
+
+- Fixed missing timers on Maiden
+- Fixed the timer on Curator being off after the first Evocate
+- Fixed Big Bad Wolf timers of Red Riding Hood mechanic
+----------------------------------------------------------------------------------------------------
