@@ -28,7 +28,7 @@ local timerDemon		= mod:NewBuffFadesTimer(30, 37676)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
-mod:AddSetIconOption("DemonIcon", 37676, false, false, {8, 7, 6, 5})
+mod:AddBoolOption(L.DemonIcon)
 
 local warnDemonTargets = {}
 local warnMCTargets = {}
