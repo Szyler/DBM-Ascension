@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
 mod:SetCreatureID(21216)
 mod:RegisterCombat("combat", 21216)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",

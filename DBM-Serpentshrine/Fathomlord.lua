@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21214)
 mod:RegisterCombat("combat", 21214)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
 	"SPELL_SUMMON"
