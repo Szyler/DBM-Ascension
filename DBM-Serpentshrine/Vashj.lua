@@ -21,42 +21,39 @@ mod:RegisterEvents(
 local warnCharge		= mod:NewTargetAnnounce(38280, 4)
 local warnEntangle		= mod:NewSpellAnnounce(38316, 3)
 local warnPhase2		= mod:NewPhaseAnnounce(2)
-local warnElemental		= mod:NewAnnounce("WarnElemental", 4, 31687)
-local warnStrider		= mod:NewAnnounce("WarnStrider", 3, 475)
-local warnNaga			= mod:NewAnnounce("WarnNaga", 3, 2120)
+local warnElemental		= mod:NewAnnounce("WarnElemental", 4)
+local warnHydra			= mod:NewAnnounce("WarnHydra", 3)
+local warnNaga			= mod:NewAnnounce("WarnNaga", 3)
 --local warnShield		= mod:NewAnnounce("WarnShield", 3)
-local warnLoot			= mod:NewAnnounce("WarnLoot", 4, 38132)
-local warnLootYou		= mod:NewSpecialWarningYou("You have the Core!")
+local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
+local warnLootYou		= mod:NewSpecialWarningYou(351397)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
-local yellCharge		= mod:NewYell(38280)
 local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
 
 local timerCharge		= mod:NewTargetTimer(20, 38280)
-local timerElemental	= mod:NewTimer(22, "TimerElementalActive", 390881)--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
-local timerElementalCD	= mod:NewTimer(45, "TimerElemental", 39088)--46-57 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
-local timerStrider		= mod:NewTimer(63, "TimerStrider", 475)
-local timerNaga			= mod:NewTimer(47.5, "TimerNaga", 2120)
+local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
+local timerElementalCD	= mod:NewTimer(45, "TimerElemental")--46-57 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
+local timerHydra		= mod:NewTimer(63, "timerHydra")
+local timerNaga			= mod:NewTimer(47.5, "TimerNaga")
 
-mod:AddRangeFrameOption(10, 38280)
-mod:AddSetIconOption("ChargeIcon", 38280, false, false, {1})
---mod:AddBoolOption("AutoChangeLootToFFA", true)
+mod:AddBoolOption("RangeFrame", true)
+mod:AddBoolOption(L.ChargeIcon)
 
 mod.vb.phase = 1
 mod.vb.shieldLeft = 4
 mod.vb.nagaCount = 1
-mod.vb.striderCount = 1
+mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
---local lootmethod, masterlooterRaidID
 local elementals = {}
 
-function mod:StriderSpawn()
-	self.vb.striderCount = self.vb.striderCount + 1
-	timerStrider:Start(nil, tostring(self.vb.striderCount))
-	warnStrider:Schedule(57, tostring(self.vb.striderCount))
-	self:ScheduleMethod(63, "StriderSpawn")
+function mod:HydraSpawn()
+	self.vb.hydraCount = self.vb.hydraCount + 1
+	timerHydra:Start(nil, tostring(self.vb.hydraCount))
+	warnHydra:Schedule(57, tostring(self.vb.hydraCount))
+	self:ScheduleMethod(63, "HydraSpawn")
 end
 
 function mod:NagaSpawn()
@@ -71,24 +68,14 @@ function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.shieldLeft = 4
 	self.vb.nagaCount = 1
-	self.vb.striderCount = 1
+	self.vb.hydraCount = 1
 	self.vb.elementalCount = 1
---	if IsInGroup() and DBM:GetRaidRank() == 2 then
---		lootmethod, _, masterlooterRaidID = GetLootMethod()
---	end
 end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
---	if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---		if masterlooterRaidID then
---			SetLootMethod(lootmethod, "raid"..masterlooterRaidID)
---		else
---			SetLootMethod(lootmethod)
---		end
---	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -96,8 +83,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerCharge:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			specWarnCharge:Play("runout")
-			yellCharge:Yell()
+			if self.Options.ChargeIcon then
+				SendChatMessage(L.yellChargeVashj, "YELL")
+			end
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10)
 			end
@@ -107,7 +95,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 1, 20)
 		end
-	elseif args.spellId == 38575 and args:IsPlayer() and self:AntiSpam() then
+	elseif args:IsSpellID(38575,85411) and args:IsPlayer() then
 		specWarnToxic:Show()
 	end
 end
@@ -127,9 +115,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 0)
 		end
-	--[[elseif args.spellId == 38112 then
-		self.vb.shieldLeft = self.vb.shieldLeft - 1
-		warnShield:Show(self.vb.shieldLeft)]]
 	end
 end
 
@@ -160,7 +145,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
 		self.vb.phase = 2
 		self.vb.nagaCount = 1
-		self.vb.striderCount = 1
+		self.vb.hydraCount = 1
 		self.vb.elementalCount = 1
 		self.vb.shieldLeft = 4
 		warnPhase2:Show()
@@ -169,12 +154,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:ScheduleMethod(47.5, "NagaSpawn")
 		timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
 		warnElemental:Schedule(45, tostring(self.vb.elementalCount))
-		timerStrider:Start(nil, tostring(self.vb.striderCount))
-		warnStrider:Schedule(57, tostring(self.vb.striderCount))
-		self:ScheduleMethod(63, "StriderSpawn")
---		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---			SetLootMethod("freeforall")
---		end
+		timerHydra:Start(nil, tostring(self.vb.hydraCount))
+		warnHydra:Schedule(57, tostring(self.vb.hydraCount))
+		self:ScheduleMethod(63, "HydraSpawn")
 	elseif msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3) then
 		self.vb.phase = 3
 		warnPhase3:Show()
@@ -182,37 +164,20 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnNaga:Cancel()
 		timerElementalCD:Cancel()
 		warnElemental:Cancel()
-		timerStrider:Cancel()
-		warnStrider:Cancel()
+		timerHydra:Cancel()
+		warnHydra:Cancel()
 		self:UnscheduleMethod("NagaSpawn")
-		self:UnscheduleMethod("StriderSpawn")
---		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---			if masterlooterRaidID then
---				SetLootMethod(lootmethod, "raid"..masterlooterRaidID)
---			else
---				SetLootMethod(lootmethod)
---			end
---		end
+		self:UnscheduleMethod("HydraSpawn")
 	end
 end
 
 function mod:CHAT_MSG_LOOT(msg)
-	-- DBM:AddMsg(msg) --> Meridium receives loot: [Magnetic Core]
+	-- DBM:AddMsg(msg) --> Meridium receives loot: [Tainted Core]
 	local player, itemID = msg:match(L.LootMsg)
 	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
 		warnLoot:Show(player)
 		if player == UnitName("player") then
 			warnLootYou:Show()
 		end
-	end
-end
-
-function mod:OnSync(event, playerName)
-	if not self:IsInCombat() then return end
-	if event == "LootMsg" and playerName then
-		playerName = DBM:GetUnitFullName(playerName)
-		if self:AntiSpam(2, playerName) then
-			warnLoot:Show(playerName)
-		end 
 	end
 end

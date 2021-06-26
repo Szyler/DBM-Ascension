@@ -145,7 +145,7 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "정령 활성화",
 	TimerElemental			= "정령 쿨타임 (%d)",
-	TimerStrider			= "다음 포자손 (%d)",
+	TimerHydra			= "다음 포자손 (%d)",
 	TimerNaga				= "다음 나가 (%d)"
 }
 
@@ -157,7 +157,7 @@ L:SetOptionLocalization{
 	WarnLoot				= "오염된 핵 획득자 경고 보기",
 	TimerElementalActive	= "오염된 정령 활성화 시간 타이머 바 보기",
 	TimerElemental			= "오염된 정령 쿨타임 타이머 바 보기",
-	TimerStrider			= "다음 포자손 타이머 바 보기",
+	TimerHydra			= "다음 포자손 타이머 바 보기",
 	TimerNaga				= "다음 나가 타이머 바 보기",
 	SpecWarnElemental		= "오염된 정령 등장 특수 경고 보기",
 	AutoChangeLootToFFA		= "2단계에서 전리품 획득 설정을 자유로 자동 변경"

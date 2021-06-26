@@ -169,7 +169,7 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerElemental		= "被污染的元素 (%d)",--Verify
-	TimerStrider		= "盘牙巡逻者 (%d)",--Verify
+	TimerHydra		= "盘牙巡逻者 (%d)",--Verify
 	TimerNaga			= "盘牙精英 (%d)"--Verify
 }
 
@@ -180,7 +180,7 @@ L:SetOptionLocalization{
 	WarnShield			= "Show warning for Phase 2 shield down",--Translate
 	WarnLoot			= "警报是谁拾取了污染之核",
 	TimerElemental		= "Show time for next Tainted Elemental",--Translate
-	TimerStrider		= "Show time for next Strider",--Translate
+	TimerHydra		= "Show time for next Strider",--Translate
 	TimerNaga			= "Show time for next Strider",--Translate
 	SpecWarnElemental	= "Show special warning when Tainted Elemental coming",--Translate
 	ChargeIcon			= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(38280),

@@ -157,27 +157,28 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "Elemental Active",
 	TimerElemental			= "Elemental CD (%d)",
-	TimerStrider			= "Next Strider (%d)",
+	TimerHydra				= "Next Strider (%d)",
 	TimerNaga				= "Next Naga (%d)"
 }
 
 L:SetOptionLocalization{
-	WarnElemental		= "Show pre-warning for next Tainted Elemental",
-	WarnStrider			= "Show pre-warning for next Strider",
-	WarnNaga			= "Show pre-warning for next Naga",
-	WarnShield			= "Show warning for Phase 2 shield down",
-	WarnLoot			= "Show warning for Tainted Core loot",
+	WarnElemental			= "Show pre-warning for next Tainted Elemental",
+	WarnStrider				= "Show pre-warning for next Strider",
+	WarnNaga				= "Show pre-warning for next Naga",
+	WarnShield				= "Show warning for Phase 2 shield down",
+	WarnLoot				= "Show warning for Tainted Core loot",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
-	TimerElemental		= "Show timer for Tainted Elemental cooldown",
-	TimerStrider		= "Show timer for next Strider",
-	TimerNaga			= "Show timer for next Naga",
-	SpecWarnElemental	= "Show special warning when Tainted Elemental coming",
-	ChargeIcon			= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(38280),
-	AutoChangeLootToFFA	= "Switch loot mode to Free for All in Phase 2"
+	TimerElemental			= "Show timer for Tainted Elemental cooldown",
+	TimerHydra				= "Show timer for next Strider",
+	TimerNaga				= "Show timer for next Naga",
+	SpecWarnElemental		= "Show special warning when Tainted Elemental coming",
+	ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
+	yellChargeVashj         = "Yell when you are affected by $spell:38280"
 }
 
 L:SetMiscLocalization{
 	DBM_VASHJ_YELL_PHASE2	= "The time is now! Leave none standing!",
 	DBM_VASHJ_YELL_PHASE3	= "You may want to take cover.",
-	LootMsg					= "([^%s]+).*Hitem:(%d+)"
+	LootMsg					= "([^%s]+).*Hitem:(%d+)",
+	yellChargeVashj			= "Static Charge on me!"
 }

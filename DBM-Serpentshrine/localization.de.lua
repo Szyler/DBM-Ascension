@@ -157,7 +157,7 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "Elementar aktiv",
 	TimerElemental			= "Elementar CD (%d)",
-	TimerStrider			= "Nächster Schreiter (%d)",
+	TimerHydra			= "Nächster Schreiter (%d)",
 	TimerNaga				= "Nächster Naga (%d)"
 }
 
@@ -169,7 +169,7 @@ L:SetOptionLocalization{
 	WarnLoot			= "Spieler mit Besudelten Kern ansagen",
 	TimerElementalActive	= "Zeige Zeit bis Besudelter Elementar verschwindet",
 	TimerElemental		= "Abklingzeit von Besudelter Elementar anzeigen",
-	TimerStrider		= "Zeige Zeit bis nächster Schreiter",
+	TimerHydra		= "Zeige Zeit bis nächster Schreiter",
 	TimerNaga			= "Zeige Zeit bis nächster Naga",
 	SpecWarnElemental	= "Spezialwarnung, wenn Besudelter Elementar kommt",
 	AutoChangeLootToFFA	= "Plündermodus in Phase 2 automatisch auf 'Jeder gegen jeden' einstellen"

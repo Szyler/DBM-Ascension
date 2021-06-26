@@ -161,7 +161,7 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "Elemental corrupto activo",
 	TimerElemental			= "Siguiente Elemental corrupto (%d)",
-	TimerStrider			= "Siguiente Zancudo (%d)",
+	TimerHydra			= "Siguiente Zancudo (%d)",
 	TimerNaga				= "Siguiente Élite (%d)"
 }
 
@@ -173,7 +173,7 @@ L:SetOptionLocalization{
 	WarnLoot			= "Mostrar aviso cuando un jugador despoje un Núcleo máculo",
 	TimerElementalActive	= "Mostrar temporizador para la duración restante de los Elementales corruptos",
 	TimerElemental		= "Mostrar temporizador para el siguiente Elemental corrupto",
-	TimerStrider		= "Mostrar temporizador para el siguiente Zancudo Colmillo Torcido",
+	TimerHydra		= "Mostrar temporizador para el siguiente Zancudo Colmillo Torcido",
 	TimerNaga			= "Mostrar temporizador para el siguiente Élite Colmillo Torcido",
 	SpecWarnElemental	= "Mostrar aviso previo especial para cuando aparezca un Elemental corrupto",
 	RangeFrame			= "Mostrar marco de distancia (10 m)",

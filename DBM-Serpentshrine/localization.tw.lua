@@ -145,7 +145,7 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "污染的元素重生",
 	TimerElemental			= "污染的元素 (%d)",
-	TimerStrider			= "盤牙旅行者 (%d)",
+	TimerHydra			= "盤牙旅行者 (%d)",
 	TimerNaga				= "盤牙精英 (%d)"
 }
 
@@ -157,7 +157,7 @@ L:SetOptionLocalization{
 	WarnLoot			= "提示誰拾取了受污染的核心",
 	TimerElementalActive	= "為下一次污染的元素出現顯示計時器",
 	TimerElemental		= "為下一次污染的元素顯示計時器",
-	TimerStrider		= "為下一次盤牙旅行者顯示計時器",
+	TimerHydra		= "為下一次盤牙旅行者顯示計時器",
 	TimerNaga			= "為下一次盤牙精英顯示計時器",
 	SpecWarnElemental	= "為污染的元素出現顯示特別警告",
 	AutoChangeLootToFFA	= "第2階段自動轉換拾取方式為自由拾取"
