@@ -24,7 +24,7 @@ local timerWhirlCD		= mod:NewCDTimer(27, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
 local timerPhase		= mod:NewTimer(60, "TimerPhase", 39088)
 local timerDemonCD		= mod:NewCDTimer(23, 37676)
-local timerDemon		= mod:NewBuffFadesTimer(30, 37676)
+local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
