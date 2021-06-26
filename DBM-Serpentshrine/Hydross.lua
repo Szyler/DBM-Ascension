@@ -29,7 +29,7 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 local lastMark = 0
 -- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
 
-mod:AddRangeFrameOption("10")
+mod:AddBoolOption("RangeFrame", true)
 
 function mod:OnCombatStart(delay)
 	-- timerMark:Start(16-delay, markOfH, "10%")
