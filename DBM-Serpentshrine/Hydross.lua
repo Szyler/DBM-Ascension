@@ -22,7 +22,7 @@ local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
 
 local timerTidal		= mod:NewTimer(45, "Tidalwave", 351203)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
--- local timerSludge	= mod:NewTargetTimer(24, 38246)
+local timerSludge		= mod:NewTargetTimer(12, 38246)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
@@ -48,9 +48,9 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 38235 then
 		warnTomb:Show(args.destName)
-	-- elseif args.spellId == 38246 then
-	-- 	warnSludge:Show(args.destName)
-	-- 	timerSludge:Start(args.destName)
+	elseif args.spellId == 38246 then
+		warnSludge:Show(args.destName)
+		timerSludge:Start(args.destName)
 	-- elseif args.spellId == 351203 then
 	-- 	timerMark:Cancel()
 	-- 	timerMark:Start()
