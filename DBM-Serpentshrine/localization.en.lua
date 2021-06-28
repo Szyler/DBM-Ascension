@@ -37,7 +37,7 @@ L:SetMiscLocalization{
 L = DBM:GetModLocalization("LurkerBelow")
 
 L:SetGeneralLocalization{
-	name = "The Lurker Below"
+	lurkerName = "The Lurker Below"
 }
 
 L:SetWarningLocalization{

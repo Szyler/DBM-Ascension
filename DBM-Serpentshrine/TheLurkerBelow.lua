@@ -42,7 +42,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:RAID_BOSS_EMOTE(_, source)
-	if (source or "") == L.name then
+	if (source or "") == L.lurkerName then
 		specWarnSpout:Show()
 		timerSpout:Start()
 		timerSpoutCD:Start()
