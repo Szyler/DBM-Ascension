@@ -17,28 +17,29 @@ local warnWhirl			= mod:NewSpellAnnounce(37363, 2)
 
 local specWarnSpout		= mod:NewSpecialWarningSpell(37433)
 
-local timerSubmerge		= mod:NewTimer(105, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerSubmerge		= mod:NewTimer(135, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerEmerge		= mod:NewTimer(60, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
-local timerSpoutCD		= mod:NewCDTimer(50, 37433)
+local timerSpoutCD		= mod:NewCDTimer(70, 37433) --heroic: 351337, Mythic:351338
 local timerSpout		= mod:NewBuffActiveTimer(22, 37433)
-local timerWhirlCD		= mod:NewCDTimer(18, 37363)
+local timerWhirlCD		= mod:NewCDTimer(20, 37363) --Whirl has 20s next timer, but pushed back by other casts. Need "GetTimer" to push it back (see maiden/mag)
+local timerGeyser		= mod:NewCDTimer(20, 37478) --heroic: 351335, Mythic:351336
 
-mod.vb.submerged = false
-mod.vb.guardianKill = 0
-mod.vb.ambusherKill = 0
+local submerged = false
+local guardianKill = 0
+local ambusherKill = 0
 
 local function emerged(self)
-	self.vb.submerged = false
+	submerged = false
 	timerEmerge:Cancel()
 	warnEmerge:Show()
 	timerSubmerge:Start()
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.submerged = false
-	timerWhirlCD:Start(15-delay)
-	timerSpoutCD:Start(37-delay)
-	timerSubmerge:Start(90-delay)
+	submerged = false
+	timerWhirlCD:Start(5-delay)
+	timerSpoutCD:Start(35-delay)
+	timerSubmerge:Start(75-delay)
 end
 
 function mod:RAID_BOSS_EMOTE(_, source)
@@ -49,17 +50,23 @@ function mod:RAID_BOSS_EMOTE(_, source)
 	end
 end
 
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(37478) then
+		timerGeyser:Start()
+	end
+end
+
 function mod:UNIT_DIED(args)
 	local cId = self:GetCIDFromGUID(args.destGUID)
 	if cId == 21865 then
-		self.vb.ambusherKill = self.vb.ambusherKill + 1
-		if self.vb.ambusherKill == 6 and self.vb.guardianKill == 3 and self.vb.submerged then
+		ambusherKill = ambusherKill + 1
+		if ambusherKill == 6 and guardianKill == 3 and submerged then
 			self:Unschedule(emerged)
 			self:Schedule(2, emerged, self)
 		end
 	elseif cId == 21873 then
-		self.vb.guardianKill = self.vb.guardianKill + 1
-		if self.vb.ambusherKill == 6 and self.vb.guardianKill == 3 and self.vb.submerged then
+		guardianKill = guardianKill + 1
+		if ambusherKill == 6 and guardianKill == 3 and submerged then
 			self:Unschedule(emerged)
 			self:Schedule(2, emerged, self)
 		end
