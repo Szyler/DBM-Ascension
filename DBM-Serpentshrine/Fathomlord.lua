@@ -16,7 +16,7 @@ local warnTidalPower	= mod:NewSpellAnnounce(38452, 3)
 local warnSharPower		= mod:NewSpellAnnounce(38455, 3)
 
 local specWarnHeal		= mod:NewSpellAnnounce(38330, 3)
-local specWarnTotem		= mod:NewSpecialWarning("Kill totem?")
+-- local specWarnTotem		= mod:NewSpecialWarning("Kill totem?")
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
@@ -42,7 +42,7 @@ end
 
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 38236 then
-		specWarnTotem:Show()
-		specWarnTotem:Play("attacktotem")
+		-- specWarnTotem:Show()
+		-- specWarnTotem:Play("attacktotem")
 	end
 end
