@@ -16,17 +16,20 @@ mod:RegisterEvents(
 local warnTidal			= mod:NewSpellAnnounce(37730, 3)
 local warnGrave			= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
 local warnBubble		= mod:NewSpellAnnounce(37854, 4)
+local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 
 local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs")
 
-local timerGraveCD		= mod:NewCDTimer(28.5, 38049)
-local timerMurlocs		= mod:NewTimer(51, "TimerMurlocs", 39088)
-local timerBubble		= mod:NewBuffActiveTimer(35, 37854)
+local timerGraveCD		= mod:NewCDTimer(20, 38049)
+local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
+local timerBubble		= mod:NewNextTimer(30, 37858)
 
 mod:AddBoolOption("GraveIcon", true)
 
 local warnGraveTargets = {}
+local bubblespam = 0
 mod.vb.graveIcon = 8
+
 
 local function showGraveTargets()
 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
@@ -58,20 +61,22 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 37730 then
+	if args:IsSpellID(37730, 351345, 351346) then
 		warnTidal:Show()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 37764 then
+		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
 		timerMurlocs:Start()
 	end
 end
 
 function mod:SPELL_SUMMON(args)
-	if args.spellId == 37854 and self:AntiSpam(30) then
+	if args:IsSpellID(37861, 37858) and bubblespam - GetTime() > 20 then
+		bubblespam = GetTime()
 		warnBubble:Show()
 		timerBubble:Start()
 	end
