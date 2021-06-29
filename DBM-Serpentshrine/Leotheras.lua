@@ -20,6 +20,9 @@ local warnPhase2		= mod:NewPhaseAnnounce(2, 2)
 local specWarnWhirl		= mod:NewSpecialWarningRun(37640)
 local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
+local warnEven			= mod:NewTargetAnnounce(351201, 3)
+local specWarnEven		= mod:NewSpecialWarningYou(351201)
+
 local timerWhirlCD		= mod:NewCDTimer(27, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
 local timerPhase		= mod:NewTimer(60, "TimerPhase", 39088)
@@ -79,7 +82,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			timerWhirlCD:Start()
 		end
-	elseif args:IsSpellID(37676, 85361) == 37676 then -- 85361
+	elseif args:IsSpellID(37676, 85361) then -- 85361
 		warnDemonTargets[#warnDemonTargets + 1] = args.destName
 		self:Unschedule(showDemonTargets)
 		if self.Options.DemonIcon then
@@ -99,6 +102,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnMCTargets[#warnMCTargets + 1] = args.destName
 		self:Unschedule(showMCTargets)
 		self:Schedule(0.3, showMCTargets)
+	elseif args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
+		if args:IsPlayer() then
+			specWarnEven:Show()
+		end
+		warnEven:Show()
 	end
 end
 
