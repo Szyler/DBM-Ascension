@@ -21,7 +21,7 @@ local specWarnWhirl		= mod:NewSpecialWarningRun(37640)
 local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
 local warnEven			= mod:NewTargetAnnounce(351201, 3)
-local specWarnEven		= mod:NewSpecialWarningYou(351201)
+local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
 
 local timerWhirlCD		= mod:NewCDTimer(27, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
@@ -104,7 +104,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Schedule(0.3, showMCTargets)
 	elseif args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
 		if args:IsPlayer() then
-			specWarnEven:Show()
+			specWarnEvenYou:Show()
 		end
 		warnEven:Show()
 	end
