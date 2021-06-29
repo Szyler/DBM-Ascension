@@ -15,34 +15,52 @@ local warnCariPower		= mod:NewSpellAnnounce(38451, 3)
 local warnTidalPower	= mod:NewSpellAnnounce(38452, 3)
 local warnSharPower		= mod:NewSpellAnnounce(38455, 3)
 
-local specWarnHeal		= mod:NewSpellAnnounce(38330, 3)
--- local specWarnTotem		= mod:NewSpecialWarning("Kill totem?")
+local specWarnHeal		= mod:NewSpellAnnounce(83535, 3)
+local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
+
+local timerHeal			= mod:NewNextTimer(30, 83535)
+local timerFreeze		= mod:NewCDTimer(18, 38357)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
+	isCasterKilled = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 38451 then
+	if args:IsSpellID(38451, 85367) then -- 85367
 		warnCariPower:Show()
-	elseif args.spellId == 38452 then
+	elseif args:IsSpellID(38452, 85368) then -- 85368
 		warnTidalPower:Show()
-	elseif args.spellId == 38455 then
+	elseif args:IsSpellID(38455, 85369) then -- 85369
 		warnSharPower:Show()
+	elseif args.spellId == 38357 then -- Deep Freeze Caribdis
+		if isCasterKilled == false then
+			timerFreeze:Start()
+		else
+			timerFreeze:Start(30) -- Deep Freeze Fathom-Lord
+		end
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 38330 then
+	if args:IsSpellID(38330, 83535) then -- 83535
 		specWarnHeal:Show(args.sourceName)
+		timerHeal:Show()
 	end
 end
 
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 38236 then
-		-- specWarnTotem:Show()
+		specWarnTotem:Show()
 		-- specWarnTotem:Play("attacktotem")
+	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 21964 then
+		isCasterKilled = true
 	end
 end
