@@ -59,6 +59,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.demonIcon = 8
 	self.vb.whirlCount = 0
+	timerPhase:Start(115, L.Demon)
 end
 
 function mod:OnCombatEnd(delay)
@@ -68,7 +69,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 37640 then
 		specWarnWhirl:Show()
-		specWarnWhirl:Play("justrun")
+		-- specWarnWhirl:Play("justrun")
 		timerWhirl:Start()
 		if self.vb.phase ~= 2 then
 			self.vb.whirlCount = self.vb.whirlCount + 1
@@ -78,7 +79,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			timerWhirlCD:Start()
 		end
-	elseif args.spellId == 37676 then
+	elseif args:IsSpellID(37676, 85361) == 37676 then -- 85361
 		warnDemonTargets[#warnDemonTargets + 1] = args.destName
 		self:Unschedule(showDemonTargets)
 		if self.Options.DemonIcon then
@@ -87,14 +88,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			specWarnDemon:Show()
-			specWarnDemon:Play("targetyou")
+			-- specWarnDemon:Play("targetyou")
 		end
 		if #warnDemonTargets >= 5 then
 			showDemonTargets(self)
 		else
 			self:Schedule(0.7, showDemonTargets, self)
 		end
-	elseif args.spellId == 37749 then
+	elseif args:IsSpellID(37749, 85361) then -- 85361
 		warnMCTargets[#warnMCTargets + 1] = args.destName
 		self:Unschedule(showMCTargets)
 		self:Schedule(0.3, showMCTargets)
@@ -139,3 +140,7 @@ function mod:UNIT_DIED(args)
 		end
 	end
 end
+
+--  351306 - Mind Flay
+--  351339 - Mind Flay - (Heroic)
+--  351340 - Mind Flay - (Mythic)
