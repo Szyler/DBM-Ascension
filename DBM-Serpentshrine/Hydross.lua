@@ -21,7 +21,7 @@ local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
 local timerTomb			= mod:NewNextTimer(30, 38235)
-local timerTidal		= mod:NewTimer(45, "Tidalwave", 351203)
+local timerTidal		= mod:NewNextTimer(45, 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
@@ -33,9 +33,10 @@ local lastMark = 0
 mod:AddBoolOption("RangeFrame", true)
 
 local function tidalWave()
+	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerTidal:Start()
-	self:ScheduleMethod(47, "tidalWave")
+	self:ScheduleMethod(45, "tidalWave")
 end
 
 function mod:OnCombatStart(delay)
@@ -95,6 +96,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85416, 351276, 351277) then     
 		specWarnTidal:Show()
 		timerTidal:Start()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(351276) and (GetTime() - lastTidalWave) > 10 then
+		lastTidalWave = GetTime()
+		self:tidalWave()
 	end
 end
 
