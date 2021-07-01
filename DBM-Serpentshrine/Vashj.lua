@@ -25,12 +25,13 @@ local warnPhase2		= mod:NewPhaseAnnounce(2)
 local warnElemental		= mod:NewAnnounce("WarnElemental", 4)
 local warnHydra			= mod:NewAnnounce("WarnHydra", 3)
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3)
+local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4)
 --local warnShield		= mod:NewAnnounce("WarnShield", 3)
 --local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
-local warnMulti			= mod:NewAnnounce("WarnMulti", 3)
-local warnEnvenom		= mod:NewTargetAnnounce(351310, 3)
+local warnMulti			= mod:NewSpellAnnounce(38310, 3)
+local warnEnvenom		= mod:NewTargetAnnounce(351381, 3)
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
@@ -40,7 +41,7 @@ local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerChargeDmg	= mod:NewTargetTimer(8, 351375)
-local timerAimedShot	= mod:NewNextTimer(30, 351310)
+local timerAimedShot	= mod:NewNextTimer(30, 351388)
 local timerMark			= mod:NewTargetTimer(8, 351310)
 -- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
 local timerElementalCD	= mod:NewTimer(75, "TimerElemental")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
@@ -50,7 +51,7 @@ local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress")
 local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerMulti		= mod:NewNextTimer(15, 38310)
-local timerEnvenom		= mod:NewNextTimer(30, 351310)
+local timerEnvenom		= mod:NewNextTimer(30, 351381)
 
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption(L.ChargeIcon)
@@ -81,7 +82,7 @@ function mod:EnchantressSpawn()
 	self.vb.enchantressCount = self.vb.enchantressCount + 1
 	timerEnchantress:Start(nil, tostring(self.vb.enchantressCount))
 	warnEnchantress:Schedule(42, tostring(self.vb.enchantressCount))
-	self:ScheduleMethod(47, "NagaSpawn")
+	self:ScheduleMethod(45, "NagaSpawn")
 end
 
 function mod:OnCombatStart(delay)
@@ -92,10 +93,10 @@ function mod:OnCombatStart(delay)
 	self.vb.enchantressCount = 1
 	self.vb.hydraCount = 1
 	self.vb.elementalCount = 1
-	timerMulti:Start(22-delay)
-	timerEnvenom:Start(19-delay)
-	timerAimedShot:Start(26-delay)
-	timerCharge:Start(10-delay)
+	timerMulti:Start(10-delay)
+	timerEnvenom:Start(25-delay)
+	timerAimedShot:Start(35-delay)
+	timerCharge:Start(15-delay)
 end
 
 function mod:OnCombatEnd()
@@ -105,7 +106,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 38280 then
+	if args:IsSpellID(38280, 351307) then
 		timerCharge:Start()
 		timerChargeDmg:Start(args.destName)
 		if args:IsPlayer() then
@@ -122,17 +123,19 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 1, 20)
 		end
-	elseif args:IsSpellID(38575,85411) and args:IsPlayer() then
-		specWarnToxic:Show()
-	elseif args.IsSpellID(351310) then
+	elseif args:IsSpellID(351310) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
+	elseif args.spellId == 38132 then
+		if self.Options.LootIcon then
+			self:SetIcon(args.destName, 6)
+		end
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 38280 then
+	if args:IsSpellID(38280, 351307) then
 		timerChargeDmg:Stop(args.destName)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 0)
@@ -175,7 +178,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 end
 	
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 351310 then
+	if args.spellId == 351381 then
 		warnEnvenom:Show(args.destName)
 		timerEnvenom:Start()
 	end
@@ -191,6 +194,10 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
+		timerMulti:Cancel()
+		timerEnvenom:Cancel()
+		timerAimedShot:Cancel()
+		timerCharge:Cancel()
 		self.vb.phase = 2
 		self.vb.nagaCount = 1
 		self.vb.enchantressCount = 1
