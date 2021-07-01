@@ -104,7 +104,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 1, 20)
 		end
-	elseif args:IsSpellId(38575,85411) and args:IsPlayer() then
+	elseif args:IsSpellID(38575,85411) and args:IsPlayer() then
 		specWarnToxic:Show()
 	elseif args.spellId(196782) then
 		warnAimedShot:Show(args.destName)
@@ -132,7 +132,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 --function mod:SPELL_CAST_START(args) -- useless now that we have raid boss emote telling us when Tainted spawns.
---	if args:IsSpellId == 38253 and not elementals[args:sourceGUID] then
+--	if args:IsSpellID == 38253 and not elementals[args:sourceGUID] then
 --		specWarnElemental:Show()
 --		timerElemental:Start()
 --		elementals[args:sourceGUID] = true
@@ -155,7 +155,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 end
 	
 --function mod:SPELL_CAST_SUCCESS(args)
---	if args:IsSpellId == 38316 then
+--	if args:IsSpellID == 38316 then
 --		warnEntangle:Show()
 --	end
 --end
