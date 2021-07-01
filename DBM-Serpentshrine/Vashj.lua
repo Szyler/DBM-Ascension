@@ -161,12 +161,15 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 		timerDischarge:Start()
 		specWarnDischarge:Show()
 	elseif msg == DBM_VASHJ_ELITE then
+		warnNaga:Cancel()
 		warnNaga:Show()
 		timerNaga:Start()
 	elseif msg == DBM_VASHJ_HYDRA then
+		warnHydra:Cancel()
 		warnHydra:Show()
 		timerHydra:Start()
 	elseif msg == DBM_VASHJ_TAINTED then
+		warnElemental:Cancel()
 		warnElemental:Show()
 	end
 end
