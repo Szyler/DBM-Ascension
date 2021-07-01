@@ -29,6 +29,8 @@ local warnNaga			= mod:NewAnnounce("WarnNaga", 3)
 --local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(196782, 4)
+local warnMulti			= mod:NewAnnounce("WarnMulti", 3)
+local warnEnvenom		= mod:NewTargetAnnounce(196781, 3)
 
 local specWarnCharge	= mod:NewSpecialWarningMove(196779)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
@@ -46,6 +48,8 @@ local timerHydra		= mod:NewTimer(91, "TimerHydra")
 local timerNaga			= mod:NewTimer(47, "TimerNaga")
 local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
+local timerMulti		= mod:NewTimer(15, "Multi-Shot", 196782)
+local timerEnvenom		= mod:NewTimer(30, "Envenom", 196781)
 
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption(L.ChargeIcon)
@@ -78,6 +82,10 @@ function mod:OnCombatStart(delay)
 	self.vb.nagaCount = 1
 	self.vb.hydraCount = 1
 	self.vb.elementalCount = 1
+	timerMulti:Start(22-delay)
+	timerEnvenom:Start(19-delay)
+	timerAimedShot:Start(26-delay)
+	timerCharge:Start(10-delay)
 end
 
 function mod:OnCombatEnd()
@@ -131,13 +139,12 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
---function mod:SPELL_CAST_START(args) -- useless now that we have raid boss emote telling us when Tainted spawns.
---	if args:IsSpellID == 38253 and not elementals[args:sourceGUID] then
---		specWarnElemental:Show()
---		timerElemental:Start()
---		elementals[args:sourceGUID] = true
---	end
---end
+function mod:SPELL_CAST_START(args) -- useless now that we have raid boss emote telling us when Tainted spawns.
+	if args.spellId == 38310 then
+		warnMulti:Show()
+		timerMulti:Start()
+	end
+end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 	if msg == DBM_VASHJ_DISCHARGE then
@@ -154,11 +161,12 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 	end
 end
 	
---function mod:SPELL_CAST_SUCCESS(args)
---	if args:IsSpellID == 38316 then
---		warnEntangle:Show()
---	end
---end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == 196781 then
+		warnEnvenom:Show(args.destName)
+		timerEnvenom:Start()
+	end
+end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
