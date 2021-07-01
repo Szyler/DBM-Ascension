@@ -124,7 +124,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(38575,85411) and args:IsPlayer() then
 		specWarnToxic:Show()
-	elseif args.spellId(351310) then
+	elseif args.IsSpellID(351310) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
