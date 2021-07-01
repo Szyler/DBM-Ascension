@@ -147,8 +147,9 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnElemental		= "Tainted Elemental Soon (%s)",
-	WarnStrider			= "Strider Soon (%s)",
-	WarnNaga			= "Naga Soon (%s)",
+	WarnHydra			= "Hydra Soon (%s)",
+	WarnNaga			= "Naga Elite Soon (%s)",
+	WarnEnchantress		= "Enchantress Soon (%s)",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
 	SpecWarnElemental	= "Tainted Elemental - Switch!"
@@ -157,20 +158,23 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerElementalActive	= "Elemental Active",
 	TimerElemental			= "Elemental CD (%d)",
-	TimerHydra				= "Next Strider (%d)",
-	TimerNaga				= "Next Naga (%d)"
+	TimerHydra				= "Next Hydra (%d)",
+	TimerNaga				= "Next Naga Elite (%d)",
+	TimerEnchantress		= "Next Enchantress (%d)"
 }
 
 L:SetOptionLocalization{
 	WarnElemental			= "Show pre-warning for next Tainted Elemental",
-	WarnStrider				= "Show pre-warning for next Strider",
-	WarnNaga				= "Show pre-warning for next Naga",
+	WarnHydra				= "Show pre-warning for next Hydra",
+	WarnNaga				= "Show pre-warning for next Naga Elite",
+	WarnEnchantress			= "Show pre-warning for next Enchantress",
 	WarnShield				= "Show warning for Phase 2 shield down",
 	WarnLoot				= "Show warning for Tainted Core loot",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
 	TimerElemental			= "Show timer for Tainted Elemental cooldown",
-	TimerHydra				= "Show timer for next Strider",
-	TimerNaga				= "Show timer for next Naga",
+	TimerHydra				= "Show timer for next Hydra",
+	TimerNaga				= "Show timer for next Elite",
+	TimerEnchantress		= "Show timer for next Enchantress",
 	SpecWarnElemental		= "Show special warning when Tainted Elemental coming",
 	ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
 	yellChargeVashj         = "Yell when you are affected by $spell:38280"
@@ -179,6 +183,10 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	DBM_VASHJ_YELL_PHASE2	= "The time is now! Leave none standing!",
 	DBM_VASHJ_YELL_PHASE3	= "You may want to take cover.",
+	DBM_VASHJ_DISCHARGE		= "The air crackles with electricity!",
+	DBM_VASHJ_ELITE			= "Coilfang Elite appear to protect the Matron!",
+	DBM_VASHJ_HYDRA			= "A Coilfang Hydra joins the fight!",
+	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
 	yellChargeVashj			= "Static Charge on me!"
 }
