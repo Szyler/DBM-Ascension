@@ -76,7 +76,10 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnPhase		= "Show warning for next phase",
-	TimerPhase		= "Show time for next phase"
+	TimerPhase		= "Show time for next phase",
+	DemonIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(37676),
+	ChaosIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(85365),
+	ChaosYellOpt	= "Yell when you are about to be hit by $spell:85365"
 }
 
 L:SetMiscLocalization{
@@ -84,6 +87,7 @@ L:SetMiscLocalization{
 	Demon		= "Demon",
 	YellDemon	= "Be gone, trifling elf%.%s*I am in control now!",
 	YellPhase2	= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him."
+	ChaosYell	= "Chaos Blast on me!"
 }
 
 -----------------------------

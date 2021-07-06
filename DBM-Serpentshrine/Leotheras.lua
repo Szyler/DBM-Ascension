@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21215)
 mod:RegisterCombat("combat", 21215)
-mod:SetUsedIcons(5, 6, 7, 8)
+mod:SetUsedIcons(1, 5, 6, 7, 8)
 
 mod:RegisterEvents(
 	"UNIT_DIED",
@@ -28,15 +28,19 @@ local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
 local timerPhase		= mod:NewTimer(60, "TimerPhase", 39088)
 local timerDemonCD		= mod:NewCDTimer(23, 37676)
 local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
+local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption(L.DemonIcon)
+mod:AddBoolOption(L.ChaosIcon)
+mod:AddBoolOption(L.ChaosYellOpt)
 
 local warnDemonTargets = {}
 local warnMCTargets = {}
 mod.vb.binderKill = 0
 mod.vb.demonIcon = 8
+mod.vb.ChaosIcon = 1
 mod.vb.whirlCount = 0
 mod.vb.phase = 1
 
@@ -57,6 +61,20 @@ end
 local function showMCTargets()
 	warnMC:Show(table.concat(warnMCTargets, "<, >"))
 	table.wipe(warnMCTargets)
+end
+
+local function mod:Chaos()
+	-- SendChatMessage("triggered Hand", "SAY")
+	local target = mod:GetBossTarget(21215)
+	-- SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
+	if(target == UnitName("player")) then
+		SendChatMessage("Hand of Death on "..UnitName("PLAYER")..", STACK ON ME!", "YELL")
+		specWarnYouHand:Show()
+	else
+		warnHandofDeath:Show(target) 
+	end
+	timerHandofDeath:Start(target)
+	self:SetIcon(target, 8, 4)
 end
 
 function mod:OnCombatStart(delay)
@@ -107,6 +125,17 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEvenYou:Show()
 		end
 		warnEven:Show()
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(85365, 351271, 351272, 351273) then
+		if self.Options.ChaosIcon then
+			self:SetIcon(args.destName, 1, 3)
+		end
+		if self.Options.CaveinYellOpt then
+			SendChatMessage(L.ChaosYell, "YELL")
+		end
 	end
 end
 
