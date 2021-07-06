@@ -16,7 +16,7 @@ local warnMark			= mod:NewAnnounce(L.WarnMark, 3, 351203)
 local warnPhase			= mod:NewAnnounce("WarnPhase", 4)
 local warnTomb			= mod:NewTargetAnnounce(38235, 3)
 local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
--- local warnSludge	= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spammy?
+local warnSludge		= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spammy?
 
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
@@ -85,7 +85,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == 38235 then
-		warnTomb:Stop(args.destName)
+		timerTomb:Stop(args.destName)
 	elseif args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
 		-- timerMark:Start(16, markOfH, "10%")
