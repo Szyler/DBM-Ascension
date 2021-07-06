@@ -32,7 +32,7 @@ local lastMark = 0
 
 mod:AddBoolOption("RangeFrame", true)
 
-local function tidalWave()
+function tidalWave()
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerTidal:Start()
@@ -46,8 +46,8 @@ function mod:OnCombatStart(delay)
 		DBM.RangeCheck:Show()
 	end
 	timerTomb:Start(10-delay)
-	timerTidal:Start(35-delay)
-	self:ScheduleMethod(35-delay, "tidalWave")
+	timerTidal:Start(30-delay)
+	self:ScheduleMethod(30-delay, "tidalWave")
 end
 
 function mod:OnCombatEnd()
