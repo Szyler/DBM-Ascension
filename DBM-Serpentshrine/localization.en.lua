@@ -182,7 +182,8 @@ L:SetOptionLocalization{
 	SpecWarnElemental		= "Show special warning when Tainted Elemental coming",
 	-- ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
 	AimedIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(351310),
-	ChargeYell         		= "Yell when you are affected by $spell:38280"
+	ChargeYellOpt         	= "Yell when you are affected by $spell:38280"
+	AimedYellOpt        	= "Yell when you are affected by $spell:351310"
 }
 
 L:SetMiscLocalization{
@@ -194,4 +195,5 @@ L:SetMiscLocalization{
 	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
 	ChargeYell				= "Static Charge on me!"
+	AimedYell				= "Aimed Shot on me!"
 }

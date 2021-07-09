@@ -56,7 +56,8 @@ local timerEnvenom		= mod:NewNextTimer(30, 351381)
 mod:AddBoolOption("RangeFrame", true)
 -- mod:AddBoolOption(L.ChargeIcon)
 mod:AddBoolOption(L.AimedIcon)
-mod:AddBoolOption(L.ChargeYell)
+mod:AddBoolOption(L.ChargeYellOpt)
+mod:AddBoolOption(L.AimedYellOpt)
 
 mod.vb.phase = 1
 mod.vb.shieldLeft = 4
@@ -113,8 +114,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerChargeDmg:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			if self.Options.ChargeYell then
-				SendChatMessage(L.yellChargeVashj, "YELL")
+			if self.Options.ChargeYellOpt then
+				SendChatMessage(L.ChargeYell, "YELL")
 			end
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10)
@@ -129,6 +130,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
+		if self.Options.AimedYellOpt then
+			SendChatMessage(L.AimedYell, "YELL")
+		end
 		if self.Options.AimedIcon then
 			self:SetIcon(args.destName, 8, 6)
 		end
