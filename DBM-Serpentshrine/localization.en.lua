@@ -180,8 +180,9 @@ L:SetOptionLocalization{
 	TimerNaga				= "Show timer for next Elite",
 	TimerEnchantress		= "Show timer for next Enchantress",
 	SpecWarnElemental		= "Show special warning when Tainted Elemental coming",
-	ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
-	yellChargeVashj         = "Yell when you are affected by $spell:38280"
+	-- ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
+	AimedIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(351310),
+	ChargeYell         		= "Yell when you are affected by $spell:38280"
 }
 
 L:SetMiscLocalization{
@@ -192,5 +193,5 @@ L:SetMiscLocalization{
 	DBM_VASHJ_HYDRA			= "A Coilfang Hydra joins the fight!",
 	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
-	yellChargeVashj			= "Static Charge on me!"
+	ChargeYell				= "Static Charge on me!"
 }

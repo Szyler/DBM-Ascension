@@ -42,7 +42,7 @@ local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerChargeDmg	= mod:NewTargetTimer(8, 351375)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
-local timerMark			= mod:NewTargetTimer(8, 351310)
+local timerMark			= mod:NewTargetTimer(6, 351310)
 -- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
 local timerElementalCD	= mod:NewTimer(75, "TimerElemental")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(91, "TimerHydra")
@@ -54,7 +54,9 @@ local timerMulti		= mod:NewNextTimer(15, 38310)
 local timerEnvenom		= mod:NewNextTimer(30, 351381)
 
 mod:AddBoolOption("RangeFrame", true)
-mod:AddBoolOption(L.ChargeIcon)
+-- mod:AddBoolOption(L.ChargeIcon)
+mod:AddBoolOption(L.AimedIcon)
+mod:AddBoolOption(L.ChargeYell)
 
 mod.vb.phase = 1
 mod.vb.shieldLeft = 4
@@ -111,7 +113,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerChargeDmg:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			if self.Options.ChargeIcon then
+			if self.Options.ChargeYell then
 				SendChatMessage(L.yellChargeVashj, "YELL")
 			end
 			if self.Options.RangeFrame then
@@ -120,13 +122,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnCharge:Show(args.destName)
 		end
-		if self.Options.ChargeIcon then
-			self:SetIcon(args.destName, 1, 20)
-		end
+		-- if self.Options.ChargeIcon then
+		-- 	self:SetIcon(args.destName, 1, 20)
+		-- end
 	elseif args:IsSpellID(351310) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
+		if self.Options.AimedIcon then
+			self:SetIcon(args.destName, 8, 6)
+		end
 	elseif args.spellId == 38132 then
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 6)
