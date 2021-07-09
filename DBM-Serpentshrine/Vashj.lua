@@ -27,7 +27,10 @@ local warnHydra			= mod:NewAnnounce("WarnHydra", 3)
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3)
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4)
 --local warnShield		= mod:NewAnnounce("WarnShield", 3)
---local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
+
+local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
+local warnLootYou		= mod:NewSpecialWarningYou("WarnLootYou", 4)
+
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
 local warnMulti			= mod:NewSpellAnnounce(38310, 3)
@@ -56,9 +59,11 @@ local timerEnvenom		= mod:NewNextTimer(30, 351381)
 
 mod:AddBoolOption("RangeFrame", true)
 -- mod:AddBoolOption(L.ChargeIcon)
+mod:AddBoolOption(L.LootIcon)
 mod:AddBoolOption(L.AimedIcon)
 mod:AddBoolOption(L.ChargeYellOpt)
 mod:AddBoolOption(L.AimedYellOpt)
+mod:AddBoolOption(L.LootYellOpt)
 
 mod.vb.phase = 1
 mod.vb.shieldLeft = 4
@@ -254,9 +259,16 @@ function mod:CHAT_MSG_LOOT(msg)
 	-- DBM:AddMsg(msg) --> Meridium receives loot: [Tainted Core]
 	local player, itemID = msg:match(L.LootMsg)
 	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
-		warnLoot:Show(player)
-		--if player == UnitName("player") then
-		--		warnLootYou:Show()
-		--end
-	end
+		if player == UnitName("player") then
+			if self.Options.LootYellOpt then
+				SendChatMessage(L.LootYell, "YELL")
+			end
+			warnLootYou:Show()
+		else
+			warnLoot:Show(player)
+		end
+		if self.Options.LootIcon then
+			self:SetIcon(player, 6)
+		end
+	end LootYellOpt
 end

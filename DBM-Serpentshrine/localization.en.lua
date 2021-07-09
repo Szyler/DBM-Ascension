@@ -156,6 +156,7 @@ L:SetWarningLocalization{
 	WarnEnchantress		= "Enchantress Soon (%s)",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
+	WarnLootYou			= "Tainted Core on YOU",
 	SpecWarnElemental	= "Tainted Elemental - Switch!"
 }
 
@@ -182,8 +183,10 @@ L:SetOptionLocalization{
 	SpecWarnElemental		= "Show special warning when Tainted Elemental coming",
 	-- ChargeIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38280),
 	AimedIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(351310),
-	ChargeYellOpt         	= "Yell when you are affected by $spell:38280"
-	AimedYellOpt        	= "Yell when you are affected by $spell:351310"
+	ChargeYellOpt         	= "Yell when you are affected by $spell:38280",
+	AimedYellOpt        	= "Yell when you are affected by $spell:351310",
+	LootIcon				= "Set icon on the target carrying Tainted Core"
+	LootYellOpt        		= "Yell when you are carrying Tainted Core",
 }
 
 L:SetMiscLocalization{
@@ -196,4 +199,5 @@ L:SetMiscLocalization{
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
 	ChargeYell				= "Static Charge on me!"
 	AimedYell				= "Aimed Shot on me!"
+	LootYell				= "I am carrying the Tainted Core!"
 }
