@@ -65,7 +65,7 @@ local function showMCTargets()
 	table.wipe(warnMCTargets)
 end
 
-local function mod:Chaos()
+function mod:Chaos()
 	local target = mod:GetBossTarget(21215)
 	if(target == UnitName("player")) then
 		if self.Options.CaveinYellOpt then

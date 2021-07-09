@@ -270,5 +270,5 @@ function mod:CHAT_MSG_LOOT(msg)
 		if self.Options.LootIcon then
 			self:SetIcon(player, 6)
 		end
-	end LootYellOpt
+	end
 end
