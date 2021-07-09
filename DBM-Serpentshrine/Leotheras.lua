@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21215)
 mod:RegisterCombat("combat", 21215)
-mod:SetUsedIcons(5, 6, 7, 8)
+mod:SetUsedIcons(1, 5, 6, 7, 8)
 
 mod:RegisterEvents(
 	"UNIT_DIED",
@@ -22,21 +22,27 @@ local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
 local warnEven			= mod:NewTargetAnnounce(351201, 3)
 local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
+local warnChaos			= mod:NewTargetAnnounce(85365, 3)
+local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
 
 local timerWhirlCD		= mod:NewCDTimer(27, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
 local timerPhase		= mod:NewTimer(60, "TimerPhase", 39088)
 local timerDemonCD		= mod:NewCDTimer(23, 37676)
 local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
+local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption(L.DemonIcon)
+mod:AddBoolOption(L.ChaosIcon)
+mod:AddBoolOption(L.ChaosYellOpt)
 
 local warnDemonTargets = {}
 local warnMCTargets = {}
 mod.vb.binderKill = 0
 mod.vb.demonIcon = 8
+mod.vb.ChaosIcon = 1
 mod.vb.whirlCount = 0
 mod.vb.phase = 1
 
@@ -57,6 +63,22 @@ end
 local function showMCTargets()
 	warnMC:Show(table.concat(warnMCTargets, "<, >"))
 	table.wipe(warnMCTargets)
+end
+
+local function mod:Chaos()
+	local target = mod:GetBossTarget(21215)
+	if(target == UnitName("player")) then
+		if self.Options.CaveinYellOpt then
+			SendChatMessage(L.ChaosYell, "YELL")
+		end
+		specWarnChaosYou:Show()
+	else
+		warnChaos:Show(target) 
+	end
+	timerChaos:Start(target)
+	if self.Options.ChaosIcon then
+		self:SetIcon(args.destName, 1, 4)
+	end
 end
 
 function mod:OnCombatStart(delay)
@@ -107,6 +129,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEvenYou:Show()
 		end
 		warnEven:Show()
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(85365, 351271, 351272, 351273) then
+		self:ScheduleMethod(0.3, "Chaos")
 	end
 end
 
