@@ -64,6 +64,7 @@ mod:AddBoolOption(L.AimedIcon)
 mod:AddBoolOption(L.ChargeYellOpt)
 mod:AddBoolOption(L.AimedYellOpt)
 mod:AddBoolOption(L.LootYellOpt)
+mod:AddBoolOption("AutoChangeLootToFFA", false)
 
 mod.vb.phase = 1
 mod.vb.shieldLeft = 4
@@ -72,6 +73,7 @@ mod.vb.enchantressCount = 1
 mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
 local elementals = {}
+local lootmethod
 
 function mod:HydraSpawn()
 	self.vb.hydraCount = self.vb.hydraCount + 1
@@ -106,11 +108,19 @@ function mod:OnCombatStart(delay)
 	timerEnvenom:Start(25-delay)
 	timerAimedShot:Start(35-delay)
 	timerCharge:Start(15-delay)
+	if IsInGroup() and DBM:GetRaidRank() == 2 then
+		lootmethod = GetLootMethod()
+	end
 end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
+	end
+	if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+		if lootmethod then
+			SetLootMethod(lootmethod)
+		end
 	end
 end
 
@@ -239,6 +249,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnHydra:Schedule(28, tostring(self.vb.hydraCount))
 		timerHydra:Start(32, tostring(self.vb.hydraCount))
 		self:ScheduleMethod(32, "HydraSpawn")
+		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+			SetLootMethod("freeforall")
+		end
 	elseif msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3) then
 		self.vb.phase = 3
 		warnPhase3:Show()
@@ -252,6 +265,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:UnscheduleMethod("HydraSpawn")
 		timerGenerator:Start()
 		timerCharge:Start(15)
+		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+			if lootmethod then
+				SetLootMethod(lootmethod)
+			end
+		end
 	end
 end
 

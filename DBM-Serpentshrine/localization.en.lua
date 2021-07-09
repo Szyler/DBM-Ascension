@@ -86,7 +86,7 @@ L:SetMiscLocalization{
 	Human		= "Human",
 	Demon		= "Demon",
 	YellDemon	= "Be gone, trifling elf%.%s*I am in control now!",
-	YellPhase2	= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him."
+	YellPhase2	= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him.",
 	ChaosYell	= "Chaos Blast, stack on me!"
 }
 
@@ -185,8 +185,9 @@ L:SetOptionLocalization{
 	AimedIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(351310),
 	ChargeYellOpt         	= "Yell when you are affected by $spell:38280",
 	AimedYellOpt        	= "Yell when you are affected by $spell:351310",
-	LootIcon				= "Set icon on the target carrying Tainted Core"
+	LootIcon				= "Set icon on the target carrying Tainted Core",
 	LootYellOpt        		= "Yell when you are carrying Tainted Core",
+	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2"
 }
 
 L:SetMiscLocalization{
@@ -197,7 +198,7 @@ L:SetMiscLocalization{
 	DBM_VASHJ_HYDRA			= "A Coilfang Hydra joins the fight!",
 	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
-	ChargeYell				= "Static Charge on me!"
-	AimedYell				= "Aimed Shot on me!"
-	LootYell				= "I am carrying the Tainted Core!"
+	ChargeYell				= "Static Charge on me!",
+	AimedYell				= "Aimed Shot on me!",
+	LootYell				= "I am carrying the Tainted Core!",
 }
