@@ -9,6 +9,8 @@ mod:SetUsedIcons(1, 5, 6, 7, 8)
 mod:RegisterEvents(
 	"UNIT_DIED",
 	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -124,17 +126,22 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnMCTargets[#warnMCTargets + 1] = args.destName
 		self:Unschedule(showMCTargets)
 		self:Schedule(0.3, showMCTargets)
-	elseif args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
-		if args:IsPlayer() then
-			specWarnEvenYou:Show()
-		end
-		warnEven:Show()
+
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(85365, 351271, 351272, 351273) then
 		self:ScheduleMethod(0.3, "Chaos")
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
+		if args:IsPlayer() then
+			specWarnEvenYou:Show()
+		end
+		warnEven:Show()
 	end
 end
 
