@@ -22,6 +22,8 @@ local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
 local warnEven			= mod:NewTargetAnnounce(351201, 3)
 local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
+local warnChaos			= mod:NewTargetAnnounce(85365, 3)
+local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
 
 local timerWhirlCD		= mod:NewCDTimer(27, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
@@ -64,17 +66,19 @@ local function showMCTargets()
 end
 
 local function mod:Chaos()
-	-- SendChatMessage("triggered Hand", "SAY")
 	local target = mod:GetBossTarget(21215)
-	-- SendChatMessage("Hand Target: "..HandTarget.." boss target: "..target, "SAY")
 	if(target == UnitName("player")) then
-		SendChatMessage("Hand of Death on "..UnitName("PLAYER")..", STACK ON ME!", "YELL")
-		specWarnYouHand:Show()
+		if self.Options.CaveinYellOpt then
+			SendChatMessage(L.ChaosYell, "YELL")
+		end
+		specWarnChaosYou:Show()
 	else
-		warnHandofDeath:Show(target) 
+		warnChaos:Show(target) 
 	end
-	timerHandofDeath:Start(target)
-	self:SetIcon(target, 8, 4)
+	timerChaos:Start(target)
+	if self.Options.ChaosIcon then
+		self:SetIcon(args.destName, 1, 4)
+	end
 end
 
 function mod:OnCombatStart(delay)
@@ -130,12 +134,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(85365, 351271, 351272, 351273) then
-		if self.Options.ChaosIcon then
-			self:SetIcon(args.destName, 1, 3)
-		end
-		if self.Options.CaveinYellOpt then
-			SendChatMessage(L.ChaosYell, "YELL")
-		end
+		self:ScheduleMethod(0.3, "Chaos")
 	end
 end
 

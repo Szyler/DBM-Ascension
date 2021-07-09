@@ -87,7 +87,7 @@ L:SetMiscLocalization{
 	Demon		= "Demon",
 	YellDemon	= "Be gone, trifling elf%.%s*I am in control now!",
 	YellPhase2	= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him."
-	ChaosYell	= "Chaos Blast on me!"
+	ChaosYell	= "Chaos Blast, stack on me!"
 }
 
 -----------------------------
