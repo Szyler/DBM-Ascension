@@ -38,6 +38,7 @@ local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
 -- local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
 local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
+local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerChargeDmg	= mod:NewTargetTimer(8, 351375)
@@ -161,10 +162,16 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:SPELL_CAST_START(args) -- useless now that we have raid boss emote telling us when Tainted spawns.
+function mod:SPELL_CAST_START(args)
 	if args.spellId == 38310 then
 		warnMulti:Show()
 		timerMulti:Start()
+	end
+end
+
+function mod:SPELL_PERIODIC_HEAL(args)
+	if args.spellId == 83565 then
+		warnHeal:Show()
 	end
 end
 
