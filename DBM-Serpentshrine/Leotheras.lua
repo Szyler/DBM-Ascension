@@ -79,7 +79,7 @@ function mod:Chaos()
 	end
 	timerChaos:Start(target)
 	if self.Options.ChaosIcon then
-		self:SetIcon(args.destName, 1, 4)
+		self:SetIcon(target, 1, 4)
 	end
 end
 
