@@ -29,7 +29,7 @@ local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4)
 --local warnShield		= mod:NewAnnounce("WarnShield", 3)
 
 local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
-local warnLootYou		= mod:NewSpecialWarningYou("WarnLootYou", 4)
+local warnLootYou		= mod:NewSpecialWarningYou(38132)
 
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)

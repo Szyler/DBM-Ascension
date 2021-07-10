@@ -156,7 +156,7 @@ L:SetWarningLocalization{
 	WarnEnchantress		= "Enchantress Soon (%s)",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
-	WarnLootYou			= "Tainted Core on YOU",
+	-- WarnLootYou			= "Tainted Core on YOU",
 	SpecWarnElemental	= "Tainted Elemental - Switch!"
 }
 
