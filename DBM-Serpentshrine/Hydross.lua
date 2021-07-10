@@ -35,6 +35,7 @@ local lastMarkN = 0
 mod:AddBoolOption("RangeFrame", true)
 
 function mod:tidalWave(timer)
+	local timer = 0
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerTidal:Start()
