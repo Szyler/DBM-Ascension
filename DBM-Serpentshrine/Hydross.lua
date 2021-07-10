@@ -12,7 +12,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS"
 )
 
-local warnMark			= mod:NewAnnounce(L.WarnMark, 3, 351203)
+local warnMarkF			= mod:NewAnnounce(L.WarnMark, 3, 351203)
+local warnMarkN			= mod:NewAnnounce(L.WarnMark, 3, 351204)
 local warnPhase			= mod:NewAnnounce("WarnPhase", 4)
 local warnTomb			= mod:NewTargetAnnounce(38235, 3)
 local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
@@ -27,16 +28,17 @@ local timerSludge		= mod:NewTargetTimer(12, 38246)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
-local lastMark = 0
+local lastMarkF = 0
+local lastMarkN = 0
 -- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
 
 mod:AddBoolOption("RangeFrame", true)
 
-function tidalWave()
+function mod:tidalWave(timer)
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerTidal:Start()
-	self:ScheduleMethod(45, "tidalWave")
+	self:ScheduleMethod(45-timer, "tidalWave")
 end
 
 function mod:OnCombatStart(delay)
@@ -74,11 +76,15 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if 	args:IsSpellID(	351203, 351286, 351287) or 		-- Heroic: 351286, Mythic: 351287 --Hydros
-		args:IsSpellID(	351204, 351288, 351289) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
-		if args.amount and (GetTime() - lastMark) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
-			lastMark = GetTime()
-			warnMark:Show(args.amount, args.spellName)
+	if 	args:IsSpellID(	351203, 351286, 351287) then	-- Heroic: 351286, Mythic: 351287 --Hydros
+		if args.amount and (GetTime() - lastMarkF) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
+			lastMarkF = GetTime()
+			warnMarkF:Show(args.amount, args.spellName)
+		end
+	elseif args:IsSpellID(	351204, 351288, 351289) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
+		if args.amount and (GetTime() - lastMarkN) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
+			lastMarkN = GetTime()
+			warnMarkN:Show(args.amount, args.spellName)
 		end
 	end
 end
@@ -102,7 +108,7 @@ end
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(351276) and (GetTime() - lastTidalWave) > 10 then
 		lastTidalWave = GetTime()
-		self:tidalWave()
+		self:tidalWave(4)--speed up the timer by 4 seconds due to the delay from visual to damage
 	end
 end
 
