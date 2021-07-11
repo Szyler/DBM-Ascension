@@ -1,187 +1,117 @@
-local Hydross = DBM:NewBossMod("Hydross", DBM_HYDROSS_NAME, DBM_HYDROSS_DESCRIPTION, DBM_COILFANG, DBM_SERPENT_TAB, 1);
+local mod	= DBM:NewMod("Hydross", "DBM-Serpentshrine")
+local L		= mod:GetLocalizedStrings()
 
-Hydross.Version		= "1.0";
-Hydross.Author		= "Tandanu";
-Hydross.LastMark	= 0;
-Hydross.Marks		= 0;
-Hydross.Phase		= "frost";
-Hydross.TombSpam	= 0;
+mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
+mod:SetCreatureID(21216)
+mod:RegisterCombat("combat", 21216)
 
-Hydross:RegisterEvents(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"CHAT_MSG_MONSTER_YELL"
-);
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_SUCCESS"
+)
 
+local warnMarkF			= mod:NewAnnounce(L.WarnMark, 3, 351203)
+local warnMarkN			= mod:NewAnnounce(L.WarnMark, 3, 351204)
+local warnPhase			= mod:NewAnnounce("WarnPhase", 4)
+local warnTomb			= mod:NewTargetAnnounce(38235, 3)
+local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
+local warnSludge		= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spammy?
 
-Hydross:SetCreatureID(21216)
-Hydross:RegisterCombat("yell", DBM_HYDROSS_YELL_PULL)
+-- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
-Hydross:AddOption("RangeCheck", true, DBM_HYDROSS_OPTION_1);
-Hydross:AddOption("Marks", true, DBM_HYDROSS_OPTION_2);
-Hydross:AddOption("MarkPreWarn", false, DBM_HYDROSS_OPTION_3);
-Hydross:AddOption("Phases", true, DBM_HYDROSS_OPTION_4);
-Hydross:AddOption("WaterTomb", true, DBM_HYDROSS_OPTION_5);
+local timerTomb			= mod:NewNextTimer(30, 38235)
+local timerTidal		= mod:NewNextTimer(45, 85416)
+local timerSludge		= mod:NewTargetTimer(12, 38246)
+-- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
-Hydross:AddBarOption("Enrage")
-Hydross:AddBarOption("Water Tomb")
-Hydross:AddBarOption("Mark of Corruption #(%d+)", true, DBM_HYDROSS_OPTION_NATURE)
-Hydross:AddBarOption("Mark of Hydross #(%d+)", true, DBM_HYDROSS_OPTION_FROST)
+local berserkTimer		= mod:NewBerserkTimer(600)
 
-function Hydross:OnCombatStart(delay)
-	self.Marks = 0;
-	self.Phase = "frost";
-	self:ScheduleSelf(11 - delay, "MarkWarning");
-	self:StartStatusBarTimer(600 - delay, "Enrage", "Interface\\Icons\\Spell_Shadow_UnholyFrenzy");
-	self:StartStatusBarTimer(16 - delay, "Mark of Hydross #"..(self.Marks + 1), "Interface\\Icons\\Spell_Frost_FrozenCore");
-	
-	if self.Options.RangeCheck then
-		DBM_Gui_DistanceFrame_Show();
+local lastMarkF = 0
+local lastMarkN = 0
+-- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
+
+mod:AddBoolOption("RangeFrame", true)
+
+function mod:tidalWave(timer)
+	local timer = 0
+	self:UnscheduleMethod("tidalWave")
+	specWarnTidal:Show()
+	timerTidal:Start()
+	self:ScheduleMethod(45-timer, "tidalWave")
+end
+
+function mod:OnCombatStart(delay)
+	-- timerMark:Start(16-delay, markOfH, "10%")
+	berserkTimer:Start(-delay)
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Show()
+	end
+	timerTomb:Start(10-delay)
+	timerTidal:Start(30-delay)
+	self:ScheduleMethod(30-delay, "tidalWave")
+end
+
+function mod:OnCombatEnd()
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Hide()
 	end
 end
 
-function Hydross:OnCombatEnd()
-	if self.Options.RangeCheck then
-		DBM_Gui_DistanceFrame_Hide();
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 38235 then
+		warnTomb:Show(args.destName)
+		timerTomb:Start()
+	elseif args.spellId == 38246 then
+		warnSludge:Show(args.destName)
+		timerSludge:Start(args.destName)
+	-- elseif args.spellId == 351203 then
+	-- 	timerMark:Cancel()
+	-- 	timerMark:Start()
+	elseif args:IsSpellID(37961) then -- Corruption transform on boss
+		warnPhase:Show(L.Nature)
+		timerTomb:Stop()
+		-- timerMark:Start(16, markOfC, "10%")
 	end
 end
 
-function Hydross:OnEvent(event, arg1)
-	if event == "SPELL_AURA_APPLIED" then
-		if (GetTime() - self.LastMark) > 7 and 
-		(arg1.spellId == 38215 or
-		arg1.spellId == 38216 or
-		arg1.spellId == 38217 or
-		arg1.spellId == 38218 or
-		arg1.spellId == 38231 or
-		arg1.spellId == 40584) then
-			local timer = 15;
-			self.LastMark = GetTime();
-			if self.Phase == "nature" then
-				self.Phase = "frost";
-				self.Marks = 0;
-			end
-			self.Marks = self.Marks + 1;
-			
-			if self.Options.Marks then
-				self:Announce(string.format(DBM_HYDROSS_FROST_MARK_NOW, self.Marks), 1);
-			end
-			
-			if self.Marks == 1 then
-				timer = 14.4;
-			elseif self.Marks == 2 then
-				timer = 15.6;
-			elseif self.Marks == 3 then
-				timer = 14.5;
-			elseif self.Marks == 4 then
-				timer = 14;
-			elseif self.Marks == 5 then
-				timer = 14;
-			else
-				timer = nil;
-			end
-			for i = 1, 7 do
-				self:EndStatusBarTimer("Mark of Hydross #"..i);
-				self:EndStatusBarTimer("Mark of Corruption #"..i);
-			end
-			if timer then
-				self:ScheduleSelf(timer - 5, "MarkWarning");
-				self:StartStatusBarTimer(timer, "Mark of Hydross #"..(self.Marks + 1), "Interface\\Icons\\Spell_Frost_FrozenCore");
-			end
-		
-		elseif (GetTime() - self.LastMark) > 7 and 
-		(arg1.spellId == 38219 or
-		arg1.spellId == 38220 or
-		arg1.spellId == 38221 or
-		arg1.spellId == 38222 or
-		arg1.spellId == 38230 or
-		arg1.spellId == 40583) then
-			local timer = 15;
-			self.LastMark = GetTime();			
-			if self.Phase == "frost" then
-				self.Phase = "nature";
-				self.Marks = 0;
-			end
-			self.Marks = self.Marks + 1;
-			
-			if self.Options.Marks then
-				self:Announce(string.format(DBM_HYDROSS_NATURE_MARK_NOW, self.Marks), 2);
-			end
-			
-			if self.Marks == 1 then
-				timer = 14.8;
-			elseif self.Marks == 2 then
-				timer = 15.6;
-			elseif self.Marks == 3 then
-				timer = 14.5;
-			elseif self.Marks == 4 then
-				timer = 14;
-			elseif self.Marks == 5 then
-				timer = 14;
-			else
-				timer = nil;
-			end
-
-			for i = 1, 7 do
-				self:EndStatusBarTimer("Mark of Hydross #"..i);
-				self:EndStatusBarTimer("Mark of Corruption #"..i);
-			end
-			if timer then
-				self:StartStatusBarTimer(timer, "Mark of Corruption #"..(self.Marks + 1), "Interface\\Icons\\Spell_Nature_ElementalShields");			
-				self:ScheduleSelf(timer - 5, "MarkWarning");
-			end
-		elseif arg1.spellId == 38235 and self.TombSpam < 5 then
-			local target = arg1.destName
-			if target == UnitName("player") then
-				self:StartStatusBarTimer(5, "Water Tomb", "Interface\\Icons\\Spell_Frost_ManaRecharge", true);
-			end
-			if target then
-				if self.Options.WaterTomb then
-					self:Announce(string.format(DBM_HYDROSS_TOMB_WARN, target), 2);
-					self.TombSpam = self.TombSpam + 1;
-					self:ScheduleSelf(3, "ResetTombSpamVar");
-				end
-			end
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if 	args:IsSpellID(	351203, 351286, 351287) then	-- Heroic: 351286, Mythic: 351287 --Hydros
+		if args.amount and (GetTime() - lastMarkF) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
+			lastMarkF = GetTime()
+			warnMarkF:Show(args.amount, args.spellName)
 		end
-	elseif event == "ResetTombSpamVar" then
-		self.TombSpam = 0;
-	elseif event == "MarkWarning" and self.Options.Marks then
-		if self.Options.MarkPreWarn or self.Marks >= 4 then
-			if self.Phase == "frost" then
-				self:Announce(string.format(DBM_HYDROSS_FROST_SOON, (self.Marks + 1)), 1);
-			elseif self.Phase == "nature" then
-				self:Announce(string.format(DBM_HYDROSS_NATURE_SOON, (self.Marks + 1)), 1);
-			end
-		end
-	elseif event == "CHAT_MSG_MONSTER_YELL" then
-		if arg1 == DBM_HYDROSS_YELL_NATURE then
-			self:UnScheduleSelf();
-			for i = 1, 7 do
-				self:EndStatusBarTimer("Mark of Hydross #"..i);
-				self:EndStatusBarTimer("Mark of Corruption #"..i);
-			end
-			
-			if self.Options.Phases then
-				self:Announce(DBM_HYDROSS_NATURE_PHASE, 3);
-			end
-			self.Marks = 0;
-			self.Phase = "nature";
-			self:ScheduleSelf(11, "MarkWarning");
-			self:StartStatusBarTimer(16, "Mark of Corruption #"..(self.Marks + 1), "Interface\\Icons\\Spell_Nature_ElementalShields");
-		elseif arg1 == DBM_HYDROSS_YELL_FROST then
-			self:UnScheduleSelf();
-			for i = 1, 7 do
-				self:EndStatusBarTimer("Mark of Hydross #"..i);
-				self:EndStatusBarTimer("Mark of Corruption #"..i);
-			end
-			
-			if self.Options.Phases then
-				self:Announce(DBM_HYDROSS_FROST_PHASE, 3);
-			end
-			self.Marks = 0;
-			self.Phase = "frost";
-			self:ScheduleSelf(11, "MarkWarning");
-			self:StartStatusBarTimer(16, "Mark of Hydross #"..(self.Marks + 1), "Interface\\Icons\\Spell_Frost_FrozenCore");
+	elseif args:IsSpellID(	351204, 351288, 351289) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
+		if args.amount and (GetTime() - lastMarkN) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
+			lastMarkN = GetTime()
+			warnMarkN:Show(args.amount, args.spellName)
 		end
 	end
 end
 
+function mod:SPELL_AURA_REMOVED(args)
+	if args.spellId == 38235 then
+		timerTomb:Stop(args.destName)
+	elseif args:IsSpellID(351279) then -- Losing Corruption transform on boss
+		warnPhase:Show(L.Frost)
+		-- timerMark:Start(16, markOfH, "10%")
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(85416, 351276, 351277) then     
+		specWarnTidal:Show()
+		timerTidal:Start()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(351276) and (GetTime() - lastTidalWave) > 10 then
+		lastTidalWave = GetTime()
+		self:tidalWave(4)--speed up the timer by 4 seconds due to the delay from visual to damage
+	end
+end
+
+-- 351203 - Mark of Hydross
+-- 351204 - Mark of Corruption

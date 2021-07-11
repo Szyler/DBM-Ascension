@@ -1,189 +1,189 @@
-local Leotheras = DBM:NewBossMod("Leotheras", DBM_LEO_NAME, DBM_LEO_DESCRIPTION, DBM_COILFANG, DBM_SERPENT_TAB, 5);
+local mod	= DBM:NewMod("Leotheras", "DBM-Serpentshrine")
+local L		= mod:GetLocalizedStrings()
 
-Leotheras.Version			= "1.1";
-Leotheras.Author			= "Tandanu";
-Leotheras.Phase				= "normal";
-Leotheras.WhirlSpam			= 0;
-Leotheras.DemonSpam			= 0;
-Leotheras.MinVersionToSync  = 2.70;
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
+mod:SetCreatureID(21215)
+mod:RegisterCombat("combat", 21215)
+mod:SetUsedIcons(1, 5, 6, 7, 8)
 
-Leotheras:SetCreatureID(21215)
-Leotheras:RegisterCombat("yell", DBM_LEO_YELL_PULL)
-
-local demonTargets = {};
-
-Leotheras:RegisterEvents(
-	"CHAT_MSG_MONSTER_YELL",
-	"SPELL_CAST_START",
+mod:RegisterEvents(
+	"UNIT_DIED",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED"
-);
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"CHAT_MSG_MONSTER_YELL"
+)
 
-Leotheras:AddOption("WhirlWarn", true, DBM_LEO_OPTION_WHIRL);
-Leotheras:AddOption("DemonWarn", true, DBM_LEO_OPTION_DEMON);
-Leotheras:AddOption("WarnDemons", false, DBM_LEO_OPTION_DEMONWARN);
+local warnPhase			= mod:NewAnnounce("WarnPhase", 2)
+local warnDemon			= mod:NewTargetAnnounce(37676, 4)
+local warnMC			= mod:NewTargetAnnounce(37749, 4)
+local warnPhase2		= mod:NewPhaseAnnounce(2, 2)
 
-Leotheras:AddBarOption("Enrage")
-Leotheras:AddBarOption("Demon Form")
-Leotheras:AddBarOption("Normal Form")
-Leotheras:AddBarOption("Next Whirlwind")
-Leotheras:AddBarOption("Whirlwind")
-Leotheras:AddBarOption("Inner Demons")
+local specWarnWhirl		= mod:NewSpecialWarningRun(37640)
+local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
-function Leotheras:OnCombatStart(delay)
-	self.Phase = "normal";
-	demonTargets = {};
-	
-	self:StartStatusBarTimer(600 - delay, "Enrage", "Interface\\Icons\\Spell_Shadow_UnholyFrenzy");
-	self:ScheduleSelf(300 - delay, "EnrageWarn", 300);
-	self:ScheduleSelf(480 - delay, "EnrageWarn", 120);
-	self:ScheduleSelf(540 - delay, "EnrageWarn", 60);
-	self:ScheduleSelf(570 - delay, "EnrageWarn", 30);
-	self:ScheduleSelf(590 - delay, "EnrageWarn", 10);
-		
-	self:ScheduleSelf(55, "PhaseWarn");
-	self:StartStatusBarTimer(60, "Demon Form", "Interface\\Icons\\Spell_Shadow_Metamorphosis");
-	
-	self:StartStatusBarTimer(18, "Next Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
-	self:ScheduleSelf(14, "WhirlWarn2");	
+local warnEven			= mod:NewTargetAnnounce(351201, 3)
+local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
+local warnChaos			= mod:NewTargetAnnounce(85365, 3)
+local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
+
+local timerWhirlCD		= mod:NewCDTimer(27, 37640)
+local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
+local timerPhase		= mod:NewTimer(60, "TimerPhase", 39088)
+local timerDemonCD		= mod:NewCDTimer(23, 37676)
+local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
+local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
+
+local berserkTimer		= mod:NewBerserkTimer(600)
+
+mod:AddBoolOption(L.DemonIcon)
+mod:AddBoolOption(L.ChaosIcon)
+mod:AddBoolOption(L.ChaosYellOpt)
+
+local warnDemonTargets = {}
+local warnMCTargets = {}
+mod.vb.binderKill = 0
+mod.vb.demonIcon = 8
+mod.vb.ChaosIcon = 1
+mod.vb.whirlCount = 0
+mod.vb.phase = 1
+
+local function humanWarns(self)
+	self.vb.whirlCount = 0
+	warnPhase:Show(L.Human)
+	timerWhirlCD:Start(15)
+	timerPhase:Start(nil, L.Demon)
 end
 
-function Leotheras:OnEvent(event, arg1)
-	if event == "CHAT_MSG_MONSTER_YELL" then
-		if string.find(arg1, DBM_LEO_YELL_DEMON) then
-			self.Phase = "demon";
-			
-			self:Announce(DBM_LEO_WARN_DEMON_PHASE, 3);
-			self:ScheduleSelf(55, "PhaseWarn");
-			self:ScheduleSelf(60, "NormalForm");
-			self:UnScheduleSelf("WhirlWarn");
-			self:EndStatusBarTimer("Normal Form");
-			self:EndStatusBarTimer("Demon Form");
-			self:EndStatusBarTimer("Whirlwind");
-			self:EndStatusBarTimer("Next Whirlwind");
-			self:StartStatusBarTimer(60, "Normal Form", "Interface\\Icons\\INV_Weapon_ShortBlade_07");
---			self:StartStatusBarTimer(15, "Inner Demons in", "Interface\\Icons\\Spell_Shadow_ManaFeed"); -- seems to be on a random timer (but changed to a fixed timer in 2.1.0?)
---			self:ScheduleSelf(10, "DemonsSoon");
+local function showDemonTargets(self)
+	warnDemon:Show(table.concat(warnDemonTargets, "<, >"))
+	table.wipe(warnDemonTargets)
+	self.vb.demonIcon = 8
+	timerDemon:Start()
+end
 
-		elseif arg1 == DBM_LEO_YELL_SHADOW then
-			self.Phase = "normal";
-			self:Announce(DBM_LEO_WARN_SHADOW, 3);
-			self:UnScheduleSelf("PhaseWarn");
-			self:UnScheduleSelf("NormalForm");
-			self:EndStatusBarTimer("Normal Form");
-			self:EndStatusBarTimer("Demon Form");
-			
-			self:StartStatusBarTimer(22.5, "Next Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
-			self:ScheduleSelf(18, "WhirlWarn2");
-			
-		elseif string.find(arg1, DBM_LEO_YELL_WHISPER) then
-			if (GetTime() - self.DemonSpam) > 5 then
-				if self.Options.DemonWarn then
-					self:Announce(DBM_LEO_WARN_DEMONS_NOW, 2);
-				end
-				if not self:GetStatusBarTimerTimeLeft("Inner Demons") then
-					self:StartStatusBarTimer(30, "Inner Demons", "Interface\\Icons\\Spell_Shadow_ManaFeed");
-				end
+local function showMCTargets()
+	warnMC:Show(table.concat(warnMCTargets, "<, >"))
+	table.wipe(warnMCTargets)
+end
+
+function mod:Chaos()
+	local target = mod:GetBossTarget(21215)
+	if(target == UnitName("player")) then
+		if self.Options.ChaosYellOpt then
+			SendChatMessage(L.ChaosYell, "YELL")
+		end
+		specWarnChaosYou:Show()
+	else
+		warnChaos:Show(target) 
+	end
+	timerChaos:Start(target)
+	if self.Options.ChaosIcon then
+		self:SetIcon(target, 1, 4)
+	end
+end
+
+function mod:OnCombatStart(delay)
+	self.vb.demonIcon = 8
+	self.vb.whirlCount = 0
+	timerPhase:Start(115, L.Demon)
+end
+
+function mod:OnCombatEnd(delay)
+	self.vb.binderKill = 0
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 37640 then
+		specWarnWhirl:Show()
+		-- specWarnWhirl:Play("justrun")
+		timerWhirl:Start()
+		if self.vb.phase ~= 2 then
+			self.vb.whirlCount = self.vb.whirlCount + 1
+			if self.vb.whirlCount < 3 then
+				timerWhirlCD:Start()
 			end
-		end
-		
-	elseif event == "NormalForm" then
-		self.Phase = "normal";
-		
-		self:Announce(DBM_LEO_WARN_NORMAL_PHASE, 3);
-		self:ScheduleSelf(40, "PhaseWarn");
-		self:EndStatusBarTimer("Normal Form");
-		self:EndStatusBarTimer("Demon Form");
-		self:StartStatusBarTimer(45, "Demon Form", "Interface\\Icons\\Spell_Shadow_Metamorphosis");
-		
-		self:StartStatusBarTimer(19, "Next Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
-		
-		self:ScheduleSelf(14, "WhirlWarn2");
-		
-	elseif event == "PhaseWarn" then
-		if self.Phase == "normal" then
-			self:Announce(DBM_LEO_WARN_DEMON_PHASE_SOON, 2);
-		elseif self.Phase == "demon" then
-			self:Announce(DBM_LEO_WARN_NORMAL_PHASE_SOON, 2);
-		end
-		
-	elseif event == "SPELL_AURA_APPLIED" then
-		if arg1.spellId == 37640 then -- ?
-			self:SendSync("GainWW");
-		elseif arg1.spellId == 37676 then
-			self:SendSync("Demon"..tostring(arg1.destName))
-		end
-		
-	elseif event == "SPELL_AURA_REMOVED" then
-		if arg1.spellId == 37640 then -- ?
-			self:SendSync("FadeWW");
-		end
-	
-	elseif event == "SPELL_CAST_START" then
-		if arg1.spellId == 37676 then
-			self.DemonSpam = GetTime();
-			if self.Options.DemonWarn then
-				self:Announce(DBM_LEO_WARN_DEMONS_INC, 1);
-			end
-			self:StartStatusBarTimer(32.5, "Inner Demons", "Interface\\Icons\\Spell_Shadow_ManaFeed");
-		end
-		
-	elseif event == "EnrageWarn" and type(arg1) == "number" then
-		if arg1 >= 60 then
-			self:Announce(string.format(DBM_LEO_WARN_ENRAGE, (arg1/60), DBM_MIN), 1);
 		else
-			self:Announce(string.format(DBM_LEO_WARN_ENRAGE, arg1, DBM_SEC), 3);
+			timerWhirlCD:Start()
 		end
+	elseif args:IsSpellID(37676, 85361) then -- 85361
+		warnDemonTargets[#warnDemonTargets + 1] = args.destName
+		self:Unschedule(showDemonTargets)
+		if self.Options.DemonIcon then
+			self:SetIcon(args.destName, self.vb.demonIcon)
+			self.vb.demonIcon = self.vb.demonIcon - 1
+		end
+		if args:IsPlayer() then
+			specWarnDemon:Show()
+			-- specWarnDemon:Play("targetyou")
+		end
+		if #warnDemonTargets >= 5 then
+			showDemonTargets(self)
+		else
+			self:Schedule(0.7, showDemonTargets, self)
+		end
+	elseif args:IsSpellID(37749, 85361) then -- 85361
+		warnMCTargets[#warnMCTargets + 1] = args.destName
+		self:Unschedule(showMCTargets)
+		self:Schedule(0.3, showMCTargets)
 
-	elseif event == "WhirlWarn" then
-		if self.Options.WhirlWarn then
-			self:Announce(DBM_LEO_WARN_WHIRL_SOON, 2);
-		end
-	elseif event == "WhirlWarn2" then
-		if self.Options.WhirlWarn then
-			self:Announce(DBM_LEO_WARN_WHIRL_SOON_2, 2);
-		end
-	elseif event == "WarnDemons" then
-		if self.Options.WarnDemons then
-			local targetString = "";
-			for i, v in ipairs(demonTargets) do
-				targetString = targetString..">"..v.."<, ";
-			end
-			self:Announce(DBM_LEO_WARN_DEMON_TARGETS:format(targetString:sub(0, -3)), 1);
-		end
-		demonTargets = {};
 	end
 end
 
-function Leotheras:OnSync(msg)
-	if msg == "GainWW" then
-		if self.Options.WhirlWarn then
-			self:Announce(DBM_LEO_WARN_WHIRL, 3);
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(85365, 351271, 351272, 351273) then
+		self:ScheduleMethod(0.3, "Chaos")
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
+		if args:IsPlayer() then
+			specWarnEvenYou:Show()
 		end
-		self:EndStatusBarTimer("Next Whirlwind");
-		self:StartStatusBarTimer(12, "Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
-		self:ScheduleMethod(12, "SendSync", "FadeWW");
-		
-	elseif msg == "FadeWW" and self.Phase ~= "demon" then
-		if self.Options.WhirlWarn then
-			self:Announce(DBM_LEO_WARN_WHIRL_FADED, 2);
-		end
-		if not self:GetStatusBarTimerTimeLeft("Demon Form") or self:GetStatusBarTimerTimeLeft("Demon Form") > 18 then
-			self:StartStatusBarTimer(20, "Next Whirlwind", "Interface\\Icons\\Ability_Whirlwind");
-			self:ScheduleSelf(15, "WhirlWarn");
-		end
-	elseif msg:sub(0, 5) == "Demon" then
-		msg = msg:sub(6);
-		if msg then
-			if self.Options.Announce and DBM.Rank >= 1 then
-				self:SendHiddenWhisper(DBM_LEO_WHISPER_INNER_DEMON, msg);
-			end
-			if msg == UnitName("player") then
-				self:AddSpecialWarning(DBM_LEO_SPECWARN_INNER_DEMON);
-			end
-			table.insert(demonTargets, msg);
-			self:UnScheduleSelf("WarnDemons");
-			self:ScheduleSelf(0.75, "WarnDemons");
+		warnEven:Show()
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.YellDemon or msg:find(L.YellDemon) then
+		warnPhase:Show(L.Demon)
+		timerWhirl:Cancel()
+		timerWhirlCD:Cancel()
+		timerPhase:Cancel()
+		timerDemonCD:Start()
+		timerPhase:Start(nil, L.Human)
+		self:Schedule(60, humanWarns, self)
+	elseif msg == L.YellPhase2 or msg:find(L.YellPhase2) then
+		self.vb.phase = 2
+		self:Unschedule(humanWarns)
+		timerPhase:Cancel()
+		timerWhirl:Cancel()
+		timerWhirlCD:Cancel()
+		timerDemonCD:Cancel()
+		warnPhase2:Show()
+		timerWhirlCD:Start(22.5)
+	end
+end
+
+function mod:UNIT_DIED(args)
+	local cId = self:GetCIDFromGUID(args.destGUID)
+	if cId == 21806 then
+		self.vb.binderKill = self.vb.binderKill + 1
+		if self.vb.binderKill == 3 and not self:IsInCombat() then
+			DBM:StartCombat(self, 0)
+			self.vb.demonIcon = 8
+			self.vb.whirlCount = 0
+			self.vb.phase = 1
+			table.wipe(warnMCTargets)
+			table.wipe(warnDemonTargets)
+			timerWhirlCD:Start(15)
+			timerPhase:Start(nil, L.Demon)
+			berserkTimer:Start()
 		end
 	end
 end
+
+--  351306 - Mind Flay
+--  351339 - Mind Flay - (Heroic)
+--  351340 - Mind Flay - (Mythic)
