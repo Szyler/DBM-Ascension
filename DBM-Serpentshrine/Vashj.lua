@@ -57,6 +57,8 @@ local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nat
 local timerMulti		= mod:NewNextTimer(15, 38310)
 local timerEnvenom		= mod:NewNextTimer(30, 351381)
 
+local berserkTimer		= mod:NewBerserkTimer(720)
+
 mod:AddBoolOption("RangeFrame", true)
 -- mod:AddBoolOption(L.ChargeIcon)
 mod:AddBoolOption(L.LootIcon)
@@ -111,6 +113,7 @@ function mod:OnCombatStart(delay)
 	if IsInGroup() and DBM:GetRaidRank() == 2 then
 		lootmethod = GetLootMethod()
 	end
+	berserkTimer:Start(-delay)
 end
 
 function mod:OnCombatEnd()

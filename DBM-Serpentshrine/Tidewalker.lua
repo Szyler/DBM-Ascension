@@ -24,12 +24,13 @@ local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
 
+local berserkTimer		= mod:NewBerserkTimer(600)
+
 mod:AddBoolOption("GraveIcon", true)
 
 local warnGraveTargets = {}
 local bubblespam = 0
 mod.vb.graveIcon = 8
-
 
 local function showGraveTargets()
 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
@@ -42,6 +43,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(warnGraveTargets)
 	timerGraveCD:Start(20-delay)
 	timerMurlocs:Start(41-delay)
+	berserkTimer:Start(-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)

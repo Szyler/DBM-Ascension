@@ -21,7 +21,7 @@ local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
 local timerHeal			= mod:NewNextTimer(30, 83535)
 local timerFreeze		= mod:NewCDTimer(18, 38357)
 
-local berserkTimer		= mod:NewBerserkTimer(600)
+local berserkTimer		= mod:NewBerserkTimer(720)
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)

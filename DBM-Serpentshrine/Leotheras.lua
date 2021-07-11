@@ -34,7 +34,7 @@ local timerDemonCD		= mod:NewCDTimer(23, 37676)
 local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
 local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
 
-local berserkTimer		= mod:NewBerserkTimer(600)
+local berserkTimer		= mod:NewBerserkTimer(720)
 
 mod:AddBoolOption(L.DemonIcon)
 mod:AddBoolOption(L.ChaosIcon)
