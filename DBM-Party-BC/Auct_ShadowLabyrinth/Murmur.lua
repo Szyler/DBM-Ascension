@@ -23,6 +23,7 @@ local specWarnTouch				= mod:NewSpecialWarningMove(38794)
 local timerNextTouch			= mod:NewNextTimer(27, 38794)
 local warnStorm					= mod:NewSpecialWarningMove(39365)
 local warnShock         		= mod:NewTargetAnnounce(38794)
+local timerNextShock			= mod:NewNextTimer(27, 38794) --TODO add correct timer. Current is placeholder
 
 local soundBoom = mod:NewSound(33923)
 mod:AddBoolOption("SetIconOnTouchTarget", true)
