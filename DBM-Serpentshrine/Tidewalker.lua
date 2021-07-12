@@ -17,9 +17,11 @@ local warnTidal			= mod:NewSpellAnnounce(37730, 3)
 -- local warnGrave			= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
 local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
+local warnShield		= mod:NewSpellAnnounce(83548, 4)
 
 local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs")
 
+local timerShield		= mod:NewNextTimer(10, 83548)
 local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
@@ -32,6 +34,9 @@ local warnMage			= mod:NewSpellAnnounce(83554, 3)
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 -- mod:AddBoolOption("GraveIcon", true)
+mod:AddBoolOption("HealerIcon")
+mod:AddBoolOption("WarriorIcon")
+mod:AddBoolOption("MageIcon")
 
 -- local warnGraveTargets = {}
 local bubblespam = 0
@@ -48,8 +53,9 @@ function mod:OnCombatStart(delay)
 	-- self.vb.graveIcon = 8
 	-- table.wipe(warnGraveTargets)
 	-- timerGraveCD:Start(20-delay)
-	timerMurlocs:Start(41-delay)
+	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
+	timerBubble:Start(-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -68,10 +74,17 @@ function mod:SPELL_AURA_APPLIED(args)
 	-- elseif
 	if args.spellId == 83544 then
 		warnHealer:Show()
-		self:SetIcon(args.sourceName, 8)
+		if self.Options.HealerIcon then
+			self:SetIcon(args.sourceName, 1)
+		end
 	elseif args.spellId == 83554 then
 		warnMage:Show()
-		self:SetIcon(args.sourceName, 8)
+		if self.Options.CasterIcon then
+			self:SetIcon(args.sourceName, 2)
+		end
+	elseif args.spellId == 83548 then
+		warnShield:Show()
+		timerShield:Start()
 	end
 end
 
@@ -89,14 +102,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
 		warriorAntiSpam = GetTime()
 		warnWarrior:Show()
-		self:SetIcon(args.sourceName, 8)
-	end
-end
-
-function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(37861, 37858) and bubblespam - GetTime() > 20 then
-		bubblespam = GetTime()
-		warnBubble:Show()
-		timerBubble:Start()
+		if self.Options.WarriorIcon then
+			self:SetIcon(args.sourceName, 3)
+		end
 	end
 end
