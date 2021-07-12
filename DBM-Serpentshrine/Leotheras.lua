@@ -10,9 +10,8 @@ mod:RegisterEvents(
 	"UNIT_DIED",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
-	-- "SPELL_CAST_SUCCESS",
-	"CHAT_MSG_MONSTER_YELL",
-	"SPELL_DAMAGE"
+	"SPELL_CAST_SUCCESS",
+	"CHAT_MSG_MONSTER_YELL"
 )
 
 local warnPhase			= mod:NewAnnounce("WarnPhase", 2)
@@ -137,9 +136,14 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
--- function mod:SPELL_CAST_SUCCESS(args)
-
--- end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(351200) then -- Tank swap (Even out the Odds) , 351201, 351202
+		if args:IsPlayer() then
+			specWarnEvenYou:Show()
+		end
+		warnEven:Show()
+	end
+end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellDemon or msg:find(L.YellDemon) then
@@ -159,15 +163,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerDemonCD:Cancel()
 		warnPhase2:Show()
 		timerWhirlCD:Start(22.5)
-	end
-end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
-		if args:IsPlayer() then
-			specWarnEvenYou:Show()
-		end
-		warnEven:Show()
 	end
 end
 
