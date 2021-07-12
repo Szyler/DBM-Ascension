@@ -8,7 +8,7 @@ mod:SetUsedIcons(5, 6, 7, 8)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_START",
+	-- "SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON"
 )
@@ -20,6 +20,7 @@ local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 
 local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs")
 
+local timerTidal		= mod:NewNextTimer(20, 37730)
 local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
@@ -62,14 +63,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(37730, 351345, 351346) then
-		warnTidal:Show()
-	end
-end
+-- function mod:SPELL_CAST_START(args)
+-- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 37764 then
+	if args:IsSpellID(37730, 351345, 351346) then
+		warnTidal:Show()
+		timerTidal:Start()
+	elseif args.spellId == 37764 then
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
 		timerMurlocs:Start()
