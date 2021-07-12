@@ -25,6 +25,10 @@ local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
 
+local warnHealer		= mod:NewSpellAnnounce(83544, 3)
+local warnWarrior		= mod:NewSpellAnnounce(83551, 3)
+local warnMage			= mod:NewSpellAnnounce(83554, 3)
+
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("GraveIcon", true)
@@ -32,6 +36,7 @@ mod:AddBoolOption("GraveIcon", true)
 local warnGraveTargets = {}
 local bubblespam = 0
 mod.vb.graveIcon = 8
+local warriorAntiSpam = 0
 
 local function showGraveTargets()
 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
@@ -60,6 +65,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			self:Schedule(0.3, showGraveTargets)
 		end
+	elseif args.spellId == 83544 then
+		warnHealer:Show()
+		self:SetIcon(args.sourceName, 7)
+	elseif args.spellId == 83554 then
+		warnMage:Show()
+		self:SetIcon(args.sourceName, 7)
 	end
 end
 
@@ -74,6 +85,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
 		timerMurlocs:Start()
+	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
+		warriorAntiSpam = GetTime()
+		warnWarrior:Show()
+		self:SetIcon(args.sourceName, 7)
 	end
 end
 
