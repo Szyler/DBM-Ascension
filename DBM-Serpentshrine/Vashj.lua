@@ -149,7 +149,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
-		if self.Options.AimedYellOpt then
+		if self.Options.AimedYellOpt and args:IsPlayer() then
 			SendChatMessage(L.AimedYell, "YELL")
 		end
 		if self.Options.AimedIcon then
