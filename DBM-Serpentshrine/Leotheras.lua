@@ -36,7 +36,7 @@ local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
 
 local berserkTimer		= mod:NewBerserkTimer(720)
 
-mod:AddBoolOption(L.DemonIcon)
+mod:AddBoolOption(L.DemonIcon, false)
 mod:AddBoolOption(L.ChaosIcon)
 mod:AddBoolOption(L.ChaosYellOpt)
 
@@ -110,7 +110,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnDemonTargets[#warnDemonTargets + 1] = args.destName
 		self:Unschedule(showDemonTargets)
 		if self.Options.DemonIcon then
-			self:SetIcon(args.destName, self.vb.demonIcon)
+			self:SetIcon(args.destName, self.vb.demonIcon, 30)
 			self.vb.demonIcon = self.vb.demonIcon - 1
 		end
 		if args:IsPlayer() then
