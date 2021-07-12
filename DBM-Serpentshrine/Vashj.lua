@@ -133,7 +133,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerChargeDmg:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			if self.Options.ChargeYellOpt then
+			if self.Options.ChargeYellOpt and args:IsPlayer() then
 				SendChatMessage(L.ChargeYell, "YELL")
 			end
 			if self.Options.RangeFrame then
