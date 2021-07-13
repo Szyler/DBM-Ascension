@@ -94,8 +94,10 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == 38235 then
 		timerNextTomb:Stop(args.destName)
+		timerNextTidal:AddTime(2)
 	elseif args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
+		timerNextTidal:AddTime(2)
 		-- timerMark:Start(16, markOfH, "10%")
 	end
 end
