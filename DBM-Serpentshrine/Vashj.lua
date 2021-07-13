@@ -98,6 +98,13 @@ function mod:EnchantressSpawn()
 	self:ScheduleMethod(45, "NagaSpawn")
 end
 
+local function warnChargeTargets()
+	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
+	timerCharge:Start()
+	timerChargeDmg:Start(args.destName)
+	table.wipe(ChargeTargets)
+end
+
 function mod:OnCombatStart(delay)
 	table.wipe(elementals)
 	self.vb.phase = 1
@@ -129,8 +136,9 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(38280, 351307) then
-		timerCharge:Start()
-		timerChargeDmg:Start(args.destName)
+		ChargeTargets[#ChargeTargets + 1] = args.destName
+		self:Unschedule(warnChargeTargets)
+		self:Schedule(0.3, warnChargeTargets)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
 			if self.Options.ChargeYellOpt and args:IsPlayer() then
@@ -139,8 +147,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10)
 			end
-		else
-			warnCharge:Show(args.destName)
 		end
 		-- if self.Options.ChargeIcon then
 		-- 	self:SetIcon(args.destName, 1, 20)
