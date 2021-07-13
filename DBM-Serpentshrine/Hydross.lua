@@ -21,8 +21,9 @@ local warnSludge		= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spa
 
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
-local timerTomb			= mod:NewNextTimer(30, 38235)
-local timerTidal		= mod:NewNextTimer(45, 85416)
+local timerNextTomb		= mod:NewNextTimer(30, 38235)
+local timerNextTidal	= mod:NewNextTimer(45, 85416)
+local timerTidal		= mod:NewNextTimer(5, 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
@@ -38,7 +39,7 @@ function mod:tidalWave(timer)
 	local timer = 0
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
-	timerTidal:Start()
+	timerNextTidal:Start()
 	self:ScheduleMethod(45-timer, "tidalWave")
 end
 
@@ -48,8 +49,8 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end
-	timerTomb:Start(10-delay)
-	timerTidal:Start(30-delay)
+	timerNextTomb:Start(10-delay)
+	timerNextTidal:Start(30-delay)
 	self:ScheduleMethod(30-delay, "tidalWave")
 end
 
@@ -60,9 +61,9 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 38235 then
+	if args:IsSpellID(38235, 351290, 351291) then
 		warnTomb:Show(args.destName)
-		timerTomb:Start()
+		timerNextTomb:Start()
 	elseif args.spellId == 38246 then
 		warnSludge:Show(args.destName)
 		timerSludge:Start(args.destName)
@@ -71,7 +72,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	-- 	timerMark:Start()
 	elseif args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
-		timerTomb:Stop()
+		timerNextTomb:Stop()
 		-- timerMark:Start(16, markOfC, "10%")
 	end
 end
@@ -92,7 +93,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == 38235 then
-		timerTomb:Stop(args.destName)
+		timerNextTomb:Stop(args.destName)
 	elseif args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
 		-- timerMark:Start(16, markOfH, "10%")
@@ -102,7 +103,12 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(85416, 351276, 351277) then     
 		specWarnTidal:Show()
+		timerNextTidal:Start()
 		timerTidal:Start()
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerTidal:Schedule(5)
+			timerTidal:Schedule(10)
+		end
 	end
 end
 
