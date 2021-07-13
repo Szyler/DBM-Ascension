@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21212)
 mod:RegisterCombat("combat", 21212)
-mod:SetUsedIcons(1)
+mod:SetUsedIcons(1,6,8)
 
 mod:RegisterCombat("combat")
 
@@ -40,7 +40,7 @@ local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
 -- local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
-local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
+-- local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
 local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
