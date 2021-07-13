@@ -19,7 +19,7 @@ local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
 
-local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs")
+local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
 local timerTidal		= mod:NewNextTimer(20, 37730)
@@ -27,9 +27,9 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
 
-local warnHealer		= mod:NewSpellAnnounce(83544, 3)
-local warnWarrior		= mod:NewSpellAnnounce(83551, 3)
-local warnMage			= mod:NewSpellAnnounce(83554, 3)
+local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
+local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
+local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 

@@ -138,9 +138,15 @@ L:SetOptionLocalization{
 	HealerIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
 	WarriorIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
 	HealerIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
+	WarnHealer		= "Show special warning when Healer spawns",
+	WarnWarrior		= "Show special warning when Warrior spawns",
+	WarnMage		= "Show special warning when Mage spawns",
 }
 
 L:SetMiscLocalization{
+	WarnHealer		= "Murlock Healer spawned!",
+	WarnWarrior		= "Murlock Warrior spawned!",
+	WarnMage		= "Murlock Mage spawned!",
 }
 
 -----------------
