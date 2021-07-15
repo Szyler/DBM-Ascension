@@ -46,6 +46,14 @@ function mod:tidalWave(timer)
 	self:ScheduleMethod(45-timer, "tidalWave")
 end
 
+function mod:tidalWaveAddTime()
+	local elapsed, total = timerNextTidal:GetTime();
+	local currentRemainingTidalTimer = total - elapsed
+	timerNextTidal:AddTime(2)
+	self:UnscheduleMethod("tidalWave")
+	self:ScheduleMethod(currentRemainingTidalTimer+2, "tidalWave")
+end
+
 function mod:OnCombatStart(delay)
 	-- timerMark:Start(16-delay, markOfH, "10%")
 	berserkTimer:Start(-delay)
@@ -78,7 +86,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
 		timerNextSludge:Start()
-		timerNextTidal:AddTime(2)
+		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfC, "10%")
 	end
 end
@@ -106,7 +114,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
 		timerNextTomb:Start()
-		timerNextTidal:AddTime(2)
+		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfH, "10%")
 	end
 end
@@ -120,13 +128,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerTidal:Schedule(5)
 			timerTidal:Schedule(10)
 		end
-	end
-end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(351276) and (GetTime() - lastTidalWave) > 10 then
-		lastTidalWave = GetTime()
-		self:tidalWave(4)--speed up the timer by 4 seconds due to the delay from visual to damage
 	end
 end
 
