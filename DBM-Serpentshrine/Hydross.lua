@@ -23,6 +23,7 @@ local warnTidalPower	= mod:NewAnnounce(L.WarnMark, 3, 351204)
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
 local timerNextTomb		= mod:NewNextTimer(30, 38235)
+local timerNextSludge	= mod:NewNextTimer(30, 38235)
 local timerNextTidal	= mod:NewNextTimer(45, 85416)
 local timerTidal		= mod:NewNextTimer(5, 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
@@ -66,15 +67,17 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(38235, 351290, 351291) then
 		warnTomb:Show(args.destName)
 		timerNextTomb:Start()
-	elseif args.spellId == 38246 then
+	elseif args:IsSpellID(38246, 351292, 351293) then
 		warnSludge:Show(args.destName)
 		timerSludge:Start(args.destName)
+		timerNextSludge:Start()
 	-- elseif args.spellId == 351203 then
 	-- 	timerMark:Cancel()
 	-- 	timerMark:Start()
 	elseif args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
+		timerNextSludge:Start()
 		timerNextTidal:AddTime(2)
 		-- timerMark:Start(16, markOfC, "10%")
 	end
