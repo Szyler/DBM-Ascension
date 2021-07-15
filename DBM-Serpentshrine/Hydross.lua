@@ -86,7 +86,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
-		timerNextSludge:Start()
+		timerNextSludge:Start(10)
 		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfC, "10%")
 	end
@@ -114,7 +114,8 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
-		timerNextTomb:Start()
+		timerNextSludge:Stop()
+		timerNextTomb:Start(10)
 		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfH, "10%")
 	end
