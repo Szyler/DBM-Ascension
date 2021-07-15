@@ -18,6 +18,7 @@ local warnPhase			= mod:NewAnnounce("WarnPhase", 4)
 local warnTomb			= mod:NewTargetAnnounce(38235, 3)
 local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
 local warnSludge		= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spammy?
+local warnTidalPower	= mod:NewAnnounce(L.WarnMark, 3, 351204)
 
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
@@ -31,6 +32,7 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 
 local lastMarkF = 0
 local lastMarkN = 0
+local lastTidalPower = 0
 -- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
 
 mod:AddBoolOption("RangeFrame", true)
@@ -78,15 +80,20 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if 	args:IsSpellID(	351203, 351286, 351287) then	-- Heroic: 351286, Mythic: 351287 --Hydros
+	if 	args:IsSpellID(351203, 351286, 351287) then	-- Heroic: 351286, Mythic: 351287 --Hydros
 		if args.amount and (GetTime() - lastMarkF) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
 			lastMarkF = GetTime()
 			warnMarkF:Show(args.amount, args.spellName)
 		end
-	elseif args:IsSpellID(	351204, 351288, 351289) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
+	elseif args:IsSpellID(351204, 351288, 351289) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
 		if args.amount and (GetTime() - lastMarkN) > 2 and args.amount >= 10 and args.amount % 5 == 0 then
 			lastMarkN = GetTime()
 			warnMarkN:Show(args.amount, args.spellName)
+		end
+	elseif args:IsSpellID(85413) then   	-- Heroic: 351288, Mythic: 351289 --Corruption
+		if args.amount and (GetTime() - lastTidalPower) > 2 and args.amount >= 75 and args.amount % 5 == 0 then
+			lastTidalPower = GetTime()
+			warnTidalPower:Show(args.amount, args.spellName)
 		end
 	end
 end

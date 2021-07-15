@@ -11,6 +11,7 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnMark 		= "%s : %s",
+	WarnTidalPower	= "%s : %s",
 	WarnPhase		= "%s Phase",
 	SpecWarnMark	= "%s : %s"
 }
@@ -21,6 +22,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnMark		= "Show warning for Marks",
+	WarnTidalPower	= "Show warning for $spell:85413",
 	WarnPhase		= "Show warning for next phase",
 	SpecWarnMark	= "Show warning when Marks debuff damage over 100%",
 	TimerMark		= "Show timer for next Marks"
