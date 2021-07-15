@@ -25,7 +25,9 @@ local warnTidalPower	= mod:NewAnnounce(L.WarnMark, 3, 351204)
 local timerNextTomb		= mod:NewNextTimer(30, 38235)
 local timerNextSludge	= mod:NewNextTimer(30, 38235)
 local timerNextTidal	= mod:NewNextTimer(45, 85416)
-local timerTidal		= mod:NewNextTimer(5, 85416)
+local timerTidal1		= mod:NewTimer(6, "Tidal Wave (1)", 85416)
+local timerTidal2		= mod:NewTimer(6, "Tidal Wave (2)", 85416)
+local timerTidal3		= mod:NewTimer(6, "Tidal Wave (3)", 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
@@ -43,6 +45,11 @@ function mod:tidalWave(timer)
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerNextTidal:Start()
+	timerTidal1:Start()
+	if mod:IsDifficulty("heroic10", "heroic25") then
+		timerTidal2:Schedule(3)
+		timerTidal3:Schedule(6)
+	end
 	self:ScheduleMethod(45-timer, "tidalWave")
 end
 
