@@ -3182,6 +3182,64 @@ do
 		return barGroup:UpdateBar(id, elapsed, totalTime)
 	end
 
+	function timerPrototype:AddTime(extendAmount, ...)
+		if DBM.Options.DontShowBossTimers then return end
+		if self:GetTime(...) == 0 then
+			return self:Start(extendAmount, ...)
+		else
+			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
+			local bar = DBM.Bars:GetBar(id)
+			if bar then
+				local elapsed, total = (bar.totalTime - bar.timer), bar.totalTime
+				if elapsed and total then
+					if bar.countdown then
+						DBM:Unschedule(playCountSound, id)
+						if not bar.fade then--Don't start countdown voice if it's faded bar
+							local newRemaining = (total+extendAmount) - elapsed
+							playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
+							DBM:Debug("Updating a countdown after a timer AddTime call for timer ID:"..id)
+						end
+					end
+					fireEvent("DBM_TimerUpdate", id, elapsed, total+extendAmount)
+					return DBM.Bars:UpdateBar(id, elapsed, total+extendAmount)
+				end
+			end
+		end
+	end
+
+	function timerPrototype:RemoveTime(reduceAmount, ...)
+		if DBM.Options.DontShowBossTimers then return end
+		if self:GetTime(...) == 0 then
+			return--Do nothing
+		else
+			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
+			local bar = DBM.Bars:GetBar(id)
+			if bar then
+				local elapsed, total = (bar.totalTime - bar.timer), bar.totalTime
+				if elapsed and total then
+					local newRemaining = (total-reduceAmount) - elapsed
+					if newRemaining > 0 then
+						if bar.countdown and newRemaining > 2 then
+							DBM:Unschedule(playCountSound, id)
+							if not bar.fade then--Don't start countdown voice if it's faded bar
+								playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
+								DBM:Debug("Updating a countdown after a timer RemoveTime call for timer ID:"..id)
+							end
+						end
+						fireEvent("DBM_TimerUpdate", id, elapsed, total-reduceAmount)
+						return DBM.Bars:UpdateBar(id, elapsed, total-reduceAmount)
+					else--New remaining less than 0
+						if bar.countdown then
+							DBM:Unschedule(playCountSound, id)
+						end
+						fireEvent("DBM_TimerStop", id)
+						return DBM.Bars:CancelBar(id)
+					end
+				end
+			end
+		end
+	end
+
 	function timerPrototype:UpdateIcon(icon, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 		local barGroup = self.mod.barGroup or DBM.Bars;
