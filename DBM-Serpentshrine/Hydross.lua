@@ -100,9 +100,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 38235 then
-		timerNextTomb:Stop(args.destName)
-	elseif args:IsSpellID(351279) then -- Losing Corruption transform on boss
+	if args:IsSpellID(351279) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
 		timerNextTomb:Start()
 		timerNextTidal:AddTime(2)
