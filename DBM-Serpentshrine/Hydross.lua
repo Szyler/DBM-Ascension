@@ -124,11 +124,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85416, 351276, 351277) then     
-		specWarnTidal:Show()
-		timerNextTidal:Start()
-		timerTidal:Start()
-	elseif args:IsSpellID(38235, 351290, 351291) then
+	if args:IsSpellID(38235, 351290, 351291) then
 		warnTomb:Show(args.destName)
 		timerNextTomb:Start()
 	elseif args:IsSpellID(38246, 351292, 351293) then
