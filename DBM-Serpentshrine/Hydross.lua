@@ -79,17 +79,11 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(38235, 351290, 351291) then
-		warnTomb:Show(args.destName)
-		timerNextTomb:Start()
-	elseif args:IsSpellID(38246, 351292, 351293) then
-		warnSludge:Show(args.destName)
-		timerSludge:Start(args.destName)
-		timerNextSludge:Start()
+
 	-- elseif args.spellId == 351203 then
 	-- 	timerMark:Cancel()
 	-- 	timerMark:Start()
-	elseif args:IsSpellID(37961) then -- Corruption transform on boss
+	if args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
 		timerNextSludge:Start()
@@ -131,10 +125,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnTidal:Show()
 		timerNextTidal:Start()
 		timerTidal:Start()
-		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerTidal:Schedule(5)
-			timerTidal:Schedule(10)
-		end
+	elseif args:IsSpellID(38235, 351290, 351291) then
+		warnTomb:Show(args.destName)
+		timerNextTomb:Start()
+	elseif args:IsSpellID(38246, 351292, 351293) then
+		warnSludge:Show(args.destName)
+		timerSludge:Start(args.destName)
+		timerNextSludge:Start()
 	end
 end
 
