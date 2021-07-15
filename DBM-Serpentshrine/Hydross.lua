@@ -22,8 +22,8 @@ local warnTidalPower	= mod:NewAnnounce(L.WarnMark, 3, 351204)
 
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
-local timerNextTomb		= mod:NewNextTimer(30, 38235)
-local timerNextSludge	= mod:NewNextTimer(30, 38235)
+local timerNextTomb		= mod:NewNextTimer(45, 38235)
+local timerNextSludge	= mod:NewNextTimer(45, 38246)
 local timerNextTidal	= mod:NewNextTimer(45, 85416)
 local timerTidal1		= mod:NewTimer(6, "Tidal Wave (1)", 85416)
 local timerTidal2		= mod:NewTimer(6, "Tidal Wave (2)", 85416)
