@@ -48,7 +48,9 @@ function mod:tidalWave(timer)
 	timerTidal1:Start()
 	if mod:IsDifficulty("heroic10", "heroic25") then
 		timerTidal2:Schedule(3)
+		specWarnTidal:Schedule(3)
 		timerTidal3:Schedule(6)
+		specWarnTidal:Schedule(6)
 	end
 	self:ScheduleMethod(45-timer, "tidalWave")
 end
