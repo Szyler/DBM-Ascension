@@ -18,6 +18,7 @@ local warnTidal			= mod:NewSpellAnnounce(37730, 3)
 local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
+local WarnFreezing		= mod:NewSpellAnnounce("Freezing Bubble", 4)
 
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
@@ -26,6 +27,7 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
+local timerFreezing		= mod:NewNextTimer(30, "Freezing Bubble")
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
@@ -56,6 +58,7 @@ function mod:OnCombatStart(delay)
 	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
 	timerBubble:Start(-delay)
+	timerFreezing:Start(20-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -106,4 +109,19 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self:SetIcon(args.sourceName, 3)
 		end
 	end
+end
+function mod:FreezingBubble(timer)
+	local timer = 0
+	self:UnscheduleMethod("Freezing Bubble")
+	WarnFreezing:Show()
+	timerFreezing:Start()
+	self:ScheduleMethod(30-timer, "Freezing Bubble")
+end
+
+function mod:FreezingBubbleAddTime()
+	local elapsed, total = timerFreezing:GetTime();
+	local CurrentFreezingBubbleTimer = total - elapsed
+	timerFreezing:AddTime(2)
+	self:UnscheduleMethod("Freezing Bubble")
+	self:ScheduleMethod(CurrentFreezingBubbleTimer+2, "Freezing Bubble")
 end
