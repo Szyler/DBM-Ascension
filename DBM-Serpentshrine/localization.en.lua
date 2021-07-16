@@ -126,23 +126,28 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	SpecWarnMurlocs	= "Murlocs Coming!"
+	SpecWarnMurlocs			= "Murlocs Coming!",
+	WarnFreezingBubble		= "Water Globule spawned!",
 }
 
 L:SetTimerLocalization{
-	TimerMurlocs	= "Murlocs"
+	TimerMurlocs			= "Murlocs",
+	TimerFreezingBubble 	= "Next Water Globule",
 }
 
 L:SetOptionLocalization{
-	SpecWarnMurlocs	= "Show special warning when Murlocs spawning",
-	TimerMurlocs	= "Show timer for Murlocs spawning",
+	SpecWarnMurlocs		= "Show special warning when Murlocs spawning",
+	TimerMurlocs		= "Show timer for Murlocs spawning",
 	-- GraveIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38049),
-	HealerIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
-	WarriorIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
-	HealerIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
-	WarnHealer		= "Show special warning when Healer spawns",
-	WarnWarrior		= "Show special warning when Warrior spawns",
-	WarnMage		= "Show special warning when Mage spawns",
+	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
+	WarriorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
+	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
+	WarnHealer			= "Show special warning when Healer spawns",
+	WarnWarrior			= "Show special warning when Warrior spawns",
+	WarnMage			= "Show special warning when Mage spawns",
+	WarnFreezingBubble	= "Show special warning when Water Globule spawns",
+	TimerFreezingBubble = "Show timer for when Water Globule spawns",
+	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
 }
 
 L:SetMiscLocalization{

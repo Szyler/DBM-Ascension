@@ -14,11 +14,11 @@ mod:RegisterEvents(
 )
 
 local warnTidal			= mod:NewSpellAnnounce(37730, 3)
--- local warnGrave			= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
-local warnBubble		= mod:NewSpellAnnounce(37854, 4)
+-- local warnGrave		= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
+-- local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
-local WarnFreezing		= mod:NewSpellAnnounce("Freezing Bubble", 4)
+local WarnFreezing		= mod:NewAnnounce("WarnFreezingBubble", 4)
 
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
@@ -27,7 +27,7 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
-local timerFreezing		= mod:NewNextTimer(30, "Freezing Bubble")
+local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble")
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
@@ -36,6 +36,7 @@ local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 -- mod:AddBoolOption("GraveIcon", true)
+mod:AddBoolOption("RisingBubbleIcon")
 mod:AddBoolOption("HealerIcon")
 mod:AddBoolOption("WarriorIcon")
 mod:AddBoolOption("MageIcon")
@@ -59,6 +60,7 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerBubble:Start(-delay)
 	timerFreezing:Start(20-delay)
+	self:ScheduleMethod(20,"FreezingBubble");
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -110,18 +112,21 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	end
 end
-function mod:FreezingBubble(timer)
-	local timer = 0
-	self:UnscheduleMethod("Freezing Bubble")
+
+function mod:FreezingBubble()
+	self:UnscheduleMethod("FreezingBubble")
 	WarnFreezing:Show()
 	timerFreezing:Start()
-	self:ScheduleMethod(30-timer, "Freezing Bubble")
+	self:ScheduleMethod(30,"FreezingBubble")
 end
 
-function mod:FreezingBubbleAddTime()
-	local elapsed, total = timerFreezing:GetTime();
-	local CurrentFreezingBubbleTimer = total - elapsed
-	timerFreezing:AddTime(2)
-	self:UnscheduleMethod("Freezing Bubble")
-	self:ScheduleMethod(CurrentFreezingBubbleTimer+2, "Freezing Bubble")
+function mod:RisingBubble()
+	self:UnscheduleMethod("RisingBubble")
+	local risingBubble    =self:GetUnitCreatureId(14481)
+	WarnFreezing:Show()
+	if self.Options.RisingBubble then
+		self:SetIcon(risingBubble, 8)
+	end
+	timerFreezing:Start()
+	self:ScheduleMethod(30,"RisingBubble")
 end
