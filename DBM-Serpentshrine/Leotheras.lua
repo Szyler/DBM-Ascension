@@ -57,7 +57,6 @@ local function humanWarns(self)
 	timerPhase:Start(nil, L.Demon)
 end
 
-
 --local function showDemonTargets(self)
 --	warnDemon:Show(table.concat(warnDemonTargets, "<, >"))
 --	table.wipe(warnDemonTargets)
@@ -75,7 +74,7 @@ function mod:Chaos()
     local myName = UnitName("player")
     if target == myName then
 		if self.Options.ChaosYellOpt then
-			SendChatMessage(L.ChaosYell, "YELL")
+			SendChatMessage(UnitName("PLAYER"), "YELL");
 		end
 		specWarnChaosYou:Show()
 	else
