@@ -148,8 +148,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_MAG_YELL_PHASE2 then
 		timerQuake:Cancel()
 		timerNova:Cancel()
-		timerNextFingerofDeath:Cancel()
-		timerNextHandofDeath:Cancel()
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextFingerofDeath:Cancel()
+			timerNextHandofDeath:Cancel()
+		end
 		timerPhaseTwo:Cancel()
 		self.vb.phase = 2
 
