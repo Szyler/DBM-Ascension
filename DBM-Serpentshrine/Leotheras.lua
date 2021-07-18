@@ -127,6 +127,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- self:Schedule(0.3, showMCTargets)
 
 	-- end
+	end
 end
 
 function mod:SPELL_CAST_START(args)
