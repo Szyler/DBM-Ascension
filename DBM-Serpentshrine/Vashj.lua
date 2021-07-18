@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21212)
 mod:RegisterCombat("combat", 21212)
-mod:SetUsedIcons(1)
+mod:SetUsedIcons(1,6,8)
 
 mod:RegisterCombat("combat")
 
@@ -29,7 +29,7 @@ local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4)
 --local warnShield		= mod:NewAnnounce("WarnShield", 3)
 
 local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
-local warnLootYou		= mod:NewSpecialWarningYou("WarnLootYou", 4)
+local warnLootYou		= mod:NewSpecialWarningYou(38132)
 
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
@@ -40,7 +40,7 @@ local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
 -- local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
-local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
+-- local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
 local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
@@ -56,6 +56,8 @@ local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spe
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerMulti		= mod:NewNextTimer(15, 38310)
 local timerEnvenom		= mod:NewNextTimer(30, 351381)
+
+local berserkTimer		= mod:NewBerserkTimer(720)
 
 mod:AddBoolOption("RangeFrame", true)
 -- mod:AddBoolOption(L.ChargeIcon)
@@ -96,6 +98,13 @@ function mod:EnchantressSpawn()
 	self:ScheduleMethod(45, "NagaSpawn")
 end
 
+local function warnChargeTargets()
+	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
+	timerCharge:Start()
+	timerChargeDmg:Start(args.destName)
+	table.wipe(ChargeTargets)
+end
+
 function mod:OnCombatStart(delay)
 	table.wipe(elementals)
 	self.vb.phase = 1
@@ -111,6 +120,7 @@ function mod:OnCombatStart(delay)
 	if IsInGroup() and DBM:GetRaidRank() == 2 then
 		lootmethod = GetLootMethod()
 	end
+	berserkTimer:Start(-delay)
 end
 
 function mod:OnCombatEnd()
@@ -126,18 +136,17 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(38280, 351307) then
-		timerCharge:Start()
-		timerChargeDmg:Start(args.destName)
+		ChargeTargets[#ChargeTargets + 1] = args.destName
+		self:Unschedule(warnChargeTargets)
+		self:Schedule(0.3, warnChargeTargets)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			if self.Options.ChargeYellOpt then
+			if self.Options.ChargeYellOpt and args:IsPlayer() then
 				SendChatMessage(L.ChargeYell, "YELL")
 			end
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10)
 			end
-		else
-			warnCharge:Show(args.destName)
 		end
 		-- if self.Options.ChargeIcon then
 		-- 	self:SetIcon(args.destName, 1, 20)
@@ -146,7 +155,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerAimedShot:Start()
-		if self.Options.AimedYellOpt then
+		if self.Options.AimedYellOpt and args:IsPlayer() then
 			SendChatMessage(L.AimedYell, "YELL")
 		end
 		if self.Options.AimedIcon then

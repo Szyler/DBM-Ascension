@@ -11,6 +11,7 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnMark 		= "%s : %s",
+	WarnTidalPower	= "%s : %s",
 	WarnPhase		= "%s Phase",
 	SpecWarnMark	= "%s : %s"
 }
@@ -21,6 +22,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnMark		= "Show warning for Marks",
+	WarnTidalPower	= "Show warning for $spell:85413",
 	WarnPhase		= "Show warning for next phase",
 	SpecWarnMark	= "Show warning when Marks debuff damage over 100%",
 	TimerMark		= "Show timer for next Marks"
@@ -124,20 +126,34 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	SpecWarnMurlocs	= "Murlocs Coming!"
+	SpecWarnMurlocs			= "Murlocs Coming!",
+	WarnFreezingBubble		= "Water Globule spawned!",
 }
 
 L:SetTimerLocalization{
-	TimerMurlocs	= "Murlocs"
+	TimerMurlocs			= "Murlocs",
+	TimerFreezingBubble 	= "Next Water Globule",
 }
 
 L:SetOptionLocalization{
-	SpecWarnMurlocs	= "Show special warning when Murlocs spawning",
-	TimerMurlocs	= "Show timer for Murlocs spawning",
-	GraveIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38049)
+	SpecWarnMurlocs		= "Show special warning when Murlocs spawning",
+	TimerMurlocs		= "Show timer for Murlocs spawning",
+	-- GraveIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(38049),
+	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
+	WarriorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
+	MageIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
+	WarnHealer			= "Show special warning when Healer spawns",
+	WarnWarrior			= "Show special warning when Warrior spawns",
+	WarnMage			= "Show special warning when Mage spawns",
+	WarnFreezingBubble	= "Show special warning when Water Globule spawns",
+	TimerFreezingBubble = "Show timer for when Water Globule spawns",
+	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
 }
 
 L:SetMiscLocalization{
+	WarnHealer		= "Murlock Healer spawned!",
+	WarnWarrior		= "Murlock Warrior spawned!",
+	WarnMage		= "Murlock Mage spawned!",
 }
 
 -----------------
@@ -156,7 +172,7 @@ L:SetWarningLocalization{
 	WarnEnchantress		= "Enchantress Soon (%s)",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
-	WarnLootYou			= "Tainted Core on YOU",
+	-- WarnLootYou			= "Tainted Core on YOU",
 	SpecWarnElemental	= "Tainted Elemental - Switch!"
 }
 

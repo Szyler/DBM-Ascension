@@ -8,76 +8,125 @@ mod:SetUsedIcons(5, 6, 7, 8)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_START",
+	-- "SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON"
 )
 
 local warnTidal			= mod:NewSpellAnnounce(37730, 3)
-local warnGrave			= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
-local warnBubble		= mod:NewSpellAnnounce(37854, 4)
+-- local warnGrave		= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
+-- local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
+local warnShield		= mod:NewSpellAnnounce(83548, 4)
+local WarnFreezing		= mod:NewAnnounce("WarnFreezingBubble", 4)
 
-local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs")
+local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
-local timerGraveCD		= mod:NewCDTimer(20, 38049)
+local timerShield		= mod:NewNextTimer(10, 83548)
+local timerTidal		= mod:NewNextTimer(20, 37730)
+-- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
+local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble")
 
-mod:AddBoolOption("GraveIcon", true)
+local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
+local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
+local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
 
-local warnGraveTargets = {}
+local berserkTimer		= mod:NewBerserkTimer(600)
+
+-- mod:AddBoolOption("GraveIcon", true)
+mod:AddBoolOption("RisingBubbleIcon")
+mod:AddBoolOption("HealerIcon")
+mod:AddBoolOption("WarriorIcon")
+mod:AddBoolOption("MageIcon")
+
+-- local warnGraveTargets = {}
 local bubblespam = 0
-mod.vb.graveIcon = 8
+local warriorAntiSpam = 0
+-- mod.vb.graveIcon = 8
 
-
-local function showGraveTargets()
-	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
-	table.wipe(warnGraveTargets)
-	timerGraveCD:Show()
-end
+-- local function showGraveTargets()
+-- 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
+-- 	table.wipe(warnGraveTargets)
+-- 	timerGraveCD:Show()
+-- end
 
 function mod:OnCombatStart(delay)
-	self.vb.graveIcon = 8
-	table.wipe(warnGraveTargets)
-	timerGraveCD:Start(20-delay)
-	timerMurlocs:Start(41-delay)
+	-- self.vb.graveIcon = 8
+	-- table.wipe(warnGraveTargets)
+	-- timerGraveCD:Start(20-delay)
+	timerMurlocs:Start(28-delay)
+	berserkTimer:Start(-delay)
+	timerBubble:Start(-delay)
+	timerFreezing:Start(20-delay)
+	self:ScheduleMethod(20,"FreezingBubble");
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(37850, 38023, 38024, 38025, 38049) then
-		warnGraveTargets[#warnGraveTargets + 1] = args.destName
-		self:Unschedule(showGraveTargets)
-		if self.Options.GraveIcon then
-			self:SetIcon(args.destName, self.vb.graveIcon)
+	-- if args:IsSpellID(38049) then --37850, 38023, 38024, 38025, -- Not used on Ascension
+	-- 	warnGraveTargets[#warnGraveTargets + 1] = args.destName
+	-- 	self:Unschedule(showGraveTargets)
+	-- 	if self.Options.GraveIcon then
+	-- 		self:SetIcon(args.destName, self.vb.graveIcon)
+	-- 	end
+	-- 	self.vb.graveIcon = self.vb.graveIcon - 1
+	-- 	if #warnGraveTargets >= 4 then
+	-- 		showGraveTargets()
+	-- 	else
+	-- 		self:Schedule(0.3, showGraveTargets)
+	-- 	end
+	-- elseif
+	if args.spellId == 83544 then
+		warnHealer:Show()
+		if self.Options.HealerIcon then
+			self:SetIcon(args.sourceName, 1)
 		end
-		self.vb.graveIcon = self.vb.graveIcon - 1
-		if #warnGraveTargets >= 4 then
-			showGraveTargets()
-		else
-			self:Schedule(0.3, showGraveTargets)
+	elseif args.spellId == 83554 then
+		warnMage:Show()
+		if self.Options.CasterIcon then
+			self:SetIcon(args.sourceName, 2)
 		end
+	elseif args.spellId == 83548 then
+		warnShield:Show()
+		timerShield:Start()
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(37730, 351345, 351346) then
-		warnTidal:Show()
-	end
-end
+-- function mod:SPELL_CAST_START(args)
+-- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 37764 then
+	if args:IsSpellID(37730, 351345, 351346) then
+		warnTidal:Show()
+		timerTidal:Start()
+	elseif args.spellId == 37764 then
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
 		timerMurlocs:Start()
+	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
+		warriorAntiSpam = GetTime()
+		warnWarrior:Show()
+		if self.Options.WarriorIcon then
+			self:SetIcon(args.sourceName, 3)
+		end
 	end
 end
 
-function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(37861, 37858) and bubblespam - GetTime() > 20 then
-		bubblespam = GetTime()
-		warnBubble:Show()
-		timerBubble:Start()
+function mod:FreezingBubble()
+	self:UnscheduleMethod("FreezingBubble")
+	WarnFreezing:Show()
+	timerFreezing:Start()
+	self:ScheduleMethod(30,"FreezingBubble")
+end
+
+function mod:RisingBubble()
+	self:UnscheduleMethod("RisingBubble")
+	local risingBubble    =self:GetUnitCreatureId(14481)
+	WarnFreezing:Show()
+	if self.Options.RisingBubble then
+		self:SetIcon(risingBubble, 8)
 	end
+	timerFreezing:Start()
+	self:ScheduleMethod(30,"RisingBubble")
 end

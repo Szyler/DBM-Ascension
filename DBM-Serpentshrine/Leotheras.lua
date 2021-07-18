@@ -35,7 +35,7 @@ local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
 local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
 local timerEvenCD		= mod:NewCDTimer(32, 351201)
 
-local berserkTimer		= mod:NewBerserkTimer(600)
+local berserkTimer		= mod:NewBerserkTimer(720)
 
 --mod:AddBoolOption(L.DemonIcon)
 mod:AddBoolOption(L.ChaosIcon)
@@ -70,8 +70,9 @@ end
 -- end
 
 function mod:Chaos()
-	local target = mod:GetBossTarget(21215)
-	if(target == UnitName("player")) then
+    local target = mod:GetBossTarget(21215)
+    local myName = UnitName("player")
+    if target == myName then
 		if self.Options.ChaosYellOpt then
 			SendChatMessage(UnitName("PLAYER"), "YELL");
 		end
@@ -136,7 +137,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(351201, 351202) then -- Tank swap (Even out the Odds)
+	if args:IsSpellID(351200) then -- Tank swap (Even out the Odds) , 351201, 351202
 		if args:IsPlayer() then
 			specWarnEvenYou:Show()
 		end
