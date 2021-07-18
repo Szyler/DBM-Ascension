@@ -17,27 +17,29 @@ mod:RegisterEvents(
 local warnBoom          		= mod:NewCastAnnounce(33923)
 local timerBoomCast     		= mod:NewCastTimer(5, 33923)
 local timerNextBoom     		= mod:NewNextTimer(45, 33923)
+local timerNextPull     		= mod:NewNextTimer(45, 33923)
 local warnTouch         		= mod:NewTargetAnnounce(38794)
 local timerTouch        		= mod:NewTargetTimer(7, 38794)
 local specWarnTouch				= mod:NewSpecialWarningMove(38794)
 local timerNextTouch			= mod:NewNextTimer(27, 38794)
 local warnStorm					= mod:NewSpecialWarningMove(39365)
 local warnShock         		= mod:NewTargetAnnounce(38794)
-local timerNextShock			= mod:NewNextTimer(27, 38794) --TODO add correct timer. Current is placeholder
+local timerNextShock			= mod:NewNextTimer(60, 38794)
 
-local soundBoom = mod:NewSound(33923)
 mod:AddBoolOption("SetIconOnTouchTarget", true)
 
 function mod:OnCombatStart(delay)
-	timerNextShock:Start(12-delay)
-	timerNextTouch:Start(20-delay)
+	timerNextShock:Start(18-delay)
+	timerNextTouch:Start(10-delay)
+	timerNextBoom:Start(34-delay)
+	timerNextPull:Start(30-delay)
 end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 33923 or args.spellId == 38796 then
 		warnBoom:Show()
 		timerBoomCast:Start()
-		soundBoom:Play()
+		timerNextBoom:Start()
 	end
 end
 
