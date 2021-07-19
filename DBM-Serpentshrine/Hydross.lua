@@ -88,6 +88,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextTomb:Stop()
 		if LastTombSludge > 45 then
 			timerNextSludge:Start(12)
+		else
+			timerNextSludge:Start(42)
 		end
 		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfC, "10%")
@@ -119,6 +121,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerNextSludge:Stop()
 		if LastTombSludge > 45 then
 			timerNextTomb:Start(12)
+		else
+			timerNextTomb:Start(42)
 		end
 		self:tidalWaveAddTime()
 		-- timerMark:Start(16, markOfH, "10%")
