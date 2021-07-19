@@ -103,7 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnWhirl:Show()
 		-- specWarnWhirl:Play("justrun")
 		timerWhirl:Start()
-		if self.vb.phase = 2 then
+		if self.vb.phase == 2 then
 			timerWhirlCD:Start()
 		end
 	-- elseif args:IsSpellID(37676, 85361) then -- 85361
@@ -128,6 +128,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- self:Schedule(0.3, showMCTargets)
 
 	-- end
+	end
 end
 
 function mod:SPELL_CAST_START(args)
