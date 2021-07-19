@@ -20,6 +20,7 @@ local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
 local WarnFreezing		= mod:NewAnnounce("WarnFreezingBubble", 4)
 
+local warnRising		= mod:NewSpecialWarning("WarnRisingBubble",3)
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
@@ -28,6 +29,7 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerBubble		= mod:NewNextTimer(30, 37858)
 local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble")
+local timerRising		= mod:NewNextTimer(30, 83561)
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
@@ -61,6 +63,8 @@ function mod:OnCombatStart(delay)
 	timerBubble:Start(-delay)
 	timerFreezing:Start(20-delay)
 	self:ScheduleMethod(20,"FreezingBubble");
+	timerRising:Start(-delay)
+	self:ScheduleMethod(30,"RisingBubble");
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -123,10 +127,10 @@ end
 function mod:RisingBubble()
 	self:UnscheduleMethod("RisingBubble")
 	local risingBubble    =self:GetUnitCreatureId(14481)
-	WarnFreezing:Show()
+	warnRising:Show()
 	if self.Options.RisingBubble then
 		self:SetIcon(risingBubble, 8)
 	end
-	timerFreezing:Start()
+	timerRising:Start()
 	self:ScheduleMethod(30,"RisingBubble")
 end

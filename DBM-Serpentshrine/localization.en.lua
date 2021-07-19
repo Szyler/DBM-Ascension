@@ -127,12 +127,14 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
+	WarnRisingBubble		= "Rising Bubble spawned!",
 	WarnFreezingBubble		= "Water Globule spawned!",
 }
 
 L:SetTimerLocalization{
 	TimerMurlocs			= "Murlocs",
 	TimerFreezingBubble 	= "Next Water Globule",
+	TimerRisingBubble	 	= "Next Rising Bubble",
 }
 
 L:SetOptionLocalization{
@@ -145,8 +147,10 @@ L:SetOptionLocalization{
 	WarnHealer			= "Show special warning when Healer spawns",
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
-	WarnFreezingBubble	= "Show special warning when Water Globule spawns",
+	WarnFreezingBubble	= "Show warning when Water Globule spawns",
 	TimerFreezingBubble = "Show timer for when Water Globule spawns",
+	WarnRisingBubble	= "Show special warning when Rsing Bubble spawns",
+	TimerRisingBubble	= "Show timer for when Water Globule spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
 }
 
