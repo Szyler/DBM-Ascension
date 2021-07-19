@@ -40,8 +40,7 @@ local lastTidalPower = 0
 
 mod:AddBoolOption("RangeFrame", true)
 
-function mod:tidalWave(timer)
-	local timer = 0
+function mod:tidalWave()
 	self:UnscheduleMethod("tidalWave")
 	specWarnTidal:Show()
 	timerNextTidal:Start()
@@ -52,7 +51,7 @@ function mod:tidalWave(timer)
 		timerTidal3:Schedule(6)
 		specWarnTidal:Schedule(6)
 	end
-	self:ScheduleMethod(45-timer, "tidalWave")
+	self:ScheduleMethod(45, "tidalWave")
 end
 
 function mod:tidalWaveAddTime()
@@ -81,7 +80,6 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-
 	-- elseif args.spellId == 351203 then
 	-- 	timerMark:Cancel()
 	-- 	timerMark:Start()
