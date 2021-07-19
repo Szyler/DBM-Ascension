@@ -142,7 +142,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if args:IsPlayer() then
 			specWarnEvenYou:Show()
 		end
-		warnEven:Show()
+		warnEven:Show(args.destName)
 		timerEvenCD:Start()
 	end
 end
