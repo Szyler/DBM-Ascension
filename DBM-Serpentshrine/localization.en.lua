@@ -149,8 +149,8 @@ L:SetOptionLocalization{
 	WarnMage			= "Show special warning when Mage spawns",
 	WarnFreezingBubble	= "Show warning when Water Globule spawns",
 	TimerFreezingBubble = "Show timer for when Water Globule spawns",
-	WarnRisingBubble	= "Show special warning when Rsing Bubble spawns",
-	TimerRisingBubble	= "Show timer for when Water Globule spawns",
+	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
+	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
 }
 
