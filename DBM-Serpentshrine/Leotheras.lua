@@ -74,7 +74,7 @@ function mod:Chaos()
     local myName = UnitName("player")
     if target == myName then
 		if self.Options.ChaosYellOpt then
-			SendChatMessage(UnitName("PLAYER"), "YELL");
+			SendChatMessage(L.ChaosYell, "YELL");
 		end
 		specWarnChaosYou:Show()
 	else
