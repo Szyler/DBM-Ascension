@@ -37,14 +37,14 @@ local timerEvenCD		= mod:NewCDTimer(32, 351201)
 
 local berserkTimer		= mod:NewBerserkTimer(720)
 
-mod:AddBoolOption(L.DemonIcon, false)
+--mod:AddBoolOption(L.DemonIcon)
 mod:AddBoolOption(L.ChaosIcon)
 mod:AddBoolOption(L.ChaosYellOpt)
 
-local warnDemonTargets = {}
-local warnMCTargets = {}
+--local warnDemonTargets = {}
+--local warnMCTargets = {}
 mod.vb.binderKill = 0
-mod.vb.demonIcon = 8
+--mod.vb.demonIcon = 8
 mod.vb.ChaosIcon = 1
 mod.vb.whirlCount = 0
 mod.vb.phase = 1
