@@ -16,12 +16,15 @@ local warnCariPower		= mod:NewSpellAnnounce(38451, 3)
 local warnTidalPower	= mod:NewSpellAnnounce(38452, 3)
 local warnSharPower		= mod:NewSpellAnnounce(38455, 3)
 local warnBeastWithin	= mod:NewTargetAnnounce(351373, 3)
+local warnHurricane		= mod:NewSpellAnnounce(83541, 3)
+local warnHurricaneYou	= mod:NewSpecialWarningYou(83541, 3)
 
 local specWarnHeal		= mod:NewSpellAnnounce(83535, 3)
 local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
 
 local timerHeal			= mod:NewNextTimer(30, 83535)
 local timerFreeze		= mod:NewCDTimer(18, 38357)
+local timerHurricane	= mod:NewNextTimer(30, 83541) --351370, 351371
 local timerCataclysmic	= mod:NewCDTimer(9, 38441)
 local timerBeastWithin	= mod:NewNextTimer(30, 351373)
 
@@ -30,6 +33,8 @@ local berserkTimer		= mod:NewBerserkTimer(720)
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	isCasterKilled = false
+	timerHeal:Start(25)
+	timerFreeze:Start(7)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -39,22 +44,28 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnTidalPower:Show()
 	elseif args:IsSpellID(38455, 85369) then -- 85369
 		warnSharPower:Show()
-	elseif args.spellId == 38357 then -- Deep Freeze Caribdis
-		if isCasterKilled == false then
-			timerFreeze:Start()
-		else
+	elseif args.spellId == 38357 then -- Deep Freeze
+		if args.sourceName == L.name then --Fathom-Lord Karathress
 			timerFreeze:Start(30) -- Deep Freeze Fathom-Lord
+		else
+			timerFreeze:Start() -- Fathom-Guard Caribdis
 		end
 	elseif args:IsSpellID(351373) then -- Beast Within
 		warnBeastWithin:Show(args.destName)
 		timerBeastWithin:Start()
+	elseif args:IsSpellID(83541, 351370, 351371) then -- Hurricane
+		warnHurricane:Show(args.destName)
+		timerHurricane:Start()
+		if args:IsPlayer() then
+			warnHurricaneYou:Show()
+		end
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(38330, 83535) then -- 83535
-		specWarnHeal:Show(args.sourceName)
-		timerHeal:Show()
+		specWarnHeal:Show()
+		timerHeal:Start()
 	end
 end
 
