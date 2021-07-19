@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21213)
 mod:RegisterCombat("combat", 21213)
-mod:SetUsedIcons(5, 6, 7, 8)
+mod:SetUsedIcons(1,2,3,8)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -46,6 +46,7 @@ mod:AddBoolOption("MageIcon")
 -- local warnGraveTargets = {}
 local bubblespam = 0
 local warriorAntiSpam = 0
+local MageAntiSpam = 0
 -- mod.vb.graveIcon = 8
 
 -- local function showGraveTargets()
@@ -88,9 +89,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.HealerIcon then
 			self:SetIcon(args.sourceName, 1)
 		end
-	elseif args.spellId == 83554 then
+	elseif args.spellId == 83554 and MageAntiSpam > 120 then
+		MageAntiSpam = GetTime()
 		warnMage:Show()
-		if self.Options.CasterIcon then
+		if self.Options.MageIcon then
 			self:SetIcon(args.sourceName, 2)
 		end
 	elseif args.spellId == 83548 then
