@@ -36,6 +36,8 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 local lastMarkF = 0
 local lastMarkN = 0
 local lastTidalPower = 0
+local phaseTimer = 0
+local LastTombSludge = 0
 -- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
 
 mod:AddBoolOption("RangeFrame", true)
@@ -86,7 +88,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
-		if LastTombSludge <= 32 then
+		phaseTimer = GetTime()
+		if LastTombSludge - phaseTimer <= 32 then
 			timerNextSludge:Start(42)
 		else 
 			timerNextSludge:Start(12)
@@ -119,7 +122,8 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(37961) then -- Losing Corruption transform on boss
 		warnPhase:Show(L.Frost)
 		timerNextSludge:Stop()
-		if LastTombSludge <= 32 then
+		phaseTimer = GetTime()
+		if LastTombSludge - phaseTimer <= 32 then
 			timerNextTomb:Start(42)
 		else 
 			timerNextTomb:Start(12)
