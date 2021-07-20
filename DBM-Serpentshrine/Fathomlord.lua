@@ -25,6 +25,7 @@ local specWarnHeal		= mod:NewSpellAnnounce(83535, 3)
 local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
 
 local timerBlessingTides= mod:NewNextTimer(30, 351302)
+local timerTornado		= mod:NewNextTimer(30, 38517)
 local timerHeal			= mod:NewNextTimer(30, 83535)
 local timerFreeze		= mod:NewCDTimer(18, 38357)
 local timerHurricane	= mod:NewNextTimer(30, 83541) --351370, 351371
@@ -38,6 +39,13 @@ function mod:OnCombatStart(delay)
 	isCasterKilled = false
 	timerHeal:Start(25)
 	timerFreeze:Start(7)
+	timerTornado:Start(30)
+	self:ScheduleMethod(30, "Tornado")
+end
+
+function mod:Tornado()
+	timerTornado:Start(30)
+	self:ScheduleMethod(30, "Tornado")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
