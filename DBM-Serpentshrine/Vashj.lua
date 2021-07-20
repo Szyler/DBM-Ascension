@@ -76,6 +76,7 @@ mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
 local elementals = {}
 local lootmethod
+local ChargeTargets = {}
 
 function mod:HydraSpawn()
 	self.vb.hydraCount = self.vb.hydraCount + 1
