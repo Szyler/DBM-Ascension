@@ -7,6 +7,7 @@ mod:RegisterCombat("combat", 21214)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON"
@@ -91,12 +92,5 @@ function mod:SPELL_SUMMON(args)
 	if args.spellId == 38236 then
 		specWarnTotem:Show()
 		-- specWarnTotem:Play("attacktotem")
-	end
-end
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 21964 then
-		isCasterKilled = true
 	end
 end
