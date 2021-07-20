@@ -102,18 +102,21 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+	BlessingTides	= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
+	BlessingTides	= "Show $spell:351302 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	Caribdis	= "Fathom-Guard Caribdis",
-	Tidalvess	= "Fathom-Guard Tidalvess",
-	Sharkkis	= "Fathom-Guard Sharkkis"
+	Caribdis		= "Fathom-Guard Caribdis",
+	Tidalvess		= "Fathom-Guard Tidalvess",
+	Sharkkis		= "Fathom-Guard Sharkkis",
+	BlessingTides	= "Fathom-Guard Sharkkis"
 }
 
 --------------------------

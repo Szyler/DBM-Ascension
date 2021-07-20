@@ -18,10 +18,12 @@ local warnSharPower		= mod:NewSpellAnnounce(38455, 3)
 local warnBeastWithin	= mod:NewTargetAnnounce(351373, 3)
 local warnHurricane		= mod:NewSpellAnnounce(83541, 3)
 local warnHurricaneYou	= mod:NewSpecialWarningYou(83541, 3)
+local warnBlessingTides	= mod:NewAnnounce(L.BlessingTides, 2, 351302)
 
 local specWarnHeal		= mod:NewSpellAnnounce(83535, 3)
 local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
 
+local timerBlessingTides= mod:NewNextTimer(30, 351302)
 local timerHeal			= mod:NewNextTimer(30, 83535)
 local timerFreeze		= mod:NewCDTimer(18, 38357)
 local timerHurricane	= mod:NewNextTimer(30, 83541) --351370, 351371
@@ -59,6 +61,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnHurricaneYou:Show()
 		end
+	elseif args:IsSpellID(351302) then -- Blessing of the Tides
+		warnBlessingTides:Show(args.destName)
+		timerBlessingTides:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(351302) then -- Blessing of the Tides
+		warnBlessingTides:Show(args.destName)
+		timerBlessingTides:Start()
 	end
 end
 
