@@ -122,6 +122,7 @@ function mod:OnCombatStart(delay)
 		lootmethod = GetLootMethod()
 	end
 	berserkTimer:Start(-delay)
+	table.wipe(ChargeTargets)
 end
 
 function mod:OnCombatEnd()
