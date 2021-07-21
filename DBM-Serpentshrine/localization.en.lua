@@ -39,12 +39,12 @@ L:SetMiscLocalization{
 L = DBM:GetModLocalization("LurkerBelow")
 
 L:SetGeneralLocalization{
-	lurkerName = "The Lurker Below"
+	name 				= "The Lurker Below"
 }
 
 L:SetWarningLocalization{
 	WarnSubmerge		= "Submerged",
-	WarnEmerge			= "Emerged"
+	WarnEmerge			= "Emerged",
 }
 
 L:SetTimerLocalization{
@@ -56,7 +56,13 @@ L:SetOptionLocalization{
 	WarnSubmerge		= "Show warning when submerge",
 	WarnEmerge			= "Show warning when emerge",
 	TimerSubmerge		= "Show time for submerge",
-	TimerEmerge			= "Show time for emerge"
+	TimerEmerge			= "Show time for emerge",
+}
+
+L:SetMiscLocalization{
+	EmoteEmerge			= "emerges from the dephts",
+	EmoteSubmerge		= "submerges into the depths",
+	EmoteBreath			= "takes a deep breath",
 }
 
 --------------------------
