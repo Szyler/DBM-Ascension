@@ -2,8 +2,8 @@ local mod	= DBM:NewMod("LurkerBelow", "DBM-Serpentshrine")
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
-mod:SetCreatureID(21216)
-mod:RegisterCombat("combat", 21216)
+mod:SetCreatureID(21217)
+mod:RegisterCombat("combat", 21217)
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
