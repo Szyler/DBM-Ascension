@@ -49,7 +49,7 @@ mod.vb.ChaosIcon = 1
 mod.vb.whirlCount = 0
 mod.vb.phase = 1
 
-local function humanWarns(self)
+function mod:humanWarns()
 	self.vb.whirlCount = 0
 	warnPhase:Show(L.Human)
 	timerNextWhirl:Start(30)
@@ -142,12 +142,9 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(351200) then -- Tank swap (Even out the Odds) , 351201, 351202
-		if args:IsPlayer() then
-			specWarnEvenYou:Show()
-		end
-		warnEven:Show(args.destName)
-		timerNextEven:Start()
+	if args:IsSpellID(351200, 351201, 351202) then -- Tank swap (Even out the Odds)
+	warnEven:Show()
+	timerEvenCD:Start()
 	end
 end
 
