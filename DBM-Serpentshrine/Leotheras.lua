@@ -161,10 +161,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 
 		timerNextDemon:Start()
 		timerPhase:Start(nil, L.Human)
-		self:Schedule(65, humanWarns)
+		self:ScheduleMethod(65, "humanWarns")
 	elseif msg == L.YellPhase2 or msg:find(L.YellPhase2) then
 		self.vb.phase = 2
-		self:Unschedule(humanWarns)
+		self:UnscheduleMethod("humanWarns")
 		timerPhase:Cancel()
 		timerWhirl:Cancel()
 		timerNextWhirl:Cancel()
