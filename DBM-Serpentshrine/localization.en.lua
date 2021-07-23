@@ -157,7 +157,7 @@ L:SetOptionLocalization{
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
 	WarnFreezingBubble	= "Show warning when Water Globule spawns",
-	TimerFreezingBubble = "Show timer for when $spell:37854 spawns",
+	TimerFreezingBubble = "Show timer for next $spell:37854",
 	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
 	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),

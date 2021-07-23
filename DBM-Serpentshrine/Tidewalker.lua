@@ -27,7 +27,6 @@ local timerShield		= mod:NewNextTimer(10, 83548)
 local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
---local timerBubble		= mod:NewNextTimer(30, 37858) --obsolete
 local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerRising		= mod:NewNextTimer(30, 83561)
 
@@ -61,7 +60,6 @@ function mod:OnCombatStart(delay)
 	-- timerGraveCD:Start(20-delay)
 	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
-	--timerBubble:Start(-delay) --obsolete
 	timerFreezing:Start(20-delay)
 	self:ScheduleMethod(20,"FreezingBubble");
 	if mod:IsDifficulty("heroic10", "heroic25") then
