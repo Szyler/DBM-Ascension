@@ -23,7 +23,7 @@ local specWarnWhirl		= mod:NewSpecialWarningRun(37640)
 local specWarnDemon		= mod:NewSpecialWarningYou(37676)
 
 local warnEven			= mod:NewTargetAnnounce(351201, 3)
-local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
+-- local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
 local warnChaos			= mod:NewTargetAnnounce(85365, 3)
 local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
 
@@ -70,13 +70,14 @@ end
 -- end
 
 function mod:Chaos()
+	local target = nil
 	if mod.vb.phase == 2 then
-	    local target = mod:GetBossTarget(21875)
+	    target = mod:GetBossTarget(21875)
     else
-	    local target = mod:GetBossTarget(21215)
+	    target = mod:GetBossTarget(21215)
 	end
 	local myName = UnitName("player")
-    if target == myName then
+	if target == myName then
 		if self.Options.ChaosYellOpt then
 			SendChatMessage(L.ChaosYell, "YELL");
 		end
@@ -91,6 +92,7 @@ function mod:Chaos()
 end
 
 function mod:OnCombatStart(delay)
+	mod.vb.phase = 1
 	self.vb.demonIcon = 8
 	self.vb.whirlCount = 0
 	timerPhase:Start(62, L.Demon)
@@ -143,8 +145,8 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(351200, 351201, 351202) then -- Tank swap (Even out the Odds)
-	warnEven:Show()
-	timerEvenCD:Start()
+	warnEven:Show(args.destName)
+	timerNextEven:Start()
 	end
 end
 
