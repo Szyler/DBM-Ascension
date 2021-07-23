@@ -28,7 +28,7 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 --local timerBubble		= mod:NewNextTimer(30, 37858) --obsolete
-local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble")
+local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerRising		= mod:NewNextTimer(30, 83561)
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
