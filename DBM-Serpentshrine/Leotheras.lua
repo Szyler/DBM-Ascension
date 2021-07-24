@@ -110,7 +110,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- specWarnWhirl:Play("justrun")
 		timerWhirl:Start()
 		if self.vb.phase == 2 then
-			timerNextWhirl:Start()
+			timerNextWhirl:Start(45)
 		end
 	-- elseif args:IsSpellID(37676, 85361) then -- 85361
 		-- warnDemonTargets[#warnDemonTargets + 1] = args.destName
