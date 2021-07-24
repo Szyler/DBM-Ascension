@@ -27,7 +27,7 @@ local warnEven			= mod:NewTargetAnnounce(351201, 3)
 local warnChaos			= mod:NewTargetAnnounce(85365, 3)
 local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
 
-local timerNextWhirl	= mod:NewNextTimer(30, 37640)
+local timerNextWhirl	= mod:NewNextTimer(45, 37640)
 local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
 local timerPhase		= mod:NewTimer(62, "TimerPhase", 39088)
 local timerNextDemon	= mod:NewNextTimer(23, 37676)
@@ -110,7 +110,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- specWarnWhirl:Play("justrun")
 		timerWhirl:Start()
 		if self.vb.phase == 2 then
-			timerNextWhirl:Start(45)
+			timerNextWhirl:Start()
 		end
 	-- elseif args:IsSpellID(37676, 85361) then -- 85361
 		-- warnDemonTargets[#warnDemonTargets + 1] = args.destName
