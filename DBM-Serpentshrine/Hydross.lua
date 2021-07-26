@@ -31,7 +31,7 @@ local timerTidal3		= mod:NewTimer(6, "Tidal Wave (3)", 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
-local berserkTimer		= mod:NewBerserkTimer(600)
+local berserkTimer		= mod:NewTimer(600, "Berserk", 26662)
 
 local lastMarkF = 0
 local lastMarkN = 0

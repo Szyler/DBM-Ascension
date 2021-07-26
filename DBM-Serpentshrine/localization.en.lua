@@ -25,7 +25,8 @@ L:SetOptionLocalization{
 	WarnTidalPower	= "Show warning for $spell:85413",
 	WarnPhase		= "Show warning for next phase",
 	SpecWarnMark	= "Show warning when Marks debuff damage over 100%",
-	TimerMark		= "Show timer for next Marks"
+	TimerMark		= "Show timer for next Marks",
+	Berserk			= "Show timer for Berserk",
 }
 
 L:SetMiscLocalization{
