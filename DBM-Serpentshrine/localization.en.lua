@@ -195,7 +195,8 @@ L:SetTimerLocalization{
 	TimerElemental			= "Elemental CD (%d)",
 	TimerHydra				= "Next Hydra (%d)",
 	TimerNaga				= "Next Naga Elite (%d)",
-	TimerEnchantress		= "Next Enchantress (%d)"
+	TimerEnchantress		= "Next Enchantress (%d)",
+	ChargeExplosion			= "Charge Explosion",
 }
 
 L:SetOptionLocalization{
@@ -231,4 +232,5 @@ L:SetMiscLocalization{
 	ChargeYell				= "Static Charge on me!",
 	AimedYell				= "Aimed Shot on me!",
 	LootYell				= "I am carrying the Tainted Core!",
+	ChargeExplosion			= "Show timer for Charge Explosion",
 }

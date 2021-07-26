@@ -44,7 +44,7 @@ local specWarnToxic		= mod:NewSpecialWarningMove(38575)
 local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
-local timerChargeDmg	= mod:NewTargetTimer(8, 351375)
+local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
 local timerMark			= mod:NewTargetTimer(6, 351310)
 -- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
@@ -102,7 +102,7 @@ end
 local function warnChargeTargets()
 	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
 	timerCharge:Start()
-	timerChargeDmg:Start(args.destName)
+	timerChargeDmg:Start()
 	table.wipe(ChargeTargets)
 end
 
