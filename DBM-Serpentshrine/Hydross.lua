@@ -55,12 +55,13 @@ function mod:tidalWave()
 	self:ScheduleMethod(45, "tidalWave")
 end
 
-function mod:tidalWaveAddTime()
+function mod:PhaseChangeAddTime()
 	local elapsed, total = timerNextTidal:GetTime();
 	local currentRemainingTidalTimer = total - elapsed
 	timerNextTidal:AddTime(2)
 	self:UnscheduleMethod("tidalWave")
 	self:ScheduleMethod(currentRemainingTidalTimer+2, "tidalWave")
+	berserkTimer:AddTime(2)
 end
 
 function mod:OnCombatStart(delay)
@@ -92,8 +93,22 @@ function mod:SPELL_AURA_APPLIED(args)
 		else 
 			timerNextSludge:Start(12)
 		end
-		self:tidalWaveAddTime()
+		self:PhaseChangeAddTime()
 		-- timerMark:Start(16, markOfC, "10%")
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(37961) then -- Losing Corruption transform on boss
+		warnPhase:Show(L.Frost)
+		timerNextSludge:Stop()
+		if LastTombSludge - GetTime() <= 32 then
+			timerNextTomb:Start(42)
+		else 
+			timerNextTomb:Start(12)
+		end
+		self:PhaseChangeAddTime()
+		-- timerMark:Start(16, markOfH, "10%")
 	end
 end
 
@@ -113,20 +128,6 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 			lastTidalPower = GetTime()
 			warnTidalPower:Show(args.amount, args.spellName)
 		end
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(37961) then -- Losing Corruption transform on boss
-		warnPhase:Show(L.Frost)
-		timerNextSludge:Stop()
-		if LastTombSludge - GetTime() <= 32 then
-			timerNextTomb:Start(42)
-		else 
-			timerNextTomb:Start(12)
-		end
-		self:tidalWaveAddTime()
-		-- timerMark:Start(16, markOfH, "10%")
 	end
 end
 
