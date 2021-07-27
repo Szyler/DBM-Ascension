@@ -80,23 +80,30 @@ local ChargeTargets = {}
 
 function mod:HydraSpawn()
 	self.vb.hydraCount = self.vb.hydraCount + 1
+	timerHydra:Stop()
+	warnHydra:Show(tostring(self.vb.hydraCount))
 	timerHydra:Start(nil, tostring(self.vb.hydraCount))
-	warnHydra:Schedule(86, tostring(self.vb.hydraCount))
-	self:ScheduleMethod(91, "HydraSpawn")
 end
 
 function mod:NagaSpawn()
 	self.vb.nagaCount = self.vb.nagaCount + 1
+	timerNaga:Stop()
+	warnNaga:Show(tostring(self.vb.nagaCount))
 	timerNaga:Start(nil, tostring(self.vb.nagaCount))
-	warnNaga:Schedule(42, tostring(self.vb.nagaCount))
-	self:ScheduleMethod(47, "NagaSpawn")
 end
 
 function mod:EnchantressSpawn()
 	self.vb.enchantressCount = self.vb.enchantressCount + 1
+	timerEnchantress:Stop()
+	warnEnchantress:Show(tostring(self.vb.enchantressCount))
 	timerEnchantress:Start(nil, tostring(self.vb.enchantressCount))
-	warnEnchantress:Schedule(42, tostring(self.vb.enchantressCount))
-	self:ScheduleMethod(45, "NagaSpawn")
+end
+
+function mod:TaintedSpawn()
+	self.vb.elementalCount = self.vb.elementalCount + 1
+	timerElementalCD:Stop()
+	warnElemental:Show(tostring(self.vb.elementalCount))
+	timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
 end
 
 function mod:warnChargeTargets()
@@ -167,6 +174,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 6)
 		end
+	elseif args:IsSpellID(83565) then
+		self:EnchantressSpawn()
 	end
 end
 
@@ -206,16 +215,11 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
 		timerDischarge:Start()
 		specWarnDischarge:Show()
 	elseif msg == DBM_VASHJ_ELITE then
-		warnNaga:Cancel()
-		warnNaga:Show()
-		timerNaga:Start()
+		self:NagaSpawn()
 	elseif msg == DBM_VASHJ_HYDRA then
-		warnHydra:Cancel()
-		warnHydra:Show()
-		timerHydra:Start()
+		self:HydraSpawn()
 	elseif msg == DBM_VASHJ_TAINTED then
-		warnElemental:Cancel()
-		warnElemental:Show()
+		self:TaintedSpawn()
 	end
 end
 	
