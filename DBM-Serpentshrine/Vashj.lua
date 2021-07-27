@@ -99,7 +99,7 @@ function mod:EnchantressSpawn()
 	self:ScheduleMethod(45, "NagaSpawn")
 end
 
-local function warnChargeTargets()
+function mod:warnChargeTargets()
 	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
 	timerCharge:Start()
 	timerChargeDmg:Start()
