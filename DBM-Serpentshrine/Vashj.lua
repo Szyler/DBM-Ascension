@@ -49,8 +49,8 @@ local timerAimedShot	= mod:NewNextTimer(30, 351388)
 local timerMark			= mod:NewTargetTimer(6, 351310)
 -- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
 local timerElementalCD	= mod:NewTimer(75, "TimerElemental")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
-local timerHydra		= mod:NewTimer(91, "TimerHydra")
-local timerNaga			= mod:NewTimer(47, "TimerNaga")
+local timerHydra		= mod:NewTimer(95, "TimerHydra")
+local timerNaga			= mod:NewTimer(49, "TimerNaga")
 local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress")
 local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
@@ -274,6 +274,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnHydra:Cancel()
 		self:UnscheduleMethod("NagaSpawn")
 		self:UnscheduleMethod("HydraSpawn")
+		self:UnscheduleMethod("EnchantressSpawn")
 		timerGenerator:Start()
 		timerCharge:Start(15)
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
