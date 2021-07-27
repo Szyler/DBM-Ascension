@@ -69,12 +69,12 @@ mod:AddBoolOption(L.LootYellOpt)
 mod:AddBoolOption("AutoChangeLootToFFA", false)
 
 mod.vb.phase = 1
-mod.vb.shieldLeft = 4
+-- mod.vb.shieldLeft = 4
 mod.vb.nagaCount = 1
 mod.vb.enchantressCount = 1
 mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
-local elementals = {}
+-- local elementals = {}
 local lootmethod
 local ChargeTargets = {}
 
@@ -114,9 +114,9 @@ function mod:warnChargeTargets()
 end
 
 function mod:OnCombatStart(delay)
-	table.wipe(elementals)
+	-- table.wipe(elementals)
 	self.vb.phase = 1
-	self.vb.shieldLeft = 4
+	-- self.vb.shieldLeft = 4
 	self.vb.nagaCount = 1
 	self.vb.enchantressCount = 1
 	self.vb.hydraCount = 1
@@ -170,7 +170,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.AimedIcon then
 			self:SetIcon(args.destName, 8, 6)
 		end
-	elseif args.spellId == 38132 then
+	elseif args:IsSpellID(38132) then
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 6)
 		end
@@ -190,7 +190,7 @@ function mod:SPELL_AURA_REMOVED(args)
 				DBM.RangeCheck:Hide()
 			end
 		end
-	elseif args.spellId == 38132 then
+	elseif args:IsSpellID(38132) then
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 0)
 		end
@@ -249,7 +249,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.enchantressCount = 1
 		self.vb.hydraCount = 1
 		self.vb.elementalCount = 1
-		self.vb.shieldLeft = 4
+		-- self.vb.shieldLeft = 4
 		warnPhase2:Show()
 		timerCharge:Cancel()
 		timerAimedShot:Cancel()
