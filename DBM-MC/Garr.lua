@@ -18,7 +18,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(15732) and self:IsInCombat() then
-		warnImmolate:Show(args.destName)
+		-- warnImmolate:Show(args.destName)
 		timerImmolate:Start(args.destName)
 	end
 end
