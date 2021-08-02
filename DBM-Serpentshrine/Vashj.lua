@@ -57,6 +57,15 @@ local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nat
 local timerMulti		= mod:NewNextTimer(15, 38310)
 local timerEnvenom		= mod:NewNextTimer(30, 351381)
 
+-- Ascended Mechanics
+
+local warnParasite		= mod:NewTargetAnnounce(83568, 3)
+local timerParasite		= mod:NewNextTimer(45, 83568)
+
+local timerSiren		= mod:NewNextTimer(17, 83566)          
+local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
+local warnSong			= mod:NewTargetAnnounce(83567, 3)
+
 local berserkTimer		= mod:NewBerserkTimer(720)
 
 mod:AddBoolOption("RangeFrame", true)
@@ -122,10 +131,18 @@ function mod:OnCombatStart(delay)
 	self.vb.enchantressCount = 1
 	self.vb.hydraCount = 1
 	self.vb.elementalCount = 1
-	timerMulti:Start(10-delay)
-	timerEnvenom:Start(25-delay)
-	timerAimedShot:Start(35-delay)
-	timerCharge:Start(15-delay)
+	if mod:IsDifficulty("heroic10", "heroic25") then
+		timerMulti:Start(22-delay)
+		timerEnvenom:Start(19-delay)
+		timerAimedShot:Start(25-delay)
+		timerCharge:Start(10-delay)
+		timerParasite:Start(40-delay)
+	else
+		timerMulti:Start(10-delay)
+		timerEnvenom:Start(25-delay)
+		timerAimedShot:Start(35-delay)
+		timerCharge:Start(15-delay)
+	end
 	if IsInGroup() and DBM:GetRaidRank() == 2 then
 		lootmethod = GetLootMethod()
 	end
@@ -158,13 +175,22 @@ function mod:SPELL_AURA_APPLIED(args)
 				DBM.RangeCheck:Show(10)
 			end
 		end
+		if mod:IsDifficulty("heroic10", "heroic25") then
+		timerCharge:Start(45)
+		else
+		timerCharge:Start()
+		end
 		-- if self.Options.ChargeIcon then
 		-- 	self:SetIcon(args.destName, 1, 20)
 		-- end
-	elseif args:IsSpellID(351310) then
+	elseif args:IsSpellID(351309) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+		timerAimedShot:Start(45)
+		else
 		timerAimedShot:Start()
+		end
 		if self.Options.AimedYellOpt and args:IsPlayer() then
 			SendChatMessage(L.AimedYell, "YELL")
 		end
@@ -178,6 +204,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(83565) then
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:EnchantressSpawn()
+	elseif args.spellId	== 83568 then
+		warnParasite:Show(args.destName)
+		timerParasite:Start()
+	elseif args.spellId == 83567 then
+		warnSong:Show()
 	end
 end
 
@@ -230,6 +261,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnEnvenom:Show(args.destName)
 		timerEnvenom:Start()
 	end
+	elseif args.spellID == 83566 then
+		specWarnSiren:Show()
 end
 
 function mod:UNIT_DIED(args)
@@ -284,6 +317,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 				SetLootMethod(lootmethod)
 			end
 		end
+	elseif msg == L.DBM_VASHJ_GENERATOR or msg:find(L.DBM_VASHJ_GENERATOR) then
+		timerSiren:Start()
 	end
 end
 
