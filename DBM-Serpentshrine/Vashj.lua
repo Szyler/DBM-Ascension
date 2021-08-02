@@ -260,9 +260,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 351381 then
 		warnEnvenom:Show(args.destName)
 		timerEnvenom:Start()
-	end
 	elseif args.spellID == 83566 then
 		specWarnSiren:Show()
+	end
 end
 
 function mod:UNIT_DIED(args)
@@ -317,8 +317,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 				SetLootMethod(lootmethod)
 			end
 		end
-	elseif msg == L.DBM_VASHJ_GENERATOR or msg:find(L.DBM_VASHJ_GENERATOR) then
-		timerSiren:Start()
 	end
 end
 
