@@ -183,7 +183,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- if self.Options.ChargeIcon then
 		-- 	self:SetIcon(args.destName, 1, 20)
 		-- end
-	elseif args:IsSpellID(351309) then
+	elseif args:IsSpellID(38509) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		if mod:IsDifficulty("heroic10", "heroic25") then
