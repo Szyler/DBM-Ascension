@@ -79,31 +79,32 @@ local lootmethod
 local ChargeTargets = {}
 
 function mod:HydraSpawn()
-	self.vb.hydraCount = self.vb.hydraCount + 1
 	timerHydra:Stop()
 	warnHydra:Show(tostring(self.vb.hydraCount))
 	timerHydra:Start(nil, tostring(self.vb.hydraCount))
+	self.vb.hydraCount = self.vb.hydraCount + 1
 end
 
 function mod:NagaSpawn()
-	self.vb.nagaCount = self.vb.nagaCount + 1
 	timerNaga:Stop()
 	warnNaga:Show(tostring(self.vb.nagaCount))
 	timerNaga:Start(nil, tostring(self.vb.nagaCount))
+	self.vb.nagaCount = self.vb.nagaCount + 1
 end
 
 function mod:EnchantressSpawn()
-	self.vb.enchantressCount = self.vb.enchantressCount + 1
 	timerEnchantress:Stop()
 	warnEnchantress:Show(tostring(self.vb.enchantressCount))
 	timerEnchantress:Start(nil, tostring(self.vb.enchantressCount))
+	self:ScheduleMethod(47,"EnchantressSpawn")
+	self.vb.enchantressCount = self.vb.enchantressCount + 1
 end
 
 function mod:TaintedSpawn()
-	self.vb.elementalCount = self.vb.elementalCount + 1
 	timerElementalCD:Stop()
 	warnElemental:Show(tostring(self.vb.elementalCount))
 	timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
+	self.vb.elementalCount = self.vb.elementalCount + 1
 end
 
 function mod:warnChargeTargets()
@@ -175,6 +176,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, 6)
 		end
 	elseif args:IsSpellID(83565) then
+		self:UnscheduleMethod("EnchantressSpawn")
 		self:EnchantressSpawn()
 	end
 end
@@ -210,15 +212,15 @@ function mod:SPELL_PERIODIC_HEAL(args)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
-	if msg == DBM_VASHJ_DISCHARGE then
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.DBM_VASHJ_DISCHARGE or msg:find(L.DBM_VASHJ_DISCHARGE) then
 		timerDischarge:Start()
 		specWarnDischarge:Show()
-	elseif msg == DBM_VASHJ_ELITE then
+	elseif msg == L.DBM_VASHJ_ELITE or msg:find(L.DBM_VASHJ_ELITE) then
 		self:NagaSpawn()
-	elseif msg == DBM_VASHJ_HYDRA then
+	elseif msg == L.DBM_VASHJ_HYDRA or msg:find(L.DBM_VASHJ_HYDRA) then
 		self:HydraSpawn()
-	elseif msg == DBM_VASHJ_TAINTED then
+	elseif msg == L.DBM_VASHJ_TAINTED or msg:find(L.DBM_VASHJ_TAINTED) then
 		self:TaintedSpawn()
 	end
 end
@@ -253,17 +255,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnPhase2:Show()
 		timerCharge:Cancel()
 		timerAimedShot:Cancel()
-		warnNaga:Schedule(8, tostring(self.vb.nagaCount))
-		timerNaga:Start(13, tostring(self.vb.nagaCount))
-		self:ScheduleMethod(13, "NagaSpawn")
-		warnEnchantress:Schedule(18, tostring(self.vb.EnchantressCount))
-		timerEnchantress:Start(23, tostring(self.vb.EnchantressCount))
-		self:ScheduleMethod(23, "EnchantressSpawn")
-		warnElemental:Schedule(56, tostring(self.vb.elementalCount))
-		timerElementalCD:Start(61, tostring(self.vb.elementalCount))
-		warnHydra:Schedule(28, tostring(self.vb.hydraCount))
-		timerHydra:Start(32, tostring(self.vb.hydraCount))
-		self:ScheduleMethod(32, "HydraSpawn")
+		self:NagaSpawn()
+		self:EnchantressSpawn()
+		self:TaintedSpawn()
+		self:HydraSpawn()
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
@@ -275,11 +270,14 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerElementalCD:Cancel()
 		warnElemental:Cancel()
 		timerHydra:Cancel()
+		timerEnchantress:Cancel()
+		warnEnchantress:Cancel()
 		warnHydra:Cancel()
 		self:UnscheduleMethod("NagaSpawn")
-		self:UnscheduleMethod("HydraSpawn")
 		self:UnscheduleMethod("EnchantressSpawn")
-		timerGenerator:Start()
+		self:UnscheduleMethod("TaintedSpawn")
+		self:UnscheduleMethod("HydraSpawn")
+		timerGenerator:Start(25)
 		timerCharge:Start(15)
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			if lootmethod then
