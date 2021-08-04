@@ -66,6 +66,9 @@ local timerSiren		= mod:NewNextTimer(17, 83566)
 local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
 local warnSong			= mod:NewTargetAnnounce(83567, 3)
 
+local timerPhoenix		= mod:NewNextTimer(16, 351414)
+local timerKaelRP		= mod:NewTimer(35, "Kael'thas Roleplay", "Interface\\Icons\\achievement_character_bloodelf_male")
+
 local berserkTimer		= mod:NewBerserkTimer(720)
 
 mod:AddBoolOption("RangeFrame", true)
@@ -263,6 +266,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerEnvenom:Start()
 	elseif args.spellID == 83566 then
 		specWarnSiren:Show()
+	elseif args.spellID == 351393 then
+		timerPhoenix:Start()
 	end
 end
 
@@ -313,6 +318,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:UnscheduleMethod("HydraSpawn")
 		timerGenerator:Start(25)
 		timerCharge:Start(15)
+		timerPhoenix:Start(60)
+		timerKaelRP:Schedule(27)
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			if lootmethod then
 				SetLootMethod(lootmethod)
