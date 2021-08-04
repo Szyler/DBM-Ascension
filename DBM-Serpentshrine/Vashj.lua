@@ -316,10 +316,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:UnscheduleMethod("TaintedSpawn")
 		self:UnscheduleMethod("HydraSpawn")
-		timerGenerator:Start(25)
-		timerCharge:Start(15)
-		timerPhoenix:Start(60)
-		timerKaelRP:Schedule(27)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerPhoenix:Start(60)
+			timerKaelRP:Schedule(27)
+			timerGenerator:Start(25)
+			timerCharge:Start(15)
+		else
+			timerGenerator:Start(25)
+			timerCharge:Start(15)
+		end
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			if lootmethod then
 				SetLootMethod(lootmethod)
