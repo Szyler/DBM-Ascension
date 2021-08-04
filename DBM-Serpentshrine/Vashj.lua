@@ -211,7 +211,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnParasite:Show(args.destName)
 		timerParasite:Start()
 	elseif args.spellId == 83567 then
-		warnSong:Show()
+		warnSong:Show(args.destName)
 	end
 end
 
