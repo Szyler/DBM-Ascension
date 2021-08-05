@@ -25,7 +25,8 @@ L:SetOptionLocalization{
 	WarnTidalPower	= "Show warning for $spell:85413",
 	WarnPhase		= "Show warning for next phase",
 	SpecWarnMark	= "Show warning when Marks debuff damage over 100%",
-	TimerMark		= "Show timer for next Marks"
+	TimerMark		= "Show timer for next Marks",
+	Berserk			= "Show timer for Berserk",
 }
 
 L:SetMiscLocalization{
@@ -39,12 +40,12 @@ L:SetMiscLocalization{
 L = DBM:GetModLocalization("LurkerBelow")
 
 L:SetGeneralLocalization{
-	lurkerName = "The Lurker Below"
+	name 				= "The Lurker Below"
 }
 
 L:SetWarningLocalization{
 	WarnSubmerge		= "Submerged",
-	WarnEmerge			= "Emerged"
+	WarnEmerge			= "Emerged",
 }
 
 L:SetTimerLocalization{
@@ -55,8 +56,14 @@ L:SetTimerLocalization{
 L:SetOptionLocalization{
 	WarnSubmerge		= "Show warning when submerge",
 	WarnEmerge			= "Show warning when emerge",
-	TimerSubmerge		= "Show time for submerge",
-	TimerEmerge			= "Show time for emerge"
+	TimerSubmerge		= "Show timer for submerge",
+	TimerEmerge			= "Show timer for emerge",
+}
+
+L:SetMiscLocalization{
+	EmoteEmerge			= "emerges from the dephts",
+	EmoteSubmerge		= "submerges into the depths",
+	EmoteBreath			= "takes a deep breath",
 }
 
 --------------------------
@@ -89,7 +96,7 @@ L:SetMiscLocalization{
 	Demon		= "Demon",
 	YellDemon	= "Be gone, trifling elf%.%s*I am in control now!",
 	YellPhase2	= "No... no! What have you done? I am the master! Do you hear me? I am... aaggh! Can't... contain him.",
-	ChaosYell	= "Chaos Blast, stack on me!"
+	ChaosYell	= "Chaos Blast on "..UnitName("PLAYER").."!"
 }
 
 -----------------------------
@@ -102,18 +109,21 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+	BlessingTides	= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
+	BlessingTides	= "Show $spell:351302 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	Caribdis	= "Fathom-Guard Caribdis",
-	Tidalvess	= "Fathom-Guard Tidalvess",
-	Sharkkis	= "Fathom-Guard Sharkkis"
+	Caribdis		= "Fathom-Guard Caribdis",
+	Tidalvess		= "Fathom-Guard Tidalvess",
+	Sharkkis		= "Fathom-Guard Sharkkis",
+	BlessingTides	= "Fathom-Guard Sharkkis"
 }
 
 --------------------------
@@ -148,9 +158,9 @@ L:SetOptionLocalization{
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
 	WarnFreezingBubble	= "Show warning when Water Globule spawns",
-	TimerFreezingBubble = "Show timer for when Water Globule spawns",
-	WarnRisingBubble	= "Show special warning when Rsing Bubble spawns",
-	TimerRisingBubble	= "Show timer for when Water Globule spawns",
+	TimerFreezingBubble = "Show timer for next $spell:37854",
+	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
+	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
 }
 
@@ -185,7 +195,8 @@ L:SetTimerLocalization{
 	TimerElemental			= "Elemental CD (%d)",
 	TimerHydra				= "Next Hydra (%d)",
 	TimerNaga				= "Next Naga Elite (%d)",
-	TimerEnchantress		= "Next Enchantress (%d)"
+	TimerEnchantress		= "Next Enchantress (%d)",
+	ChargeExplosion			= "Charge Explosion",
 }
 
 L:SetOptionLocalization{
@@ -221,4 +232,5 @@ L:SetMiscLocalization{
 	ChargeYell				= "Static Charge on me!",
 	AimedYell				= "Aimed Shot on me!",
 	LootYell				= "I am carrying the Tainted Core!",
+	ChargeExplosion			= "Show timer for Charge Explosion",
 }

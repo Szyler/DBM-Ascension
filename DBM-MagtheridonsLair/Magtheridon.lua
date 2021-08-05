@@ -119,7 +119,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(351085) then
-		specWarnConflag:Show()
+		if args.destName == UnitName("player") then
+			specWarnConflag:Show()
+		end
 	end
 end
 
@@ -127,7 +129,9 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(30619) and args.amount >= 4 then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(351085) then
-		specWarnConflag:Show()
+		if args.destName == UnitName("player") then
+			specWarnConflag:Show()
+		end
 	end
 end
 

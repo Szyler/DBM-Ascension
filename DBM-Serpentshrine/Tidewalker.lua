@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21213)
 mod:RegisterCombat("combat", 21213)
-mod:SetUsedIcons(5, 6, 7, 8)
+mod:SetUsedIcons(1,2,3,8)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -27,8 +27,7 @@ local timerShield		= mod:NewNextTimer(10, 83548)
 local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
-local timerBubble		= mod:NewNextTimer(30, 37858)
-local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble")
+local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerRising		= mod:NewNextTimer(30, 83561)
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
@@ -46,6 +45,7 @@ mod:AddBoolOption("MageIcon")
 -- local warnGraveTargets = {}
 local bubblespam = 0
 local warriorAntiSpam = 0
+local MageAntiSpam = 0
 -- mod.vb.graveIcon = 8
 
 -- local function showGraveTargets()
@@ -60,11 +60,12 @@ function mod:OnCombatStart(delay)
 	-- timerGraveCD:Start(20-delay)
 	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
-	timerBubble:Start(-delay)
 	timerFreezing:Start(20-delay)
 	self:ScheduleMethod(20,"FreezingBubble");
+	if mod:IsDifficulty("heroic10", "heroic25") then
 	timerRising:Start(-delay)
 	self:ScheduleMethod(30,"RisingBubble");
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -86,9 +87,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.HealerIcon then
 			self:SetIcon(args.sourceName, 1)
 		end
-	elseif args.spellId == 83554 then
+	elseif args.spellId == 83554 and MageAntiSpam > 120 then
+		MageAntiSpam = GetTime()
 		warnMage:Show()
-		if self.Options.CasterIcon then
+		if self.Options.MageIcon then
 			self:SetIcon(args.sourceName, 2)
 		end
 	elseif args.spellId == 83548 then

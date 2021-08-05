@@ -42,10 +42,10 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 5006 $"):sub(12, -3),
-	Version = "5.06",
-	DisplayVersion = "5.06", -- the string that is shown as version
-	ReleaseRevision = 5006 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 5007 $"):sub(12, -3),
+	Version = "5.07",
+	DisplayVersion = "5.07", -- the string that is shown as version
+	ReleaseRevision = 5007 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -3183,7 +3183,7 @@ do
 	end
 
 	function timerPrototype:AddTime(extendAmount, ...)
-		if DBM.Options.DontShowBossTimers then return end
+		-- if DBM.Options.DontShowBossTimers then return end
 		if self:GetTime(...) == 0 then
 			return self:Start(extendAmount, ...)
 		else
@@ -3192,14 +3192,14 @@ do
 			if bar then
 				local elapsed, total = (bar.totalTime - bar.timer), bar.totalTime
 				if elapsed and total then
-					if bar.countdown then
-						DBM:Unschedule(playCountSound, id)
-						if not bar.fade then--Don't start countdown voice if it's faded bar
-							local newRemaining = (total+extendAmount) - elapsed
-							playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
-							DBM:Debug("Updating a countdown after a timer AddTime call for timer ID:"..id)
-						end
-					end
+					-- if bar.countdown then --Unused in our 3.3.5 version
+					-- 	DBM:Unschedule(playCountSound, id)
+					-- 	if not bar.fade then--Don't start countdown voice if it's faded bar
+					-- 		local newRemaining = (total+extendAmount) - elapsed
+					-- 		playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
+					-- 		DBM:Debug("Updating a countdown after a timer AddTime call for timer ID:"..id)
+					-- 	end
+					-- end
 					fireEvent("DBM_TimerUpdate", id, elapsed, total+extendAmount)
 					return DBM.Bars:UpdateBar(id, elapsed, total+extendAmount)
 				end
@@ -3208,7 +3208,7 @@ do
 	end
 
 	function timerPrototype:RemoveTime(reduceAmount, ...)
-		if DBM.Options.DontShowBossTimers then return end
+		-- if DBM.Options.DontShowBossTimers then return end
 		if self:GetTime(...) == 0 then
 			return--Do nothing
 		else
@@ -3219,13 +3219,13 @@ do
 				if elapsed and total then
 					local newRemaining = (total-reduceAmount) - elapsed
 					if newRemaining > 0 then
-						if bar.countdown and newRemaining > 2 then
-							DBM:Unschedule(playCountSound, id)
-							if not bar.fade then--Don't start countdown voice if it's faded bar
-								playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
-								DBM:Debug("Updating a countdown after a timer RemoveTime call for timer ID:"..id)
-							end
-						end
+						-- if bar.countdown and newRemaining > 2 then--Unused in our 3.3.5 version
+						-- 	DBM:Unschedule(playCountSound, id)
+						-- 	if not bar.fade then--Don't start countdown voice if it's faded bar
+						-- 		playCountdown(id, newRemaining, bar.countdown, bar.countdownMax)--timerId, timer, voice, count
+						-- 		DBM:Debug("Updating a countdown after a timer RemoveTime call for timer ID:"..id)
+						-- 	end
+						-- end
 						fireEvent("DBM_TimerUpdate", id, elapsed, total-reduceAmount)
 						return DBM.Bars:UpdateBar(id, elapsed, total-reduceAmount)
 					else--New remaining less than 0

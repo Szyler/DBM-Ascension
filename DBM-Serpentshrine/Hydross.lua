@@ -31,11 +31,12 @@ local timerTidal3		= mod:NewTimer(6, "Tidal Wave (3)", 85416)
 local timerSludge		= mod:NewTargetTimer(12, 38246)
 -- local timerMark		= mod:NewTimer(15, "TimerMark", 351203)
 
-local berserkTimer		= mod:NewBerserkTimer(600)
+local berserkTimer		= mod:NewTimer(600, "Berserk", 26662)
 
 local lastMarkF = 0
 local lastMarkN = 0
 local lastTidalPower = 0
+local LastTombSludge = 0
 -- local markOfH, markOfC = DBM:GetSpellInfo(351203), DBM:GetSpellInfo(351204)
 
 mod:AddBoolOption("RangeFrame", true)
@@ -54,12 +55,13 @@ function mod:tidalWave()
 	self:ScheduleMethod(45, "tidalWave")
 end
 
-function mod:tidalWaveAddTime()
+function mod:PhaseChangeAddTime()
 	local elapsed, total = timerNextTidal:GetTime();
 	local currentRemainingTidalTimer = total - elapsed
 	timerNextTidal:AddTime(2)
 	self:UnscheduleMethod("tidalWave")
 	self:ScheduleMethod(currentRemainingTidalTimer+2, "tidalWave")
+	berserkTimer:AddTime(2)
 end
 
 function mod:OnCombatStart(delay)
@@ -86,9 +88,27 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(37961) then -- Corruption transform on boss
 		warnPhase:Show(L.Nature)
 		timerNextTomb:Stop()
-		timerNextSludge:Start(10)
-		self:tidalWaveAddTime()
+		if GetTime() - LastTombSludge <= 32 then
+			timerNextSludge:Start(42)
+		else 
+			timerNextSludge:Start(12)
+		end
+		self:PhaseChangeAddTime()
 		-- timerMark:Start(16, markOfC, "10%")
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(37961) then -- Losing Corruption transform on boss
+		warnPhase:Show(L.Frost)
+		timerNextSludge:Stop()
+		if GetTime() - LastTombSludge <= 32 then
+			timerNextTomb:Start(42)
+		else 
+			timerNextTomb:Start(12)
+		end
+		self:PhaseChangeAddTime()
+		-- timerMark:Start(16, markOfH, "10%")
 	end
 end
 
@@ -111,24 +131,16 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(37961) then -- Losing Corruption transform on boss
-		warnPhase:Show(L.Frost)
-		timerNextSludge:Stop()
-		timerNextTomb:Start(10)
-		self:tidalWaveAddTime()
-		-- timerMark:Start(16, markOfH, "10%")
-	end
-end
-
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(38235, 351290, 351291) then
 		warnTomb:Show(args.destName)
 		timerNextTomb:Start()
+		LastTombSludge = GetTime()
 	elseif args:IsSpellID(38246, 351292, 351293) then
 		warnSludge:Show(args.destName)
 		timerSludge:Start(args.destName)
 		timerNextSludge:Start()
+		LastTombSludge = GetTime()
 	end
 end
 
