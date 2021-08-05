@@ -17,6 +17,7 @@ local warnEmerge		= mod:NewAnnounce("WarnEmerge", 1, "Interface\\AddOns\\DBM-Cor
 local warnWhirl			= mod:NewSpellAnnounce(37363, 2)
 local warnFocusedFire	= mod:NewTargetAnnounce(351300, 2)
 
+local warnFocusedYou	= mod:NewSpecialWarningYou(351300)
 local specWarnSpout		= mod:NewSpecialWarningSpell(37433)
 
 local timerSubmerge		= mod:NewTimer(135, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
@@ -38,7 +39,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(7731) then
 		DBM:AddMsg("Fishing applied - Pull inc")
 	elseif args:IsSpellID(351300) then
-		warnFocusedFire:Show(args.destName)
+		if args.destName == UnitName("player") then
+			warnFocusedYou:Show()
+		else
+			warnFocusedFire:Show(args.destName)
+		end
 	end
 end
 
