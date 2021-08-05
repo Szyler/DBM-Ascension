@@ -26,6 +26,7 @@ local WarnNova			= mod:NewSpellAnnounce(30616, 2)
 local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
 local WarnQuake			= mod:NewSpellAnnounce(85026, 2)
 local specWarnDebris	= mod:NewSpecialWarningYou(85030)
+local specWarnConflag	= mod:NewSpecialWarningYou(351085)
 local warnMortalCleave	= mod:NewAnnounce(L.MagCleave, 2, 85178)
 local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
 local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
@@ -117,12 +118,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFelShock:Start()
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(351085) then
+		if args.destName == UnitName("player") then
+			specWarnConflag:Show()
+		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(30619) and args.amount >= 4 then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(351085) then
+		if args.destName == UnitName("player") then
+			specWarnConflag:Show()
+		end
 	end
 end
 
