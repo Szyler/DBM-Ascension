@@ -91,3 +91,7 @@ v5.06 13/06/2021
 - Fixed the timer on Curator being off after the first Evocate
 - Fixed Big Bad Wolf timers of Red Riding Hood mechanic
 ----------------------------------------------------------------------------------------------------
+v5.07 xx/07/2021 
+- Added all SSC bosses
+- Fixed icon for Big Bad Wolf opera event's Red Riding Hood target in Karazhan
+----------------------------------------------------------------------------------------------------
