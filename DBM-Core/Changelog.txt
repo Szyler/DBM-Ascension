@@ -91,7 +91,11 @@ v5.06 13/06/2021
 - Fixed the timer on Curator being off after the first Evocate
 - Fixed Big Bad Wolf timers of Red Riding Hood mechanic
 ----------------------------------------------------------------------------------------------------
-v5.07 xx/07/2021 
+v5.07 05/08/2021 
 - Added all SSC bosses
 - Fixed icon for Big Bad Wolf opera event's Red Riding Hood target in Karazhan
+- Fixed Magtheridon's Hand and Fingers timers to only appear in Ascended
+- Added warning for standing in Conflaguration on Magtheridon
+- Fixed lua error in Shadow Labs
+- Removed warning for Immolate on Garr (casts too often with no danger)
 ----------------------------------------------------------------------------------------------------
