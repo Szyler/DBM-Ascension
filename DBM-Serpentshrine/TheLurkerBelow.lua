@@ -7,9 +7,10 @@ mod:RegisterCombat("combat", 21217)
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
-	"SPELL_MISSED",
-	"SPELL_AURA_APPLIED"
+	"SPELL_MISSED"
 )
 
 local warnSubmerge		= mod:NewAnnounce("WarnSubmerge", 2, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
@@ -27,6 +28,10 @@ local timerSpout		= mod:NewBuffActiveTimer(22, 37433)
 local timerNextWhirl	= mod:NewNextTimer(20, 37363) --Whirl has 20s next timer, but pushed back by other casts. Need "GetTimer" to push it back (see maiden/mag)
 local timerGeyser		= mod:NewNextTimer(20, 37478) --heroic: 351335, Mythic:351336
 
+--Ascended mechanics:
+local timerTentacle		= mod:NewNextTimer(10, 26391) 
+local warnSmash			= mod:NewSpecialWarningSpell(351322)
+
 function mod:OnCombatStart(delay)
 	submerged = false
 	timerNextWhirl:Start(6-delay)
@@ -36,9 +41,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(7731) then
-		DBM:AddMsg("Fishing applied - Pull inc")
-	elseif args:IsSpellID(351300) then
+	-- if args:IsSpellID(7731) then
+	-- 	DBM:AddMsg("Fishing applied - Pull inc")
+	-- else
+	if args:IsSpellID(351300) then
 		if args.destName == UnitName("player") then
 			warnFocusedYou:Show()
 		else
@@ -58,15 +64,25 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, src)
 		timerGeyser:Start(30)
 	elseif msg:find(L.EmoteSubmerge) then
 		timerEmerge:Start()
+		timerTentacle:Start()
 		timerSubmerge:Stop()
 		timerNextSpout:Stop()
 		timerGeyser:Stop()
-		timerNextWhirl:Stop(0)
+		timerNextWhirl:Stop()
 	elseif msg:find(L.EmoteBreath) then
 		timerNextWhirl:Start(25)
 		specWarnSpout:Show()
 		timerSpout:Start()
 		timerNextSpout:Start()
+		if timerGeyser:GetTime() < 25 then
+			timerGeyser:Stop()
+		end
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(351322) then
+		warnSmash:Show()
 	end
 end
 
