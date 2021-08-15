@@ -250,7 +250,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.DBM_VASHJ_DISCHARGE or msg:find(L.DBM_VASHJ_DISCHARGE) then
 		timerDischarge:Start()
 		specWarnDischarge:Show()
+		if vb.self.phase == 2 then
 		timerSiren:Start()
+		end
 	elseif msg == L.DBM_VASHJ_ELITE or msg:find(L.DBM_VASHJ_ELITE) then
 		self:NagaSpawn()
 	elseif msg == L.DBM_VASHJ_HYDRA or msg:find(L.DBM_VASHJ_HYDRA) then
