@@ -301,7 +301,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
-	elseif msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3) then
+	elseif msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3) and self.vb.phase == 2 then
 		self.vb.phase = 3
 		warnPhase3:Show()
 		timerNaga:Cancel()
