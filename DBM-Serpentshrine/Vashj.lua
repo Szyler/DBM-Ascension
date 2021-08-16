@@ -69,7 +69,7 @@ local warnSong			= mod:NewTargetAnnounce(83567, 3)
 local timerPhoenix		= mod:NewNextTimer(16, 351414)
 local timerKaelRP		= mod:NewTimer(35, "Kael'thas Roleplay", "Interface\\Icons\\achievement_character_bloodelf_male")
 
-local berserkTimer		= mod:NewBerserkTimer(720)
+local berserkTimer		= mod:NewBerserkTimer(900)
 
 mod:AddBoolOption("RangeFrame", true)
 -- mod:AddBoolOption(L.ChargeIcon)
