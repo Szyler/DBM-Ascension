@@ -70,7 +70,6 @@ local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
 local warnSong			= mod:NewTargetAnnounce(83567, 3)
 
 local timerPhoenix		= mod:NewNextTimer(16, 351414)
-local timerKaelRP		= mod:NewTimer(35, "Kael'thas Roleplay", "Interface\\Icons\\achievement_character_bloodelf_male")
 
 local berserkTimer		= mod:NewBerserkTimer(900)
 
@@ -338,7 +337,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerSporebat:Start(10)
 		if mod:IsDifficulty("heroic10", "heroic25") then
 			timerPhoenix:Start(60)
-			timerKaelRP:Schedule(27)
 			timerGenerator:Start(25)
 			timerCharge:Start(15)
 		else
