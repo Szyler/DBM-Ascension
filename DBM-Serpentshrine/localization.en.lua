@@ -198,6 +198,8 @@ L:SetTimerLocalization{
 	TimerNaga				= "Next Naga Elite (%d)",
 	TimerEnchantress		= "Next Enchantress (%d)",
 	ChargeExplosion			= "Charge Explosion",
+	Discharge				= "Static Discharge",
+	NextGenerator			= "Next Shield Generator"
 }
 
 L:SetOptionLocalization{
@@ -220,7 +222,10 @@ L:SetOptionLocalization{
 	AimedYellOpt        	= "Yell when you are affected by $spell:351310",
 	LootIcon				= "Set icon on the target carrying Tainted Core",
 	LootYellOpt        		= "Yell when you are carrying Tainted Core",
-	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2"
+	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2",
+	specWarnSiren			= "Show special warning for when Coilfang Siren spawns",
+	Discharge				= "Show timer for when Static Charge will deal its damage",
+	NextGenerator			= "Show timer for when Shield Generator activates in Phase 3"
 }
 
 L:SetMiscLocalization{

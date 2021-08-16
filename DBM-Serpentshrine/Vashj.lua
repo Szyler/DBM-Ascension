@@ -46,7 +46,7 @@ local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\S
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress", "Interface\\Icons\\Spell_Holy_FlashHeal")
-local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spell_Nature_LightningOverload")
+local timerGenerator	= mod:NewTimer(30, "NextGenerator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerSporebat		= mod:NewTimer(23, "Next Sporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
