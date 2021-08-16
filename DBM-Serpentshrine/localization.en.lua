@@ -200,7 +200,8 @@ L:SetTimerLocalization{
 	TimerEnchantress		= "Next Enchantress (%d)",
 	ChargeExplosion			= "Charge Explosion",
 	Discharge				= "Static Discharge",
-	NextGenerator			= "Next Shield Generator"
+	NextGenerator			= "Next Shield Generator",
+	NextSporebat			= "Next Toxic Sporebat"
 }
 
 L:SetOptionLocalization{
@@ -224,9 +225,11 @@ L:SetOptionLocalization{
 	LootIcon				= "Set icon on the target carrying Tainted Core",
 	LootYellOpt        		= "Yell when you are carrying Tainted Core",
 	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2",
-	specWarnSiren			= "Show special warning for when Coilfang Siren spawns",
-	Discharge				= "Show timer for when Static Charge will deal its damage",
-	NextGenerator			= "Show timer for when Shield Generator activates in Phase 3"
+	SpecWarnSiren			= "Show special warning for when Coilfang Siren spawns",
+	Discharge				= "Show timer for when Shield Generator will deal its damage",
+	NextGenerator			= "Show timer for when Shield Generator activates in Phase 3",
+	ChargeExplosion			= "Show timer for Charge Explosion",
+	NextSporebat			= "Show timer for when next Toxic Sporebat will spawn in Phase 3"
 }
 
 L:SetMiscLocalization{
@@ -241,5 +244,4 @@ L:SetMiscLocalization{
 	ChargeYell				= "Static Charge on me!",
 	AimedYell				= "Aimed Shot on me!",
 	LootYell				= "I am carrying the Tainted Core!",
-	ChargeExplosion			= "Show timer for Charge Explosion",
 }

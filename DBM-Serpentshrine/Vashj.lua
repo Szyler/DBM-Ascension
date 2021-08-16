@@ -48,7 +48,7 @@ local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement
 local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress", "Interface\\Icons\\Spell_Holy_FlashHeal")
 local timerGenerator	= mod:NewTimer(30, "NextGenerator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
-local timerSporebat		= mod:NewTimer(23, "Next Sporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
+local timerSporebat		= mod:NewTimer(23, "NextSporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
 -- Ascended Mechanics
 
