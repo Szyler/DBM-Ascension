@@ -108,7 +108,7 @@ function mod:TaintedSpawn()
 	self.vb.elementalCount = self.vb.elementalCount + 1
 end
 
-function function warnChargeTargets()
+local function warnChargeTargets()
 	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
 	timerCharge:Start()
 	timerChargeDmg:Start()
