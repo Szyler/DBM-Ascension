@@ -144,10 +144,10 @@ function mod:OnCombatStart(delay)
 		timerCharge:Start(10-delay)
 		timerParasite:Start(40-delay)
 	else
-		timerMulti:Start(10-delay)
-		timerEnvenom:Start(25-delay)
-		timerAimedShot:Start(35-delay)
-		timerCharge:Start(15-delay)
+		timerMulti:Start(22-delay)
+		timerEnvenom:Start(19-delay)
+		timerAimedShot:Start(25-delay)
+		timerCharge:Start(10-delay)
 	end
 	if IsInGroup() and DBM:GetRaidRank() == 2 then
 		lootmethod = GetLootMethod()
