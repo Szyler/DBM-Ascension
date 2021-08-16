@@ -50,7 +50,7 @@ local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
 local timerMark			= mod:NewTargetTimer(6, 351310)
 -- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
-local timerElementalCD	= mod:NewTimer(75, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
+local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress", "Interface\\Icons\\Spell_Holy_FlashHeal")
@@ -119,7 +119,6 @@ end
 function mod:TaintedSpawn()
 	timerElementalCD:Stop()
 	warnElemental:Show(tostring(self.vb.elementalCount))
-	timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
 	self.vb.elementalCount = self.vb.elementalCount + 1
 end
 
@@ -274,6 +273,8 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		self:HydraSpawn()
 	elseif msg == L.DBM_VASHJ_TAINTED or msg:find(L.DBM_VASHJ_TAINTED) then
 		self:TaintedSpawn()
+	elseif msg == L.DBM_VASHJ_TAINTED_DEAD or msg:find(L.DBM_VASHJ_TAINTED_DEAD) then
+		timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
 	end
 end
 	

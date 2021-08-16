@@ -188,6 +188,7 @@ L:SetWarningLocalization{
 	WarnLoot			= "Tainted Core on >%s<",
 	-- WarnLootYou			= "Tainted Core on YOU",
 	SpecWarnElemental	= "Tainted Elemental - Switch!"
+	WarnSporebat		= "Toxic Sporebat"
 }
 
 L:SetTimerLocalization{
@@ -204,6 +205,7 @@ L:SetOptionLocalization{
 	WarnHydra				= "Show pre-warning for next Hydra",
 	WarnNaga				= "Show pre-warning for next Naga Elite",
 	WarnEnchantress			= "Show pre-warning for next Enchantress",
+	WarnSporebat			= "Show pre-warning for next Sporebat",
 	WarnShield				= "Show warning for Phase 2 shield down",
 	WarnLoot				= "Show warning for Tainted Core loot",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
@@ -228,6 +230,7 @@ L:SetMiscLocalization{
 	DBM_VASHJ_ELITE			= "Coilfang Elite appear to protect the Matron!",
 	DBM_VASHJ_HYDRA			= "A Coilfang Hydra joins the fight!",
 	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
+	DBM_VASHJ_TAINTED_DEAD	= "The Tainted Elemental has been slain! Quickly use its core to shut down the Shield Generator!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
 	ChargeYell				= "Static Charge on me!",
 	AimedYell				= "Aimed Shot on me!",
