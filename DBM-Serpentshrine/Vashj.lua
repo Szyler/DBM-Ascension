@@ -127,7 +127,7 @@ function mod:SporebatSpawn()
 	if BatCD < 2 then		-- Toxic Sporebat CD is capped at 2 seconds, it does not decay below that.
 		BatCD = 2
 	end
-	self:ScheduleMethod(BatCD,"SporebatSpawn");
+	self:ScheduleMethod(BatCD,"SporebatSpawn")
 end
 	
 
