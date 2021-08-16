@@ -16,7 +16,8 @@ mod:RegisterEvents(
 	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL",
 	"CHAT_MSG_LOOT",
-	"CHAT_MSG_RAID_BOSS_EMOTE"
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"UNIT_AURA"
 )
 
 local warnPhase2		= mod:NewPhaseAnnounce(2)
@@ -81,6 +82,7 @@ local lootmethod
 local ChargeTargets = {}
 local BatCD = 24;
 local lastTriggerTime = 0;
+local TaintedCoreTarget;
 
 
 function mod:HydraSpawn()
@@ -335,9 +337,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-function mod:CHAT_MSG_LOOT(msg)
-	local player, itemID = msg:match(L.LootMsg)
-	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
-		warnLoot:Show(player)
-	end
+function mod:UNIT_AURA(unit)
+    local name = UnitName(unit);
+    if (name ~= TaintedCoreTarget) and UnitDebuff(unit,"Tainted Core") then
+        TaintedCoreTarget = name;
+        warnLoot:Show(name)
+    end
 end
