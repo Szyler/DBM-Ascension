@@ -32,11 +32,9 @@ local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "INTERFACE\\ICONS\\Achieveme
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4, "Interface\\Icons\\Spell_Holy_FlashHeal")
 
-
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
-
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
@@ -57,10 +55,11 @@ local timerSporebat		= mod:NewTimer(23, "Next Sporebat", "Interface\\Icons\\Abil
 local timerParasite		= mod:NewNextTimer(45, 83568)
 local timerSiren		= mod:NewNextTimer(17, 83566)
 local timerPhoenix		= mod:NewNextTimer(16, 351414) 
+
 local warnParasite		= mod:NewTargetAnnounce(83568, 3)        
 local warnSong			= mod:NewTargetAnnounce(83567, 3) 
-local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
 
+local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
 
 local berserkTimer		= mod:NewBerserkTimer(900)
 
@@ -208,6 +207,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerParasite:Start()
 	elseif args.spellId == 83567 then
 		warnSong:Show(args.destName)
+		specWarnSiren:Show()
 	end
 end
 
