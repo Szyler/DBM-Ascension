@@ -214,6 +214,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args.spellId == 83567 then
 		warnSong:Show(args.destName)
 		specWarnSiren:Show()
+	elseif args.spellId == 85411 then
+		specWarnToxic:Show()
 	end
 end
 
