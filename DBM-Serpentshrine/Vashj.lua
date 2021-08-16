@@ -31,6 +31,7 @@ local warnElemental		= mod:NewAnnounce("WarnElemental", 4, "Interface\\Icons\\Sp
 local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4, "Interface\\Icons\\Spell_Holy_FlashHeal")
+local warnLoot			= mod:NewAnnounce("WarnLoot", 4, "Interface\\Icons\\Spell_Nature_ElementalShields")
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
@@ -333,3 +334,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
+function mod:CHAT_MSG_LOOT(msg)
+	local player, itemID = msg:match(L.LootMsg)
+	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
+		warnLoot:Show(player)
+	end
+end

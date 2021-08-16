@@ -211,7 +211,7 @@ L:SetOptionLocalization{
 	WarnEnchantress			= "Show pre-warning for next Enchantress",
 	WarnSporebat			= "Show pre-warning for next Sporebat",
 	WarnShield				= "Show warning for Phase 2 shield down",
-	WarnLoot				= "Show warning for Tainted Core loot",
+	WarnLoot				= "Show warning for who loots the Tainted Core",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
 	TimerElemental			= "Show timer for Tainted Elemental cooldown",
 	TimerHydra				= "Show timer for next Hydra",
