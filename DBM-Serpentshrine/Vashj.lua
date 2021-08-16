@@ -80,6 +80,8 @@ mod.vb.elementalCount = 1
 local lootmethod
 local ChargeTargets = {}
 local BatCD = 24;
+local lastTriggerTime = 0;
+
 
 function mod:HydraSpawn()
 	timerHydra:Stop()
@@ -200,9 +202,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 6)
 		end
-	elseif args:IsSpellID(83565) then
+	elseif args:IsSpellID(83565) and (GetTime() - lastTriggerTime) >= 35 then
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:EnchantressSpawn()
+		lastTriggerTime = GetTime()
 	elseif args.spellId	== 83568 then
 		warnParasite:Show(args.destName)
 		timerParasite:Start()
