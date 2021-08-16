@@ -20,16 +20,12 @@ mod:RegisterEvents(
 )
 
 local warnCharge		= mod:NewTargetAnnounce(38280, 4)
---local warnEntangle		= mod:NewSpellAnnounce(38316, 3)
 local warnPhase2		= mod:NewPhaseAnnounce(2)
 local warnElemental		= mod:NewAnnounce("WarnElemental", 4, "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")
 local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4, "Interface\\Icons\\Spell_Holy_FlashHeal")
---local warnShield		= mod:NewAnnounce("WarnShield", 3)
 
---local warnLoot			= mod:NewAnnounce("WarnLoot", 4)
---local warnLootYou		= mod:NewSpecialWarningYou(38132)
 
 local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
@@ -40,16 +36,13 @@ local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Abil
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
--- local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
--- local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
 
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
 local timerMark			= mod:NewTargetTimer(6, 351310)
--- local timerElemental	= mod:NewTimer(22, "TimerElementalActive")--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
 local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
@@ -74,7 +67,6 @@ local timerPhoenix		= mod:NewNextTimer(16, 351414)
 local berserkTimer		= mod:NewBerserkTimer(900)
 
 mod:AddBoolOption("RangeFrame", true)
--- mod:AddBoolOption(L.ChargeIcon)
 mod:AddBoolOption(L.LootIcon)
 mod:AddBoolOption(L.AimedIcon)
 mod:AddBoolOption(L.ChargeYellOpt)
@@ -83,12 +75,10 @@ mod:AddBoolOption(L.LootYellOpt)
 mod:AddBoolOption("AutoChangeLootToFFA", false)
 
 mod.vb.phase = 1
--- mod.vb.shieldLeft = 4
 mod.vb.nagaCount = 1
 mod.vb.enchantressCount = 1
 mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
--- local elementals = {}
 local lootmethod
 local ChargeTargets = {}
 local BatCD = 24;
@@ -140,9 +130,7 @@ end
 	
 
 function mod:OnCombatStart(delay)
-	-- table.wipe(elementals)
 	self.vb.phase = 1
-	-- self.vb.shieldLeft = 4
 	self.vb.nagaCount = 1
 	self.vb.enchantressCount = 1
 	self.vb.hydraCount = 1
@@ -196,9 +184,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 		timerCharge:Start()
 		end
-		-- if self.Options.ChargeIcon then
-		-- 	self:SetIcon(args.destName, 1, 20)
-		-- end
 	elseif args:IsSpellID(38509) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
@@ -307,7 +292,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.enchantressCount = 1
 		self.vb.hydraCount = 1
 		self.vb.elementalCount = 1
-		-- self.vb.shieldLeft = 4
 		warnPhase2:Show()
 		timerCharge:Cancel()
 		timerAimedShot:Cancel()
@@ -351,20 +335,3 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
---function mod:CHAT_MSG_LOOT(msg)
-	-- DBM:AddMsg(msg) --> Meridium receives loot: [Tainted Core]
---	local player, itemID = msg:match(L.LootMsg)
---	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
---		if player == UnitName("player") then
---			if self.Options.LootYellOpt then
---				SendChatMessage(L.LootYell, "YELL")
---			end
---			warnLootYou:Show()
---		else
---			warnLoot:Show(player)
---		end
---		if self.Options.LootIcon then
---			self:SetIcon(player, 6)
---		end
---	end
---end
