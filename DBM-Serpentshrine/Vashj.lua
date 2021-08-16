@@ -35,13 +35,15 @@ local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
 local warnMulti			= mod:NewSpellAnnounce(38310, 3)
 local warnEnvenom		= mod:NewTargetAnnounce(351381, 3)
+local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
+local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
 -- local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
 local specWarnToxic		= mod:NewSpecialWarningMove(38575)
 -- local specWarnHeal		= mod:NewSpecialWarning("SpecWarnHealer") -- 83565
-local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
+
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
 local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
@@ -56,6 +58,7 @@ local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spe
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerMulti		= mod:NewNextTimer(15, 38310)
 local timerEnvenom		= mod:NewNextTimer(30, 351381)
+local timerSporebat		= mod:NewTimer(23, "Next Sporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
 -- Ascended Mechanics
 
@@ -89,6 +92,7 @@ mod.vb.elementalCount = 1
 -- local elementals = {}
 local lootmethod
 local ChargeTargets = {}
+local BatCD = 24;
 
 function mod:HydraSpawn()
 	timerHydra:Stop()
@@ -125,6 +129,17 @@ function mod:warnChargeTargets()
 	timerChargeDmg:Start()
 	table.wipe(ChargeTargets)
 end
+
+function mod:SporebatSpawn()
+	BatCD = BatCD - 1
+	timerSporebat:Start(BatCD)
+	warnSporebat:Show()
+	if BatCD < 2 then		-- Toxic Sporebat CD is capped at 2 seconds, it does not decay below that.
+		BatCD = 2
+	end
+	self:ScheduleMethod("SporebatSpawn",BatCD);
+end
+	
 
 function mod:OnCombatStart(delay)
 	-- table.wipe(elementals)
@@ -318,6 +333,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:UnscheduleMethod("TaintedSpawn")
 		self:UnscheduleMethod("HydraSpawn")
+		self:ScheduleMethod("SporebatSpawn")
+		timerSporebat:Start(10)
 		if mod:IsDifficulty("heroic10", "heroic25") then
 			timerPhoenix:Start(60)
 			timerKaelRP:Schedule(27)
