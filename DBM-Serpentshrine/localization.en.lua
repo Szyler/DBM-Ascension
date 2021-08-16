@@ -180,10 +180,10 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnElemental		= "Tainted Elemental Soon (%s)",
-	WarnHydra			= "Hydra Soon (%s)",
-	WarnNaga			= "Naga Elite Soon (%s)",
-	WarnEnchantress		= "Enchantress Soon (%s)",
+	WarnElemental		= "Tainted Elemental (%s)",
+	WarnHydra			= "Hydra (%s)",
+	WarnNaga			= "Naga Elite (%s)",
+	WarnEnchantress		= "Enchantress (%s)",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
 	-- WarnLootYou			= "Tainted Core on YOU",
