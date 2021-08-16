@@ -292,8 +292,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.hydraCount = 1
 		self.vb.elementalCount = 1
 		warnPhase2:Show()
-		timerCharge:Cancel()
-		timerAimedShot:Cancel()
 		timerNaga:Start(13, tostring(self.vb.nagaCount))
 		timerEnchantress:Start(25, tostring(self.vb.enchantressCount))
 		timerElementalCD:Start(65, tostring(self.vb.elementalCount))
