@@ -33,6 +33,7 @@ local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "INTERFACE\\ICONS\\Achieveme
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4, "Interface\\Icons\\Spell_Holy_FlashHeal")
 local warnLoot			= mod:NewAnnounce("WarnLoot", 4, "Interface\\Icons\\Spell_Nature_ElementalShields")
+local warnPhoenix		= mod:NewAnnounce("WarnPhoenix", 3, "Interface\\Icons\\INV_Misc_PheonixPet_01")
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
@@ -276,6 +277,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnSiren:Show()
 	elseif args.spellID == 351393 then
 		timerPhoenix:Start()
+		warnPhoenix:Show()
 	end
 end
 
