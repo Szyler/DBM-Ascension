@@ -188,6 +188,7 @@ L:SetWarningLocalization{
 	WarnLoot			= "Tainted Core on >%s<",
 	-- WarnLootYou			= "Tainted Core on YOU",
 	SpecWarnElemental	= "Tainted Elemental - Switch!",
+	SpecWarnSiren		= "Coilfang Siren - Switch!",
 	WarnSporebat		= "Toxic Sporebat"
 }
 
