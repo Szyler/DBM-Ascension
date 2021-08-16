@@ -19,20 +19,19 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
-local warnCharge		= mod:NewTargetAnnounce(38280, 4)
 local warnPhase2		= mod:NewPhaseAnnounce(2)
+local warnPhase3		= mod:NewPhaseAnnounce(3)
+local warnCharge		= mod:NewTargetAnnounce(38280, 4)
+local warnEnvenom		= mod:NewTargetAnnounce(351381, 3)
+local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
+local warnMulti			= mod:NewSpellAnnounce(38310, 3)
+local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
+local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 local warnElemental		= mod:NewAnnounce("WarnElemental", 4, "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")
 local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 4, "Interface\\Icons\\Spell_Holy_FlashHeal")
 
-
-local warnPhase3		= mod:NewPhaseAnnounce(3)
-local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
-local warnMulti			= mod:NewSpellAnnounce(38310, 3)
-local warnEnvenom		= mod:NewTargetAnnounce(351381, 3)
-local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
-local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
 local specWarnCharge	= mod:NewSpecialWarningMove(38280)
 local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
@@ -40,29 +39,28 @@ local specWarnToxic		= mod:NewSpecialWarningMove(38575)
 
 
 local timerCharge		= mod:NewNextTimer(30, 38280)
-local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
 local timerAimedShot	= mod:NewNextTimer(30, 351388)
+local timerMulti		= mod:NewNextTimer(15, 38310)
+local timerEnvenom		= mod:NewNextTimer(30, 351381)
 local timerMark			= mod:NewTargetTimer(6, 351310)
+local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
 local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
 local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress", "Interface\\Icons\\Spell_Holy_FlashHeal")
 local timerGenerator	= mod:NewTimer(30, "Next Generator", "Interface\\Icons\\Spell_Nature_LightningOverload")
 local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
-local timerMulti		= mod:NewNextTimer(15, 38310)
-local timerEnvenom		= mod:NewNextTimer(30, 351381)
 local timerSporebat		= mod:NewTimer(23, "Next Sporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
 -- Ascended Mechanics
 
-local warnParasite		= mod:NewTargetAnnounce(83568, 3)
 local timerParasite		= mod:NewNextTimer(45, 83568)
-
-local timerSiren		= mod:NewNextTimer(17, 83566)          
+local timerSiren		= mod:NewNextTimer(17, 83566)
+local timerPhoenix		= mod:NewNextTimer(16, 351414) 
+local warnParasite		= mod:NewTargetAnnounce(83568, 3)        
+local warnSong			= mod:NewTargetAnnounce(83567, 3) 
 local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
-local warnSong			= mod:NewTargetAnnounce(83567, 3)
 
-local timerPhoenix		= mod:NewNextTimer(16, 351414)
 
 local berserkTimer		= mod:NewBerserkTimer(900)
 
