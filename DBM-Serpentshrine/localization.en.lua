@@ -205,11 +205,11 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnElemental			= "Show pre-warning for next Tainted Elemental",
-	WarnHydra				= "Show pre-warning for next Hydra",
-	WarnNaga				= "Show pre-warning for next Naga Elite",
-	WarnEnchantress			= "Show pre-warning for next Enchantress",
-	WarnSporebat			= "Show pre-warning for next Sporebat",
+	WarnElemental			= "Show warning for Tainted Elemental spawn",
+	WarnHydra				= "Show warning for Hydra spawn",
+	WarnNaga				= "Show warning for Naga Elite spawn",
+	WarnEnchantress			= "Show warning for Enchantress spawn",
+	WarnSporebat			= "Show warning for Toxic Sporebat spawn",
 	WarnShield				= "Show warning for Phase 2 shield down",
 	WarnLoot				= "Show warning for who loots the Tainted Core",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
