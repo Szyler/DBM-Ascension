@@ -86,8 +86,8 @@ local TaintedCoreTarget;
 
 function mod:HydraSpawn()
 	timerHydra:Stop()
-	warnHydra:Show(tostring(self.vb.hydraCount))
-	timerHydra:Start(nil, tostring(self.vb.hydraCount))
+	warnHydra:Show()
+	timerHydra:Start()
 end
 
 function mod:NagaSpawn()
@@ -99,8 +99,8 @@ end
 
 function mod:EnchantressSpawn()
 	timerEnchantress:Stop()
-	warnEnchantress:Show(tostring(self.vb.enchantressCount))
-	timerEnchantress:Start(nil, tostring(self.vb.enchantressCount))
+	warnEnchantress:Show()
+	timerEnchantress:Start()
 	self:ScheduleMethod(47,"EnchantressSpawn")
 end
 
@@ -289,9 +289,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.elementalCount = 1
 		warnPhase2:Show()
 		timerNaga:Start(13, tostring(self.vb.nagaCount))
-		timerEnchantress:Start(25, tostring(self.vb.enchantressCount))
-		timerElementalCD:Start(65, tostring(self.vb.elementalCount))
-		timerHydra:Start(35, tostring(self.vb.hydraCount))
+		timerEnchantress:Start(25)
+		timerElementalCD:Start()
+		timerHydra:Start(35)
 		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
