@@ -131,8 +131,6 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.nagaCount = 1
-	self.vb.enchantressCount = 1
-	self.vb.hydraCount = 1
 	self.vb.elementalCount = 1
 	if mod:IsDifficulty("heroic10", "heroic25") then
 		timerMulti:Start(22-delay)
