@@ -146,7 +146,7 @@ function mod:OnCombatStart(delay)
 		timerAimedShot:Start(25-delay)
 		timerCharge:Start(10-delay)
 	end
-	if IsInGroup() and DBM:GetRaidRank() == 2 then
+	if DBM:GetRaidRank() == 2 then
 		lootmethod = GetLootMethod()
 	end
 	berserkTimer:Start(-delay)
