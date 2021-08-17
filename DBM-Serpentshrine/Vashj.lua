@@ -119,11 +119,11 @@ end
 
 function mod:SporebatSpawn()
 	BatCD = BatCD - 1
-	timerSporebat:Start(BatCD)
-	warnSporebat:Show()
 	if BatCD <= 2 then		-- Toxic Sporebat CD is capped at 2 seconds, it does not decay below that.
 		BatCD = 2
 	end
+	timerSporebat:Start(BatCD)
+	warnSporebat:Show()
 	self:ScheduleMethod(BatCD,"SporebatSpawn")
 end
 	
@@ -292,7 +292,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerEnchantress:Start(25)
 		timerElementalCD:Start()
 		timerHydra:Start(35)
-		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
 	elseif (msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3)) and self.vb.phase == 2 then
@@ -320,7 +320,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerGenerator:Start(25)
 			timerCharge:Start(15)
 		end
-		if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			if lootmethod then
 				SetLootMethod(lootmethod)
 			end
