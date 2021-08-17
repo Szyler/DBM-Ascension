@@ -157,7 +157,7 @@ function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-	if IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+	if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 		if lootmethod then
 			SetLootMethod(lootmethod)
 		end
