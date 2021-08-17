@@ -76,8 +76,6 @@ mod:AddBoolOption("AutoChangeLootToFFA", false)
 
 mod.vb.phase = 1
 mod.vb.nagaCount = 1
-mod.vb.enchantressCount = 1
-mod.vb.hydraCount = 1
 mod.vb.elementalCount = 1
 local lootmethod
 local ChargeTargets = {}
@@ -281,13 +279,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 22009 then
-		self.vb.elementalCount = self.vb.elementalCount + 1
-		warnElemental:Schedule(70, tostring(self.vb.elementalCount))
-	end
-end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
@@ -323,7 +314,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:UnscheduleMethod("TaintedSpawn")
 		self:UnscheduleMethod("HydraSpawn")
-		self:ScheduleMethod("SporebatSpawn")
+		self:ScheduleMethod(10, "SporebatSpawn")
 		timerSporebat:Start(10)
 		if mod:IsDifficulty("heroic10", "heroic25") then
 			timerPhoenix:Start(60)
