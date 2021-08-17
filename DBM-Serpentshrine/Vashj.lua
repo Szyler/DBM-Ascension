@@ -88,7 +88,6 @@ function mod:HydraSpawn()
 	timerHydra:Stop()
 	warnHydra:Show(tostring(self.vb.hydraCount))
 	timerHydra:Start(nil, tostring(self.vb.hydraCount))
-	self.vb.hydraCount = self.vb.hydraCount + 1
 end
 
 function mod:NagaSpawn()
@@ -103,7 +102,6 @@ function mod:EnchantressSpawn()
 	warnEnchantress:Show(tostring(self.vb.enchantressCount))
 	timerEnchantress:Start(nil, tostring(self.vb.enchantressCount))
 	self:ScheduleMethod(47,"EnchantressSpawn")
-	self.vb.enchantressCount = self.vb.enchantressCount + 1
 end
 
 function mod:TaintedSpawn()
@@ -288,8 +286,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerCharge:Cancel()
 		self.vb.phase = 2
 		self.vb.nagaCount = 1
-		self.vb.enchantressCount = 1
-		self.vb.hydraCount = 1
 		self.vb.elementalCount = 1
 		warnPhase2:Show()
 		timerNaga:Start(13, tostring(self.vb.nagaCount))
