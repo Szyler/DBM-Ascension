@@ -213,6 +213,7 @@ L:SetOptionLocalization{
 	WarnSporebat			= "Show warning for Toxic Sporebat spawn",
 	WarnShield				= "Show warning for Phase 2 shield down",
 	WarnLoot				= "Show warning for who loots the Tainted Core",
+	WarnPhoenix				= "Show warning for when Phoenix will rebirth on Ascended",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
 	TimerElemental			= "Show timer for Tainted Elemental cooldown",
 	TimerHydra				= "Show timer for next Hydra",
