@@ -181,9 +181,9 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnElemental		= "Tainted Elemental (%s)",
-	WarnHydra			= "Hydra (%s)",
+	WarnHydra			= "Hydra",
 	WarnNaga			= "Naga Elite (%s)",
-	WarnEnchantress		= "Enchantress (%s)",
+	WarnEnchantress		= "Enchantress",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
 	-- WarnLootYou			= "Tainted Core on YOU",
