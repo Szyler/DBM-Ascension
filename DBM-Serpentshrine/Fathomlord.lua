@@ -24,23 +24,32 @@ local warnBlessingTides	= mod:NewAnnounce(L.BlessingTides, 2, 351302)
 local specWarnHeal		= mod:NewSpellAnnounce(83535, 3)
 local specWarnTotem		= mod:NewSpecialWarning("Move from Totem!")
 
-local timerBlessingTides= mod:NewNextTimer(30, 351302)
-local timerTornado		= mod:NewNextTimer(30, 38517)
-local timerHeal			= mod:NewNextTimer(30, 83535)
-local timerFreeze		= mod:NewCDTimer(18, 38357)
-local timerHurricane	= mod:NewNextTimer(30, 83541) --351370, 351371
-local timerCataclysmic	= mod:NewCDTimer(9, 38441)
-local timerBeastWithin	= mod:NewNextTimer(30, 351373)
+local timerBlessingTides	= mod:NewNextTimer(30, 351302)
+local timerTornado			= mod:NewNextTimer(30, 38517)
+local timerHeal				= mod:NewNextTimer(30, 83535)
+local timerFreeze			= mod:NewCDTimer(20, 38357)
+local timerHurricane		= mod:NewNextTimer(30, 83541) --351370, 351371
+local timerCataclysmic		= mod:NewCDTimer(9, 38441)
+local timerBeastWithin		= mod:NewNextTimer(30, 351373)
 
 local berserkTimer		= mod:NewBerserkTimer(720)
+
+local CariPowerActive	= false
+local TidalPowerActive	= false
+local SharPowerActive	= false
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	isCasterKilled = false
-	timerHeal:Start(25)
-	timerFreeze:Start(7)
-	timerTornado:Start(30)
+	timerHeal:Start(25-delay)
+	timerFreeze:Start(8-delay)
+	timerTornado:Start(30-delay)
+	timerHurricane:Start(11-delay)
 	self:ScheduleMethod(30, "Tornado")
+	timerCataclysmic:Start(10-delay)
+	local CariPowerActive	= false
+	local TidalPowerActive	= false
+	local SharPowerActive	= false
 end
 
 function mod:Tornado()
@@ -51,10 +60,13 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(38451, 85367) then -- 85367
 		warnCariPower:Show()
+		CariPowerActive = true
 	elseif args:IsSpellID(38452, 85368) then -- 85368
 		warnTidalPower:Show()
+		TidalPowerActive = true
 	elseif args:IsSpellID(38455, 85369) then -- 85369
 		warnSharPower:Show()
+		SharPowerActive = true
 	elseif args.spellId == 38357 then -- Deep Freeze
 		if args.sourceName == L.name then --Fathom-Lord Karathress
 			timerFreeze:Start(30) -- Deep Freeze Fathom-Lord
@@ -91,7 +103,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(38441, 351365, 351366) then
+	if args:IsSpellID(38441, 351365, 351366) and CariPowerActive == true and TidalPowerActive == true and SharPowerActive == true then
 		timerCataclysmic:Start()
 	end
 end
