@@ -22,7 +22,7 @@ local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
 local WarnWatery		= mod:NewAnnounce("WarnWateryGlobule", 4)
 
-local warnBursting		= mod:NewSpecialWarning("WarnRisingBubble",3)
+local warnBubble		= mod:NewSpecialWarning("WarnRisingBubble",3)
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
@@ -30,12 +30,13 @@ local timerShield		= mod:NewNextTimer(10, 83548)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerWatery		= mod:NewTimer(30, "TimerWateryGlobule", "Interface\\Icons\\Spell_Frost_FrozenCore")
-local timerBursting		= mod:NewTimer(30, "TimerBurstingBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
+local timerBubble		= mod:NewTimer(30, "TimerBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
 local timerBurst		= mod:NewTimer(25, "TimerBurst", 83560)
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
 local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
+local warnHealthLost	= mod:NewAnnounce("Morogrim went down %.1f%%!", 3)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
@@ -50,6 +51,7 @@ local warriorAntiSpam = 0
 local MageAntiSpam = 0
 local murlocType = {[0] = "Healer", [1] = "Melee", [2] = "Frost"};
 local murlocCount = 0
+local prevHp = 0
 
 -- local function showGraveTargets()
 -- 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
@@ -63,13 +65,14 @@ function mod:OnCombatStart(delay)
 	-- timerGraveCD:Start(20-delay)
 	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
-	timerFreezing:Start(20-delay)
-	self:ScheduleMethod(20,"FreezingBubble");
+	timerWatery:Start(20-delay)
+	self:ScheduleMethod(20,"WateryGlobule");
 	if mod:IsDifficulty("heroic10", "heroic25") then
-		timerRising:Start(-delay)
+		timerBubble:Start(-delay)
 	self:ScheduleMethod(30,"RisingBubble");
 	end
 	murlocCount = 0
+	prevHp = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -111,28 +114,47 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
--- function mod:FreezingBubble()								-- nope.
-	-- self:UnscheduleMethod("FreezingBubble")
-	-- WarnFreezing:Show()
-	-- timerFreezing:Start()
-	-- self:ScheduleMethod(30,"FreezingBubble")
--- end
+function mod:WateryGlobule()							
+	self:UnscheduleMethod("WateryGlobule")
+	WarnFreezing:Show()
+	timerFreezing:Start()
+	self:ScheduleMethod(30,"WateryGlobule")
+end
 
--- function mod:RisingBubble()
-	-- self:UnscheduleMethod("RisingBubble")
-	-- local risingBubble    =self:GetUnitCreatureId(14481)
-	-- warnRising:Show()
-	-- if self.Options.RisingBubble then
-		-- self:SetIcon(risingBubble, 8)
-	-- end
-	-- timerRising:Start()
-	-- self:ScheduleMethod(30,"RisingBubble")
--- end
+function mod:RisingBubble()
+	self:UnscheduleMethod("RisingBubble")
+	local risingBubble    =self:GetUnitCreatureId(14481)
+	warnBubble:Show()
+	if self.Options.RisingBubble then
+		self:SetIcon(risingBubble, 8)
+	end
+	timerBubble:Start()
+	self:ScheduleMethod(30,"RisingBubble")
+end
+
+function mod:BurstingDamageStart()
+	self:UnscheduleMethod("BurstingDamageStart")
+	local unit = "boss1"
+	if unit then
+		prevHp = self:GetHealth(unit)
+	end
+	self:ScheduleMethod(2, "BurstingBubbleEnd")
+end
+
+function mod:BurstingDamageEnd()
+	self:UnscheduleMethod("BurstingDamageEnd")
+	local unit = "boss1"
+	if unit and prevHp ~= 0 then
+		local percentHealthLost = self:GetHealth(unit) - prevHp
+		warnHealthLost:Show(percentHealthLost)
+		prevHp = 0
+		end
+	end
+
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.DBM_MOROGRIM_BURSTING_SPAWN or msg:find(L.DBM_MOROGRIM_BURSTING_SPAWN) then
 		timerBurst:Start()
-		timerBursting:Start()
-		warnBursting:Show()
+		self:ScheduleMethod(24, "BurstingDamageStart")
 	end
 end
