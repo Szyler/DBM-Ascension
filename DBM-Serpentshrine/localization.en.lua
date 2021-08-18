@@ -137,7 +137,7 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
-	WarnBurstingBubble		= "Bubbles",
+	WarnRisingBubble		= "Bubbles",
 	WarnWateryGlobule		= "Water Globule spawned!",
 }
 
