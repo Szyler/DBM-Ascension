@@ -139,6 +139,7 @@ L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
 	WarnRisingBubble		= "Bubbles",
 	WarnWateryGlobule		= "Water Globule spawned!",
+	HPLoss					= "Morogrim went down %.1f%%!"
 }
 
 L:SetTimerLocalization{
@@ -155,14 +156,15 @@ L:SetOptionLocalization{
 	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
 	WarriorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
 	MageIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
-	WarnHealer			= "Show special warning when Healer spawns",
+	WarnHealer			= "Show speciw al warning when Healer spawns",
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
-	WarnFreezingBubble	= "Show warning when Water Globule spawns",
-	TimerFreezingBubble = "Show timer for next $spell:37854",
+	WarnWateryGlobule	= "Show warning when Water Globule spawns",
+	TimerWateryGlobule = "Show timer for next $spell:37854",
 	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
 	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
+	HPLoss				= "Show how much damage Morogrim has taken after Bursting Bubble explodes."
 }
 
 L:SetMiscLocalization{
