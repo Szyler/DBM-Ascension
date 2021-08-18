@@ -144,7 +144,7 @@ L:SetWarningLocalization{
 L:SetTimerLocalization{
 	TimerMurlocs			= "Murlocs: %s",
 	TimerWateryGlobule	 	= "Next Watery Globule",
-	TimerBubble	 			= "Next Bubbles"
+	TimerBubble	 			= "Next Bubbles",
 	TimerBurst				= "Bubble Burst"
 }
 
