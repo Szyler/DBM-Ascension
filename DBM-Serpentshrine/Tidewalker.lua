@@ -15,21 +15,21 @@ mod:RegisterEvents(
 	"UNIT_DIED"
 )
 
-local warnTidal			= mod:NewSpellAnnounce(37730, 3)
+-- local warnTidal			= mod:NewSpellAnnounce(37730, 3) -- useless, nobody cares about the tank debuff, might as well remove to reduce bloat
 -- local warnGrave		= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
 -- local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
-local WarnFreezing		= mod:NewAnnounce("WarnFreezingBubble", 4)
+local WarnWatery		= mod:NewAnnounce("WarnWateryGlobule", 4)
 
 local warnBursting		= mod:NewSpecialWarning("WarnRisingBubble",3)
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
-local timerTidal		= mod:NewNextTimer(20, 37730)
+-- local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
-local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble", "Interface\\Icons\\Spell_Frost_FrozenCore")
+local timerWatery		= mod:NewTimer(30, "TimerWateryGlobule", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerBursting		= mod:NewTimer(30, "TimerBurstingBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
 local timerBurst		= mod:NewTimer(25, "TimerBurst", 83560)
 
@@ -94,10 +94,10 @@ end
 -- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(37730, 351345, 351346) then
-		warnTidal:Show()
-		timerTidal:Start()
-	elseif args.spellId == 37764 then
+	-- if args:IsSpellID(37730, 351345, 351346) then
+		-- warnTidal:Show()
+		-- timerTidal:Start()
+	if args.spellId == 37764 then
 		murlocCount = murlocCount + 1;
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
