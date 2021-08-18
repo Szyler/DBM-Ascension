@@ -10,7 +10,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	-- "SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_SUMMON"
+	"SPELL_SUMMON",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"UNIT_DIED"
 )
 
 local warnTidal			= mod:NewSpellAnnounce(37730, 3)
@@ -20,7 +22,7 @@ local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
 local WarnFreezing		= mod:NewAnnounce("WarnFreezingBubble", 4)
 
-local warnRising		= mod:NewSpecialWarning("WarnRisingBubble",3)
+local warnBursting		= mod:NewSpecialWarning("WarnRisingBubble",3)
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
@@ -28,7 +30,8 @@ local timerTidal		= mod:NewNextTimer(20, 37730)
 -- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerFreezing		= mod:NewTimer(30, "TimerFreezingBubble", "Interface\\Icons\\Spell_Frost_FrozenCore")
-local timerRising		= mod:NewNextTimer(30, 83561)
+local timerBursting		= mod:NewTimer(30, "TimerBurstingBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
+local timerBurst		= mod:NewTimer(25, "TimerBurst", 83560)
 
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
@@ -70,19 +73,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	-- if args:IsSpellID(38049) then --37850, 38023, 38024, 38025, -- Not used on Ascension
-	-- 	warnGraveTargets[#warnGraveTargets + 1] = args.destName
-	-- 	self:Unschedule(showGraveTargets)
-	-- 	if self.Options.GraveIcon then
-	-- 		self:SetIcon(args.destName, self.vb.graveIcon)
-	-- 	end
-	-- 	self.vb.graveIcon = self.vb.graveIcon - 1
-	-- 	if #warnGraveTargets >= 4 then
-	-- 		showGraveTargets()
-	-- 	else
-	-- 		self:Schedule(0.3, showGraveTargets)
-	-- 	end
-	-- elseif
 	if args.spellId == 83544 then
 		warnHealer:Show()
 		if self.Options.HealerIcon then
@@ -121,20 +111,28 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:FreezingBubble()
-	self:UnscheduleMethod("FreezingBubble")
-	WarnFreezing:Show()
-	timerFreezing:Start()
-	self:ScheduleMethod(30,"FreezingBubble")
-end
+-- function mod:FreezingBubble()								-- nope.
+	-- self:UnscheduleMethod("FreezingBubble")
+	-- WarnFreezing:Show()
+	-- timerFreezing:Start()
+	-- self:ScheduleMethod(30,"FreezingBubble")
+-- end
 
-function mod:RisingBubble()
-	self:UnscheduleMethod("RisingBubble")
-	local risingBubble    =self:GetUnitCreatureId(14481)
-	warnRising:Show()
-	if self.Options.RisingBubble then
-		self:SetIcon(risingBubble, 8)
+-- function mod:RisingBubble()
+	-- self:UnscheduleMethod("RisingBubble")
+	-- local risingBubble    =self:GetUnitCreatureId(14481)
+	-- warnRising:Show()
+	-- if self.Options.RisingBubble then
+		-- self:SetIcon(risingBubble, 8)
+	-- end
+	-- timerRising:Start()
+	-- self:ScheduleMethod(30,"RisingBubble")
+-- end
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.DBM_MOROGRIM_BURSTING_SPAWN or msg:find(L.DBM_MOROGRIM_BURSTING_SPAWN) then
+		timerBurst:Start()
+		timerBursting:Start()
+		warnBursting:Show()
 	end
-	timerRising:Start()
-	self:ScheduleMethod(30,"RisingBubble")
 end

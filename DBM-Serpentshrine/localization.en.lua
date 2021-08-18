@@ -137,14 +137,15 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
-	WarnRisingBubble		= "Rising Bubble spawned!",
+	WarnBurstingBubble		= "Bursting Bubble",
 	WarnFreezingBubble		= "Water Globule spawned!",
 }
 
 L:SetTimerLocalization{
 	TimerMurlocs			= "Murlocs: %s",
 	TimerFreezingBubble 	= "Next Water Globule",
-	TimerRisingBubble	 	= "Next Rising Bubble",
+	TimerRisingBubble	 	= "Next Rising Bubble", -- is this utilized?
+	TimerBurst				= "Bubble Burst"
 }
 
 L:SetOptionLocalization{
