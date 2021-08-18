@@ -36,7 +36,6 @@ local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
--- mod:AddBoolOption("GraveIcon", true)
 mod:AddBoolOption("RisingBubbleIcon")
 mod:AddBoolOption("HealerIcon")
 mod:AddBoolOption("WarriorIcon")
@@ -46,7 +45,8 @@ mod:AddBoolOption("MageIcon")
 local bubblespam = 0
 local warriorAntiSpam = 0
 local MageAntiSpam = 0
--- mod.vb.graveIcon = 8
+local murlocType = {[0] = "Healer", [1] = "Melee", [2] = "Frost"};
+local murlocCount = 0
 
 -- local function showGraveTargets()
 -- 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
@@ -66,6 +66,7 @@ function mod:OnCombatStart(delay)
 	timerRising:Start(-delay)
 	self:ScheduleMethod(30,"RisingBubble");
 	end
+	muclocCount = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -107,9 +108,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnTidal:Show()
 		timerTidal:Start()
 	elseif args.spellId == 37764 then
+		murlocCount = murlocCount + 1;
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
-		timerMurlocs:Start()
+		timerMurlocs:Start(murlocType[(murlocCount % 3))
 	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
 		warriorAntiSpam = GetTime()
 		warnWarrior:Show()

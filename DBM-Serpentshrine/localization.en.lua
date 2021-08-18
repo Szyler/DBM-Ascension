@@ -142,7 +142,7 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerMurlocs			= "Murlocs",
+	TimerMurlocs			= "Murlocs: %s",
 	TimerFreezingBubble 	= "Next Water Globule",
 	TimerRisingBubble	 	= "Next Rising Bubble",
 }
