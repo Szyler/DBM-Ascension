@@ -17,7 +17,7 @@ mod:RegisterEvents(
 
 -- local warnTidal			= mod:NewSpellAnnounce(37730, 3) -- useless, nobody cares about the tank debuff, might as well remove to reduce bloat
 -- local warnGrave		= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
--- local warnBubble		= mod:NewSpellAnnounce(37854, 4)
+local warnBubble		= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon= mod:NewSoonAnnounce(37764, 3)
 local warnShield		= mod:NewSpellAnnounce(83548, 4)
 local WarnWatery		= mod:NewAnnounce("WarnWateryGlobule", 4)
