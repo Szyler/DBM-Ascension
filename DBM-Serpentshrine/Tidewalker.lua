@@ -16,7 +16,6 @@ mod:RegisterEvents(
 )
 
 -- local warnTidal			= mod:NewSpellAnnounce(37730, 3) -- useless, nobody cares about the tank debuff, might as well remove to reduce bloat
--- local warnGrave		= mod:NewTargetAnnounce(38049, 4)--TODO, make run out special warning instead?
 local warnBubble			= mod:NewSpellAnnounce(37854, 4)
 local warnEarthquakeSoon	= mod:NewSoonAnnounce(37764, 3)
 local warnShield			= mod:NewSpellAnnounce(83548, 4)
@@ -27,7 +26,6 @@ local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
 local timerShield		= mod:NewNextTimer(10, 83548)
 -- local timerTidal		= mod:NewNextTimer(20, 37730)
--- local timerGraveCD		= mod:NewCDTimer(20, 38049)
 local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
 local timerWatery		= mod:NewTimer(30, "TimerWateryGlobule", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerBubble		= mod:NewTimer(30, "TimerBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
@@ -36,7 +34,7 @@ local timerBurst		= mod:NewTimer(25, "TimerBurst", 83560)
 local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
 local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
-local warnHealthLost	= mod:NewAnnounce("Morogrim went down %.1f%%!", 3)
+local warnHealthLost	= mod:NewAnnounce("HPLoss", 3)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
@@ -45,7 +43,6 @@ mod:AddBoolOption("HealerIcon")
 mod:AddBoolOption("WarriorIcon")
 mod:AddBoolOption("MageIcon")
 
--- local warnGraveTargets = {}
 local bubblespam = 0
 local warriorAntiSpam = 0
 local MageAntiSpam = 0
@@ -53,16 +50,7 @@ local murlocType = {[0] = "Healer", [1] = "Melee", [2] = "Frost"};
 local murlocCount = 0
 local prevHp = 0
 
--- local function showGraveTargets()
--- 	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
--- 	table.wipe(warnGraveTargets)
--- 	timerGraveCD:Show()
--- end
-
 function mod:OnCombatStart(delay)
-	-- self.vb.graveIcon = 8
-	-- table.wipe(warnGraveTargets)
-	-- timerGraveCD:Start(20-delay)
 	timerMurlocs:Start(28-delay)
 	berserkTimer:Start(-delay)
 	timerWatery:Start(20-delay)
@@ -97,9 +85,6 @@ end
 -- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	-- if args:IsSpellID(37730, 351345, 351346) then
-		-- warnTidal:Show()
-		-- timerTidal:Start()
 	if args.spellId == 37764 then
 		murlocCount = murlocCount + 1;
 		warnEarthquakeSoon:Show()
