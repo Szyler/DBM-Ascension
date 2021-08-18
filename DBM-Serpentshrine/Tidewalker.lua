@@ -104,7 +104,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		murlocCount = murlocCount + 1;
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
-		timerMurlocs:Start(murlocType[(murlocCount % 3))
+		timerMurlocs:Start(murlocType[(murlocCount % 3)])
 	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
 		warriorAntiSpam = GetTime()
 		warnWarrior:Show()
