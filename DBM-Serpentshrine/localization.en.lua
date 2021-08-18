@@ -165,9 +165,10 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	WarnHealer		= "Murlock Healer spawned!",
-	WarnWarrior		= "Murlock Warrior spawned!",
-	WarnMage		= "Murlock Mage spawned!",
+	WarnHealer					= "Murlock Healer spawned!",
+	WarnWarrior					= "Murlock Warrior spawned!",
+	WarnMage					= "Murlock Mage spawned!",
+	DBM_MOROGRIM_BURSTING_SPAWN	= "A Bursting Bubble floats through the room."
 }
 
 -----------------

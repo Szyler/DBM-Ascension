@@ -63,10 +63,10 @@ function mod:OnCombatStart(delay)
 	timerFreezing:Start(20-delay)
 	self:ScheduleMethod(20,"FreezingBubble");
 	if mod:IsDifficulty("heroic10", "heroic25") then
-	timerRising:Start(-delay)
+		timerRising:Start(-delay)
 	self:ScheduleMethod(30,"RisingBubble");
 	end
-	muclocCount = 0
+	murlocCount = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)
