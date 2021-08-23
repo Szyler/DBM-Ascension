@@ -117,16 +117,16 @@ function mod:RisingBubble()
 	self:ScheduleMethod(30,"RisingBubble")
 end
 
-function mod:BurstingDamageStart()
+function mod:BurstingDamageStart(unit)
 	self:UnscheduleMethod("BurstingDamageStart")
 	local unit = "boss1"
 	if unit then
 		prevHp = self:GetHealth(unit)
 	end
-	self:ScheduleMethod(2, "BurstingBubbleEnd")
+	self:ScheduleMethod(2, "BurstingDamageEnd")
 end
 
-function mod:BurstingDamageEnd()
+function mod:BurstingDamageEnd(unit)
 	self:UnscheduleMethod("BurstingDamageEnd")
 	local unit = "boss1"
 	if unit and prevHp ~= 0 then
