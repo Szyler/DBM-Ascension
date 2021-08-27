@@ -106,6 +106,8 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	warningPosion		= "%s on >%s< (%d)",		-- Mortal Wound on >args.destName< (args.amount)
+	WarnHeartbroken		= "%d stacks of %s, Bring together!",		-- Mortal Wound on >args.destName< (args.amount)
+	WarnLove			= "%d stacks of %s, Separate!",		-- args.amount stacks of Lovesick
 }
 
 L:SetTimerLocalization{
