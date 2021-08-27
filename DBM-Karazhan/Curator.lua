@@ -87,14 +87,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnTerminate:Show(myIconText2);
 			SendChatMessage(L.YellTermination:format(myIconText,args.destName,myIconText),"YELL");
 		end
-	elseif args:IsSpellID(30254) then
-		self.vb.phase = 2
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(30254) then
-		self.vb.phase = 1
 	end
 end
 
