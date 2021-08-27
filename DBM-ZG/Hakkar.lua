@@ -9,7 +9,6 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_SUCCESS_DOSE"
-
 )
 
 local warnSiphonSoon	= mod:NewSoonAnnounce(24324)
@@ -25,6 +24,9 @@ local timerBlood		= mod:NewTargetTimer(16, 24328)
 
 local specWarnPool		= mod:NewSpecialWarningYou(340510)
 
+local warnSonSoon		= mod:NewSoonAnnounce(46729)
+local timerSon			= mod:NewNextTimer(60, 46729)
+
 local enrageTimer		= mod:NewBerserkTimer(585)
 
 function mod:OnCombatStart(delay)
@@ -32,6 +34,8 @@ function mod:OnCombatStart(delay)
 	warnSiphonSoon:Schedule(55-delay)
 	timerSiphon:Start(-delay)
 	timerNextInsanity:Start(-delay)
+	warnSonSoon:Schedule(25-delay)
+	timerSon:Start(30-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -65,5 +69,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnSiphonSoon:Cancel()
 		warnSiphonSoon:Schedule(55)
 		timerSiphon:Start()
+	elseif args:IsSpellID(975011) and args.sourceName == "Son of Hakkar" then
+		warnSonSoon:Schedule(25)
+		timerSon:Start()
 	end
 end
