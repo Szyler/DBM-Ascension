@@ -99,3 +99,15 @@ v5.07 05/08/2021
 - Fixed lua error in Shadow Labs
 - Removed warning for Immolate on Garr (casts too often with no danger)
 ----------------------------------------------------------------------------------------------------
+v5.07.14 17/09/2021
+- Rework of Lady Vashj module, all timers fixed.
+- Ascended mechanics added for Lady Vashj.
+- Fixed Free for All not activating correctly on Lady Vashj.
+- Added Toxic Sporebat timer for Phase 3.
+- Fixed Tainted Core not being correctly tracked.
+- Fixed Coilfang Enchantress spam.
+- Fixed Static Charge targets not being shown on Lady Vashj.
+- Added missing icons for Phase 2 timers on Lady Vashj.
+- Added absent Special Warning for standing in Toxic Spore.
+- Fixed Berserk timer being incorrect for Lady Vashj.
+----------------------------------------------------------------------------------------------------
