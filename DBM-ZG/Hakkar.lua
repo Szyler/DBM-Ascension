@@ -7,8 +7,8 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_CAST_SUCCESS_DOSE"
+	"SPELL_CAST_SUCCESS_DOSE",
+	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
 local warnSiphonSoon	= mod:NewSoonAnnounce(24324)
@@ -39,7 +39,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(24327) then
+	if args:IsSpellID(24327, 24178) then
 		warnInsanity:Show(args.destName)
 		timerInsanity:Start(args.destName)
 		timerNextInsanity:Start()
@@ -53,6 +53,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnPool:Show()
 		end
+	elseif args:IsSpellID(24324) then
+		warnSiphonSoon:Cancel()
+		warnSiphonSoon:Schedule(55)
+		timerSiphon:Start()
 	end
 end
 
@@ -62,14 +66,10 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 			specWarnPool:Show()
 		end
 	end
-end	
+end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(24324) then
-		warnSiphonSoon:Cancel()
-		warnSiphonSoon:Schedule(55)
-		timerSiphon:Start()
-	elseif args:IsSpellID(975011) and args.sourceName == "Son of Hakkar" then
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg:find("A Son of Hakkar joins the fight!") then
 		warnSonSoon:Schedule(25)
 		timerSon:Start()
 	end
