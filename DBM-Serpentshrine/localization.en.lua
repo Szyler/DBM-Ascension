@@ -137,14 +137,16 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
-	WarnRisingBubble		= "Rising Bubble spawned!",
-	WarnFreezingBubble		= "Water Globule spawned!",
+	WarnRisingBubble		= "Bubbles",
+	WarnWateryGlobule		= "Water Globule spawned!",
+	HPLoss					= "Morogrim went down %.1f%%!"
 }
 
 L:SetTimerLocalization{
-	TimerMurlocs			= "Murlocs",
-	TimerFreezingBubble 	= "Next Water Globule",
-	TimerRisingBubble	 	= "Next Rising Bubble",
+	TimerMurlocs			= "Murlocs: %s",
+	TimerWateryGlobule	 	= "Next Watery Globule",
+	TimerBubble	 			= "Next Bubbles",
+	TimerBurst				= "Bubble Burst"
 }
 
 L:SetOptionLocalization{
@@ -154,20 +156,22 @@ L:SetOptionLocalization{
 	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
 	WarriorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
 	MageIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
-	WarnHealer			= "Show special warning when Healer spawns",
+	WarnHealer			= "Show speciw al warning when Healer spawns",
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
-	WarnFreezingBubble	= "Show warning when Water Globule spawns",
-	TimerFreezingBubble = "Show timer for next $spell:37854",
+	WarnWateryGlobule	= "Show warning when Water Globule spawns",
+	TimerWateryGlobule = "Show timer for next $spell:37854",
 	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
 	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
+	HPLoss				= "Show how much damage Morogrim has taken after Bursting Bubble explodes."
 }
 
 L:SetMiscLocalization{
-	WarnHealer		= "Murlock Healer spawned!",
-	WarnWarrior		= "Murlock Warrior spawned!",
-	WarnMage		= "Murlock Mage spawned!",
+	WarnHealer					= "Murloc Healer spawned!",
+	WarnWarrior					= "Murloc Warrior spawned!",
+	WarnMage					= "Murloc Mage spawned!",
+	DBM_MOROGRIM_BURSTING_SPAWN	= "A Bursting Bubble floats through the room."
 }
 
 -----------------
@@ -180,14 +184,17 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnElemental		= "Tainted Elemental Soon (%s)",
-	WarnHydra			= "Hydra Soon (%s)",
-	WarnNaga			= "Naga Elite Soon (%s)",
-	WarnEnchantress		= "Enchantress Soon (%s)",
+	WarnElemental		= "Tainted Elemental (%s)",
+	WarnHydra			= "Hydra",
+	WarnNaga			= "Naga Elite (%s)",
+	WarnEnchantress		= "Enchantress",
 	WarnShield			= "Shield %d/4 down",
 	WarnLoot			= "Tainted Core on >%s<",
 	-- WarnLootYou			= "Tainted Core on YOU",
-	SpecWarnElemental	= "Tainted Elemental - Switch!"
+	SpecWarnElemental	= "Tainted Elemental - Switch!",
+	SpecWarnSiren		= "Coilfang Siren - Switch!",
+	WarnSporebat		= "Toxic Sporebat",
+	WarnPhoenix			= "Phoenix"
 }
 
 L:SetTimerLocalization{
@@ -197,15 +204,20 @@ L:SetTimerLocalization{
 	TimerNaga				= "Next Naga Elite (%d)",
 	TimerEnchantress		= "Next Enchantress (%d)",
 	ChargeExplosion			= "Charge Explosion",
+	Discharge				= "Static Discharge",
+	NextGenerator			= "Next Shield Generator",
+	NextSporebat			= "Next Toxic Sporebat"
 }
 
 L:SetOptionLocalization{
-	WarnElemental			= "Show pre-warning for next Tainted Elemental",
-	WarnHydra				= "Show pre-warning for next Hydra",
-	WarnNaga				= "Show pre-warning for next Naga Elite",
-	WarnEnchantress			= "Show pre-warning for next Enchantress",
+	WarnElemental			= "Show warning for Tainted Elemental spawn",
+	WarnHydra				= "Show warning for Hydra spawn",
+	WarnNaga				= "Show warning for Naga Elite spawn",
+	WarnEnchantress			= "Show warning for Enchantress spawn",
+	WarnSporebat			= "Show warning for Toxic Sporebat spawn",
 	WarnShield				= "Show warning for Phase 2 shield down",
-	WarnLoot				= "Show warning for Tainted Core loot",
+	WarnLoot				= "Show warning for who loots the Tainted Core",
+	WarnPhoenix				= "Show warning for when Phoenix will rebirth on Ascended",
 	TimerElementalActive	= "Show timer for how long Tainted Elemental is active",
 	TimerElemental			= "Show timer for Tainted Elemental cooldown",
 	TimerHydra				= "Show timer for next Hydra",
@@ -218,7 +230,12 @@ L:SetOptionLocalization{
 	AimedYellOpt        	= "Yell when you are affected by $spell:351310",
 	LootIcon				= "Set icon on the target carrying Tainted Core",
 	LootYellOpt        		= "Yell when you are carrying Tainted Core",
-	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2"
+	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2",
+	SpecWarnSiren			= "Show special warning for when Coilfang Siren spawns",
+	Discharge				= "Show timer for when Shield Generator will deal its damage",
+	NextGenerator			= "Show timer for when Shield Generator activates in Phase 3",
+	ChargeExplosion			= "Show timer for Charge Explosion",
+	NextSporebat			= "Show timer for when next Toxic Sporebat will spawn in Phase 3"
 }
 
 L:SetMiscLocalization{
@@ -228,9 +245,9 @@ L:SetMiscLocalization{
 	DBM_VASHJ_ELITE			= "Coilfang Elite appear to protect the Matron!",
 	DBM_VASHJ_HYDRA			= "A Coilfang Hydra joins the fight!",
 	DBM_VASHJ_TAINTED		= "A Tainted Elemental emerged from the waters!",
+	DBM_VASHJ_TAINTED_DEAD	= "The Tainted Elemental has been slain! Quickly use its core to shut down the Shield Generator!",
 	LootMsg					= "([^%s]+).*Hitem:(%d+)",
 	ChargeYell				= "Static Charge on me!",
 	AimedYell				= "Aimed Shot on me!",
 	LootYell				= "I am carrying the Tainted Core!",
-	ChargeExplosion			= "Show timer for Charge Explosion",
 }

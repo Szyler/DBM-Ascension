@@ -6,9 +6,9 @@
 -- This addon is written and copyrighted by:
 --    * Martin Verges (Nitram @ EU-Azshara)
 --    * Paul Emmerich (Tandanu @ EU-Aegwynn)
--- 
+--
 -- The localizations are written by:
---    * enGB/enUS: Nitram/Tandanu        http://www.deadlybossmods.com		
+--    * enGB/enUS: Nitram/Tandanu        http://www.deadlybossmods.com
 --    * deDE: Nitram/Tandanu             http://www.deadlybossmods.com
 --    * zhCN: yleaf(yaroot@gmail.com)
 --    * zhTW: yleaf(yaroot@gmail.com)/Juha
@@ -33,31 +33,29 @@ local default_bartextwtarget = "%spell: %player on %target"	-- Added by Florin P
 local default_settings = {
 	enabled = true,
 	showlocal = true,
-	only_from_raid = false,
+	only_from_raid = true,
 	active_in_pvp = true,
 	own_bargroup = false,
 	show_portal = true,
 	spells = {
-		-- { spell = 6346, bartext = default_bartext, cooldown = 180 },	-- Priest: Fear Ward
-		-- { spell = 1161, bartext = default_bartext, cooldown = 180 },	-- Warrior: Challenging Shout (AE Taunt)
-		-- { spell = 871, bartext = "%spell on %player", cooldown = 12 },	-- Warrior: Shieldwall Duration (for Healers to see how long cooldown runs)
-		-- { spell = 12975, bartext = "%spell on %player", cooldown = 20 },-- Warrior: Last Stand Duration (for Healers to see how long cooldown runs)
-		-- { spell = 48792, bartext = "%spell on %player", cooldown = 12 },-- Death Knight: Icebound Fortitude Duration (for Healers to see how long cooldown runs)
-		-- { spell = 498, bartext = "%spell on %player", cooldown = 12 },	-- Paladin: Divine Protection Duration (for Healers to see how long cooldown runs)
-		-- { spell = 61336, bartext = "%spell on %player", cooldown = 20 },-- Druid: Survival Instincts Duration (for Healers to see how long cooldown runs)
-		-- { spell = 48477, bartext = default_bartext, cooldown = 600 },	-- Druid: Rebirth (Rank 7)
-		-- { spell = 29166, bartext = default_bartext, cooldown = 180 },	-- Druid: Innervate
-		-- { spell = 5209, bartext = default_bartext, cooldown = 180 }, 	-- Druid: Challenging Roar (AE Taunt)
-		-- { spell = 33206, bartext = "%spell on %target", cooldown = 8 }, -- Priest: Pain Suppression Duration (for Healers to see how long cooldown runs)
-		-- { spell = 6940, bartext = "%spell on %target", cooldown = 12 }, -- Paladin: Hand of Sacrifice Duration (for Healers to see how long cooldown runs)
-		-- { spell = 64205, bartext = default_bartext, cooldown = 10 },	-- Paladin: Divine Sacrifice Duration (for Healers to see how long cooldown runs)
-		-- { spell = 34477, bartext = default_bartext, cooldown = 30 },	-- Hunter: Missdirect
-		-- { spell = 57934, bartext = default_bartext, cooldown = 30 },	-- Rogue: Tricks of the Trade
-		-- { spell = 32182, bartext = default_bartext, cooldown = 300 },	-- Shaman: Heroism (alliance)
-		-- { spell = 2825, bartext = default_bartext, cooldown = 300 },	-- Shaman: Bloodlust (horde)
-		-- { spell = 20608, bartext = default_bartext, cooldown = 1800 },	-- Shaman: Reincarnation
-
-		{ spell = 985211, bartext = default_bartext, cooldown = 300 }, 	-- Mystic Altar
+		{ spell = 6346, bartext = default_bartext, cooldown = 180 },	-- Priest: Fear Ward
+		{ spell = 1161, bartext = default_bartext, cooldown = 180 },	-- Warrior: Challenging Shout (AE Taunt)
+		{ spell = 871, bartext = "%spell on %player", cooldown = 12 },	-- Warrior: Shieldwall Duration (for Healers to see how long cooldown runs)
+		{ spell = 12975, bartext = "%spell on %player", cooldown = 20 },-- Warrior: Last Stand Duration (for Healers to see how long cooldown runs)
+		{ spell = 48792, bartext = "%spell on %player", cooldown = 12 },-- Death Knight: Icebound Fortitude Duration (for Healers to see how long cooldown runs)
+		{ spell = 498, bartext = "%spell on %player", cooldown = 12 },	-- Paladin: Divine Protection Duration (for Healers to see how long cooldown runs)
+		{ spell = 61336, bartext = "%spell on %player", cooldown = 20 },-- Druid: Survival Instincts Duration (for Healers to see how long cooldown runs)
+		{ spell = 48477, bartext = default_bartext, cooldown = 600 },	-- Druid: Rebirth (Rank 7)
+		{ spell = 29166, bartext = default_bartext, cooldown = 180 },	-- Druid: Innervate
+		{ spell = 5209, bartext = default_bartext, cooldown = 180 }, 	-- Druid: Challenging Roar (AE Taunt)
+		{ spell = 33206, bartext = "%spell on %target", cooldown = 8 }, -- Priest: Pain Suppression Duration (for Healers to see how long cooldown runs)
+		{ spell = 6940, bartext = "%spell on %target", cooldown = 12 }, -- Paladin: Hand of Sacrifice Duration (for Healers to see how long cooldown runs)
+		{ spell = 64205, bartext = default_bartext, cooldown = 10 },	-- Paladin: Divine Sacrifice Duration (for Healers to see how long cooldown runs)
+		{ spell = 34477, bartext = default_bartext, cooldown = 30 },	-- Hunter: Missdirect
+		{ spell = 57934, bartext = default_bartext, cooldown = 30 },	-- Rogue: Tricks of the Trade
+		{ spell = 32182, bartext = default_bartext, cooldown = 300 },	-- Shaman: Heroism (alliance)
+		{ spell = 2825, bartext = default_bartext, cooldown = 300 },	-- Shaman: Bloodlust (horde)
+		{ spell = 20608, bartext = default_bartext, cooldown = 1800 },	-- Shaman: Reincarnation
 		{ spell = 22700, bartext = default_bartext, cooldown = 600 }, 	-- Field Repair Bot 74A
 		{ spell = 44389, bartext = default_bartext, cooldown = 600 }, 	-- Field Repair Bot 110G
 		{ spell = 54711, bartext = default_bartext, cooldown = 300 }, 	-- Scrapbot Construction Kit
@@ -81,8 +79,7 @@ local default_settings = {
 		{ spell = 11420, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Thunder Bluff
 		{ spell = 32667, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Silvermoon
 		{ spell = 49361, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Stonard
-	},
-	DBT = {},
+	}
 }
 DBM_SpellTimers_Settings = {}
 local settings = default_settings
@@ -102,8 +99,8 @@ local function rebuildSpellIDIndex()
 end
 
 -- functions
-local addDefaultOptions
-do 
+local addDefaultOptions, clearAllSpellBars
+do
 	local function creategui()
 		local createnewentry
 		local CurCount = 0
@@ -128,10 +125,10 @@ do
 				for i=1, #settings.spells, 1 do
 					createnewentry()
 				end
-			end				
+			end
 		end
 
-		
+
 		do
 			local area = generalarea
 			local enabled = area:CreateCheckButton(L.Enable, true)
@@ -179,7 +176,7 @@ do
 						settings.spells[self.guikey][field] = self:GetNumber()
 						rebuildSpellIDIndex()
 					elseif field == "cooldown" then
-						settings.spells[self.guikey][field] = self:GetNumber()					
+						settings.spells[self.guikey][field] = self:GetNumber()
 					elseif field == "enabled" then
 						settings.spells[self.guikey].enabled = not not self:GetChecked()
 					else
@@ -199,12 +196,12 @@ do
 							self:SetText( string.gsub(text, "%%spell", spellinfo) )
 						end
 					elseif field == "enabled" then
-						self:SetChecked( settings.spells[self.guikey].enabled ) 
+						self:SetChecked( settings.spells[self.guikey].enabled )
 					else
 						self:SetText( settings.spells[self.guikey][field] or "" )
 					end
 				end
-			end	
+			end
 
 			local area = auraarea
 
@@ -212,18 +209,18 @@ do
 			getadditionalid:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP");
 			getadditionalid:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN");
 			getadditionalid:SetWidth(15)
-			getadditionalid:SetHeight(15)		
+			getadditionalid:SetHeight(15)
 
 			function createnewentry()
 				CurCount = CurCount + 1
-				local spellid = area:CreateEditBox(L.SpellID, "", 65)
+				local spellid = area:CreateEditBox(L.SpellID, "", 75)
 				spellid.guikey = CurCount
 				spellid:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 40, 15-(CurCount*35))
 				spellid:SetScript("OnTextChanged", onchange_spell("spell"))
 				spellid:SetScript("OnShow", onshow_spell("spell"))
 				spellid:SetNumeric(true)
 
-				local bartext = area:CreateEditBox(L.BarText, "", 190)
+				local bartext = area:CreateEditBox(L.BarText, "", 245)
 				bartext.guikey = CurCount
 				bartext:SetPoint('TOPLEFT', spellid, "TOPRIGHT", 20, 0)
 				bartext:SetScript("OnTextChanged", onchange_spell("bartext"))
@@ -239,14 +236,14 @@ do
 				local enableit = area:CreateCheckButton("")
 				enableit.guikey = CurCount
 				enableit:SetScript("OnShow", onshow_spell("enabled"))
-				enableit:SetScript("OnClick", onchange_spell("enabled"))				
+				enableit:SetScript("OnClick", onchange_spell("enabled"))
 				enableit:SetPoint("LEFT", cooldown, "RIGHT", 5, 0)
 
 				getadditionalid:ClearAllPoints()
 				getadditionalid:SetPoint("RIGHT", spellid, "LEFT", -15, 0)
 				area.frame:SetHeight( area.frame:GetHeight() + 35 )
 				area.frame:GetParent():SetHeight( area.frame:GetParent():GetHeight() + 35 )
-			
+
 				panel:SetMyOwnHeight()
 				if DBM_GUI_OptionsFramePanelContainer.displayedFrame and CurCount > 1 then
 					DBM_GUI_OptionsFrame:DisplayFrame(panel.frame)
@@ -260,7 +257,7 @@ do
 					end
 				end)
 			end
-			
+
 			if #settings.spells == 0 then
 				createnewentry()
 			else
@@ -285,23 +282,23 @@ do
 			end
 		end
 	end
-	
-	function clearAllSpellBars() 
-  	for k,v in pairs(SpellBarIndex) do
-  	   SpellBars:CancelBar(k)
-  	   SpellBarIndex[k] = nil
-  	end	
+
+	function clearAllSpellBars()
+		for k,v in pairs(SpellBarIndex) do
+			SpellBars:CancelBar(k)
+			SpellBarIndex[k] = nil
+		end
 	end
 
 	local myportals = {}
 	local lastmsg = "";
 	local mainframe = CreateFrame("frame", "DBM_SpellTimers", UIParent)
 	local spellEvents = {
-	  ["SPELL_CAST_SUCCESS"] = true,
-	  ["SPELL_RESURRECT"] = true,
-	  ["SPELL_HEAL"] = true,
-	  ["SPELL_AURA_APPLIED"] = true,
-	  ["SPELL_AURA_REFRESH"] = true,
+		["SPELL_CAST_SUCCESS"] = true,
+		["SPELL_RESURRECT"] = true,
+		["SPELL_HEAL"] = true,
+		["SPELL_AURA_APPLIED"] = true,
+		["SPELL_AURA_REFRESH"] = true,
 	}
 	mainframe:SetScript("OnEvent", function(self, event, ...)
 		if event == "ADDON_LOADED" and select(1, ...) == "DBM-SpellTimers" then
@@ -321,10 +318,7 @@ do
 			else
 				SpellBars = DBM.Bars
 			end --]]
-			--SpellBars = DBM.Bars
-			
-			SpellBars = DBM:CreateBarGroup("SpellTimers");
-			SpellBars:LoadOptions(settings.DBT);
+			SpellBars = DBM.Bars
 
 
 			if UnitFactionGroup("player") == "Alliance" then
@@ -338,7 +332,7 @@ do
 					v.enabled = true
 				end
 			end
-			
+
 			rebuildSpellIDIndex()
 
 		elseif settings.enabled and event == "COMBAT_LOG_EVENT_UNFILTERED" and spellEvents[select(2, ...)] then
@@ -351,25 +345,29 @@ do
 			local spellid = select(9, ...)
 
 			-- now we filter if cast is from outside raidgrp (we don't want to see mass spam in Dalaran/...)
-			if settings.only_from_raid and DBM:GetRaidUnitId(fromplayer) == "none" then return end
+			if settings.only_from_raid and not DBM:GetRaidUnitId(fromplayer) then return end
 
-      guikey = SpellIDIndex[spellid]
-      v = (guikey and settings.spells[guikey])
-      if v and v.enabled == true then
-          if v.spell ~= spellid then
-            print("DBM-SpellTimers Index mismatch error! "..guikey.." "..spellid)
-          end
-					local spellinfo, _, icon = GetSpellInfo(spellid)
-					local bartext = v.bartext:gsub("%%spell", spellinfo):gsub("%%player", fromplayer):gsub("%%target", toplayer)	-- Changed by Florin Patan
-					SpellBarIndex[bartext] = SpellBars:CreateBar(v.cooldown, bartext, icon, nil, true)
+			local guikey = SpellIDIndex[spellid]
+			local v = (guikey and settings.spells[guikey])
+			if v and v.enabled == true then
+				if v.spell ~= spellid then
+					print("DBM-SpellTimers Index mismatch error! "..guikey.." "..spellid)
+				end
 
-					if settings.showlocal then
-						local msg =  L.Local_CastMessage:format(bartext)
-						if not lastmsg or lastmsg ~= msg then
-							DBM:AddMsg(msg)
-							lastmsg = msg
-						end
+				local spellinfo, _, icon = GetSpellInfo(spellid)
+				local bartext = v.bartext:gsub("%%spell", spellinfo):gsub("%%player", fromplayer):gsub("%%target", toplayer)	-- Changed by Florin Patan
+				if (spellid == 34477 or spellid == 57934) and (fromplayer == toplayer) then
+					return
+				end
+				SpellBarIndex[bartext] = SpellBars:CreateBar(v.cooldown, bartext, icon, nil, true)
+
+				if settings.showlocal then
+					local msg =  L.Local_CastMessage:format(bartext)
+					if not lastmsg or lastmsg ~= msg then
+						DBM:AddMsg(msg)
+						lastmsg = msg
 					end
+				end
 			end
 
 		elseif settings.enabled and event == "COMBAT_LOG_EVENT_UNFILTERED" and settings.show_portal and select(2, ...) == "SPELL_CREATE" then
@@ -378,8 +376,8 @@ do
 			local fromplayer = select(4, ...)
 			local toplayer = select(7, ...)		-- Added by Florin Patan
 			local spellid = select(9, ...)
-			
-			if settings.only_from_raid and DBM:GetRaidUnitId(fromplayer) == "none" then return end
+
+			if settings.only_from_raid and not DBM:GetRaidUnitId(fromplayer) then return end
 
 			for k,v in pairs(myportals) do
 				if v.spell == spellid then
@@ -394,7 +392,7 @@ do
 			end
 		elseif settings.enabled and event == "PLAYER_ENTERING_BATTLEGROUND" then
 		  -- spell cooldowns all reset on entering an arena or bg
-		  clearAllSpellBars() 
+		  clearAllSpellBars()
 		end
 	end)
 	mainframe:RegisterEvent("ADDON_LOADED")

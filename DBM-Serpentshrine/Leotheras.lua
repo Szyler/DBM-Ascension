@@ -38,8 +38,8 @@ local timerNextEven		= mod:NewNextTimer(32, 351201)
 local berserkTimer		= mod:NewBerserkTimer(720)
 
 --mod:AddBoolOption(L.DemonIcon)
-mod:AddBoolOption(L.ChaosIcon)
-mod:AddBoolOption(L.ChaosYellOpt)
+mod:AddSetIconOption("ChaosIcon", 85365, true, false, {2})
+mod:AddBoolOption("ChaosYellOpt", true)
 
 --local warnDemonTargets = {}
 --local warnMCTargets = {}

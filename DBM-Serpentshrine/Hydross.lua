@@ -12,13 +12,13 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS"
 )
 
-local warnMarkF			= mod:NewAnnounce(L.WarnMark, 3, 351203)
-local warnMarkN			= mod:NewAnnounce(L.WarnMark, 3, 351204)
+local warnMarkF			= mod:NewAnnounce("WarnMark", 3, 351203)
+local warnMarkN			= mod:NewAnnounce("WarnMark", 3, 351204)
 local warnPhase			= mod:NewAnnounce("WarnPhase", 4)
 local warnTomb			= mod:NewTargetAnnounce(38235, 3)
 local specWarnTidal		= mod:NewSpecialWarning("Tidalwave, stack!")
 local warnSludge		= mod:NewTargetAnnounce(38246, 2)--Maybe filter it some if spammy?
-local warnTidalPower	= mod:NewAnnounce(L.WarnMark, 3, 351204)
+local warnTidalPower	= mod:NewAnnounce("WarnMark", 3, 351204)
 
 -- local specWarnMark	= mod:NewSpecialWarning("SpecWarnMark")
 
