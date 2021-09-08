@@ -20,17 +20,11 @@ function mod:OnCombatStart(delay)
 	timerCharge:Start(48)
 end
 
-function mod:SPELL_DAMAGE(args)
-	if args.spellId == 30739 then
-		timerBladeDance:Start()
-	elseif args.spellId == 25821 then
-		timerCharge:Start()
-	end
-end
-
 local BladeDanceSpam = 0
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(28375) and (GetTime() - BladeDanceSpam) > 20 then
+	if args.spellId == 25821 then
+		timerCharge:Start()
+	elseif args:IsSpellID(28375, 30739) and (GetTime() - BladeDanceSpam) > 20 then
 		BladeDanceSpam = GetTime()
 		warnBladeDance:Show()
 		timerBladeDance:Start()
