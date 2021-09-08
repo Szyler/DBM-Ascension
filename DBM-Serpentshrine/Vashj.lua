@@ -55,7 +55,7 @@ local timerSporebat		= mod:NewTimer(23, "NextSporebat", "Interface\\Icons\\Abili
 
 -- Ascended Mechanics
 
-local timerParasite		= mod:NewNextTimer(45, 83568)
+local timerParasite		= mod:NewNextTimer(45, 83568, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
 local timerSiren		= mod:NewNextTimer(17, 83566)
 local timerPhoenix		= mod:NewNextTimer(16, 351414) 
 
