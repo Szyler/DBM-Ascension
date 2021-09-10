@@ -251,6 +251,8 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		specWarnDischarge:Show()
 		if self.vb.phase == 2 and mod:IsDifficulty("heroic10", "heroic25") then
 		timerSiren:Start()
+		elseif self.vb.phase == 3 then
+		timerGenerator:Start()
 		end
 	elseif msg == L.DBM_VASHJ_ELITE or msg:find(L.DBM_VASHJ_ELITE) then
 		self:NagaSpawn()
