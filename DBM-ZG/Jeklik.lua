@@ -56,10 +56,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerScreech:Start()
 		timerScreechCD:Start()
 		warnScreech:Show()
-	elseif args:IsSpellID(340040) and args.sourceName == "High Priestess Jeklik" then
-		warnCharge:Show()
+	elseif args:IsSpellID(340040) and args:GetSrcCreatureID(14517) then
+		warnCharge:Show() 
 		timerChargeCD:Start()
-	elseif args:IsSpellID(340040) and args.sourceName == "Frenzied Bat Rider" then
+	elseif args:IsSpellID(340040) and args:GetSrcCreatureID(14965) then
 		warnConcoc:Show(args.destName)
 		TimerConcoc:Show(args.destName)
 		if args.destName == UnitName("player") then
