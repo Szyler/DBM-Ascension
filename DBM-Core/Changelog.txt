@@ -111,3 +111,12 @@ v5.07.14 17/09/2021
 - Added absent Special Warning for standing in Toxic Spore.
 - Fixed Berserk timer being incorrect for Lady Vashj.
 ----------------------------------------------------------------------------------------------------
+v5.08 20/10/2021
+- Fixed timers for Ascended Fathomlord
+- Fixed timers for Ascended Tidewalker
+- Fixed Generator timer on Vashj in phase 3
+- Added tentacle for Lurker
+- Fixed Geyser timer stop on breath on Lurker
+- Added new Hakkar mechanics
+- Added new mechanics to several other ZG bosses
+----------------------------------------------------------------------------------------------------
