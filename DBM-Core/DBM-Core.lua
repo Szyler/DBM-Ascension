@@ -3802,6 +3802,11 @@ function bossModPrototype:DisableModel()
 	self.modelEnabled = nil
 end
 
+function bossModPrototype:GetHealth(unit)
+	local hp = UnitHealth(unit) / UnitHealthMax(unit) * 100
+	return hp
+end
+	
 
 --------------------
 --  Localization  --

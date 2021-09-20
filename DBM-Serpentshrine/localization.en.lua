@@ -137,14 +137,16 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	SpecWarnMurlocs			= "Murlocs Coming!",
-	WarnRisingBubble		= "Rising Bubble spawned!",
-	WarnFreezingBubble		= "Water Globule spawned!",
+	WarnRisingBubble		= "Bubbles",
+	WarnWateryGlobule		= "Water Globule spawned!",
+	HPLoss					= "Morogrim went down %.1f%%!"
 }
 
 L:SetTimerLocalization{
-	TimerMurlocs			= "Murlocs",
-	TimerFreezingBubble 	= "Next Water Globule",
-	TimerRisingBubble	 	= "Next Rising Bubble",
+	TimerMurlocs			= "Murlocs: %s",
+	TimerWateryGlobule	 	= "Next Watery Globule",
+	TimerBubble	 			= "Next Bubbles",
+	TimerBurst				= "Bubble Burst"
 }
 
 L:SetOptionLocalization{
@@ -154,20 +156,22 @@ L:SetOptionLocalization{
 	HealerIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83544),
 	WarriorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83554),
 	MageIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83551),
-	WarnHealer			= "Show special warning when Healer spawns",
+	WarnHealer			= "Show speciw al warning when Healer spawns",
 	WarnWarrior			= "Show special warning when Warrior spawns",
 	WarnMage			= "Show special warning when Mage spawns",
-	WarnFreezingBubble	= "Show warning when Water Globule spawns",
-	TimerFreezingBubble = "Show timer for next $spell:37854",
+	WarnWateryGlobule	= "Show warning when Water Globule spawns",
+	TimerWateryGlobule = "Show timer for next $spell:37854",
 	WarnRisingBubble	= "Show special warning when Rising Bubble spawns",
 	TimerRisingBubble	= "Show timer for when Rising Bubble spawns",
 	RisingBubbleIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(83561),
+	HPLoss				= "Show how much damage Morogrim has taken after Bursting Bubble explodes."
 }
 
 L:SetMiscLocalization{
-	WarnHealer		= "Murlock Healer spawned!",
-	WarnWarrior		= "Murlock Warrior spawned!",
-	WarnMage		= "Murlock Mage spawned!",
+	WarnHealer					= "Murloc Healer spawned!",
+	WarnWarrior					= "Murloc Warrior spawned!",
+	WarnMage					= "Murloc Mage spawned!",
+	DBM_MOROGRIM_BURSTING_SPAWN	= "A Bursting Bubble floats through the room."
 }
 
 -----------------
