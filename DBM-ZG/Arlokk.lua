@@ -28,7 +28,7 @@ local timerRavage		= mod:NewTargetTimer(36, 24213)
 local timerRavage2		= mod:NewTargetTimer(6, 24213)
 
 local warnFlurry		= mod:NewSpellAnnounce(100328)
-local timerFlurry		= mod:NewTargetTimer(100328)
+local timerFlurry		= mod:NewTargetTimer(5, 100328)
 
 function mod:OnCombatStart(delay)
 end
@@ -49,17 +49,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerKidney:Start()
 	elseif args:IsSpellID(340500) then
 		warnPhase2:Show()
-		-- elseif args:IsSpellID(24212) then
-			-- 	-- warnPain:Show(args.destName)
-			-- 	timerPain:Start()
 	end
 end
-
--- function mod:SPELL_AURA_REMOVED(args)
--- 	if args:IsSpellID(24212) then
-	-- 		timerPain:Cancel(args.destName)
-	-- 	end
-	-- end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(100328) then
