@@ -95,13 +95,17 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("Golemagg")
 
 L:SetGeneralLocalization{
-	name = "Golemagg the Incinerator"
+	name 					= "Golemagg the Incinerator"
 }
 L:SetWarningLocalization{
-	WarnP2Soon	= "Phase 2 soon"
+	WarnP2Soon				= "Phase 2 soon"
 }
 L:SetOptionLocalization{
-	WarnP2Soon 	= "Warn when phase 2 is about to start"
+	WarnP2Soon 				= "Warn when phase 2 is about to start",
+	CaveinYellOpt           = "Yell when you are affected by $spell:36240"
+}
+L:SetMiscLocalization{
+	CaveinYell			    = "Cave in on me!",
 }
 
 -----------------
