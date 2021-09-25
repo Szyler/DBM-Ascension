@@ -18,7 +18,7 @@ local specWarnRain		= mod:NewSpecialWarningYou(350076)
 local timerNextCurse	= mod:NewNextTimer(20, 19716)
 local timerNextRain		= mod:NewNextTimer(12, 20277)
 local timerFist			= mod:NewBuffActiveTimer(4, 20277)
-local timerEnrage		= mod:NewTimer(300, "Frenzy", 350078)
+local timerEnrage		= mod:NewBerserkTimer(300)
 
 local FistTargets = {}
 

@@ -22,10 +22,13 @@ local timerNextDoom		= mod:NewNextTimer(15, 19702)
 local timerDoom			= mod:NewCastTimer(10, 19702)
 local timerMC			= mod:NewTargetTimer(5, 20604)
 
+local enrageTimer		= mod:NewBerserkTimer(300)
+
 function mod:OnCombatStart(delay)
-	timerNextDoom(10-delay)
-	timerNextCurse(20-delay)
-	timerNextDoom(10-delay)
+	timerNextDoom:Start(10-delay)
+	timerNextCurse:Start(20-delay)
+	timerNextDoom:Start(10-delay)
+	enrageTimer:Start(-delay)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
