@@ -18,6 +18,17 @@ L:SetGeneralLocalization{
 	name = "Magmadar"
 }
 
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
+    lavaBombYellOpt           = "Yell when you are affected by $spell:2105054"
+}
+
+L:SetMiscLocalization{
+    lavaBombYell			    = "Lava Bomb on me!",
+}
+
 ----------------
 --  Gehennas  --
 ----------------
@@ -25,6 +36,17 @@ L = DBM:GetModLocalization("Gehennas")
 
 L:SetGeneralLocalization{
 	name = "Gehennas"
+}
+
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
+    CaveinYellOpt           = "Yell when you are affected by $spell:20277"
+}
+
+L:SetMiscLocalization{
+    RainYell			    = "Rain of Fire on me!",
 }
 
 ------------
