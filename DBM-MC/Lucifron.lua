@@ -50,7 +50,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnTouch:Show(args.destName)
 		timerNextTouch:Start()
 		if args:IsPlayer() then
-			warnTouchYou:show()
+			warnTouchYou:Show()
 		end
 	end
 end

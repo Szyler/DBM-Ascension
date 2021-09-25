@@ -51,7 +51,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:ScheduleMethod(0.3, "warnFistTargets")
 	elseif args:IsSpellID(20277) then
 		if args:IsPlayer() then
-			specWarnRain:show()
+			specWarnRain:Show()
 		end
 		timerNextRain:Start()
 	elseif args:IsSpellID(19716, 905063) then

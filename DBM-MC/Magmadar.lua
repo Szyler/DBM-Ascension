@@ -8,8 +8,9 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_SUCCESS",
 	"SPELL_DAMAGE",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_PERIODIC_DAMAGE"
 )
 
 local warnPanic			= mod:NewSpellAnnounce(19408)
@@ -61,7 +62,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerEnrage:Start()
 	elseif args:IsSpellID(2105054) then
 		if args:IsPlayer() then
-			warnLavaBomb:show()
+			warnLavaBomb:Show()
 			if self.Options.lavaBombYellOpt then
 				SendChatMessage(L.lavaBombYell, "YELL")
 			end
@@ -99,5 +100,17 @@ end
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2105049) then
 		timerNextBreath:Start()
+	end
+end
+
+
+function mod:SPELL_PERIODIC_DAMAGE(args)
+	if args:IsSpellID(2105054) then
+		if args:IsPlayer() then
+			warnLavaBomb:Show()
+			if self.Options.lavaBombYellOpt then
+				SendChatMessage(L.lavaBombYell, "YELL")
+			end
+		end
 	end
 end
