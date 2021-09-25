@@ -19,7 +19,7 @@ local warnLavaBomb		= mod:NewSpecialWarningYou(2105054)
 
 local timerNextDog		= mod:NewNextTimer(40, 5105044)
 local timerNextPanic	= mod:NewNextTimer(30, 19408)
-local timerNextMagma	= mod:NewNextTimer(30, 19408)
+local timerNextLava		= mod:NewNextTimer(30, 2105054)
 local timerNextBreath	= mod:NewNextTimer(10, 2105049)
 
 local warnNextHysteria	= mod:NewSpellAnnounce(2105031)
@@ -40,7 +40,7 @@ mod:AddBoolOption(L.lavaBombYellOpt)
 function mod:OnCombatStart(delay)
 	timerPanic:Start(-delay)
 	timerNextDog:Start(25-delay)
-	warnDog:Schedule()
+	warnDog:Schedule(25-delay)
 	self:ScheduleMethod(25, "DogSpawner")
 	timerNextHysteria:Start(15-delay)
 	timerNextDread:Start(45-delay)
@@ -50,7 +50,7 @@ end
 
 function mod:DogSpawner()
 	self:UnscheduleMethod("DogSpawner")
-	warnDog:show()
+	warnDog:Show()
 	timerNextDog:Start()
 	self:ScheduleMethod(40, "DogSpawner")
 end
@@ -66,7 +66,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				SendChatMessage(L.lavaBombYell, "YELL")
 			end
 		end
-		timerNextMagma:Start()
+		timerNextLava:Start()
 	elseif args:IsSpellID(2105054) then
 		warnNextHysteria:Show()
 		timerNextHysteria:Start()
@@ -98,6 +98,6 @@ end
 
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2105049) then
-		timerNextBreath:start()
+		timerNextBreath:Start()
 	end
 end

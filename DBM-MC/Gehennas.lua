@@ -24,7 +24,7 @@ local FistTargets = {}
 
 function mod:OnCombatStart(delay)
 	table.wipe(FistTargets)
-	timerEnrage:start(-delay)
+	timerEnrage:Start(-delay)
 	timerNextRain:Start(10-delay)
 	timerNextCurse:Start()
 end
