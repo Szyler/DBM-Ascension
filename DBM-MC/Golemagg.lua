@@ -7,14 +7,22 @@ mod:RegisterCombat("combat", 11988)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"SPELL_PERIODIC_DAMAGE"
 )
 
-local warnTrust		= mod:NewSpellAnnounce(20553)
-local warnP2Soon	= mod:NewAnnounce("WarnP2Soon")
-local warnP2		= mod:NewPhaseAnnounce(2)
+mod:AddBoolOption(L.CaveinYellOpt)
+
+local warnTrust			= mod:NewSpellAnnounce(20553)
+local warnCaveIn		= mod:NewSpellAnnounce(350098)
+
+local warnP2Soon		= mod:NewAnnounce("WarnP2Soon")
+local warnP2			= mod:NewPhaseAnnounce(2)
+
+local timerNextCaveIn	= mod:NewNextTimer(45, 350098)
 
 local prewarn_p2
+
 function mod:OnCombatStart(delay)
 	prewarn_p2 = false
 end
@@ -22,11 +30,29 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(20553) then
 		warnTrust:Show()
+	elseif args:IsSpellID(350098) then
+		if args:IsPlayer() then
+			warnCaveIn:Show()
+			if self.Options.CaveinYellOpt then
+				SendChatMessage(L.CaveinYell, "YELL")
+			end
+		end
+	end
+end
+
+function mod:SPELL_PERIODIC_DAMAGE(args)
+	if args:IsSpellID(350098) then
+		if args:IsPlayer() then
+			warnCaveIn:Show()
+			if self.Options.CaveinYellOpt then
+				SendChatMessage(L.CaveinYell, "YELL")
+			end
+		end
 	end
 end
 
 function mod:UNIT_HEALTH(uId)
-	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.25 and self:GetUnitCreatureId(uId) == 11099 and not prewarn_P2 then
+	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.10 and self:GetUnitCreatureId(uId) == 11099 and not prewarn_P2 then
 		warnP2Soon:Show()
 		prewarn_P2 = true
 	end
