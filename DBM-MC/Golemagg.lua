@@ -12,6 +12,7 @@ mod:RegisterEvents(
 )
 
 mod:AddBoolOption(L.CaveinYellOpt)
+local CaveInSpam = 0
 
 local warnTrust			= mod:NewSpellAnnounce(20553)
 local warnCaveIn		= mod:NewSpellAnnounce(350098)
@@ -24,24 +25,29 @@ local timerNextCaveIn	= mod:NewNextTimer(45, 350098)
 local prewarn_p2
 
 function mod:OnCombatStart(delay)
+	timerNextCaveIn:Start(32-delay)
 	prewarn_p2 = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(20553) then
 		warnTrust:Show()
-	elseif args:IsSpellID(350098) then
+	elseif args:IsSpellID(350098, 975009) then
 		if args:IsPlayer() then
 			warnCaveIn:Show()
 			if self.Options.CaveinYellOpt then
 				SendChatMessage(L.CaveinYell, "YELL")
 			end
 		end
+		if GetTime() > CaveInSpam then
+			CaveInSpam = GetTime()
+			timerNextCaveIn:Start()
+		end
 	end
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(350098) then
+	if args:IsSpellID(350098, 975009) then
 		if args:IsPlayer() then
 			warnCaveIn:Show()
 			if self.Options.CaveinYellOpt then

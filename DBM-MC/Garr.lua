@@ -9,9 +9,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED"
 )
+local ReverbSpam = 0
 
-
-local warnReverb				= mod:NewSpellAnnounce(2105076)
+local warnReverb				= mod:NewSoonAnnounce(2105076)
 local warnHarden				= mod:NewSpellAnnounce(2105073)
 
 -- local warnImmolate				= mod:NewTargetAnnounce(15732)
@@ -28,8 +28,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	-- 	-- warnImmolate:Show(args.destName)
 	-- 	-- timerImmolate:Start(args.destName)
 	-- else
-		if args:IsSpellID(2105076) then
-		warnReverb:Show()
+	if args:IsSpellID(2105076) and GetTime() > ReverbSpam then
+		ReverbSpam = GetTime()
+		warnReverb:Schedule(22)
 		timerNextReverb:Start()
 	end
 end

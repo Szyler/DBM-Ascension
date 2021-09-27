@@ -133,7 +133,8 @@ L:SetWarningLocalization{
 	WarnSubmerge		= "Submerge",
 	WarnSubmergeSoon	= "Submerge soon",
 	WarnEmerge			= "Emerge",
-	WarnEmergeSoon		= "EmergeSoon"
+	WarnEmergeSoon		= "EmergeSoon",
+	RagFire				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 L:SetTimerLocalization{
 	TimerCombatStart	= "Combat starts",
@@ -147,9 +148,17 @@ L:SetOptionLocalization{
 	TimerSubmerge		= "Show timer for submerge",
 	WarnEmerge			= "Show warning for emerge",
 	WarnEmergeSoon		= "Show pre-warning for emerge",
-	TimerEmerge			= "Show timer for emerge"
+	TimerEmerge			= "Show timer for emerge",
+	RagFire				= "Show $spell:85178 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 L:SetMiscLocalization{
 	Submerge	= "COME FORTH, MY SERVANTS! DEFEND YOUR MASTER!",
-	Pull		= "Impudent whelps! You've rushed headlong to your own deaths! See now, the master stirs!\r\n"
+	Pull		= "Behold Ragnaros - the Firelord! He who was ancient when this world was young! Bow before him, mortals! Bow before your ending!"
+}
+
+
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
 }

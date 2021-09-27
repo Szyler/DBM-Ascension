@@ -35,6 +35,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(20475, 2105061) then
+		timerNextLiving:Start(16)
 		timerBomb:Start(args.destName)
 		warnBomb:Show(args.destName)
 		if self.Options.SetIconOnBombTarget then
@@ -47,7 +48,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(19695, 2105059) then
+	if args:IsSpellID(2105057, 2105058, 2105059) then
 		warnInferno:Show()
 		timerInferno:Start()
 		timerNextInferno:Start()
