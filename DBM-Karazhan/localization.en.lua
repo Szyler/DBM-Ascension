@@ -232,7 +232,6 @@ L:SetOptionLocalization{
 	timerSpecial			= "Show timer for special ability cooldown",
 	DBM_ARAN_DO_NOT_MOVE	= "Show special warning for $spell:30004",
 	DBM_ARAN_VULNERABLE		= "Show special warning when $spell:85182 is removed",
-	ElementalIcons			= "Set icons on $spell:37053",
 	VolatilePoly			= "Show special warning for $spell:85273",
 	ArcaneSpiral			= "Show special warning for full Arcane Spiral",
 	DoubleCast				= "Show special warning for Double Cast",
