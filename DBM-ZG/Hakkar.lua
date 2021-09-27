@@ -23,6 +23,7 @@ local specWarnBlood		= mod:NewSpecialWarningYou(24328)
 local timerBlood		= mod:NewTargetTimer(16, 24328)
 
 local specWarnPool		= mod:NewSpecialWarningYou(340510)
+local specWarnPoison	= mod:NewSpecialWarningYou(24320)
 
 local warnSonSoon		= mod:NewSoonAnnounce(46729)
 local timerSon			= mod:NewNextTimer(60, 46729)
@@ -53,6 +54,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnPool:Show()
 		end
+	elseif args:IsSpellID(24320) then
+		if args:IsPlayer() then
+			specWarnPoison:Show()
+		end
 	elseif args:IsSpellID(24324) then
 		warnSiphonSoon:Cancel()
 		warnSiphonSoon:Schedule(55)
@@ -70,7 +75,7 @@ end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find("A Son of Hakkar joins the fight!") then
-		warnSonSoon:Schedule(25)
+		warnSonSoon:Schedule(55)
 		timerSon:Start()
 	end
 end
