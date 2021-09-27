@@ -27,7 +27,6 @@ local enrageTimer		= mod:NewBerserkTimer(300)
 function mod:OnCombatStart(delay)
 	timerNextDoom:Start(10-delay)
 	timerNextCurse:Start(20-delay)
-	timerNextDoom:Start(10-delay)
 	enrageTimer:Start(-delay)
 end
 
