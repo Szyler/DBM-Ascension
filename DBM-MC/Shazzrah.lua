@@ -13,7 +13,9 @@ mod:RegisterEvents(
 	"SPELL_CAST_START"
 )
 
-local warnSoonDampen		= mod:NewSoonAnnounce(2105089)
+local warnDampen			= mod:NewSpellAnnounce(2105089)
+local warnSoonCounter		= mod:NewSoonAnnounce(2105095)
+local warnCastExplo			= mod:NewCastAnnounce(2105085)
 -- local warnCurse			= mod:NewSpellAnnounce(19713)
 -- local warnGrounding		= mod:NewSpellAnnounce(19714, 2, nil, false)
 -- local warnCntrSpell		= mod:NewSpellAnnounce(19715)
@@ -23,6 +25,8 @@ local warnSoonDampen		= mod:NewSoonAnnounce(2105089)
 -- local timerGrounding	= mod:NewBuffActiveTimer(30, 19714, nil, false)
 -- local timerBlinkCD		= mod:NewNextTimer(30, 21655)
 local timerBomb				= mod:NewTargetTimer(8, 2105097)
+
+local timerExplo			= mod:NewCastTimer(10, 2105085)
 
 local timerNextBomb			= mod:NewNextTimer(16, 2105097)
 local timerNextCounter		= mod:NewNextTimer(26, 2105095)
@@ -39,7 +43,7 @@ end
 function mod:CounterSpell()
 	self:UnscheduleMethod("CounterSpell")
 	timerNextCounter:Start()
-	warnDogSoon:Schedule(23)
+	warnSoonCounter:Schedule(23)
 	self:ScheduleMethod(26, "CounterSpell")
 end
 
@@ -56,6 +60,8 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2105085, 2105086) or args:IsSpellID(2105087, 2105088) then
 		timerNextExplo:Start()
+		warnCastExplo:Start()
+		timerExplo:Start()
 	end
 end
 
