@@ -129,3 +129,12 @@ v5.08.1 25/09/2021
     - Baron
     - Golemagg 
 ----------------------------------------------------------------------------------------------------
+v5.08.2 27/09/2021
+- Added new Mechancis to MC bosses:
+    - Shazzrah
+    - Ragnaros
+- Adding all difficulty IDs to Geddon
+- Fixed the spam on Reverb on Garr
+- Added timers to Golemagg's cave in
+- Removed spammy abilities from Sulfuron
+----------------------------------------------------------------------------------------------------
