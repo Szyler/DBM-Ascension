@@ -101,7 +101,7 @@ end
 
 function mod:WateryGlobule()							
 	self:UnscheduleMethod("WateryGlobule")
-	WarnFreezing:Show()
+	WarnWatery:Show()
 	timerFreezing:Start()
 	self:ScheduleMethod(30,"WateryGlobule")
 end
