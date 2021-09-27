@@ -6,10 +6,10 @@ mod:SetCreatureID(11502)
 mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
+	"SPELL_DAMAGE",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -19,12 +19,12 @@ local warnSunder		= mod:NewAnnounce(L.RagFire, 2, 2105107)
 local warnHand			= mod:NewSpellAnnounce(2105119)
 local warnBlast			= mod:NewSpellAnnounce(2105103)
 local warnMerge			= mod:NewSpellAnnounce(975068)
+local warnSubmergeSoon	= mod:NewAnnounce("WarnSubmergeSoon", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 
 local timerNextHand		= mod:NewNextTimer(15, 2105120)
 local timerNextBurst	= mod:NewNextTimer(15, 2105107)
 
 local timerSubmerge		= mod:NewTimer(90, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local warnSubmergeSoon	= mod:NewAnnounce("WarnSubmergeSoon", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerEmerge		= mod:NewTimer(60, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 
 -- local warnWrathRag		= mod:NewSpellAnnounce(20566)
@@ -45,23 +45,18 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(150, "Emerged")
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2105107, 2105108) or args:IsSpellID(2105109, 2105110) and args.amount >= 5 then
-		warnSunder:Show(args.destName)
-	end
-end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2105115, 2105116) or args:IsSpellID(2105117, 2105118) then
-		timerNextBurst:Start()
-	end
-end
-
 function mod:Emerged()
+	timerNextHand:Start(-delay)
 	warnSubmergeSoon:Schedule(85-delay)
 	timerSubmerge:Start(-delay)
 	timerEmerge:Schedule(90-delay)
 	self:ScheduleMethod(150, "Emerged")
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2105107, 2105108) or args:IsSpellID(2105109, 2105110) and args.amount >= 5 then
+		warnSunder:Show(args.destName)
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -75,6 +70,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2105115, 2105116) or args:IsSpellID(2105117, 2105118) then
+		timerNextBurst:Start()
+	end
+end
+
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Pull then
 		timerCombatStart:Start()
@@ -82,13 +83,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 -- function mod:OnSync(msg, arg)
--- 	if msg == "Submerge" and not submerge then
--- 		submerge = true
--- 		warnSubmerge:Show()
--- 		timerEmerge:Start()
--- 		warnEmergeSoon:Schedule(80)
--- 		self:ScheduleMethod(90, "emerged")
--- 	elseif msg == "Emerge" then
--- 		emerged()
--- 	end
--- end
+	-- 	if msg == "Submerge" and not submerge then
+		-- 		submerge = true
+		-- 		warnSubmerge:Show()
+		-- 		timerEmerge:Start()
+		-- 		warnEmergeSoon:Schedule(80)
+		-- 		self:ScheduleMethod(90, "emerged")
+		-- 	elseif msg == "Emerge" then
+			-- 		emerged()
+			-- 	end
+			-- end
