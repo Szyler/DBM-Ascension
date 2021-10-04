@@ -17,7 +17,7 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
 local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
-local warnBlastNova			= mod:NewAnnounce(2105147, 1)
+local warnBlastNova			= mod:NewSpellAnnounce(2105147, 1)
 
 local specWarnBlastNova		= mod:NewSpecialWarningMove(2105147)
 
@@ -71,6 +71,7 @@ function mod:SPELL_CAST_START(args)
 	end
 	if args:IsSpellID(2105145, 2105146, 2105147, 2105148) then
 		warnBlastNova:Show()
+		specWarnBlastNova:Show()
 		timerBlastNova:Start()
 		timerNextBlastNova:Stop()
 		TimerNextBlastNova2:Stop()
