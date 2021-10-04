@@ -17,9 +17,15 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
 local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
+local warnBlastNova			= mod:NewAnnounce(2105147, 1)
+
+local specWarnBlastNova		= mod:NewSpecialWarningMove(2105147)
 
 local timerNextDeepBreath	= mod:NewCDTimer(35, 17086)--Range from 35-60seconds in between based on where she moves to.
 local timerBreath			= mod:NewCastTimer(8, 17086)
+local timerBlastNova		= mod:NewCastTimer(4, 2105147)
+local timerNextBlastNova	= mod:NewCDTimer(32, 2105147)
+local TimerNextBlastNova2	= mod:NewCDTimer(40, 2105147)
 
 local prewarnP2
 local warnP2
@@ -52,6 +58,7 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellP2 or msg:find(L.YellP2) then
 		timerNextDeepBreath:Start(77)
+		timerNextBlastNova:start()
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		timerNextDeepBreath:Stop()
 	end
@@ -62,20 +69,31 @@ function mod:SPELL_CAST_START(args)
 		timerBreath:Start()
 		timerNextDeepBreath:Start()
 	end
+	if args:IsSpellID(2105145, 2105147, 2105148) then
+		warnBlastNova:Show()
+		timerBlastNova:Start()
+		timerNextBlastNova:Stop()
+		TimerNextBlastNova2:Stop()
+		timerNextBlastNova:Start()
+		TimerNextBlastNova2:Start()
+	end
 end
 
 function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.70 and prewarnP2 == 0 then
+	if self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.90 and prewarnP2 == 0 then
 		prewarnP2 = 1
 		self:ScheduleMethod(0, "preP2")		
-	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.65 and warnP2 == 0 then
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.85 and warnP2 == 0 then
 		warnP2 = 1
 		self:ScheduleMethod(0, "alertP2")
-	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 and prewarnP3 == 0 then			
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.40 and prewarnP3 == 0 then			
 		prewarnP3 = 1
 		self:ScheduleMethod(0, "preP3")
-	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.40 and warnP3 == 0 then			
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.35 and warnP3 == 0 then			
 		warnP3 = 1
 		self:ScheduleMethod(0, "alertP3")
+	end
+	if self:GetUnitCreatureId(uId) == 36561 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.01 then
+		TimerNextBlastNova2:stop()
 	end
 end
