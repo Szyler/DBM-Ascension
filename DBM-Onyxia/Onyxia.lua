@@ -17,7 +17,7 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
 local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
-local warnBlastNova			= mod:NewSpellAnnounce(2105147, 1)
+local warnBlastNova			= mod:NewCastAnnounce(2105147)
 
 local specWarnBlastNova		= mod:NewSpecialWarningMove(2105147)
 
@@ -26,6 +26,9 @@ local timerBreath			= mod:NewCastTimer(8, 17086)
 local timerBlastNova		= mod:NewCastTimer(4, 2105147)
 local timerNextBlastNova	= mod:NewCDTimer(32, 2105147)
 local TimerNextBlastNova2	= mod:NewCDTimer(40, 2105147)
+local TimerNextBlastNova3	= mod:NewCDTimer(40, 2105147)
+
+local lastBlastNova = 0
 
 local prewarnP2
 local warnP2
@@ -58,7 +61,7 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellP2 or msg:find(L.YellP2) then
 		timerNextDeepBreath:Start(77)
-		timerNextBlastNova:Start()
+		timerNextBlastNova:Start(17)
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		timerNextDeepBreath:Stop()
 	end
@@ -73,10 +76,16 @@ function mod:SPELL_CAST_START(args)
 		warnBlastNova:Show()
 		specWarnBlastNova:Show()
 		timerBlastNova:Start()
-		timerNextBlastNova:Stop()
-		TimerNextBlastNova2:Stop()
-		timerNextBlastNova:Start()
-		TimerNextBlastNova2:Start()
+		lastBlastNova = GetTime()
+		if (GetTime() - lastBlastNova) <= 1 or (GetTime() - lastBlastNova) > 15  then
+			timerNextBlastNova:Start()
+		end
+		if TimerNextBlastNova2 ~= 0 then
+			TimerNextBlastNova3:Start()
+		else
+			TimerNextBlastNova2:Start()
+		end
+		
 	end
 end
 
@@ -95,6 +104,10 @@ function mod:UNIT_HEALTH(uId)
 		self:ScheduleMethod(0, "alertP3")
 	end
 	if self:GetUnitCreatureId(uId) == 36561 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.01 then
-		TimerNextBlastNova2:stop()
+		if  TimerNextBlastNova3 > 1 then
+			TimerNextBlastNova2:stop()
+		elseif TimerNextBlastNova2 > 1 then
+			TimerNextBlastNova3:stop()
+		end
 	end
 end
