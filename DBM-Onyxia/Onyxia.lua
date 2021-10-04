@@ -58,7 +58,7 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellP2 or msg:find(L.YellP2) then
 		timerNextDeepBreath:Start(77)
-		timerNextBlastNova:start()
+		timerNextBlastNova:Start()
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		timerNextDeepBreath:Stop()
 	end
@@ -69,7 +69,7 @@ function mod:SPELL_CAST_START(args)
 		timerBreath:Start()
 		timerNextDeepBreath:Start()
 	end
-	if args:IsSpellID(2105145, 2105147, 2105148) then
+	if args:IsSpellID(2105145, 2105146, 2105147, 2105148) then
 		warnBlastNova:Show()
 		timerBlastNova:Start()
 		timerNextBlastNova:Stop()
