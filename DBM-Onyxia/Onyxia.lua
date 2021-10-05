@@ -25,8 +25,8 @@ local timerNextDeepBreath	= mod:NewCDTimer(35, 17086)--Range from 35-60seconds i
 local timerBreath			= mod:NewCastTimer(8, 17086)
 local timerBlastNova		= mod:NewCastTimer(4, 2105147)
 local timerNextBlastNova	= mod:NewCDTimer(32, 2105147)
-local timerNextBlastNova2	= mod:NewCDTimer(40, 2105147)
-local timerNextBlastNova3	= mod:NewCDTimer(40, 2105147)
+local timerIntBlastNova1	= mod:NewCDTimer(40, 2105147)
+local timerIntBlastNova2	= mod:NewCDTimer(40, 2105147)
 
 local lastBlastNova = 0
 
@@ -80,10 +80,10 @@ function mod:SPELL_CAST_START(args)
 		if (GetTime() - lastBlastNova) <= 1 or (GetTime() - lastBlastNova) > 15  then
 			timerNextBlastNova:Start()
 		end
-		if timerNextBlastNova2:GetTime() > 0 then
-			timerNextBlastNova3:Start()
+		if timerIntBlastNova1:GetTime() > 0 then
+			timerIntBlastNova2:Start()
 		else
-			timerNextBlastNova2:Start()
+			timerIntBlastNova1:Start()
 		end
 		
 	end
@@ -105,14 +105,14 @@ function mod:UNIT_HEALTH(uId)
 	end
 	if mod:IsDifficulty("heroic10", "heroic25") then
 		if self:GetUnitCreatureId(uId) == 36561 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.02 then
-			if  timerNextBlastNova3:GetTime() < 32 or timerBlastNova3:GetTime() > 28 and timerBlastNova3:GetTime() > timerBlastNova2:GetTime() then
-				timerNextBlastNova3:Stop()
+			if  timerIntBlastNova2:GetTime() > 32 or timerIntBlastNova2:GetTime() < 28 and timerIntBlastNova2:GetTime() < timerIntBlastNova1:GetTime() then
+				timerIntBlastNova2:Stop()
 			else
-				timerNextBlastNova2:Stop()
+				timerIntBlastNova1:Stop()
 			end
 		end
 	else if self:GetUnitCreatureId(uId) == 36561 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.1 then
-			timerNextBlastNova2:Stop()
+			timerIntBlastNova1:Stop()
 		end
 	end
 end
