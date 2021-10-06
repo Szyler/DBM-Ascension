@@ -17,18 +17,23 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
 local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
+local warnFireball			= mod:NewTargetAnnounce(85365, 3)
 
 local specWarnBlastNova		= mod:NewSpecialWarningMove(2105147)
 local specWarnDeepBreath	= mod:NewSpecialWarningMove(18609)
+local specWarnFireballYou	= mod:NewSpecialWarningYou(85365)
 
-local timerNextDeepBreath	= mod:NewCDTimer(35, 17086)--Range from 35-60seconds in between based on where she moves to.
 local timerBreath			= mod:NewCastTimer(8, 17086)
 local timerBlastNova		= mod:NewCastTimer(4, 2105147)
 local timerBellowingRoar	= mod:NewCastTimer(4, 18431)
+local timerFireball			= mod:NewCastTimer(4, 85365)
+
+local timerNextDeepBreath	= mod:NewCDTimer(75, 17086)--Range from 35-60seconds in between based on where she moves to.
 local timerNextBellowingRoar= mod:NewCDTimer(45, 18431)
 local timerNextBlastNova	= mod:NewCDTimer(32, 2105147)-- +/- a few seconds as it varies depending on Guard movement.
 local timerIntBlastNova1	= mod:NewCDTimer(40, 2105147)-- Internal CD for a Guard to cast Blast Nova twice
 local timerIntBlastNova2	= mod:NewCDTimer(40, 2105147)-- second one for secondary add
+
 local lastBlastNova = 0
 
 local prewarnP2
@@ -73,7 +78,20 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(17086, 18351, 18564, 18576) or args:IsSpellID(18584, 18596, 18609, 18617) then	-- 1 ID for each direction
 		specWarnDeepBreath:Show()
 		timerBreath:Start()
+		timerNextDeepBreath:Stop()
 		timerNextDeepBreath:Start()
+	end
+	if args:IsSpellID(2105158, 2105159, 2105160, 2105161) then
+		local target = nil
+		target = mod:GetBossTarget(10184)
+		local myName = UnitName("player")
+		if target == myName then
+			specWarnFireballYou:Show()
+		else
+			warnFireball:Show(target)
+		end
+		timerFireball:Start(target)
+		self:SetIcon(target, 1, 4)
 	end
 	if args:IsSpellID(2105145, 2105146, 2105147, 2105148) then
 		specWarnBlastNova:Show()
@@ -82,11 +100,11 @@ function mod:SPELL_CAST_START(args)
 		if (GetTime() - lastBlastNova) <= 1 or (GetTime() - lastBlastNova) > 15  then --Trying it to only trigger from new Add Blast Nova.
 			timerNextBlastNova:Start()
 		end
-		if (timerNextBlastNova:GetTime() >= 37 and timerIntBlastNova1:GetTime() > 30) or (timerNextBlastNova:GetTime() <= 3 and timerIntBlastNova1:GetTime() > 30) then
-			timerIntBlastNova2:Start()
-		elseif
-			timerNextBlastNova:GetTime() >= 37 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) or timerNextBlastNova:GetTime() <= 3 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) then --Trying to only get the Internal CD on the Nova closest to the timer.
+		if timerNextBlastNova:GetTime() >= 37 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) or timerNextBlastNova:GetTime() <= 3 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) then --Trying to only get the Internal CD on the Nova closest to the timer.
 			timerIntBlastNova1:Start()
+		elseif
+			(timerNextBlastNova:GetTime() >= 37 and timerIntBlastNova1:GetTime() > 30) or (timerNextBlastNova:GetTime() <= 3 and timerIntBlastNova1:GetTime() > 30) then
+			timerIntBlastNova2:Start()
 		end
 	end
 	if args:IsSpellID(18431) then
