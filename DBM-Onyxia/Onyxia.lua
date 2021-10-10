@@ -17,16 +17,16 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
 local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
-local warnFireball			= mod:NewTargetAnnounce(85365, 3)
+local warnFireball			= mod:NewTargetAnnounce(2105160, 3)
 
 local specWarnBlastNova		= mod:NewSpecialWarningMove(2105147)
 local specWarnDeepBreath	= mod:NewSpecialWarningMove(18609)
-local specWarnFireballYou	= mod:NewSpecialWarningYou(85365)
+local specWarnFireballYou	= mod:NewSpecialWarningYou(2105160)
 
 local timerBreath			= mod:NewCastTimer(8, 17086)
 local timerBlastNova		= mod:NewCastTimer(4, 2105147)
 local timerBellowingRoar	= mod:NewCastTimer(4, 18431)
-local timerFireball			= mod:NewCastTimer(4, 85365)
+local timerFireball			= mod:NewCastTimer(4, 2105160)
 
 local timerNextDeepBreath	= mod:NewCDTimer(75, 17086)--Range from 35-60seconds in between based on where she moves to.
 local timerNextBellowingRoar= mod:NewCDTimer(45, 18431)
@@ -70,8 +70,24 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextBlastNova:Start()
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		timerNextDeepBreath:Stop()
+		timerBlastNova:Stop()
+		timerIntBlastNova1:Stop()
+		timerIntBlastNova2:Stop()
 		timerNextBellowingRoar:Start(8)
 	end
+end
+
+function mod:MassiveFireball()
+	local target = nil
+	target = mod:GetBossTarget(10184)
+	local myName = UnitName("player")
+	if target == myName then
+		specWarnFireballYou:Show()
+	else
+		warnFireball:Show(target)
+	end
+	timerFireball:Start(target)
+	self:SetIcon(target, 3, 4)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -82,36 +98,27 @@ function mod:SPELL_CAST_START(args)
 		timerNextDeepBreath:Start()
 	end
 	if args:IsSpellID(2105158, 2105159, 2105160, 2105161) then
-		local target = nil
-		target = mod:GetBossTarget(10184)
-		local myName = UnitName("player")
-		if target == myName then
-			specWarnFireballYou:Show()
-		else
-			warnFireball:Show(target)
-		end
-		timerFireball:Start(target)
-		self:SetIcon(target, 1, 4)
+		self:ScheduleMethod(0.25, "MassiveFireball")
 	end
 	if args:IsSpellID(2105145, 2105146, 2105147, 2105148) then
 		specWarnBlastNova:Show()
 		timerBlastNova:Start()
-		lastBlastNova = GetTime()
-		if (GetTime() - lastBlastNova) <= 1 or (GetTime() - lastBlastNova) > 15  then --Trying it to only trigger from new Add Blast Nova.
+		if (GetTime() - lastBlastNova) > 20  then --Trying it to only trigger from new Add Blast Nova.
 			timerNextBlastNova:Start()
 		end
-		if timerNextBlastNova:GetTime() >= 37 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) or timerNextBlastNova:GetTime() <= 3 and (timerIntBlastNova2:GetTime() == nil or timerIntBlastNova2:GetTime() > 30) then --Trying to only get the Internal CD on the Nova closest to the timer.
+		if timerNextBlastNova:GetTime() >= 37 and timerNextBlastNova:GetTime() <= 3 then
 			timerIntBlastNova1:Start()
-		elseif
-			(timerNextBlastNova:GetTime() >= 37 and timerIntBlastNova1:GetTime() > 30) or (timerNextBlastNova:GetTime() <= 3 and timerIntBlastNova1:GetTime() > 30) then
+		else
 			timerIntBlastNova2:Start()
 		end
+		lastBlastNova = GetTime()
 	end
 	if args:IsSpellID(18431) then
 		timerBellowingRoar:Start()
 		timerNextBellowingRoar:Stop()
 		timerNextBellowingRoar:Start()
 	end
+	
 end
 
 function mod:UNIT_HEALTH(uId)
