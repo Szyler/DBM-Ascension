@@ -33,7 +33,7 @@ local timerFireball			= mod:NewCastTimer(4, 2105160)
 local timerWhelps			= mod:NewTimer(95, "Onyxian Whelps", "Interface\\Icons\\INV_Misc_Head_Dragon_Red")
 local timerNextDeepBreath	= mod:NewCDTimer(75, 17086)--Range from 75-80 seconds in between based on where she moves to.
 local timerNextBellowingRoar= mod:NewCDTimer(45, 18431)
-local timerNextBlastNova	= mod:NewCDTimer(35, 2105147)-- +/- a few seconds as it varies depending on Guard movement.
+local timerNextBlastNova	= mod:NewCDTimer(32, 2105147)-- +/- a few seconds as it varies depending on Guard movement.
 local timerIntBlastNova		= mod:NewCDTimer(40, 2105147)-- Internal CD for a Guard to cast Blast Nova twice
 -- local timerIntBlastNova2	= mod:NewCDTimer(40, 2105147)-- second one for secondary add
 
