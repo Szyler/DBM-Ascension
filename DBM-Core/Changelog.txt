@@ -138,3 +138,11 @@ v5.08.2 27/09/2021
 - Added timers to Golemagg's cave in
 - Removed spammy abilities from Sulfuron
 ----------------------------------------------------------------------------------------------------
+v5.09 20/10/2021
+- Added new mechanics to Onyxia Ascended
+- Added warning for Poison pool on Hakkar
+
+- Fixed lua error on Tidewalker
+- Fixed timer for Son of Hakkar on Hakkar
+- Fixed lua error in Black Morass
+----------------------------------------------------------------------------------------------------
