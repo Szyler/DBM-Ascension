@@ -67,7 +67,7 @@ end
 
 function mod:OnSync(msg, arg)
 	if msg == "Wipe" then
-		self:UnscheduleMethod("PortalSoon")
+		warnWavePortalSoon:Unschedule()
 		timerNextPortal:Cancel()
 	end
 end
