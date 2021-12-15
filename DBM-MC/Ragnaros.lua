@@ -22,7 +22,7 @@ local warnMerge			= mod:NewSpellAnnounce(975068)
 local warnSubmergeSoon	= mod:NewAnnounce("WarnSubmergeSoon", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 
 local timerNextHand		= mod:NewNextTimer(15, 2105120)
-local timerNextBurst	= mod:NewNextTimer(15, 2105107)
+local timerNextBurst	= mod:NewNextTimer(10, 2105107)
 
 local timerSubmerge		= mod:NewTimer(90, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerEmerge		= mod:NewTimer(60, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
