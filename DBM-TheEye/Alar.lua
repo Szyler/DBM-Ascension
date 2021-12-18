@@ -1,4 +1,4 @@
-local mod	= DBM:NewMod("Alar", "DBM-TK", 1)
+local mod	= DBM:NewMod("Alar", "DBM-TheEye", 1)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
@@ -11,6 +11,38 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS"
 )
 
+
+-- local warn
+
+
+-- local timer
+
+
+-- local variables
+
+
+-- local options
+
+
+function mod:OnCombatStart(delay)
+
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+
+end
+
+
+
+-- Old Alar code
 
 -- local warnPhase = false;
 -- local phase2	= false;
