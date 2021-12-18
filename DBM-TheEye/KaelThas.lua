@@ -1,131 +1,190 @@
-local Kael = DBM:NewBossMod("KaelThas", DBM_KAEL_NAME, DBM_KAEL_DESCRIPTION, DBM_TEMPEST_KEEP, DBM_EYE_TAB, 4);
+local mod	= DBM:NewMod("KaelThas", "DBM-TheEye", 1)
+local L		= mod:GetLocalizedStrings()
 
-Kael.Version	= "1.3";
-Kael.Author		= "Tandanu";
+mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
+mod:SetCreatureID(19622)
+mod:RegisterCombat("yell", DBM_KAEL_YELL_PHASE1)
 
-local lastConflag 		= 0;
-local MCTargets			= {};
-local MCIcons			= {
-	[1]	= false,
-	[2] = false,
-	[3] = false,
-	[4] = false,
-	[5] = false,
-	[6] = false,
-	[7] = false,
-	[8] = false
-};
-local weaponFrame		= false;
-local phase2			= false;
-local phase5			= false;
-local weaponHealth		= {
-	[1] = 100,
-	[2] = 100,
-	[3] = 100,
-	[4] = 100,
-	[5] = 100,
-	[6] = 100,
-	[7] = 100
-};
-local addFrame		= false;
-local addHealth		= {
-	[1] = 100,
-	[2] = 100,
-	[3] = 100,
-	[4] = 100,
-};
-local lastEgg		= 0;
-local gravityLapse	= false;
-local phase = 1
-
-Kael:RegisterEvents(
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_CAST_START",
-	"SPELL_AURA_APPLIED",
-	"SPELL_MISSED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS"
-);
+	"SPELL_MISSED"
+)
 
-Kael:AddOption("WarnPhase", true, DBM_KAEL_OPTION_PHASE);
-Kael:AddOption("ThalaIcon", true, DBM_KAEL_OPTION_ICON_P1);
-Kael:AddOption("ThalaWhisper", true, DBM_KAEL_OPTION_WHISPER_P1);
-Kael:AddOption("RangeCheck", true, DBM_KAEL_OPTION_RANGECHECK);
-Kael:AddOption("WarnConflag", true, DBM_KAEL_OPTION_CONFLAG);
-Kael:AddOption("WarnConflag2", false, DBM_KAEL_OPTION_CONFLAG2);
-Kael:AddOption("TimerConflag2", false, DBM_KAEL_OPTION_CONFLAGTIMER2);
-Kael:AddOption("WarnFear", true, DBM_KAEL_OPTION_FEAR);
-Kael:AddOption("WarnFearSoon", true, DBM_KAEL_OPTION_FEARSOON);
-Kael:AddOption("WarnToy", true, DBM_KAEL_OPTION_TOY);
---Kael:AddOption("ShowFrame", true, DBM_KAEL_OPTION_FRAME);
---Kael:AddOption("ShowAddFrame", true, DBM_KAEL_OPTION_ADDFRAME);
-Kael:AddOption("WarnPyro", false, DBM_KAEL_OPTION_PYRO);
-Kael:AddOption("WarnBarrier", true, DBM_KAEL_OPTION_BARRIER);
-Kael:AddOption("WarnBarrier2", false, DBM_KAEL_OPTION_BARRIER2);
-Kael:AddOption("WarnPhoenix", true, DBM_KAEL_OPTION_PHOENIX);
-Kael:AddOption("WarnMC", true, DBM_KAEL_OPTION_WARNMC);
-Kael:AddOption("IconMC", true, DBM_KAEL_OPTION_ICONMC);
-Kael:AddOption("WarnGravity", true, DBM_KAEL_OPTION_GRAVITY);
 
-Kael:AddBarOption("Thaladred")
-Kael:AddBarOption("Lord Sanguinar")
-Kael:AddBarOption("Capernian")
-Kael:AddBarOption("Telonicus")
-Kael:AddBarOption("Gaze Cooldown")
-Kael:AddBarOption("Next Fear")
-Kael:AddBarOption("Fear")
-Kael:AddBarOption("Conflagration: (.*)")
-Kael:AddBarOption("Remote Toy: (.*)")
-Kael:AddBarOption("Phase 3")
-Kael:AddBarOption("Phase 4")
-Kael:AddBarOption("Next Shock Barrier")
-Kael:AddBarOption("Shock Barrier")
-Kael:AddBarOption("Phoenix")
-Kael:AddBarOption("Rebirth")
-Kael:AddBarOption("Pyroblast")
-Kael:AddBarOption("Gravity Lapse")
-Kael:AddBarOption("Next Gravity Lapse")
+-- local warn
 
-Kael:SetCreatureID(19622)
-Kael:RegisterCombat("yell", DBM_KAEL_YELL_PHASE1)
-Kael:SetMinCombatTime(60)
 
-function Kael:OnCombatStart(delay)
-	phase = 1
-	if self.Options.WarnPhase then
-		self:Announce(DBM_KAEL_WARN_PHASE1, 1);
-	end
-	self:StartStatusBarTimer(32 - delay, "Thaladred", "Interface\\Icons\\Spell_Nature_WispSplode");
-	MCTargets = {};
-	MCIcons = {
-		[1]	= false,
-		[2] = false,
-		[3] = false,
-		[4] = false,
-		[5] = false,
-		[6] = false,
-		[7] = false,
-		[8] = false
-	};
-	phase2 = false;
-	phase5 = false;
-	weaponHealth = {
-		[1] = 100,
-		[2] = 100,
-		[3] = 100,
-		[4] = 100,
-		[5] = 100,
-		[6] = 100,
-		[7] = 100
-	};
-	addHealth = {
-		[1] = 100,
-		[2] = 100,
-		[3] = 100,
-		[4] = 100,
-	};
+-- local timer
+
+
+-- local variables
+
+
+-- local options
+
+
+function mod:OnCombatStart(delay)
+
 end
+
+function mod:CHAT_MSG_MONSTER_YELL(args)
+	
+end
+
+function mod:CHAT_MSG_MONSTER_EMOTE(args)
+	
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	
+end
+
+function mod:SPELL_CAST_START(args)
+	
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	
+end
+
+function mod:OnCombatEnd()
+
+end
+
+-- Old Kaelthas DBM code
+
+-- local lastConflag 		= 0;
+-- local MCTargets			= {};
+-- local MCIcons			= {
+-- 	[1]	= false,
+-- 	[2] = false,
+-- 	[3] = false,
+-- 	[4] = false,
+-- 	[5] = false,
+-- 	[6] = false,
+-- 	[7] = false,
+-- 	[8] = false
+-- };
+-- local weaponFrame		= false;
+-- local phase2			= false;
+-- local phase5			= false;
+-- local weaponHealth		= {
+-- 	[1] = 100,
+-- 	[2] = 100,
+-- 	[3] = 100,
+-- 	[4] = 100,
+-- 	[5] = 100,
+-- 	[6] = 100,
+-- 	[7] = 100
+-- };
+-- local addFrame		= false;
+-- local addHealth		= {
+-- 	[1] = 100,
+-- 	[2] = 100,
+-- 	[3] = 100,
+-- 	[4] = 100,
+-- };
+-- local lastEgg		= 0;
+-- local gravityLapse	= false;
+-- local phase = 1
+
+-- Kael:RegisterEvents(
+-- 	"CHAT_MSG_MONSTER_EMOTE",
+-- 	"CHAT_MSG_MONSTER_YELL",
+-- 	"SPELL_CAST_START",
+-- 	"SPELL_AURA_APPLIED",
+-- 	"SPELL_MISSED",
+-- 	"SPELL_AURA_REMOVED",
+-- 	"SPELL_CAST_SUCCESS"
+-- );
+
+-- Kael:AddOption("WarnPhase", true, DBM_KAEL_OPTION_PHASE);
+-- Kael:AddOption("ThalaIcon", true, DBM_KAEL_OPTION_ICON_P1);
+-- Kael:AddOption("ThalaWhisper", true, DBM_KAEL_OPTION_WHISPER_P1);
+-- Kael:AddOption("RangeCheck", true, DBM_KAEL_OPTION_RANGECHECK);
+-- Kael:AddOption("WarnConflag", true, DBM_KAEL_OPTION_CONFLAG);
+-- Kael:AddOption("WarnConflag2", false, DBM_KAEL_OPTION_CONFLAG2);
+-- Kael:AddOption("TimerConflag2", false, DBM_KAEL_OPTION_CONFLAGTIMER2);
+-- Kael:AddOption("WarnFear", true, DBM_KAEL_OPTION_FEAR);
+-- Kael:AddOption("WarnFearSoon", true, DBM_KAEL_OPTION_FEARSOON);
+-- Kael:AddOption("WarnToy", true, DBM_KAEL_OPTION_TOY);
+-- --Kael:AddOption("ShowFrame", true, DBM_KAEL_OPTION_FRAME);
+-- --Kael:AddOption("ShowAddFrame", true, DBM_KAEL_OPTION_ADDFRAME);
+-- Kael:AddOption("WarnPyro", false, DBM_KAEL_OPTION_PYRO);
+-- Kael:AddOption("WarnBarrier", true, DBM_KAEL_OPTION_BARRIER);
+-- Kael:AddOption("WarnBarrier2", false, DBM_KAEL_OPTION_BARRIER2);
+-- Kael:AddOption("WarnPhoenix", true, DBM_KAEL_OPTION_PHOENIX);
+-- Kael:AddOption("WarnMC", true, DBM_KAEL_OPTION_WARNMC);
+-- Kael:AddOption("IconMC", true, DBM_KAEL_OPTION_ICONMC);
+-- Kael:AddOption("WarnGravity", true, DBM_KAEL_OPTION_GRAVITY);
+
+-- Kael:AddBarOption("Thaladred")
+-- Kael:AddBarOption("Lord Sanguinar")
+-- Kael:AddBarOption("Capernian")
+-- Kael:AddBarOption("Telonicus")
+-- Kael:AddBarOption("Gaze Cooldown")
+-- Kael:AddBarOption("Next Fear")
+-- Kael:AddBarOption("Fear")
+-- Kael:AddBarOption("Conflagration: (.*)")
+-- Kael:AddBarOption("Remote Toy: (.*)")
+-- Kael:AddBarOption("Phase 3")
+-- Kael:AddBarOption("Phase 4")
+-- Kael:AddBarOption("Next Shock Barrier")
+-- Kael:AddBarOption("Shock Barrier")
+-- Kael:AddBarOption("Phoenix")
+-- Kael:AddBarOption("Rebirth")
+-- Kael:AddBarOption("Pyroblast")
+-- Kael:AddBarOption("Gravity Lapse")
+-- Kael:AddBarOption("Next Gravity Lapse")
+
+-- Kael:SetCreatureID(19622)
+-- Kael:RegisterCombat("yell", DBM_KAEL_YELL_PHASE1)
+-- Kael:SetMinCombatTime(60)
+
+-- function Kael:OnCombatStart(delay)
+-- 	phase = 1
+-- 	if self.Options.WarnPhase then
+-- 		self:Announce(DBM_KAEL_WARN_PHASE1, 1);
+-- 	end
+-- 	self:StartStatusBarTimer(32 - delay, "Thaladred", "Interface\\Icons\\Spell_Nature_WispSplode");
+-- 	MCTargets = {};
+-- 	MCIcons = {
+-- 		[1]	= false,
+-- 		[2] = false,
+-- 		[3] = false,
+-- 		[4] = false,
+-- 		[5] = false,
+-- 		[6] = false,
+-- 		[7] = false,
+-- 		[8] = false
+-- 	};
+-- 	phase2 = false;
+-- 	phase5 = false;
+-- 	weaponHealth = {
+-- 		[1] = 100,
+-- 		[2] = 100,
+-- 		[3] = 100,
+-- 		[4] = 100,
+-- 		[5] = 100,
+-- 		[6] = 100,
+-- 		[7] = 100
+-- 	};
+-- 	addHealth = {
+-- 		[1] = 100,
+-- 		[2] = 100,
+-- 		[3] = 100,
+-- 		[4] = 100,
+-- 	};
+-- end
 
 function Kael:OnCombatEnd()
 	if self.Options.RangeCheck then
