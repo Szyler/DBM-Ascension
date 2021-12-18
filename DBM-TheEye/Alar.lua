@@ -12,6 +12,38 @@ mod:RegisterEvents(
 )
 
 
+-- local warn
+
+
+-- local timer
+
+
+-- local variables
+
+
+-- local options
+
+
+function mod:OnCombatStart(delay)
+
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+
+end
+
+
+
+-- Old Alar code
+
 -- local warnPhase = false;
 -- local phase2	= false;
 -- local lastAdd	= 0;
