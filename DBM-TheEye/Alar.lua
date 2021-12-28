@@ -25,12 +25,13 @@ local warnDive					=mod:newAnnounce("WarnDive",4,"Interface\\Icons\\Spell_Fire_F
 -- local timer
 local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
-local timerAlarUp				= mod:newTimer(30,"AlarUp","Interface\\Icons\\Spell_Fire_Fireball02")
-local timerAlarDive				= mod:newTimer(10,"AlarDive","Interface\\Icons\\Spell_Fire_Fireball02")
-local timerEmberSpawn			= mod:NewTimer(30,"TimerEmberSpawn",2135209)
+local timerAlarUp				= mod:NewTimer(30,"AlarUp","Interface\\Icons\\Spell_Fire_Fireball02")
+local timerAlarDive				= mod:NewTimer(10,"AlarDive","Interface\\Icons\\Spell_Fire_Fireball02")
+local timerEmberSpawn			= mod:NewTimer(12,"TimerEmberSpawn",2135209)
+local timerNextBreath			= mod:NewNextTimer(10,"TimerNextBreath",2135155)
 local timerNextAlarRebirth		= mod:newNextTimer(10,2135201)
 local timerNextFlameCascade		= mod.NewNextTimer(60,2135190)
-local timeFlameCascade			= mod.newBuffActiveTimer(17,2135190)
+local timerFlameCascade			= mod.newBuffActiveTimer(17,2135190)
 
 --Ascended mechanics:
 --Living bomb?
@@ -43,35 +44,89 @@ local timeFlameCascade			= mod.newBuffActiveTimer(17,2135190)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-
-
+	berserkTimer:Start(-delay)
+	timerNextPlatform(-delay)
+	timerEmberSpawn(40-delay)
+	timerNextBreath(-delay)
 
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2135190) then
+		timerFlameCascade:Start()
+		timerEmberSpawn:Cancel()
+		warnFlameCascade:Show()
+		--local elapsed, total = timerEmberSpawn:GetTime();
+		--timerEmberSpawn:Update(elapsed,total+17)
+	end
 
 end
 
 function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2135190) then
+		timerEmberSpawn:Start()
+		timerNextFlameCascade:Start()
+	end
 
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(2135155) and self.vb.phase ~=3 then
+		timerNextBreath:Start()
+	end
+end
 
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2135201) then
+		warnAlarRebirth:Show()
+		timerNextBreath:Start(3)
+	elseif args:IsSpellID(2135209) then
+		warnEmber:Show()
+		if self.vb.phase == 1 or self.vb.phase == 2 then
+			timerEmberSpawn(30)
+		else timerEmberSpawn(12)
+		end
+	end
+end
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.EmoteAlarUp or msg:find(L.EmoteAlarUp) then
+		timerAlarDive:Start()
+		timerEmberSpawn:Start(22)
+		self:ScheduleMethod("Dive")
+		if timerAlarDive.getTime() == 1 then
+			warnDive:Show();
+	end
+	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
+		timerEmberSpawn:start(22)
+		timerNextFlameCascade:Start()
+	end
 end
 function mod:UNIT_DIED(unit)
     local name = UnitName(unit);
-    if (name ~= "Al'ar") and self.vb.phase == 1 then
+    if (name == "Al'ar") and self.vb.phase == 1 then
 	self.vb.phase = 2
 	timerAlarUp:Start(40)
 	timerNextAlarRebirth:Start()
-	elseif (name ~= "Al'ar") and self.vb.phase == 2 then
+	timerNextBreath:Stop()
+	elseif (name == "Al'ar") and self.vb.phase == 2 then
 		self.vb.phase = 3
 	timerNextAlarRebirth:Start()
-	elseif (name ~= "Egg of Al'ar") and self.vb.phase == 1 then
+	timerNextBreath:Stop()
+	elseif (name == "Egg of Al'ar") and self.vb.phase == 1 then
 	timerNextPlatform:Start(25)
 	end
 end
+
+function mod:Dive()
+	self:UnscheduleMethod("Dive")
+	local dive = timerAlarDive.getTime()
+	if dive <=1 then
+		warnDive:Show()
+	end
+	self:ScheduleMethod(3,"Dive")
+end
+
 
 -- Old Alar code
 
