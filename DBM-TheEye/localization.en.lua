@@ -12,8 +12,6 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
-	WarnAlarRebirth		= "Get away from Al'ar!",
-	WarnFlameCascade	= "Flame Cascade! Get to safe spot!",
 	WarnDive			= "Al'ar Dive! Get away"
 }
 
@@ -33,7 +31,7 @@ L:SetOptionLocalization{
 	NextPlatform 		= "Show timer for Al'ar platform switch",
 	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
 	AlarDive			= "Show alar dive timer countdown",
-	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn"
+	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 }
 
 L:SetMiscLocalization{

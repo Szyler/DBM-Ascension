@@ -1,4 +1,4 @@
-local mod	= DBM:NewMod("Alar", "DBM-TheEye", 1)
+local mod	= DBM:NewMod("Alar", "DBM-TheEye",1)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
@@ -18,16 +18,16 @@ mod:RegisterEvents(
 
 -- local warn
 local warnEmber					=mod:newAnnounce("WarnEmber",3,2135209)
-local warnAlarRebirth			=mod:newAnnounce("WarnAlarRebirth",4,2135201)
-local warnFlameCascade			=mod:newAnnounce("WarnFlameCascade",4,2135190)
 local warnDive					=mod:newAnnounce("WarnDive",4,"Interface\\Icons\\Spell_Fire_Fireball02")
+local warnAlarRebirth			=mod:newSpellAnnounce(2135201,2)
+local warnFlameCascade			=mod:newSpellAnnounce(2135190,2)
 
 -- local timer
 local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
 local timerAlarUp				= mod:NewTimer(30,"AlarUp","Interface\\Icons\\Spell_Fire_Fireball02")
 local timerAlarDive				= mod:NewTimer(10,"AlarDive","Interface\\Icons\\Spell_Fire_Fireball02")
-local timerEmberSpawn			= mod:NewTimer(12,"TimerEmberSpawn",2135209)
+local timerEmberSpawn			= mod:NewTimer(12,"TimerEmberSpawn",2135208)  --heroic 2135209
 local timerNextBreath			= mod:NewNextTimer(10,"TimerNextBreath",2135155)
 local timerNextAlarRebirth		= mod:newNextTimer(10,2135201)
 local timerNextFlameCascade		= mod.NewNextTimer(60,2135190)
@@ -48,7 +48,6 @@ function mod:OnCombatStart(delay)
 	timerNextPlatform(-delay)
 	timerEmberSpawn(40-delay)
 	timerNextBreath(-delay)
-
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -80,7 +79,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135201) then
 		warnAlarRebirth:Show()
 		timerNextBreath:Start(3)
-	elseif args:IsSpellID(2135209) then
+	elseif args:IsSpellID(2135208 , 2135209) then
 		warnEmber:Show()
 		if self.vb.phase == 1 or self.vb.phase == 2 then
 			timerEmberSpawn(30)
