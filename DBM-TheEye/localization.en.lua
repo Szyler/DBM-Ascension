@@ -1,3 +1,46 @@
+local L
+
+-----------
+-- Al'ar --
+-----------
+
+L = DBM:GetModLocalization("Alar")
+
+L:SetGeneralLocalization{
+	name = "Al'ar"
+}
+
+L:SetWarningLocalization{
+	WarnEmber 			= "Ember of Al'ar - Switch!",
+	WarnAlarRebirth		= "Get away from Al'ar!",
+	WarnFlameCascade	= "Flame Cascade! Get to safe spot!",
+	WarnDive			= "Al'ar Dive! Get away"
+}
+
+L:SetTimerLocalization{
+	NextPlatform		= "Next platform in :",
+	AlarUp				= "Alar flies up in :",
+	AlarDive			= "Alar dive :",
+	TimerEmberSpawn		= "Next ember of Al'ar spawn"
+}
+
+L:SetOptionLocalization{
+	WarnEmber 			= "Show warning when Ember of Al'ar spawns",
+	WarnAlarRebirth		= "Show Warning for Al'ar rebirth casts",
+	WarnFlameCascade	= "Show warning when Al'ar is about to cast Flame Cascade",
+	WarnDive			= "Show warning for Al'ar Dive",
+	Berserk 			= "Show timer for Berserk",
+	NextPlatform 		= "Show timer for Al'ar platform switch",
+	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
+	AlarDive			= "Show alar dive timer countdown",
+	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn"
+}
+
+L:SetMiscLocalization{
+	EmoteAlarUp			= "flies high into the air!",
+	EmotePhase3			= "attempts to escape, losing feathers as he flies away in fear!"
+}
+--[=====[ 
 DBM_EYE_TAB			= "EyeTab"
 DBM_TEMPEST_KEEP	= "Tempest Keep";
 
@@ -168,4 +211,5 @@ DBM_KAEL_WARN_MC_TARGETS				= "*** Mind Control: %s ***";
 DBM_KAEL_WARN_REBIRTH					= "*** Phoenix down - egg spawned ***";
 DBM_KAEL_WARN_GRAVITY_LAPSE				= "*** Gravity Lapse ***";
 DBM_KAEL_GRAVITY_SOON					= "*** Gravity Lapse soon ***";
-DBM_KAEL_GRAVITY_END_SOON				= "*** Gravity Lapse ends in 5 sec ***";
+DBM_KAEL_GRAVITY_END_SOON				= "*** Gravity Lapse ends in 5 sec ***"; 
+--]=====]
