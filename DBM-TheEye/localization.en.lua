@@ -11,7 +11,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnEmber 			= "Ember of Al'ar - Switch!",
+	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
 	WarnAlarRebirth		= "Get away from Al'ar!",
 	WarnFlameCascade	= "Flame Cascade! Get to safe spot!",
 	WarnDive			= "Al'ar Dive! Get away"
