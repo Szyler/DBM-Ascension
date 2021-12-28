@@ -6,17 +6,34 @@ mod:SetCreatureID(19514)
 mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
+	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_START",
+	"SPELL_DAMAGE",
+	"SPELL_MISSED",
+	"UNIT_DIED"
 )
 
 
 -- local warn
-
+local warnEmber					=mod:newAnnounce("WarnEmber",3,2135209)
+local warnAlarRebirth			=mod:newAnnounce("WarnAlarRebirth",4,2135201)
+local warnFlameCascade			=mod:newAnnounce("WarnFlameCascade",4,2135190)
+local warnDive					=mod:newAnnounce("WarnDive",4,"Interface\\Icons\\Spell_Fire_Fireball02")
 
 -- local timer
+local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
+local timerAlarUp				= mod:newTimer(30,"AlarUp","Interface\\Icons\\Spell_Fire_Fireball02")
+local timerAlarDive				= mod:newTimer(10,"AlarDive","Interface\\Icons\\Spell_Fire_Fireball02")
+local timerEmberSpawn			= mod:NewTimer(30,"TimerEmberSpawn",2135209)
+local timerNextAlarRebirth		= mod:newNextTimer(10,2135201)
+local timerNextFlameCascade		= mod.NewNextTimer(60,2135190)
+local timeFlameCascade			= mod.newBuffActiveTimer(17,2135190)
 
+--Ascended mechanics:
+--Living bomb?
 
 -- local variables
 
@@ -25,6 +42,9 @@ mod:RegisterEvents(
 
 
 function mod:OnCombatStart(delay)
+	self.vb.phase = 1
+
+
 
 end
 
@@ -39,8 +59,19 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 
 end
-
-
+function mod:UNIT_DIED(unit)
+    local name = UnitName(unit);
+    if (name ~= "Al'ar") and self.vb.phase == 1 then
+	self.vb.phase = 2
+	timerAlarUp:Start(40)
+	timerNextAlarRebirth:Start()
+	elseif (name ~= "Al'ar") and self.vb.phase == 2 then
+		self.vb.phase = 3
+	timerNextAlarRebirth:Start()
+	elseif (name ~= "Egg of Al'ar") and self.vb.phase == 1 then
+	timerNextPlatform:Start(25)
+	end
+end
 
 -- Old Alar code
 
