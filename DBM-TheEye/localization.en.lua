@@ -12,14 +12,14 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
-	WarnDive			= "Al'ar Dive! Get away"
+	WarnDive			= "Al'ar Dive! Run away!"
 }
 
 L:SetTimerLocalization{
-	NextPlatform		= "Next platform in :",
-	AlarUp				= "Alar flies up in :",
-	AlarDive			= "Alar dive :",
-	TimerEmberSpawn		= "Next ember of Al'ar spawn"
+	NextPlatform		= "Next platform in:",
+	AlarUp				= "Al'ar flies up in:",
+	AlarDive			= "Al'ar dive:",
+	TimerEmberSpawn		= "Next ember of Al'ar spawn:"
 }
 
 L:SetOptionLocalization{
@@ -30,7 +30,7 @@ L:SetOptionLocalization{
 	Berserk 			= "Show timer for Berserk",
 	NextPlatform 		= "Show timer for Al'ar platform switch",
 	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
-	AlarDive			= "Show alar dive timer countdown",
+	AlarDive			= "Show Al'ar dive timer countdown",
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 }
 
