@@ -1,4 +1,5 @@
-﻿if (GetLocale() == "ruRU") then
+﻿if GetLocale() ~= "ruRU" then return end
+--[===[]
 DBM_EYE_TAB			= "EyeTab"
 DBM_TEMPEST_KEEP	= "Крепость Бурь";
 
@@ -221,3 +222,4 @@ DBM_SBT["KaelThas"] = {
 };
 
 end
+--]===]

@@ -17,10 +17,10 @@ mod:RegisterEvents(
 
 
 -- local warn
-local warnEmber					=mod:newAnnounce("WarnEmber",1,2135209)
+local warnEmber					=mod:newAnnounce("WarnEmber",2,2135209)
 local warnDive					=mod:newAnnounce("WarnDive",2,"Interface\\Icons\\Spell_Fire_Fireball02")
-local warnAlarRebirth			=mod:newSpellAnnounce(2135201,3)
-local warnFlameCascade			=mod:newSpellAnnounce(2135190,4)
+local warnAlarRebirth			=mod:newSpellAnnounce(2135201,4)
+local warnFlameCascade			=mod:newSpellAnnounce(2135190,3)
 
 -- local timer
 local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")

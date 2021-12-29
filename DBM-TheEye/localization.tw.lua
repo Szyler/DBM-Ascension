@@ -1,5 +1,6 @@
-﻿if (GetLocale() == "zhTW") then
---Chinese Translate by Nightkiller@日落沼澤(kc10577@巴哈;Azael)
+﻿if GetLocale() ~= "zhTW" then return end
+--[===[
+	--Chinese Translate by Nightkiller@日落沼澤(kc10577@巴哈;Azael)
 DBM_TEMPEST_KEEP	= "風暴要塞";
 
 
@@ -229,3 +230,4 @@ DBM_SBT["KaelThas"] = {
 };
 
 end
+--]===]

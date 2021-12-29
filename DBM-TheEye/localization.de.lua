@@ -1,4 +1,5 @@
-﻿if GetLocale() == "deDE" then
+﻿if GetLocale() ~= "deDE" then return end
+--[===[
 	DBM_TEMPEST_KEEP	= "Festung der Stürme";
 	
 	-- Void Reaver
@@ -218,3 +219,4 @@
 	}
 	
 end
+--]===]

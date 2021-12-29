@@ -5,7 +5,9 @@
 --                 11/23/2007                  --
 -- ------------------------------------------- --
 
-if (GetLocale() == "zhCN") then
+if GetLocale() ~= "zhCN" then return end
+
+--[===[
 
 	DBM_EYE_TAB			= "EyeTab"
 	DBM_TEMPEST_KEEP	= "风暴要塞";
@@ -265,3 +267,4 @@ if (GetLocale() == "zhCN") then
 
 end
 
+--]===]

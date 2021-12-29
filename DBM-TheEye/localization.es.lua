@@ -1,5 +1,6 @@
-﻿if (GetLocale() == "esES") then
+﻿if GetLocale() ~= "esES" then return end
 
+--[===[]
 DBM_EYE_TAB			= "EyeTab"
 DBM_TEMPEST_KEEP	= "Castillo de la Tempestad";
 
@@ -173,3 +174,4 @@ DBM_KAEL_GRAVITY_SOON					= "*** Gravedad cero pronto ***";
 DBM_KAEL_GRAVITY_END_SOON				= "*** Gravedad cero termina en 5 seg ***";
 
 end
+--]===]
