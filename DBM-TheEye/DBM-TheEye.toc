@@ -3,7 +3,7 @@
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Castillo de la Tempestad|r
 ## Author: Tandanu
 ## LoadOnDemand: 1
-## RequiredDeps: DBM-Core, DBM-BurningCrusade
+## RequiredDeps: DBM-Core
 ## SavedVariablesPerCharacter: DBMTheEye_SavedVars, DBMTheEye_SavedStats
 ## X-DBM-BC-AddOn: 1
 ## X-DBM-Tab-ID: EyeTab

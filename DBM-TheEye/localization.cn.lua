@@ -18,7 +18,7 @@ local L
 L = DBM:GetModLocalization("Alar")
 
 L:SetGeneralLocalization{
-	name = "Al'ar"
+	name = "奥"
 }
 
 L:SetWarningLocalization{

@@ -12,7 +12,8 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
-	WarnDive			= "Al'ar Dive! Run away!"
+	WarnDive			= "Al'ar Dive! Run away!",
+	warnFeather			= "Blazing Wings fading in 15Seconds!"
 }
 
 L:SetTimerLocalization{
