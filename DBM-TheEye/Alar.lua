@@ -57,7 +57,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFlameCascade:Start()
 		timerEmberSpawn:Cancel()
 		warnFlameCascade:Show()
-	elseif args:IsSpellID(2135186, 2135187, 2135188, 2135189) and args:IsPlayer() then
+	elseif (args:IsSpellID(2135186, 2135187) or args:IsSpellID(2135188,2135189)) and args:IsPlayer() then
 		warnBurningGround:Show()
 	elseif args:IsSpellID(2135174) and args:IsPlayer() then
 		warnFeather:Schedule(45)
@@ -72,9 +72,9 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2135154, 2135155, 2135156, 2135157) and self.vb.phase ~= 3 then
+	if (args:IsSpellID(2135154, 2135155) or args:IsSpellID(2135156,2135157))and self.vb.phase ~= 3 then
 		timerNextBreath:Start()
-	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
+	elseif (args:IsSpellID(2135196, 2135197)or args:IsSpellID(2135198,2135199)) then
 		if self.vb.phase == 1 then
 		self.vb.phase = 2
 		timerAlarUp:Start(40)
@@ -90,10 +90,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2135200, 2135201, 2135202, 2135203) then
+	if args:IsSpellID(2135200, 2135201) or args:IsSpellID(2135202,2135203) then
 		warnAlarRebirth:Show()
 		timerNextBreath:Start(3)
-	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
+	elseif args:IsSpellID(2135208, 2135209) or args:IsSpellID(2135210, 2135211)then
 		warnEmber:Show()
 		if (self.vb.phase == 1 or self.vb.phase == 2) then
 			timerEmberSpawn:Start(30)
