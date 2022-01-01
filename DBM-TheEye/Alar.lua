@@ -17,19 +17,21 @@ mod:RegisterEvents(
 
 
 -- local warn
-local warnEmber					= mod:NewAnnounce("WarnEmber", 2, 2135209)
+local warnEmber					= mod:NewAnnounce("WarnEmber", 2, 2135208)
 local warnDive					= mod:NewAnnounce("WarnDive", 2, "Interface\\Icons\\Spell_Fire_Fireball02")
-local warnAlarRebirth			= mod:NewSpellAnnounce(2135201, 4)
+local warnAlarRebirth			= mod:NewSpellAnnounce(2135200, 4) --Heroic 2135201, Ascended 10Man-2135202, 25Man-2135203
 local warnFlameCascade			= mod:NewSpellAnnounce(2135190, 3)
+local warnFeather				= mod.NewAnnounce("WarnFeather", 2, 2135174)
+local warnBurningGround			= mod.NewSpecialWarningYou(2135186)
 
 -- local timer
 local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
-local timerAlarUp				= mod:NewTimer(30,"AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
-local timerAlarDive				= mod:NewTimer(10,"AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
-local timerEmberSpawn			= mod:NewTimer(12,"TimerEmberSpawn", 2135208)  --heroic 2135209
-local timerNextBreath			= mod:NewNextTimer(10, 2135155)
-local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135201)
+local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
+local timerAlarDive				= mod:NewTimer(10, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
+local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
+local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
+local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
 local timerNextFlameCascade		= mod:NewNextTimer(60, 2135190)
 local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
@@ -45,7 +47,7 @@ local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	berserkTimer:Start(-delay)
-	timerNextPlatform:Start(-delay)
+	timerNextPlatform:Start()
 	timerEmberSpawn:Start(40-delay)
 	timerNextBreath:Start(-delay)
 end
@@ -55,8 +57,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFlameCascade:Start()
 		timerEmberSpawn:Cancel()
 		warnFlameCascade:Show()
-		--local elapsed, total = timerEmberSpawn:GetTime();
-		--timerEmberSpawn:Update(elapsed, total+17)
+	elseif args:IsSpellID(2135186, 2135187, 2135188, 2135189) and args:IsPlayer() then
+		warnBurningGround:Show()
+	elseif args:IsSpellID(2135174) and args:IsPlayer() then
+		warnFeather:Schedule(45)
 	end
 end
 
@@ -68,21 +72,33 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2135155) and self.vb.phase ~=3 then
+	if args:IsSpellID(2135154, 2135155, 2135156, 2135157) and self.vb.phase ~= 3 then
 		timerNextBreath:Start()
+	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
+		if self.vb.phase == 1 then
+		self.vb.phase = 2
+		timerAlarUp:Start(40)
+		timerNextAlarRebirth:Start()
+		timerNextBreath:Stop()
+		elseif self.vb.phase ==2 then
+			self.vb.phase = 3
+			timerNextAlarRebirth:Start()
+			timerNextBreath:Stop()
+		end	
 	end
+
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2135201) then
+	if args:IsSpellID(2135200, 2135201, 2135202, 2135203) then
 		warnAlarRebirth:Show()
 		timerNextBreath:Start(3)
-	elseif args:IsSpellID(2135208, 2135209) then
+	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
 		warnEmber:Show()
 		if (self.vb.phase == 1 or self.vb.phase == 2) then
 			timerEmberSpawn:Start(30)
 		else
-			timerEmberSpawn:Start(12)
+			timerEmberSpawn:Start(10)
 		end
 	end
 end
@@ -91,7 +107,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.EmoteAlarUp or msg:find(L.EmoteAlarUp) then
 		timerAlarDive:Start()
 		timerEmberSpawn:Start(22)
-		warnDive:Schedule(9)
+		warnDive:Schedule(11)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
 		timerEmberSpawn:start(22)
 		timerNextFlameCascade:Start()
@@ -100,16 +116,7 @@ end
 
 function mod:UNIT_DIED(unit)
     local name = UnitName(unit);
-    if (name == "Al'ar") and self.vb.phase == 1 then
-		self.vb.phase = 2
-		timerAlarUp:Start(40)
-		timerNextAlarRebirth:Start()
-		timerNextBreath:Stop()
-	elseif (name == "Al'ar") and self.vb.phase == 2 then
-		self.vb.phase = 3
-		timerNextAlarRebirth:Start()
-		timerNextBreath:Stop()
-	elseif (name == "Egg of Al'ar") and self.vb.phase == 1 then
+    if (name == "Egg of Al'ar") and self.vb.phase == 1 then
 		timerNextPlatform:Start(25)
 	end
 end
