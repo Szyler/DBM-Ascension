@@ -73,9 +73,7 @@ L:SetOptionLocalization{
 	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135292",
 	TimerNextLWrathPop		= "Show countdown for $spell:2135278 explosion ",
-	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion "
-	
-	
+	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion "	
 }
 
 L:SetMiscLocalization{
