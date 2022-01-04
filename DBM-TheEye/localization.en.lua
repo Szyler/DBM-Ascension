@@ -60,16 +60,16 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerAdds				= "Add phase in 15 seconds"
+	TimerAdds				= "Add phase in :"
 }
 
 L:SetOptionLocalization{
-	WrathYellOpt			= "Yell when you are affected by $spell:2135292",
-	TimerAdds				= "Show Timer for adds phase on pull",
-	SpecWarnAdds			= "Show Warning",
+	TimerAdds				= "Show Timer for adds phase start",
+	SpecWarnAdds			= "Show Warning which priest you should focus",
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in 3rd phase",
-	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest"
+	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
+	WrathYellOpt			= "Yell when you are affected by $spell:2135292"
 	
 }
 

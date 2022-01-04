@@ -24,8 +24,8 @@ local specWarnFinishAdd		= mod:NewSpecialWarning("SpecWarnFinishAdd")
 local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 
 -- local timer
-local timerNextFireL        = mod:NewNextTimer(10)
-local timerNextFireS		= mod:NewNextTimer(10)
+local timerNextFireL        = mod:NewNextTimer(10,2135230)
+local timerNextFireS		= mod:NewNextTimer(10,2135234)
 local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
