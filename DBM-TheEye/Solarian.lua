@@ -29,8 +29,8 @@ local timerNextFireS		= mod:NewNextTimer(10,2135234)
 local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
-local timerNextLWrathPop	= mod:NewNextTimer(10,"TimerNextLWrathPop",2135278)
-local timerNextSWrathPop	= mod:NewNextTimer(10,"TimerNextSWrathPop",2135292)
+local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135278)
+local timerSWrathPop		= mod:NewTimer(10,"TimerNextSWrathPop",2135292)
 local timerNextVoidSpawn	= mod:NewNextTimer(20)
 
 -- local variables
@@ -76,7 +76,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135278, 2135279, 2135280, 2135281) then
 		timerNextLunar:Start()
-		timerNextLWrathPop:Start()
+		timerLWrathPop:Start()
 		if args:IsPlayer() then
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
@@ -85,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135292, 2135293, 2135294, 2135295) then
 		timerNextSolar:Start()
-		timerNextSWrathPop:Start()
+		timerSWrathPop:Start()
 		if args:IsPlayer() then
 			if self.Options.WrathYellOpt then
 				SendChatMessage(L.SolarWrathYell, "Yell")
@@ -124,8 +124,8 @@ function mod:SPELL_CAST_START(args)
 		timerNextFireS:Stop()
 		timerNextSolar:Stop()
 		timerNextLunar:Stop()
-		timerNextLWrathPop:Stop()
-		timerNextSWrathPop:Stop()
+		timerLWrathPop:Stop()
+		timerSWrathPop:Stop()
 		self:ScheduleMethod(20,"SolarianVoidspawn")
 		timerNextVoidSpawn:Start()
 	end
