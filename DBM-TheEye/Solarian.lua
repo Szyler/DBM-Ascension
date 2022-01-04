@@ -94,6 +94,16 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		else specWarnSolar:Show()
 		end
+	elseif args:IsSpellID(2135260) then
+		self.vb.phase = 3
+		timerNextFireL:Stop()
+		timerNextFireS:Stop()
+		timerNextSolar:Stop()
+		timerNextLunar:Stop()
+		timerLWrathPop:Stop()
+		timerSWrathPop:Stop()
+		self:ScheduleMethod(20,"SolarianVoidspawn")
+		timerVoidSpawn:Start()
 	end
 end
 
@@ -120,16 +130,6 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264) then
 		specWarnHeal:Show()
-	elseif args:IsSpellID(2135260) then
-		self.vb.phase = 3
-		timerNextFireL:Stop()
-		timerNextFireS:Stop()
-		timerNextSolar:Stop()
-		timerNextLunar:Stop()
-		timerLWrathPop:Stop()
-		timerSWrathPop:Stop()
-		self:ScheduleMethod(20,"SolarianVoidspawn")
-		timerVoidSpawn:Start()
 	end
 	
 end
