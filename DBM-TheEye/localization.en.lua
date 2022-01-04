@@ -64,15 +64,19 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WrathYellOpt	= "Yell when you are affected by $spell:2135292",
-	TimerAdds		= "Show Timer for adds phase on pull"
+	WrathYellOpt			= "Yell when you are affected by $spell:2135292",
+	TimerAdds				= "Show Timer for adds phase on pull",
+	SpecWarnAdds			= "Show Warning",
+	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
+	SpecWarnVoidSpawn		= "Show warning when add spawns in 3rd phase",
+	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest"
 	
 }
 
 L:SetMiscLocalization{
 	SolarianYellAddPhase		= "You are hopelessly outmatched",
 	LunarWrathYell				= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
-	SolarWrathYell 			 	= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your lifes!"
+	SolarWrathYell 			 	= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
 }
 
 --[=====[ 
