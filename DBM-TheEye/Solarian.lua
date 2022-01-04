@@ -17,19 +17,20 @@ mod:RegisterEvents(
 local specWarnHeal			= mod:NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
 local specWarnAdds			= mod:NewSpecialWarning("SpecWarnAdds")
 local specWarnLunar			= mod:NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
-local specWarnSolar			= mod:NewSpecialWarningMove(2135292) --Heroic: 2135293, Ascended 10Man: 2135294 , 25Man: 2135295
+local specWarnSolar			= mod:NewSpecialWarningMove(2135287) --Heroic: 2135288, Ascended 10Man: 2135289 , 25Man: 2135290
 local specWarnFireL			= mod:NewSpecialWarningSpell(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
 local specWarnFireS			= mod:NewSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
 local specWarnFinishAdd		= mod:NewSpecialWarning("SpecWarnFinishAdd")
 local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 
 -- local timer
+local berserkTimer			= mod:NewTimer(720, "Berserk", 26662)
 local timerNextFireL        = mod:NewNextTimer(10,2135230)
 local timerNextFireS		= mod:NewNextTimer(10,2135234)
 local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
-local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135278)
+local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135283)
 local timerSWrathPop		= mod:NewTimer(10,"TimerNextSWrathPop",2135292)
 local timerVoidSpawn		= mod:NewTimer(20,"TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
 
@@ -42,6 +43,7 @@ mod:AddBoolOption(L.WrathYellOpt)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
+	berserkTimer:Start(-delay)
 	timerNextFireS:Start(-delay)
 	timerAdds:Start(-delay)
 
@@ -83,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		else specWarnLunar:Show()
 		end
-	elseif args:IsSpellID(2135292, 2135293, 2135294, 2135295) then
+	elseif args:IsSpellID(2135287, 2135288, 2135289, 2135290) then
 		timerNextSolar:Start()
 		timerSWrathPop:Start()
 		if args:IsPlayer() then

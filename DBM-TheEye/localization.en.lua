@@ -61,27 +61,28 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerAdds				= "Add phase in :",
-	TimerNextLWrathPop		= "$spell:2135278 going off in: ",
+	TimerNextLWrathPop		= "$spell:2135283 going off in: ",
 	TimerNextSWrathPop		= "$spell:2135292 going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
 }
 
 L:SetOptionLocalization{
+	Berserk 				= "Show timer for Berserk",
 	TimerAdds				= "Show Timer for adds phase start",
 	SpecWarnAdds			= "Show Warning which priest you should focus",
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show Timer for add spawn in void phase",
 	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
-	WrathYellOpt			= "Yell when you are affected by $spell:2135292 or $spell:2135278",
-	TimerNextLWrathPop		= "Show countdown for $spell:2135278 explosion ",
+	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287 ",
+	TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion ",
 	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion "
 }
 
 L:SetMiscLocalization{
-	SolarianYellAddPhase		= "You are hopelessly outmatched",
-	LunarWrathYell				= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
-	SolarWrathYell 			 	= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
+	SolarianYellAddPhase	= "You are hopelessly outmatched",
+	LunarWrathYell			= "$spell:2135278 on "..UnitName("PLAYER").."! I HAVE TO RUN!",
+	SolarWrathYell 			= "$spell:2135287 on "..UnitName("PLAYER").."! RUN! Save your life!"
 }
 
 --[=====[ 
