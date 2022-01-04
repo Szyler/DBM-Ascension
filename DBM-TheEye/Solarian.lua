@@ -29,8 +29,8 @@ local timerNextFireS		= mod:NewNextTimer(10,2135234)
 local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
-local timerNextLWrathPop	= mod:NewNextTimer(10,2135278)
-local timerNextSWrathPop	= mod:NewNextTimer(10,2135292)
+local timerNextLWrathPop	= mod:NewNextTimer(10,"TimerNextLWrathPop",2135278)
+local timerNextSWrathPop	= mod:NewNextTimer(10,"TimerNextSWrathPop",2135292)
 local timerNextVoidSpawn	= mod:NewNextTimer(20)
 
 -- local variables
