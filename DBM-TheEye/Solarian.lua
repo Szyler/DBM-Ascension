@@ -31,7 +31,7 @@ local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
 local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135278)
 local timerSWrathPop		= mod:NewTimer(10,"TimerNextSWrathPop",2135292)
-local timerNextVoidSpawn	= mod:NewNextTimer(20,"TimerNextVoidSpawn")
+local timerVoidSpawn		= mod:NewNextTimer(20,"TimerVoidSpawn")
 
 -- local variables
 local lastPriestDied = ""
@@ -127,7 +127,7 @@ function mod:SPELL_CAST_START(args)
 		timerLWrathPop:Stop()
 		timerSWrathPop:Stop()
 		self:ScheduleMethod(20,"SolarianVoidspawn")
-		timerNextVoidSpawn:Start()
+		timerVoidSpawn:Start()
 	end
 	
 end
@@ -161,7 +161,7 @@ function mod:SolarianVoidspawn()
 	if DBM:GetRaidRank() == 2 then
 		SetRaidTarget("Solarian Voidspawn", 8)
 	end
-	timerNextVoidSpawn:Start()
+	timerVoidSpawn:Start()
 	self:ScheduleMethod(20,"SolarianVoidspawn")
 end
 
