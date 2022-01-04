@@ -31,7 +31,7 @@ local timerNextLunar		= mod:NewNextTimer(15,2135278)
 local timerNextSolar		= mod:NewNextTimer(15,2135292)
 local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135278)
 local timerSWrathPop		= mod:NewTimer(10,"TimerNextSWrathPop",2135292)
-local timerVoidSpawn		= mod:NewNextTimer(20,"TimerVoidSpawn")
+local timerVoidSpawn		= mod:NewTimer(20,"TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
 
 -- local variables
 local lastPriestDied = ""
