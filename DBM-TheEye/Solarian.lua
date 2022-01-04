@@ -14,24 +14,24 @@ mod:RegisterEvents(
 
 
 -- local warn
-local specWarnHeal			= mod.NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
-local specWarnAdds			= mod.NewSpecialWarning("SpecWarnAdds")
-local specWarnLunar			= mod.NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
-local specWarnSolar			= mod.NewSpecialWarningMove(2135292) --Heroic: 2135293, Ascended 10Man: 2135294 , 25Man: 2135295
-local specWarnFireL			= mod.NewSpecialWarningSpell(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
-local specWarnFireS			= mod.newSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
-local specWarnFinishAdd		= mod.NewSpecialWarning("SpecWarnFinishAdd")
-local specWarnVoidSpawn		= mod.NewSpecialWarning("SpecWarnVoidSpawn")
+local specWarnHeal			= mod:NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
+local specWarnAdds			= mod:NewSpecialWarning("SpecWarnAdds")
+local specWarnLunar			= mod:NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
+local specWarnSolar			= mod:NewSpecialWarningMove(2135292) --Heroic: 2135293, Ascended 10Man: 2135294 , 25Man: 2135295
+local specWarnFireL			= mod:NewSpecialWarningSpell(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
+local specWarnFireS			= mod:NewSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
+local specWarnFinishAdd		= mod:NewSpecialWarning("SpecWarnFinishAdd")
+local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 
 -- local timer
-local timerNextFireL        = mod.NewNextTimer(10)
-local timerNextFireS		= mod.NewNextTimer(10)
-local timerAdds				= mod.NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local timerNextLunar		= mod.NewNextTimer(15,2135278)
-local timerNextSolar		= mod.NewNextTimer(15,2135292)
-local timerNextLWrathPop	= mod.NewNextTimer(10,2135278)
-local timerNextSWrathPop	= mod.NewNextTimer(10,2135292)
-local timerNextVoidSpawn	= mod.NewNextTimer(20)
+local timerNextFireL        = mod:NewNextTimer(10)
+local timerNextFireS		= mod:NewNextTimer(10)
+local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerNextLunar		= mod:NewNextTimer(15,2135278)
+local timerNextSolar		= mod:NewNextTimer(15,2135292)
+local timerNextLWrathPop	= mod:NewNextTimer(10,2135278)
+local timerNextSWrathPop	= mod:NewNextTimer(10,2135292)
+local timerNextVoidSpawn	= mod:NewNextTimer(20)
 
 -- local variables
 local lastPriestDied = ""
