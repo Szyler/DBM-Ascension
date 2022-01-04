@@ -64,7 +64,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WrathYellOpt	= "Yell when you are affected by $spell:2135292 , or $spell:2135278"
+	WrathYellOpt	= "Yell when you are affected by $spell:2135292",
+	TimerAdds		= "Show Timer for adds phase on pull"
 	
 }
 
