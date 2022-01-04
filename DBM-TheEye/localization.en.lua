@@ -40,6 +40,40 @@ L:SetMiscLocalization{
 	EmoteAlarUp			= "flies high into the air!",
 	EmotePhase3			= "attempts to escape, losing feathers as he flies away in fear!"
 }
+
+
+-------------------------------
+-- High Astromancer Solarian --
+-------------------------------
+
+L = DBM:GetModLocalization("Solarian")
+
+L:SetGeneralLocalization{
+	name = "High Astromancer Solarian"
+}
+
+L:SetWarningLocalization{
+	SpecWarnAdds			= "Kill %s",
+	SpecWarnLunar			= "Lunar Wrath. Unable to move!",
+	SpecWarnFinishAdd		= "Finish off the priest!",
+	SpecWarnVoidSpawn		= "Solarian Voidspawn! KILL IT!"
+}
+
+L:SetTimerLocalization{
+	TimerAdds				= "Add phase in 15 seconds"
+}
+
+L:SetOptionLocalization{
+	WrathYellOpt	= "Yell when you are affected by $spell:2135292 , or $spell:2135278"
+	
+}
+
+L:SetMiscLocalization{
+	SolarianYellAddPhase		= "You are hopelessly outmatched",
+	LunarWrathYell				= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
+	SolarWrathYell 			 	= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your lifes!"
+}
+
 --[=====[ 
 DBM_EYE_TAB			= "EyeTab"
 DBM_TEMPEST_KEEP	= "Tempest Keep";

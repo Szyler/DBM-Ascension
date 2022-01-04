@@ -8,36 +8,107 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START"
 )
 
 
 -- local warn
-
+local specWarnHeal			= mod.NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
+local specWarnAdds			= mod.NewSpecialWarning("SpecWarnAdds")
+local specWarnLunar			= mod.NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
+local specWarnSolar			= mod.NewSpecialWarningMove(2135292) --Heroic: 2135293, Ascended 10Man: 2135294 , 25Man: 2135295
+local specWarnFireL			= mod.NewSpecialWarningSpell(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
+local specWarnFireS			= mod.newSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
+local specWarnFinishAdd		= mod.NewSpecialWarning("SpecWarnFinishAdd")
+local specWarnVoidSpawn		= mod.NewSpecialWarning("SpecWarnVoidSpawn")
 
 -- local timer
-
+local timerNextFireL        = mod.NewNextTimer(10)
+local timerNextFireS		= mod.NewNextTimer(10)
+local timerAdds				= mod.NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerNextLunar		= mod.NewNextTimer(15,2135278)
+local timerNextSolar		= mod.NewNextTimer(15,2135292)
+local timerNextLWrathPop	= mod.NewNextTimer(10,2135278)
+local timerNextSWrathPop	= mod.NewNextTimer(10,2135292)
+local timerNextVoidSpawn	= mod.NewNextTimer(20)
 
 -- local variables
-
+local lastPriestDied = ""
 
 -- local options
+mod:AddBoolOption(L.WrathYellOpt)
 
 
 function mod:OnCombatStart(delay)
+	self.vb.phase = 1
+	timerNextFireS:Start(-delay)
+	timerAdds:Start(-delay)
 
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(args)
-	
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.SolarianYellAddPhase or msg:find(L.SolarianYellAddPhase) then
+		timerNextFireL:Stop()
+		timerNextFireS:Stop()
+		self.vb.phase = 2
+		if lastPriestDied ~= "" then
+			if lastPriestDied == "Solarian Priest" then
+				if DBM.GetRaidRank() == 2 then
+					SetRaidTarget("Lunarian Priest", 8)
+				end
+				specWarnAdds:Show("Lunarian Priest")
+			elseif lastPriestDied == "Lunarian Priest" then
+				if DBM.GetRaidRank() == 2 then
+					SetRaidTarget("Solarian Priest", 8)
+				end
+				specWarnAdds:Show("Solarian Priest")
+			end
+		else specWarnAdds:Show("Whichever Priest")
+		end
+	end
 end
 
-function mod:CHAT_MSG_MONSTER_EMOTE(args)
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	
+	if args:IsSpellID(2135278, 2135279, 2135280, 2135281) then
+		timerNextLunar:Start()
+		timerNextLWrathPop:Start()
+		if args:IsPlayer() then
+			 if self.Options.WrathYellOpt then
+				SendChatMessage(L.LunarWrathYell, "YELL")
+			end
+		else specWarnLunar:Show()
+		end
+	elseif args:IsSpellID(2135292, 2135293, 2135294, 2135295) then
+		timerNextSolar:Start()
+		timerNextSWrathPop:Start()
+		if args:IsPlayer() then
+			if self.Options.WrathYellOpt then
+				SendChatMessage(L.SolarWrathYell, "Yell")
+			end
+		else specWarnSolar:Show()
+		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) then
+		timerNextFireL:Start()
+		specWarnFireL:Show(args.amount)
+		if args.amount == 3 then
+			specWarnFinishAdd:Show()
+		end
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) then
+		timerNextFireS:Start()
+		specWarnFireS:Show(args.amount)
+		if args.amount == 3 then
+			specWarnFinishAdd:Show()
+		end
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
@@ -45,6 +116,19 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2135264) then
+		specWarnHeal:Show()
+	elseif args:IsSpellID(2135260) then
+		self.vb.phase = 3
+		timerNextFireL:Stop()
+		timerNextFireS:Stop()
+		timerNextSolar:Stop()
+		timerNextLunar:Stop()
+		timerNextLWrathPop:Stop()
+		timerNextSWrathPop:Stop()
+		self:ScheduleMethod(20,"SolarianVoidspawn")
+		timerNextVoidSpawn:Start()
+	end
 	
 end
 
@@ -52,10 +136,34 @@ function mod:SPELL_CAST_SUCCESS(args)
 	
 end
 
+function mod:UNIT_DIED(unit)
+    local name = UnitName(unit);
+    if name == "Solarian Priest" and self.vb.phase == 2 then
+		lastPriestDied = name
+		self.vb.phase = 1
+		timerNextLunar:Start()
+		timerNextFireL:Start()
+	elseif name == "Lunarian Priest" and self.vb.phase == 2 then
+		lastPriestDied = name
+		self.vb.phase = 1
+		timerNextSolar:Start()
+		timerNextFireS:Start()
+	end
+end
+
+
 function mod:OnCombatEnd()
 
 end
 
+function mod:SolarianVoidspawn()
+	specWarnVoidSpawn:Show()
+	if DBM:GetRaidRank() == 2 then
+		SetRaidTarget("Solarian Voidspawn", 8)
+	end
+	timerNextVoidSpawn:Start()
+	self:ScheduleMethod(20,"SolarianVoidspawn")
+end
 
 -- Old Solarian DBM Code
 
