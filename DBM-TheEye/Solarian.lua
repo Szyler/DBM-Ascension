@@ -39,6 +39,7 @@ local lastPriestDied = ""
 
 -- local options
 mod:AddBoolOption(L.WrathYellOpt)
+mod.vb.phase = 1
 
 
 function mod:OnCombatStart(delay)

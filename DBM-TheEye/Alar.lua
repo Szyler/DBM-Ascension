@@ -43,6 +43,7 @@ local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
 
 -- local options
+mod.vb.phase = 1
 
 
 function mod:OnCombatStart(delay)
@@ -88,7 +89,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextAlarRebirth:Start()
 		timerNextBreath:Stop()
 		timerNextPlatform:Stop()
-		elseif self.vb.phase ==2 then
+		elseif self.vb.phase == 2 then
 			self.vb.phase = 3
 			timerNextAlarRebirth:Start()
 			timerNextBreath:Stop()
@@ -101,7 +102,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135200, 2135201, 2135202, 2135203) then
 		warnAlarRebirth:Show()
 		timerNextBreath:Start(3)
-		if self.vb.pase == 2 then
+		if self.vb.phase == 2 then
 			timerAlarUp:Start(30)
 		end
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
