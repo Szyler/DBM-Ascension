@@ -58,7 +58,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if lastPriestDied ~= "" then
 			if lastPriestDied == "Solarian Priest" then
 				if DBM.GetRaidRank() == 2 then
-					mod:SetIcon("Lunarian Priest", 8)
+					mod:SetIcon("Lunarian Priest", 8)   --experimental 
 				end
 				specWarnAdds:Show("Lunarian Priest")
 			elseif lastPriestDied == "Lunarian Priest" then
