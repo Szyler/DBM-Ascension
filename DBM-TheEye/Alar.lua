@@ -47,7 +47,6 @@ mod.vb.phase = 1
 
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
 	berserkTimer:Start(-delay)
 	timerNextPlatform:Start()
 	timerEmberSpawn:Start(40-delay)

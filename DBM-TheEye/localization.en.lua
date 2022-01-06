@@ -80,9 +80,9 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	SolarianYellAddPhase	= "You are hopelessly outmatched",
-	LunarWrathYell			= "$spell:2135278 on "..UnitName("PLAYER").."! I HAVE TO RUN!",
-	SolarWrathYell 			= "$spell:2135287 on "..UnitName("PLAYER").."! RUN! Save your life!"
+	SolarianYellAddPhase	= "You are hopelessly outmatched!",
+	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
+	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
 }
 
 --[=====[ 

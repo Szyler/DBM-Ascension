@@ -159,12 +159,20 @@ function mod:OnCombatEnd()
 
 end
 
+function mod:SolarianVoidspawnMark()
+	if DBM:GetRaidRank() == 2 then
+		if UnitExists("Solarian Voidspawn") then
+			SetRaidTarget("Solarian Voidspawn", 8)
+		else self:ScheduleMethod(2, "SolarianVoidspawnMark")	
+		end
+	
+	end
+end
+
 function mod:SolarianVoidspawn()
 	specWarnVoidSpawn:Show()
-	if DBM:GetRaidRank() == 2 then
-		SetRaidTarget("Solarian Voidspawn", 8)
-	end
 	timerVoidSpawn:Start()
+	self:ScheduleMethod(0, "SolarianVoidspawnMark")
 	self:ScheduleMethod(20,"SolarianVoidspawn")
 end
 
