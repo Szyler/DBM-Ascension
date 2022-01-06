@@ -58,12 +58,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if lastPriestDied ~= "" then
 			if lastPriestDied == "Solarian Priest" then
 				if DBM.GetRaidRank() == 2 then
-					SetRaidTarget("Lunarian Priest", 8)
+					mod:SetIcon("Lunarian Priest", 8)
 				end
 				specWarnAdds:Show("Lunarian Priest")
 			elseif lastPriestDied == "Lunarian Priest" then
 				if DBM.GetRaidRank() == 2 then
-					SetRaidTarget("Solarian Priest", 8)
+					mod:SetIcon("Solarian Priest", 8)
 				end
 				specWarnAdds:Show("Solarian Priest")
 			end
@@ -162,8 +162,8 @@ end
 function mod:SolarianVoidspawnMark()
 	if DBM:GetRaidRank() == 2 then
 		if UnitExists("Solarian Voidspawn") then
-			SetRaidTarget("Solarian Voidspawn", 8)
-		else self:ScheduleMethod(2, "SolarianVoidspawnMark")	
+			mod:SetIcon("Solarian Voidspawn", 8)
+		else self:ScheduleMethod(2, "SolarianVoidspawnMark")
 		end
 	
 	end
