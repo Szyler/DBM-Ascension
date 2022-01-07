@@ -27,7 +27,7 @@ local specWarnFeather			= mod:NewSpecialWarning("SpecWarnFeather")
 local specWarnGround			= mod:NewSpecialWarningYou(2135186)
 
 -- local timer
-local timerNextPlatform        	= mod:NewTimer(34, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
+local timerNextPlatform        	= mod:NewTimer(32, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
 local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerAlarDive				= mod:NewTimer(10, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
@@ -50,7 +50,7 @@ mod.vb.phase = 1
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextPlatform:Start(-delay)
-	timerEmberSpawn:Start(44-delay)
+	timerEmberSpawn:Start(42-delay)
 	timerNextBreath:Start(-delay)
 end
 
@@ -130,7 +130,7 @@ end
 function mod:UNIT_DIED(unit)
     local name = UnitName(unit);
     if (name == "Egg of Al'ar") and self.vb.phase == 1 then
-		timerNextPlatform:Start(29)
+		timerNextPlatform:Start(27)
 	elseif cid == 19514 and self.vb.phase == 3 then
 			mod:EndCombat(self)
 	end
