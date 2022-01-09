@@ -30,7 +30,7 @@ local specWarnGround			= mod:NewSpecialWarningYou(2135186)
 local timerNextPlatform        	= mod:NewTimer(32, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
 local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
-local timerAlarDive				= mod:NewTimer(10, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
+local timerAlarDive				= mod:NewTimer(12, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
 local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
 local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
@@ -74,7 +74,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2135190) then
-		timerEmberSpawn:Start()
+		timerEmberSpawn:Start(11)
 		timerNextFlameCascade:Start()
 	end
 end
@@ -85,12 +85,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
 		if self.vb.phase == 1 then
 		self.vb.phase = 2
-		timerAlarUp:Start(40)
+		timerEmberSpawn:Stop()
+		timerAlarUp:Start(42)
 		timerNextAlarRebirth:Start()
 		timerNextBreath:Stop()
 		timerNextPlatform:Stop()
 		elseif self.vb.phase == 2 then
 			self.vb.phase = 3
+			timerNextBreath:Stop()
+			timerEmberSpawn:Stop()
 			timerNextAlarRebirth:Start()
 			timerNextBreath:Stop()
 		end
@@ -108,9 +111,9 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
 		warnEmber:Show()
 		if self.vb.phase == 1 then
-			timerEmberSpawn:Start(30)
+			timerEmberSpawn:Start(32) --might be incorrect for platforms after 1st one needs testing
 		elseif self.vb.phase == 3 then
-			timerEmberSpawn:Start(10)
+			timerEmberSpawn:Start(12)
 		end
 	end
 end
@@ -119,7 +122,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.EmoteAlarUp or msg:find(L.EmoteAlarUp) then
 		timerNextBreath:Stop()
 		timerAlarDive:Start()
-		timerEmberSpawn:Start(22)
+		timerEmberSpawn:Start(24)
 		warnDive:Schedule(12)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
 		timerEmberSpawn:start(22)
