@@ -128,6 +128,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 end
 
 function mod:UNIT_DIED(unit)
+	local cid = self.getCIDfromGUID(args.destGUID)
     local name = UnitName(unit);
     if (name == "Egg of Al'ar") and self.vb.phase == 1 then
 		timerNextPlatform:Start(27)
