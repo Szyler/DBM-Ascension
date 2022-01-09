@@ -61,9 +61,11 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerAdds				= "Add phase in :",
-	TimerNextLWrathPop		= "$spell:2135283 going off in: ",
-	TimerNextSWrathPop		= "$spell:2135292 going off in: ",
+	TimerNextLWrathPop		= "%s going off in: ",
+	TimerNextSWrathPop		= "%s going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
+	TimerNextHealS			= "Next Solarian Priest Heal:",
+	TimerNextHealL			= "Next Lunarian Priest Heal:"
 }
 
 L:SetOptionLocalization{
@@ -76,10 +78,13 @@ L:SetOptionLocalization{
 	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287 ",
 	TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion ",
-	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion "
+	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion ",
+	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
+	TimerNextHealL			= "Show timer for next Lunarian Priest Heal"
 }
 
 L:SetMiscLocalization{
+	SolarianPhase1			= "I will crush your delusions of grandeur!",
 	SolarianYellAddPhase	= "You are hopelessly outmatched!",
 	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
 	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
