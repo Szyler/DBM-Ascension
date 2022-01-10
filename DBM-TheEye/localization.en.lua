@@ -25,7 +25,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnEmber 			= "Show warning when Ember of Al'ar spawns",
-	WarnAlarRebirth		= "Show Warning for Al'ar rebirth casts",
+	WarnAlarRebirth		= "Show warning for Al'ar rebirth casts",
 	WarnFlameCascade	= "Show warning when Al'ar is about to cast Flame Cascade",
 	WarnDive			= "Show warning for Al'ar Dive",
 	Berserk 			= "Show timer for Berserk",
@@ -61,8 +61,8 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerAdds				= "Add phase in :",
-	TimerNextLWrathPop		= "%s going off in: ",
-	TimerNextSWrathPop		= "%s going off in: ",
+	-- TimerNextLWrathPop		= "%s going off in: ",
+	-- TimerNextSWrathPop		= "%s going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
 	TimerNextHealS			= "Next Solarian Priest Heal:",
 	TimerNextHealL			= "Next Lunarian Priest Heal:"
@@ -70,15 +70,15 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	Berserk 				= "Show timer for Berserk",
-	TimerAdds				= "Show Timer for adds phase start",
+	TimerAdds				= "Show timer for adds phase start",
 	SpecWarnAdds			= "Show Warning which priest you should focus",
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
-	TimerVoidSpawn			= "Show Timer for add spawn in void phase",
+	TimerVoidSpawn			= "Show timer for add spawn in void phase",
 	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
-	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287 ",
-	TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion ",
-	TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion ",
+	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287",
+	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
+	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
 	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
 	TimerNextHealL			= "Show timer for next Lunarian Priest Heal"
 }
