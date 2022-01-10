@@ -13,10 +13,17 @@ mod:RegisterEvents(
 
 
 -- local warn
-
+local warnPounding			= mod:NewSpellAnnounce(2135296, 3)
+local warnDismantle			= mod:NewTargetAnnounce(2135333, 3)
 
 -- local timer
 
+local timerNextEnrage		= mod:NewNextTimer(120, 2135312)
+local timerNextPounding		= mod:NewNextTimer(40, 2135296)
+
+
+local timerPounding			= mod:NewBuffActiveTimer(20, 2135296)
+local timerDismantle		= mod:NewBuffActiveTimer(15, 2135333)
 
 -- local variables
 
@@ -25,7 +32,8 @@ mod:RegisterEvents(
 
 
 function mod:OnCombatStart(delay)
-
+	timerNextEnrage:Start(-delay)
+	timerNextPounding:Start(-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(args)
@@ -49,7 +57,13 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	
+	if args:IsSpellID(2135296) then     
+		warnPounding:Show()
+		timerPounding:Start()
+	elseif args:IsSpellID(2135296) then
+		warnDismantle:Show(args.destName)
+		timerDismantle:Start(args.destName)
+	end
 end
 
 function mod:OnCombatEnd()
