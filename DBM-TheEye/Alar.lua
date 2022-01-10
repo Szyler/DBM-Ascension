@@ -74,7 +74,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2135190) then
-		timerEmberSpawn:Start(11)
+		timerEmberSpawn:Start()
 		timerNextFlameCascade:Start()
 	end
 end
