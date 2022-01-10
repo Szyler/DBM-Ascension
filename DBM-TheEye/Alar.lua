@@ -125,18 +125,18 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerEmberSpawn:Start(24)
 		warnDive:Schedule(12)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
-		timerEmberSpawn:start(22)
+		timerEmberSpawn:Start(22)
 		timerNextFlameCascade:Start()
 	end
 end
 
-function mod:UNIT_DIED(unit)
-	local cid = self.getCIDfromGUID(unit.destGUID)
-    local name = UnitName(unit);
-    if (name == "Egg of Al'ar") and self.vb.phase == 1 then
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+    local name = UnitName(args);
+    if (name == "Egg of Al'ar" and self.vb.phase == 1) then
 		timerNextPlatform:Start(27)
 	elseif cid == 19514 and self.vb.phase == 3 then
-			mod:EndCombat(self)
+		mod:EndCombat(self)
 	end
 
 end

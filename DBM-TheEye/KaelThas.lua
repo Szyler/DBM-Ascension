@@ -17,9 +17,13 @@ mod:RegisterEvents(
 
 
 -- local warn
-
+local warnGaze			= mod:NewAnnounce("WarnGaze", 4, 39414)
+local specWarnGaze		= mod:NewSpecialWarning("SpecWarnGaze")
+local specWarnSeal		= mod.NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
+-- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
+local timerNextGaze		= mod:NewTimer(15, "TimerNextGaze", 39414)
 
 
 -- local variables
@@ -27,6 +31,7 @@ mod:RegisterEvents(
 
 -- local options
 
+mod:AddBoolOption("GazeIcon", false)
 
 function mod:OnCombatStart(delay)
 
@@ -36,13 +41,31 @@ function mod:CHAT_MSG_MONSTER_YELL(args)
 	
 end
 
-function mod:CHAT_MSG_MONSTER_EMOTE(args)
-	
+function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
+	if (msg == L.emoteGaze or msg:find(L.emoteGaze)) and target then
+		target = UnitName(target)
+		timerNextGaze:Start()
+		if target == UnitName("player") then
+			specWarnGaze:Show()
+		else
+			warnGaze:Show(target)
+		end
+		if self.Options.GazeIcon then
+			self:SetIcon(target, 1, 15)
+		end
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	
 end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2135342, 2135343, 2135344, 2135345 ) and args.amount==4 then
+		specWarnSeal:Show(args.amount, args.destName)
+	end
+end
+
 
 function mod:SPELL_AURA_REMOVED(args)
 	

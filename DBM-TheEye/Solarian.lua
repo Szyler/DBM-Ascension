@@ -25,16 +25,16 @@ local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 
 -- local timer
 local berserkTimer			= mod:NewTimer(720, "Berserk", 26662)
-local timerNextFireL        = mod:NewNextTimer(10,2135230)
-local timerNextFireS		= mod:NewNextTimer(10,2135234)
-local timerAdds				= mod:NewTimer(15,"TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local timerNextLunar		= mod:NewNextTimer(15,2135278)
-local timerNextSolar		= mod:NewNextTimer(15,2135287)
-local timerLWrathPop		= mod:NewTimer(10,"TimerNextLWrathPop",2135283)
-local timerSWrathPop		= mod:NewTimer(10,"TimerNextSWrathPop",2135292)
-local timerVoidSpawn		= mod:NewTimer(20,"TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
-local timerNextHealS		= mod.NewTimer(11.5, "TimerNextHealS", 2135264)
-local timerNextHealL		= mod.NewTimer(11.5, "TimerNextHealL", 2135264)
+local timerNextFireL        = mod:NewNextTimer(10, 2135230)
+local timerNextFireS		= mod:NewNextTimer(10, 2135234)
+local timerAdds				= mod:NewTimer(15, "TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerNextLunar		= mod:NewNextTimer(15, 2135278)
+local timerNextSolar		= mod:NewNextTimer(15, 2135287)
+local timerLWrathPop		= mod:NewTimer(10, 2135283)
+local timerSWrathPop		= mod:NewTimer(10, 2135292)
+local timerVoidSpawn		= mod:NewTimer(20, "TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
+local timerNextHealS		= mod:NewTimer(11.5, "TimerNextHealS", 2135264)
+local timerNextHealL		= mod:NewTimer(11.5, "TimerNextHealL", 2135264)
 
 -- local variables
 local nextPriest = ""
@@ -152,8 +152,9 @@ end
 function mod:SPELL_INTERRUPT(args)  -- Check Interval
 	if args:IsSpellID(2135264, 2135265) then
 		if args.destName == "Solarian Priest" then
-		timerNextHealS:Start()
-		else timerNextHealL:Start()
+			timerNextHealS:Start()
+		else 
+			timerNextHealL:Start()
 		end
 	end
 end
@@ -161,8 +162,9 @@ end
 function mod:SPELL_HEAL(args)
 	if args:IsSpellID(2135264, 2135265) then
 		if args.sourceName == "Solarian Priest" then
-		timerNextHealS:Start()
-		else timerNextHealL:Start()
+			timerNextHealS:Start()
+		else 
+			timerNextHealL:Start()
 		end
 	end
 end
