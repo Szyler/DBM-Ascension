@@ -60,7 +60,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if nextPriest ~= "" then
 			if nextPriest == "Solarian Priest" then
 				if DBM.GetRaidRank() >= 1 then
-				if DBM.GetRaidRank() == 2 then
+					local priestID = self:GetUnitCreatureId(14481)
 					self:SetIcon(nextPriest, 8)   --experimental 
 				end
 				specWarnAdds:Show(nextPriest)
