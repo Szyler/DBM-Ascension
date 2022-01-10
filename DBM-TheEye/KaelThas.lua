@@ -19,7 +19,7 @@ mod:RegisterEvents(
 -- local warn
 local warnGaze			= mod:NewAnnounce("WarnGaze", 4, 39414)
 local specWarnGaze		= mod:NewSpecialWarning("SpecWarnGaze")
-local specWarnSeal		= mod.NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
+local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
