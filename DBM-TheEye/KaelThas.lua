@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
-mod:RegisterCombat("yell", DBM_KAEL_YELL_PHASE1)
+mod:RegisterCombat("yell", kaelYellP1)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -18,20 +18,35 @@ mod:RegisterEvents(
 
 -- local warn
 local warnGaze			= mod:NewAnnounce("WarnGaze", 4, 39414)
+local warnMC			= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
+local warnConflag		= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
 local specWarnGaze		= mod:NewSpecialWarning("SpecWarnGaze")
 local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
 local timerNextGaze		= mod:NewTimer(15, "TimerNextGaze", 39414)
+local timerFear			= mod:NewCdTimer(31, 2135340)
+local timerPyroblast	= mod:NewCdTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
 
 
 -- local variables
-
+local warnConflagTargets = {}
+local warnMCTargets = {}
 
 -- local options
 
 mod:AddBoolOption("GazeIcon", false)
+
+local function showConflag()
+	warnConflag:Show(table.concat(warnConflagTargets, "<, >"))
+	table.wipe(warnConflagTargets)
+end
+
+local function showMC(self)
+	warnMC:Show(table.concat(warnMCTargets, "<, >"))
+	table.wipe(warnMCTargets)
+end
 
 function mod:OnCombatStart(delay)
 
@@ -57,7 +72,22 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	
+	if args:IsSpellID(2135467, 2135468, 2135469) then
+		warnMCTargets[#warnMCTargets + 1] = args.destName
+		self:Unschedule(showMC)
+		if #warnMCTargets >= 3 then
+			showMC(self)
+		else
+			self:Schedule(0.3, showMC, self)
+		end
+	elseif args:IsSpellID(2135350, 2135351, 2135352, 2135353) then
+		warnConflagTargets[#warnConflagTargets + 1] = args.destName
+		self:Unschedule(showConflag)
+		self:Schedule(0.3, showConflag)
+	elseif args:IsSpellID(2135340) then
+		timerFear:Start()
+	end
+
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
@@ -68,6 +98,9 @@ end
 
 
 function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2135340) then
+		timerFear:Start()
+	end
 	
 end
 

@@ -93,7 +93,7 @@ L:SetMiscLocalization{
 --------------------------
 -- Kael'thas Sunstrider --
 --------------------------
-
+kaelYellP1					= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
 L = DBM:GetModLocalization("KaelThas")
 
 L:SetGeneralLocalization{
@@ -108,6 +108,7 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
+	TimerNextGaze		= "Thaladred target switch in: "
 
 }
 
@@ -116,11 +117,13 @@ L:SetOptionLocalization{
 	WarnGaze			= "Show warning for Thaladred's Gaze target",
 	SpecWarnGaze		= "Show special warning when Gaze on you",
 	SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
-	GazeIcon			= "Set icon on Thaladred's Gaze target"
+	GazeIcon			= "Set icon on Thaladred's Gaze target",
+	TimerNextGaze		= "Show timer for Thaladred's Gaze"
 	
 }
 
 L:SetMiscLocalization{
+	
 
 }
 
