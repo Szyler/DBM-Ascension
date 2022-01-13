@@ -60,12 +60,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextSolar:Stop()
 		if nextPriest ~= "" then
 			if nextPriest == "Solarian Priest" then
-				if DBM.GetRaidRank() == 2 then
+				if DBM:GetRaidRank() == 2 then
 					self:SetIcon(nextPriest, 8)   --experimental 
 				end
 				specWarnAdds:Show(nextPriest)
 			elseif nextPriest == "Lunarian Priest" then
-				if DBM.GetRaidRank() == 2 then
+				if DBM:GetRaidRank() == 2 then
 					self:SetIcon(nextPriest, 8)
 				end
 				specWarnAdds:Show(nextPriest)
@@ -170,18 +170,7 @@ function mod:SPELL_HEAL(args)
 end
 
 function mod:UNIT_DIED(unit)
-  --[===[  local name = UnitName(unit);
-    if name == "Solarian Priest" and self.vb.phase == 2 then
-		lastPriestDied = name
-		self.vb.phase = 1		rewriting it. Doesnt seem to work at all and its better to tie it to boss yell anyways IMO
-		timerNextLunar:Start()
-		timerNextFireL:Start()
-	elseif name == "Lunarian Priest" and self.vb.phase == 2 then
-		lastPriestDied = name
-		self.vb.phase = 1
-		timerNextSolar:Start()
-		timerNextFireS:Start()
-	end --]===]
+
 end
 
 
