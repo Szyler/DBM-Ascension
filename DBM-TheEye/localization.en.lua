@@ -90,6 +90,44 @@ L:SetMiscLocalization{
 	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
 }
 
+--------------------------
+-- Kael'thas Sunstrider --
+--------------------------
+kaelYellP1					= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
+L = DBM:GetModLocalization("KaelThas")
+
+L:SetGeneralLocalization{
+	name = "Kael'thas Sunstrider"
+}
+
+L:SetWarningLocalization{
+	WarnGaze			= "Gaze on >%s<",
+	SpecWarnGaze		= "Gaze on YOU - Run away!",
+	SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
+
+}
+
+L:SetTimerLocalization{
+	TimerNextGaze		= "Thaladred target switch in: "
+
+}
+
+L:SetOptionLocalization{
+	Berserk 			= "Show timer for Berserk",
+	WarnGaze			= "Show warning for Thaladred's Gaze target",
+	SpecWarnGaze		= "Show special warning when Gaze on you",
+	SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	GazeIcon			= "Set icon on Thaladred's Gaze target",
+	TimerNextGaze		= "Show timer for Thaladred's Gaze"
+	
+}
+
+L:SetMiscLocalization{
+	
+
+}
+
+
 --[=====[ 
 DBM_EYE_TAB			= "EyeTab"
 DBM_TEMPEST_KEEP	= "Tempest Keep";
