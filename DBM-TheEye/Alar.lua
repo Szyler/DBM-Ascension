@@ -5,6 +5,7 @@ mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19514)
 mod:RegisterCombat("combat")
 mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
+mod:SetWipeTime(25)--guesswork
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
