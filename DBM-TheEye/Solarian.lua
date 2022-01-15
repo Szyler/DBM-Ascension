@@ -22,6 +22,7 @@ local specWarnFireL			= mod:NewSpecialWarningSpell(2135230) --Heroic: 2135231, A
 local specWarnFireS			= mod:NewSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
 local specWarnFinishAdd		= mod:NewSpecialWarning("SpecWarnFinishAdd")
 local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
+-- local specWarnDisrupt		= mod:NewSpecialWarningSpell("SpecWarnVoidSpawn")
 
 -- local timer
 local berserkTimer			= mod:NewTimer(720, "Berserk", 26662)
@@ -39,7 +40,6 @@ local nextPriest = ""
 
 -- local options
 mod:AddBoolOption(L.WrathYellOpt)
-mod.vb.phase = 1
 
 
 function mod:OnCombatStart(delay)
@@ -47,7 +47,6 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFire:Start(-delay,"Fire")
 	timerAdds:Start(-delay)
-
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
@@ -80,7 +79,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
 			end
-		else specWarnLunar:Show()
+		else 
+			specWarnLunar:Show()
 		end
 	elseif args:IsSpellID(2135287, 2135288, 2135289, 2135290) then
 		timerNextSolar:Start()
@@ -89,7 +89,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			if self.Options.WrathYellOpt then
 				SendChatMessage(L.SolarWrathYell, "Yell")
 			end
-		else specWarnSolar:Show()
+		else 
+			specWarnSolar:Show()
 		end
 	elseif args:IsSpellID(2135260) then
 		self.vb.phase = 2
@@ -169,7 +170,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:SolarianVoidspawnMark()
-	if DBM:GetRaidRank() == 2 then
+	if DBM:GetRaidRank() >= 1 then
 		if UnitExists("Solarian Voidspawn") then
 			self:SetIcon("Solarian Voidspawn", 8)
 		else self:ScheduleMethod(2, "SolarianVoidspawnMark")
