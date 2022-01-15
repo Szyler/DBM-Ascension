@@ -61,8 +61,8 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerAdds				= "Add phase in :",
-	-- TimerNextLWrathPop		= "%s going off in: ",
-	-- TimerNextSWrathPop		= "%s going off in: ",
+	TimerWrathPop			= "%s Knock up in: ",
+	TimerNextFire			= "next $s in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
 	TimerNextHealS			= "Next Solarian Priest Heal:",
 	TimerNextHealL			= "Next Lunarian Priest Heal:"
@@ -75,10 +75,10 @@ L:SetOptionLocalization{
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show timer for add spawn in void phase",
+	TimerNextFire			= "Show $spell:2135234 and $spell:2135230 cooldown",
 	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287",
-	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
-	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
+	TimerWrathPop			= "Show countdown for $spell:2135283 and $spell:2135278 explosion",
 	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
 	TimerNextHealL			= "Show timer for next Lunarian Priest Heal"
 }

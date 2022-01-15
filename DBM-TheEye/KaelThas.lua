@@ -49,6 +49,7 @@ local function showMC(self)
 end
 
 function mod:OnCombatStart(delay)
+	
 
 end
 
