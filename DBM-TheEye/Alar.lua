@@ -7,13 +7,12 @@ mod:RegisterCombat("combat")
 mod:RegisterKill("Yell",L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
 
 mod:RegisterEvents(
-	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REFRESH",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
-	"SPELL_DAMAGE",
-	"SPELL_MISSED",
+	"SPELL_CAST_SUCCESS",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_DIED"
 )
 
