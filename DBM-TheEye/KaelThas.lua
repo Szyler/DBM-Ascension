@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
-mod:RegisterCombat("yell", kaelYellP1)
+mod:RegisterCombat("yell", L.kaelYellP1)
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_EMOTE",

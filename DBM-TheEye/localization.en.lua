@@ -13,7 +13,8 @@ L:SetGeneralLocalization{
 L:SetWarningLocalization{
 	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
 	-- WarnDive			= "Al'ar Dive! Run away!",
-	SpecWarnFeather		= "Blazing Wings fading in 15 Seconds!"
+	SpecWarnFeather		= "Blazing Wings fading in 15 Seconds!",
+	FlameBreath			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
@@ -33,7 +34,8 @@ L:SetOptionLocalization{
 	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
 	AlarDive			= "Show Al'ar dive timer countdown",
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
-	SpecWarnFeather		= "Show reminder for Blazing Wings"
+	SpecWarnFeather		= "Show reminder for Blazing Wings",
+	FlameBreath			= "Show $spell:2135155 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
@@ -93,23 +95,20 @@ L:SetMiscLocalization{
 --------------------------
 -- Kael'thas Sunstrider --
 --------------------------
-kaelYellP1					= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
 L = DBM:GetModLocalization("KaelThas")
 
 L:SetGeneralLocalization{
-	name = "Kael'thas Sunstrider"
+	name = "Kael'thas Sunstrider",
 }
 
 L:SetWarningLocalization{
 	WarnGaze			= "Gaze on >%s<",
 	SpecWarnGaze		= "Gaze on YOU - Run away!",
 	SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
-
 }
 
 L:SetTimerLocalization{
 	TimerNextGaze		= "Thaladred target switch in: "
-
 }
 
 L:SetOptionLocalization{
@@ -119,12 +118,10 @@ L:SetOptionLocalization{
 	SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
 	GazeIcon			= "Set icon on Thaladred's Gaze target",
 	TimerNextGaze		= "Show timer for Thaladred's Gaze"
-	
 }
 
 L:SetMiscLocalization{
-	
-
+	kaelYellP1			= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
 }
 
 
