@@ -8,6 +8,7 @@ mod:RegisterKill("Yell",L.NeverHappen) --There is no yell. Just abusing it so DB
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REFRESH",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
@@ -25,6 +26,7 @@ local warnAlarRebirth			= mod:NewSpellAnnounce(2135200, 4) --Heroic 2135201, Asc
 local warnFlameCascade			= mod:NewSpellAnnounce(2135190, 3)
 local specWarnFeather			= mod:NewSpecialWarning("SpecWarnFeather")
 local specWarnGround			= mod:NewSpecialWarningYou(2135186)
+local warnFlameBreath			= mod:NewAnnounce(L.FlameBreath, 2, 2135155)
 
 -- local timer
 local timerNextPlatform        	= mod:NewTimer(32, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
@@ -63,6 +65,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnGround:Show()
 	elseif args:IsSpellID(2135174) and args:IsPlayer() then
 		specWarnFeather:Schedule(45)
+	elseif args:IsSpellID(2135155) then --Flame Breath debuffs on tanks
+		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2135155) then
+		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
