@@ -7,8 +7,12 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS",
+	"SPELL_INTERRUPT",
+	"SPELL_HEAL",
+	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_CAST_START"
 )
 
@@ -95,7 +99,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135278, 2135279, 2135280, 2135281) then
 		timerNextLunar:Start()
-		timerLWrathPop:Start()
+		timerNextLWrathPop:Start()
 		if args:IsPlayer() then
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
@@ -105,7 +109,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135287, 2135288, 2135289, 2135290) then
 		timerNextSolar:Start()
-		timerSWrathPop:Start()
+		timerNextSWrathPop:Start()
 		if args:IsPlayer() then
 			if self.Options.WrathYellOpt then
 				SendChatMessage(L.SolarWrathYell, "Yell")
@@ -119,8 +123,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFireS:Stop()
 		timerNextSolar:Stop()
 		timerNextLunar:Stop()
-		timerLWrathPop:Stop()
-		timerSWrathPop:Stop()
+		timerNextLWrathPop:Stop()
+		timerNextSWrathPop:Stop()
 		self:ScheduleMethod(20,"SolarianVoidspawn")
 		timerVoidSpawn:Start()
 	end

@@ -75,7 +75,7 @@ L:SetOptionLocalization{
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show timer for add spawn in void phase",
-	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
+	SpecWarnFinishAdd		= "Show when you should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287",
 	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
 	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
