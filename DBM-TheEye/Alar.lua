@@ -20,7 +20,8 @@ mod:RegisterEvents(
 
 -- local warn
 local warnEmber					= mod:NewAnnounce("WarnEmber", 2, 2135208)
-local warnDive					= mod:NewAnnounce("WarnDive", 2, "Interface\\Icons\\Spell_Fire_Fireball02")
+-- local warnDive					= mod:NewAnnounce("WarnDive", 2, "Interface\\Icons\\Spell_Fire_Fireball02")
+local warnDive					= mod:NewSpecialWarningRun(2135164)
 local warnAlarRebirth			= mod:NewSpellAnnounce(2135200, 4) --Heroic 2135201, Ascended 10Man-2135202, 25Man-2135203
 local warnFlameCascade			= mod:NewSpellAnnounce(2135190, 3)
 local specWarnFeather			= mod:NewSpecialWarning("SpecWarnFeather")
@@ -68,7 +69,8 @@ end
 
 function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2135174) and args:IsPlayer() then
-	specWarnFeather:Schedule(45)
+		specWarnFeather:Unschedule()
+		specWarnFeather:Schedule(45)
 	end
 end
 
@@ -132,7 +134,7 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-    local name = UnitName(args);
+    local name = UnitName(args.destGUID);
     if (name == "Egg of Al'ar" and self.vb.phase == 1) then
 		timerNextPlatform:Start(27)
 	elseif cid == 19514 and self.vb.phase == 3 then
