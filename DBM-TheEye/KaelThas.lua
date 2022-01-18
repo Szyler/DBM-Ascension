@@ -33,11 +33,15 @@ local pyroCast				= mod:NewCastTimer(6, 2135444)
 local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459) 
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
 
+local timerBanish			= mod:NewNextTimer(22, 2135470)
+local KTLevitate			= mod:NewBuffActiveTimer(30, 2135477)
+
 -- Lieutenant timers
 local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
 local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
 local TelonicusPull			= mod:NewTimer(8, "Telonicus spawning in: ", 2135337)
 local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
+local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
 local AllPull				= mod:NewTimer(20, "Everyone spawning in: ", 2135337)
 local KaelThasPull			= mod:NewTimer(6, "Kael'Thas spawning in: ", 2135337)
 
@@ -60,7 +64,7 @@ local function showMC()
 end
 
 function mod:OnCombatStart(delay)
-
+	mod.vb.phase = 1
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(args)
@@ -72,8 +76,10 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	local ThaladredPull = "Let us see how your nerves hold up against the Darkener, Thaladred!"
 	local TelonicusPull = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
 	local SanguinarPull = "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!"
-	local AllPull = "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
-	local KaelThasPull = "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
+	local WeaponsPull 	= "As you see, I have many weapons in my arsenal...."
+	local AllPull 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
+	local KaelThasPull 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
+	-- local KTLevitate 	= "Having trouble staying grounded?"
 	if (msg == L.emoteGaze or msg:find(L.emoteGaze)) and target then
 		-- target = UnitName(target)
 		target = msg:match("Thaladred the Darkener sets eyes on (.+)!");
@@ -89,20 +95,28 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 		end
 	elseif (msg == CapernianPull or msg:find(CapernianPull)) then
 		CapernianPull:Start()
+		mod.vb.phase = 1
 	elseif (msg == ThaladredPull or msg:find(ThaladredPull)) then
 		ThaladredPull:Start()
 	elseif (msg == TelonicusPull or msg:find(TelonicusPull)) then
 		TelonicusPull:Start()
 	elseif (msg == SanguinarPull or msg:find(SanguinarPull)) then
 		SanguinarPull:Start()
+	elseif (msg == WeaponsPull or msg:find(WeaponsPull)) then
+		WeaponsPull:Start()
+		mod.vb.phase = 2
 	elseif (msg == AllPull or msg:find(AllPull)) then
 		AllPull:Start()
 		timerBellow:Start(20)
+		mod.vb.phase = 3
 	elseif (msg == KaelThasPull or msg:find(KaelThasPull)) then
 		KaelThasPull:Start()
 		timerNextPyro:Start(10)
 		timerNextFlameStrike:Start(30)
 		timerNextMC:Start(40)
+		mod.vb.phase = 4
+	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
+		-- KTLevitate:Start()
 	end
 end
 
@@ -124,6 +138,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerBellow:Start()
 	elseif args:IsSpellID(2135354, 2135355, 2135356, 2135357) then
 		timerCDBlastWave:Start()
+	elseif args:IsSpellID(2135470) then
+		timerBanish:Start()
+		KTLevitate:Schedule(20)
+		mod.vb.phase = 5
+		--Schedule mod.vb.phase = 6 20 seconds
+		--Schedule mod.vb.phase = 7 75 seconds
 	end
 end
 
