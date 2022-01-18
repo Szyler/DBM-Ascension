@@ -45,12 +45,14 @@ local timerNextHealL		= mod:NewTimer(11.5, "TimerNextHealL", 2135264)
 local nextPriest = ""
 local isSolarian = false;
 local below55 = false;
+local AntiSpam = 0
 
 -- local options
 mod:AddBoolOption(L.WrathYellOpt)
 
 
 function mod:OnCombatStart(delay)
+	AntiSpam = GetTime()
 	isSolarian = false;
 	below55 = false;
 	self.vb.phase = 1
@@ -130,8 +132,17 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextLunar:Stop()
 		timerNextLWrathPop:Stop()
 		timerNextSWrathPop:Stop()
-		self:ScheduleMethod(20,"SolarianVoidspawn")
 		timerVoidSpawn:Start()
+		specWarnVoidSpawn:Schedule(20)
+	elseif UnitName(args.destGUID) == "Solarian Voidspawn" then
+		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
+			AntiSpam = GetTime()
+			specWarnVoidSpawn:Show()
+			timerVoidSpawn:Start(18)
+			if DBM:GetRaidRank() >= 1 then
+				self:SetIcon(args.destGUID, 8, 20)
+			end
+		end
 	end
 end
 
@@ -199,23 +210,6 @@ end
 
 function mod:OnCombatEnd()
 
-end
-
-function mod:SolarianVoidspawnMark()
-	if DBM:GetRaidRank() >= 1 then
-		if UnitExists("Solarian Voidspawn") then
-			self:SetIcon("Solarian Voidspawn", 8)
-		else self:ScheduleMethod(2, "SolarianVoidspawnMark")
-		end
-	
-	end
-end
-
-function mod:SolarianVoidspawn()
-	specWarnVoidSpawn:Show()
-	timerVoidSpawn:Start()
-	self:ScheduleMethod(0, "SolarianVoidspawnMark")
-	self:ScheduleMethod(20,"SolarianVoidspawn")
 end
 
 function mod:UNIT_HEALTH(unit)
