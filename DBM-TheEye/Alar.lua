@@ -29,14 +29,14 @@ local specWarnGround			= mod:NewSpecialWarningYou(2135186)
 local warnFlameBreath			= mod:NewAnnounce(L.FlameBreath, 2, 2135155)
 
 -- local timer
-local timerNextPlatform        	= mod:NewTimer(32, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
+local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
 local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerAlarDive				= mod:NewTimer(12, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
 local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
-local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
-local timerNextFlameCascade		= mod:NewNextTimer(60, 2135190)
+local timerNextAlarRebirth		= mod:NewNextTimer(45, 2135200)
+local timerNextFlameCascade		= mod:NewNextTimer(80, 2135190)
 local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
 --Ascended mechanics:
@@ -48,11 +48,19 @@ local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 -- local options
 mod.vb.phase = 1
 
+function mod:PlatformSwap()
+	self:UnscheduleMethod("PlatformSwap")
+	timerEmberSpawn:Start()
+	warnEmber:Schedule(12)
+	timerNextPlatform:Start(30)
+	self:ScheduleMethod(30, "PlatformSwap")
+end
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextPlatform:Start(-delay)
-	timerEmberSpawn:Start(42-delay)
+	self:ScheduleMethod(30-delay, "PlatformSwap")
+	-- timerEmberSpawn:Start(42-delay)
 	timerNextBreath:Start(-delay)
 end
 
@@ -84,10 +92,7 @@ function mod:SPELL_AURA_REFRESH(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2135190) then
-		timerEmberSpawn:Start()
-		timerNextFlameCascade:Start()
-	end
+
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -95,21 +100,21 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextBreath:Start()
 	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
 		if self.vb.phase == 1 then
-		self.vb.phase = 2
-		timerEmberSpawn:Stop()
-		timerAlarUp:Start(42)
-		timerNextAlarRebirth:Start()
-		timerNextBreath:Stop()
-		timerNextPlatform:Stop()
+			self.vb.phase = 2
+			timerEmberSpawn:Stop()
+			-- timerAlarUp:Start(42)
+			timerNextBreath:Stop()
+			timerNextPlatform:Stop()
+			self:UnscheduleMethod("PlatformSwap")
 		elseif self.vb.phase == 2 then
 			self.vb.phase = 3
 			timerNextBreath:Stop()
 			timerEmberSpawn:Stop()
-			timerNextAlarRebirth:Start()
-			timerNextBreath:Stop()
 		end
+	elseif args:IsSpellID(2135190) then
+		timerEmberSpawn:Start()
+		timerNextFlameCascade:Start()
 	end
-
 end
 
 function mod:SPELL_CAST_START(args)
@@ -119,10 +124,12 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.phase == 2 then
 			timerAlarUp:Start(30)
 		end
+		timerNextAlarRebirth:Start()
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
 		warnEmber:Show()
+		self:SetIcon(args.sourceName, 5, 30)
 		if self.vb.phase == 1 then
-			timerEmberSpawn:Start(32) --might be incorrect for platforms after 1st one needs testing
+			timerEmberSpawn:Start(45) -- 45 sec unless boss goes into the air
 		elseif self.vb.phase == 3 then
 			timerEmberSpawn:Start(12)
 		end
@@ -143,10 +150,8 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-    local name = UnitName(args.destGUID);
-    if (name == "Egg of Al'ar" and self.vb.phase == 1) then
-		timerNextPlatform:Start(27)
-	elseif cid == 19514 and self.vb.phase == 3 then
+    -- local name = UnitName(args.destGUID);
+    if cid == 19514 and self.vb.phase == 3 then
 		mod:EndCombat(self)
 	end
 
@@ -163,7 +168,7 @@ end
 -- local lastMeteor= 0;
 
 -- Alar:RegisterEvents(
--- 	"SPELL_AURA_APPLIED"	
+-- 	"SPELL_AURA_APPLIED"
 -- );
 
 
@@ -174,7 +179,7 @@ end
 -- Alar:AddBarOption("Meteor")
 -- Alar:AddBarOption("Melt Armor: (.*)")
 
--- function Alar:OnCombatStart(delay)	
+-- function Alar:OnCombatStart(delay)
 -- 	warnPhase = false;
 -- 	phase2	= false;
 -- 	lastAdd	= 0;
@@ -195,7 +200,7 @@ end
 -- 		if not warnPhase then
 -- 			langError = true;
 -- 		end
-		
+
 -- 	elseif event == "SPELL_AURA_APPLIED" then
 -- 		if arg1.spellId == 35383 and arg1.destName == UnitName("player") then
 -- 			self:AddSpecialWarning(DBM_ALAR_WARN_FIRE);
@@ -206,7 +211,7 @@ end
 -- 		if self.Options.Meteor then
 -- 			self:Announce(DBM_ALAR_WARN_METEOR_SOON, 1);
 -- 		end
-		
+
 -- 	elseif event == "EnrageWarn" and type(arg1) == "number" then
 -- 		if arg1 >= 60 then
 -- 			self:Announce(string.format(DBM_ALAR_WARN_ENRAGE, (arg1/60), DBM_MIN), 1);
@@ -230,7 +235,7 @@ end
 -- 		self:ScheduleSelf(540, "EnrageWarn", 60);
 -- 		self:ScheduleSelf(570, "EnrageWarn", 30);
 -- 		self:ScheduleSelf(590, "EnrageWarn", 10);
-		
+
 -- 	elseif string.sub(msg, 0, 9) == "MeltArmor" then
 -- 		local target = string.sub(msg, 10);
 -- 		if target then
@@ -280,7 +285,7 @@ end
 -- 		if not foundIt and warnPhase then
 -- 			self:SendSync("Rebirth");
 -- 		end
-		
+
 -- 		if foundIt and not target and not phase2 then
 -- 			self:SendSync("AddInc");
 -- 		elseif not target and type(phase2) == "number" and (GetTime() - phase2) > 25 then
