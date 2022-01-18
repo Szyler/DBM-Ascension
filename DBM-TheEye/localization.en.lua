@@ -88,8 +88,8 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	SolarianPhase1			= "I will crush your delusions of grandeur!",
 	SolarianYellAddPhase	= "You are hopelessly outmatched!",
-	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
-	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
+	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I have to run!",
+	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! Run away from me!"
 }
 
 --------------------------
