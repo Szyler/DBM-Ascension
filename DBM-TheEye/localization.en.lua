@@ -105,26 +105,30 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnGaze			= "Gaze on >%s<",
-	SpecWarnGaze		= "Gaze on YOU - Run away!",
-	SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
+	-- WarnGaze			= "Gaze on >%s<",
+	-- SpecWarnGaze		= "Gaze on YOU - Run away!",
+	-- SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
+	KTSeal				= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
-	TimerNextGaze		= "Thaladred target switch in: "
+	-- TimerNextGaze		= "Thaladred target switch in: "
 }
 
 L:SetOptionLocalization{
 	Berserk 			= "Show timer for Berserk",
-	WarnGaze			= "Show warning for Thaladred's Gaze target",
-	SpecWarnGaze		= "Show special warning when Gaze on you",
-	SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	-- WarnGaze			= "Show warning for Thaladred's Gaze target",
+	-- SpecWarnGaze		= "Show special warning when Gaze on you",
+	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 	GazeIcon			= "Set icon on Thaladred's Gaze target",
-	TimerNextGaze		= "Show timer for Thaladred's Gaze"
+	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
+
 
 L:SetMiscLocalization{
 	kaelYellP1			= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
+	emoteGaze			= "Thaladred the Darkener sets eyes on ";
 }
 
 
