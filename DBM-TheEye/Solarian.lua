@@ -16,6 +16,8 @@ mod:RegisterEvents(
 
 
 -- local warn
+local warnPhase2			= mod:NewPhaseAnnounce(2)
+local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
 local specWarnHeal			= mod:NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
 local specWarnAdds			= mod:NewSpecialWarning("SpecWarnAdds")
 local specWarnLunar			= mod:NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
@@ -41,12 +43,16 @@ local timerNextHealL		= mod:NewTimer(11.5, "TimerNextHealL", 2135264)
 
 -- local variables
 local nextPriest = ""
+local isSolarian = false;
+local below55 = false;
 
 -- local options
 mod:AddBoolOption(L.WrathYellOpt)
 
 
 function mod:OnCombatStart(delay)
+	isSolarian = false;
+	below55 = false;
 	self.vb.phase = 1
 	berserkTimer:Start(-delay)
 	timerNextFireS:Start(-delay)
@@ -117,6 +123,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135260) then
 		self.vb.phase = 2
+		warnPhase2:Show()
 		timerNextFireL:Stop()
 		timerNextFireS:Stop()
 		timerNextSolar:Stop()
@@ -209,6 +216,16 @@ function mod:SolarianVoidspawn()
 	timerVoidSpawn:Start()
 	self:ScheduleMethod(0, "SolarianVoidspawnMark")
 	self:ScheduleMethod(20,"SolarianVoidspawn")
+end
+
+function mod:UNIT_HEALTH(unit)
+	if isSolarian and (not below55) and (mod:GetUnitCreatureId(unit) == 18805) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 55) then
+			warnPhase2Soon:Show()
+			below55 = true;
+        end
+    end
 end
 
 -- Old Solarian DBM Code

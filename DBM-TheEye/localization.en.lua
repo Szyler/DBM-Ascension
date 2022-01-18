@@ -14,15 +14,16 @@ L:SetWarningLocalization{
 	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
 	-- WarnDive			= "Al'ar Dive! Run away!",
 	SpecWarnFeather		= "Blazing Wings fading in 15 Seconds!",
-	FlameBreath			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+	FlameBreath			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
 	NextPlatform		= "Next platform in:",
-	AlarUp				= "Al'ar flies up in:",
+	-- AlarUp				= "Al'ar flies up in:",
 	AlarDive			= "Al'ar dive:",
 	TimerEmberSpawn		= "Next ember of Al'ar spawn:"
 }
+
 
 L:SetOptionLocalization{
 	WarnEmber 			= "Show warning when Ember of Al'ar spawns",
@@ -31,11 +32,11 @@ L:SetOptionLocalization{
 	-- WarnDive			= "Show warning for Al'ar Dive",
 	Berserk 			= "Show timer for Berserk",
 	NextPlatform 		= "Show timer for Al'ar platform switch",
-	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
+	-- AlarUp 				= "Show timer for Al'ar flying up in phase 2",
 	AlarDive			= "Show Al'ar dive timer countdown",
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 	SpecWarnFeather		= "Show reminder for Blazing Wings",
-	FlameBreath			= "Show $spell:2135155 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+	FlameBreath			= "Show $spell:2135155 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
@@ -58,7 +59,8 @@ L:SetWarningLocalization{
 	SpecWarnAdds			= "Kill %s",
 	SpecWarnLunar			= "Lunar Wrath. Unable to move!",
 	SpecWarnFinishAdd		= "Finish off the priest!",
-	SpecWarnVoidSpawn		= "Solarian Voidspawn! KILL IT!"
+	SpecWarnVoidSpawn		= "Solarian Voidspawn! KILL IT!",
+	WarnPhase2Soon			= "Phase 2 soon"
 }
 
 L:SetTimerLocalization{
@@ -82,7 +84,8 @@ L:SetOptionLocalization{
 	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
 	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
 	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
-	TimerNextHealL			= "Show timer for next Lunarian Priest Heal"
+	TimerNextHealL			= "Show timer for next Lunarian Priest Heal",
+	WarnPhase2Soon			= "Announce when phase 2 is about to start"
 }
 
 L:SetMiscLocalization{
