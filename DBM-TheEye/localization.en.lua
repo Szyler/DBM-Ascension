@@ -11,7 +11,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
+	WarnEmber 			= "Ember of Al'ar spawned!",
 	-- WarnDive			= "Al'ar Dive! Run away!",
 	SpecWarnFeather		= "Blazing Wings fading in 15 Seconds!",
 	FlameBreath			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
@@ -19,7 +19,7 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	NextPlatform		= "Next platform in:",
-	-- AlarUp				= "Al'ar flies up in:",
+	AlarUp				= "Al'ar flies up in:",
 	AlarDive			= "Al'ar dive:",
 	TimerEmberSpawn		= "Next ember of Al'ar spawn:"
 }
@@ -32,7 +32,7 @@ L:SetOptionLocalization{
 	-- WarnDive			= "Show warning for Al'ar Dive",
 	Berserk 			= "Show timer for Berserk",
 	NextPlatform 		= "Show timer for Al'ar platform switch",
-	-- AlarUp 				= "Show timer for Al'ar flying up in phase 2",
+	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
 	AlarDive			= "Show Al'ar dive timer countdown",
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 	SpecWarnFeather		= "Show reminder for Blazing Wings",

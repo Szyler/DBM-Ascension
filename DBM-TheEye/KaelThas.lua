@@ -14,7 +14,7 @@ mod:RegisterEvents(
 
 -- local warn
 local warnGaze				= mod:NewTargetAnnounce(2135337, 4)
-local specWarnGaze			= mod:NewSpecialWarningYou()
+local specWarnGaze			= mod:NewSpecialWarningYou(2135337)
 local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
 local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
 -- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345

@@ -15,25 +15,28 @@ mod:RegisterEvents(
 -- local warn
 local warnPounding			= mod:NewSpellAnnounce(2135296, 3)
 local warnDismantle			= mod:NewTargetAnnounce(2135333, 3)
+local warnEradication		= mod:NewSpecialWarningYou(21352325)
 
 -- local timer
 
 local timerNextEnrage		= mod:NewNextTimer(120, 2135312)
 local timerNextPounding		= mod:NewNextTimer(40, 2135296)
+local timerNextDismantle	= mod:NewNextTimer(15, 2135333)
 
 
-local timerPounding			= mod:NewBuffActiveTimer(20, 2135296)
-local timerDismantle		= mod:NewBuffActiveTimer(15, 2135333)
+local timerPounding			= mod:NewCastTimer(20, 2135296)
+local timerDismantle		= mod:NewTargetTimer(15, 2135333)
 
 -- local variables
 
 
 -- local options
-
+--2135329
 
 function mod:OnCombatStart(delay)
 	timerNextEnrage:Start(-delay)
 	timerNextPounding:Start(-delay)
+	timerNextDismantle:Start(15-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(args)
@@ -45,7 +48,11 @@ function mod:CHAT_MSG_MONSTER_EMOTE(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	
+	if args:IsSpellID(2135501) then -- [Maintenance Mode]
+		timerNextEnrage:Start()
+	elseif args:IsSpellID(2135324, 2135325, 2135326, 2135327) then
+		warnEradication:Show()
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
@@ -60,6 +67,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(2135296) then     
 		warnPounding:Show()
 		timerPounding:Start()
+		timerNextPounding:Start()
 	elseif args:IsSpellID(2135296) then
 		warnDismantle:Show(args.destName)
 		timerDismantle:Start(args.destName)

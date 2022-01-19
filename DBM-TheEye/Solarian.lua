@@ -37,8 +37,8 @@ local timerNextSolar		= mod:NewNextTimer(15, 2135287)
 local timerNextLWrathPop	= mod:NewTargetTimer(10, 2135283)
 local timerNextSWrathPop	= mod:NewTargetTimer(10, 2135292)
 local timerVoidSpawn		= mod:NewTimer(20, "TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
-local timerNextHealS		= mod:NewCDTimer(12, "TimerNextHealS", 2135264)
-local timerNextHealL		= mod:NewCDTimer(12, "TimerNextHealL", 2135264)
+local timerNextHealS		= mod:NewCDTimer(12, 2135264, "TimerNextHealS")
+local timerNextHealL		= mod:NewCDTimer(12, 2135264, "TimerNextHealL")
 
 local yellLunarWrath		= mod:NewFadesYell(2135278)
 local yellSolarWrath		= mod:NewFadesYell(2135287)
@@ -48,7 +48,7 @@ local nextPriest = ""
 local isSolarian = false;
 local below55 = false;
 local AntiSpam = 0
-local voidSpawnTimer = ""
+local voidSpawnTimer = 0
 local priestID = 0
 
 -- local options
@@ -83,16 +83,20 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 		if nextPriest == "Solarian Priest" then
 			if DBM.GetRaidRank() >= 1 then
-				priestID = self:GetUnitCreatureId(14481)
+				priestID = self:GetUnitCreatureId(14551)
 				self:SetIcon(priestID, 8)   --experimental 
 			end
-			specWarnPriest:Show(nextPriest)
+			if nextPriest ~= "" then
+				specWarnPriest:Show(nextPriest)
+			end
 		elseif nextPriest == "Lunarian Priest"  or nextPriest == "" then
-			priestID = self:GetUnitCreatureId(14481) --Needs correct ID for Lunarian Priest
+			priestID = self:GetUnitCreatureId(14552) --Needs correct ID for Lunarian Priest
 			if DBM.GetRaidRank() >= 1 then
 				self:SetIcon(nextPriest, 8)
 			end
-			specWarnPriest:Show(nextPriest)
+			if nextPriest ~= "" then
+				specWarnPriest:Show(nextPriest)
+			end
 		end
 	-- else 
 	-- 	specWarnPriest:Show("Whichever Priest")
@@ -150,7 +154,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSWrathPop:Stop()
 		timerVoidSpawn:Start()
 		specWarnVoidSpawn:Schedule(20)
-	elseif UnitName(args.destGUID) == "Solarian Voidspawn" then
+	elseif UnitName(args.destName) == "Solarian Voidspawn" then
 		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
 			AntiSpam = GetTime()
 			specWarnVoidSpawn:Show()
@@ -160,19 +164,31 @@ function mod:SPELL_AURA_APPLIED(args)
 				self:SetIcon(args.destGUID, 8, 20)
 			end
 		end
+	elseif args:IsSpellID(2135230, 2135231, 2135232, 2135233)  then
+		timerNextFireL:Start()
+		warnWarnFireL:Show()
+		if args.amount == 3 then
+			specWarnLunarStacks:Show()
+		end
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237)  then
+		timerNextFireS:Start()
+		warnWarnFireS:Show()
+		if args.amount == 3 then
+			specWarnSolarStacks:Show()
+		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) and AntiSpam() then
+	if args:IsSpellID(2135230, 2135231, 2135232, 2135233)  then
 		timerNextFireL:Start()
-		specWarnFireL:Show()
+		warnWarnFireL:Show()
 		if args.amount == 3 then
 			specWarnLunarStacks:Show()
 		end
-	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and AntiSpam() then
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237)  then
 		timerNextFireS:Start()
-		specWarnFireS:Show()
+		warnWarnFireS:Show()
 		if args.amount == 3 then
 			specWarnSolarStacks:Show()
 		end
@@ -186,7 +202,6 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264, 2135265) then
 		specWarnHeal:Show()	-- need to add timer for next heal as well
-	elseif args:IsSpellID(2135264, 2135265) then
 		if args.sourceName == "Solarian Priest" then
 			timerNextHealS:Start()
 		else 

@@ -35,7 +35,7 @@ local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_
 local timerAlarDive				= mod:NewTimer(12, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
 local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
-local timerNextAlarRebirth		= mod:NewNextTimer(45, 2135200)
+local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
 local timerNextFlameCascade		= mod:NewNextTimer(80, 2135190)
 local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
@@ -102,7 +102,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.vb.phase == 1 then
 			self.vb.phase = 2
 			timerEmberSpawn:Stop()
-			-- timerAlarUp:Start(42)
+			timerAlarUp:Start(42)
 			timerNextBreath:Stop()
 			timerNextPlatform:Stop()
 			self:UnscheduleMethod("PlatformSwap")
@@ -124,7 +124,7 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.phase == 2 then
 			timerAlarUp:Start(30)
 		end
-		timerNextAlarRebirth:Start()
+		-- timerNextAlarRebirth:Start()
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
 		warnEmber:Show()
 		self:SetIcon(args.sourceName, 5, 30)
