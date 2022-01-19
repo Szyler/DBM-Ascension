@@ -101,15 +101,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	-- else 
 	-- 	specWarnPriest:Show("Whichever Priest")
 	elseif msg == L.SolarianPhase1 or msg:find(L.SolarianPhase1) then
-		if UnitExists("Solarian Priest") and not UnitIsDead("Solarian Priest") then
-			nextPriest = "Solarian Priest"
+		if nextPriest == "Solarian Priest" then
 			timerNextSolar:Start()
 			timerNextFireS:Start()
 			timerNextHealL:Stop()
-		elseif UnitExists("Lunarian Priest") and not UnitIsDead("Lunarian Priest") then
-			nextPriest = "Lunarian Priest"
+			timerNextHealS:Stop()
+		elseif nextPriest == "Lunarian Priest" then
 			timerNextLunar:Start()
 			timerNextFireL:Start()
+			timerNextHealL:Stop()
 			timerNextHealS:Stop()
 		end
 	end
