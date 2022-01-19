@@ -46,13 +46,18 @@ local nextPriest = ""
 local isSolarian = false;
 local below55 = false;
 local AntiSpam = 0
+local voidSpawnTimer = ""
+local priestID = 0
 
 -- local options
 mod:AddBoolOption(L.WrathYellOpt)
+mod:AddBoolOption(L.StartingPriest, false)
+mod:AddBoolOption(L.StartingSolarian, false)
 
 
 function mod:OnCombatStart(delay)
 	AntiSpam = GetTime()
+	nextPriest = ""
 	isSolarian = false;
 	below55 = false;
 	self.vb.phase = 1
@@ -67,22 +72,28 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextFireS:Stop()
 		timerNextLunar:Stop()
 		timerNextSolar:Stop()
-		if nextPriest ~= "" then
-			if nextPriest == "Solarian Priest" then
-				if DBM.GetRaidRank() >= 1 then
-					local priestID = self:GetUnitCreatureId(14481)
-					self:SetIcon(nextPriest, 8)   --experimental 
-				end
-				specWarnAdds:Show(nextPriest)
-			elseif nextPriest == "Lunarian Priest" then
-				if DBM.GetRaidRank() >= 1 then
-					self:SetIcon(nextPriest, 8)
-				end
-				specWarnAdds:Show(nextPriest)
+		if nextPriest == "" and self.Options.StartingPriest then
+			if self.Options.StartingSolarian then
+				nextPriest = "Solarian Priest"
+			else
+				nextPriest = "Lunarian Priest"
 			end
-		-- else 
-		-- 	specWarnAdds:Show("Whichever Priest")
 		end
+		if nextPriest == "Solarian Priest" then
+			if DBM.GetRaidRank() >= 1 then
+				priestID = self:GetUnitCreatureId(14481)
+				self:SetIcon(priestID, 8)   --experimental 
+			end
+			specWarnAdds:Show(nextPriest)
+		elseif nextPriest == "Lunarian Priest"  or nextPriest == "" then
+			priestID = self:GetUnitCreatureId(14481) --Needs correct ID for Lunarian Priest
+			if DBM.GetRaidRank() >= 1 then
+				self:SetIcon(nextPriest, 8)
+			end
+			specWarnAdds:Show(nextPriest)
+		end
+	-- else 
+	-- 	specWarnAdds:Show("Whichever Priest")
 	elseif msg == L.SolarianPhase1 or msg:find(L.SolarianPhase1) then
 		if UnitExists("Solarian Priest") and not UnitIsDead("Solarian Priest") then
 			nextPriest = "Solarian Priest"
@@ -125,6 +136,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135260) then
 		self.vb.phase = 2
+		voidSpawnTimer = 24
 		warnPhase2:Show()
 		timerNextFireL:Stop()
 		timerNextFireS:Stop()
@@ -138,7 +150,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
 			AntiSpam = GetTime()
 			specWarnVoidSpawn:Show()
-			timerVoidSpawn:Start(18)
+			timerVoidSpawn:Start(voidSpawnTimer)
+			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
 			if DBM:GetRaidRank() >= 1 then
 				self:SetIcon(args.destGUID, 8, 20)
 			end

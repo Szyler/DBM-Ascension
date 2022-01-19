@@ -59,7 +59,7 @@ L:SetWarningLocalization{
 	SpecWarnAdds			= "Kill %s",
 	SpecWarnLunar			= "Lunar Wrath. Unable to move!",
 	SpecWarnFinishAdd		= "Finish off the priest!",
-	SpecWarnVoidSpawn		= "Solarian Voidspawn! KILL IT!",
+	SpecWarnVoidSpawn		= "Solarian Voidspawn!",
 	WarnPhase2Soon			= "Phase 2 soon"
 }
 
@@ -68,14 +68,14 @@ L:SetTimerLocalization{
 	-- TimerNextLWrathPop		= "%s going off in: ",
 	-- TimerNextSWrathPop		= "%s going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
-	TimerNextHealS			= "Next Solarian Priest Heal:",
-	TimerNextHealL			= "Next Lunarian Priest Heal:"
+	TimerNextHealS			= "Next Solarian Priest heal:",
+	TimerNextHealL			= "Next Lunarian Priest heal:"
 }
 
 L:SetOptionLocalization{
 	Berserk 				= "Show timer for Berserk",
 	TimerAdds				= "Show timer for adds phase start",
-	SpecWarnAdds			= "Show Warning which priest you should focus",
+	SpecWarnAdds			= "Show warning which priest you should focus",
 	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show timer for add spawn in void phase",
@@ -85,7 +85,9 @@ L:SetOptionLocalization{
 	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
 	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
 	TimerNextHealL			= "Show timer for next Lunarian Priest Heal",
-	WarnPhase2Soon			= "Announce when phase 2 is about to start"
+	WarnPhase2Soon			= "Announce when phase 2 is about to start",
+	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
+	StartingSolarian        = "Mark Solarian Priest"
 }
 
 L:SetMiscLocalization{
