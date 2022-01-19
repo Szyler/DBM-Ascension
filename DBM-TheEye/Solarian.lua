@@ -160,13 +160,13 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) then
+	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) and AntiSpam() then
 		timerNextFireL:Start()
 		specWarnFireL:Show()
 		if args.amount == 3 then
 			specWarnFinishAdd:Show()
 		end
-	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) then
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and AntiSpam() then
 		timerNextFireS:Start()
 		specWarnFireS:Show()
 		if args.amount == 3 then
