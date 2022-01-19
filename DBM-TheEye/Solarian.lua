@@ -9,9 +9,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_CAST_START",
-	"SPELL_INTERRUPT",
-	"SPELL_HEAL"
+	"SPELL_CAST_START"
 )
 
 
@@ -19,27 +17,28 @@ mod:RegisterEvents(
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
 local specWarnHeal			= mod:NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
-local specWarnAdds			= mod:NewSpecialWarning("SpecWarnAdds")
-local specWarnLunar			= mod:NewSpecialWarning("SpecWarnLunar") --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
+local specWarnPriest		= mod:NewSpecialWarning("specWarnPriest")
+local specWarnLunar			= mod:NewSpecialWarningRun(2135278) --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
 local specWarnSolar			= mod:NewSpecialWarningMove(2135287) --Heroic: 2135288, Ascended 10Man: 2135289 , 25Man: 2135290
-local specWarnFireL			= mod:NewSpecialWarningSpell(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
-local specWarnFireS			= mod:NewSpecialWarningSpell(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
-local specWarnFinishAdd		= mod:NewSpecialWarning("SpecWarnFinishAdd")
+local warnWarnFireL			= mod:NewSpellAnnounce(2135230) --Heroic: 2135231, Ascended 10Man: 2135232, 25Man: 2135233
+local warnWarnFireS			= mod:NewSpellAnnounce(2135234) --Heroic: 2135235, Ascended 10Man: 2135236 , 25Man: 2135237
+local specWarnLunarStacks	= mod:NewSpecialWarningStack(2135230, nil, 3)
+local specWarnSolarStacks	= mod:NewSpecialWarningStack(2135234, nil, 3)
 local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 -- local specWarnDisrupt		= mod:NewSpecialWarningSpell("SpecWarnVoidSpawn")
 
 -- local timer
-local berserkTimer			= mod:NewTimer(720, "Berserk", 26662)
+local berserkTimer			= mod:NewBerserkTimer(720)
 local timerNextFireL        = mod:NewNextTimer(10, 2135230)
 local timerNextFireS		= mod:NewNextTimer(10, 2135234)
 local timerAdds				= mod:NewTimer(15, "TimerAdds","Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local timerNextLunar		= mod:NewNextTimer(15, 2135278)
 local timerNextSolar		= mod:NewNextTimer(15, 2135287)
-local timerNextLWrathPop	= mod:NewNextTimer(10, 2135283)
-local timerNextSWrathPop	= mod:NewNextTimer(10, 2135292)
+local timerNextLWrathPop	= mod:NewTargetTimer(10, 2135283)
+local timerNextSWrathPop	= mod:NewTargetTimer(10, 2135292)
 local timerVoidSpawn		= mod:NewTimer(20, "TimerVoidSpawn","Interface\\Icons\\spell_shadow_summonvoidwalker")
-local timerNextHealS		= mod:NewTimer(11.5, "TimerNextHealS", 2135264)
-local timerNextHealL		= mod:NewTimer(11.5, "TimerNextHealL", 2135264)
+local timerNextHealS		= mod:NewCDTimer(12, "TimerNextHealS", 2135264)
+local timerNextHealL		= mod:NewCDTimer(12, "TimerNextHealL", 2135264)
 
 -- local variables
 local nextPriest = ""
@@ -84,16 +83,16 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 				priestID = self:GetUnitCreatureId(14481)
 				self:SetIcon(priestID, 8)   --experimental 
 			end
-			specWarnAdds:Show(nextPriest)
+			specWarnPriest:Show(nextPriest)
 		elseif nextPriest == "Lunarian Priest"  or nextPriest == "" then
 			priestID = self:GetUnitCreatureId(14481) --Needs correct ID for Lunarian Priest
 			if DBM.GetRaidRank() >= 1 then
 				self:SetIcon(nextPriest, 8)
 			end
-			specWarnAdds:Show(nextPriest)
+			specWarnPriest:Show(nextPriest)
 		end
 	-- else 
-	-- 	specWarnAdds:Show("Whichever Priest")
+	-- 	specWarnPriest:Show("Whichever Priest")
 	elseif msg == L.SolarianPhase1 or msg:find(L.SolarianPhase1) then
 		if UnitExists("Solarian Priest") and not UnitIsDead("Solarian Priest") then
 			nextPriest = "Solarian Priest"
@@ -116,7 +115,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135278, 2135279, 2135280, 2135281) then
 		timerNextLunar:Start()
-		timerNextLWrathPop:Start()
+		timerNextLWrathPop:Start(args.destName)
 		if args:IsPlayer() then
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
@@ -126,7 +125,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135287, 2135288, 2135289, 2135290) then
 		timerNextSolar:Start()
-		timerNextSWrathPop:Start()
+		timerNextSWrathPop:Start(args.destName)
 		if args:IsPlayer() then
 			if self.Options.WrathYellOpt then
 				SendChatMessage(L.SolarWrathYell, "Yell")
@@ -164,13 +163,13 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		timerNextFireL:Start()
 		specWarnFireL:Show()
 		if args.amount == 3 then
-			specWarnFinishAdd:Show()
+			specWarnLunarStacks:Show()
 		end
 	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and AntiSpam() then
 		timerNextFireS:Start()
 		specWarnFireS:Show()
 		if args.amount == 3 then
-			specWarnFinishAdd:Show()
+			specWarnSolarStacks:Show()
 		end
 	end
 end
@@ -182,21 +181,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264, 2135265) then
 		specWarnHeal:Show()	-- need to add timer for next heal as well
-	end
-end
-
-function mod:SPELL_INTERRUPT(args)  -- Check Interval
-	if args:IsSpellID(2135264, 2135265) then
-		if args.destName == "Solarian Priest" then
-			timerNextHealS:Start()
-		else 
-			timerNextHealL:Start()
-		end
-	end
-end
-
-function mod:SPELL_HEAL(args)
-	if args:IsSpellID(2135264, 2135265) then
+	elseif args:IsSpellID(2135264, 2135265) then
 		if args.sourceName == "Solarian Priest" then
 			timerNextHealS:Start()
 		else 
@@ -204,6 +189,26 @@ function mod:SPELL_HEAL(args)
 		end
 	end
 end
+
+-- function mod:SPELL_INTERRUPT(args)  -- Check Interval
+-- 	if args:IsSpellID(2135264, 2135265) then
+-- 		if args.destName == "Solarian Priest" then
+-- 			timerNextHealS:Start()
+-- 		else 
+-- 			timerNextHealL:Start()
+-- 		end
+-- 	end
+-- end
+
+-- function mod:SPELL_HEAL(args)
+-- 	if args:IsSpellID(2135264, 2135265) then
+-- 		if args.sourceName == "Solarian Priest" then
+-- 			timerNextHealS:Start()
+-- 		else 
+-- 			timerNextHealL:Start()
+-- 		end
+-- 	end
+-- end
 
 function mod:UNIT_DIED(unit)
   --[===[  local name = UnitName(unit);

@@ -56,35 +56,35 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	SpecWarnAdds			= "Kill %s",
-	SpecWarnLunar			= "Lunar Wrath. Unable to move!",
-	SpecWarnFinishAdd		= "Finish off the priest!",
+	specWarnPriest			= "Kill %s",
+	-- SpecWarnLunar			= "Lunar Wrath. Unable to move!",
+	-- SpecWarnFinishAdd		= "Finish off the priest!",
 	SpecWarnVoidSpawn		= "Solarian Voidspawn!",
 	WarnPhase2Soon			= "Phase 2 soon"
 }
 
 L:SetTimerLocalization{
-	TimerAdds				= "Add phase in :",
+	TimerAdds				= "Add phase in:",
 	-- TimerNextLWrathPop		= "%s going off in: ",
 	-- TimerNextSWrathPop		= "%s going off in: ",
-	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
-	TimerNextHealS			= "Next Solarian Priest heal:",
-	TimerNextHealL			= "Next Lunarian Priest heal:"
+	TimerVoidSpawn			= "Next Solarian Voidspawn in:",
+	TimerNextHealS			= "Next Solarian Priest heal in:",
+	TimerNextHealL			= "Next Lunarian Priest heal in:"
 }
 
 L:SetOptionLocalization{
-	Berserk 				= "Show timer for Berserk",
-	TimerAdds				= "Show timer for adds phase start",
-	SpecWarnAdds			= "Show warning which priest you should focus",
-	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
+	-- Berserk 				= "Show timer for Berserk",
+	TimerAdds				= "Show timer for the first add phase",
+	specWarnPriest			= "Show warning of the Priest with the opposite phase of High Astromancer Solarian",
+	-- SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show timer for add spawn in void phase",
-	SpecWarnFinishAdd		= "Show when you should switch to finish off Priest",
+	-- SpecWarnFinishAdd		= "Show when you should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287",
 	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
 	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
-	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
-	TimerNextHealL			= "Show timer for next Lunarian Priest Heal",
+	TimerNextHealS			= "Show timer for next Solarian Priest heal",
+	TimerNextHealL			= "Show timer for next Lunarian Priest heal",
 	WarnPhase2Soon			= "Announce when phase 2 is about to start",
 	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
 	StartingSolarian        = "Mark Solarian Priest"
