@@ -40,6 +40,9 @@ local timerVoidSpawn		= mod:NewTimer(20, "TimerVoidSpawn","Interface\\Icons\\spe
 local timerNextHealS		= mod:NewCDTimer(12, "TimerNextHealS", 2135264)
 local timerNextHealL		= mod:NewCDTimer(12, "TimerNextHealL", 2135264)
 
+local yellLunarWrath		= mod:NewFadesYell(2135278)
+local yellSolarWrath		= mod:NewFadesYell(2135287)
+
 -- local variables
 local nextPriest = ""
 local isSolarian = false;
@@ -119,6 +122,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
+				yellLunarWrath:Countdown(10,3)
 			end
 		else 
 			specWarnLunar:Show()
@@ -129,6 +133,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if self.Options.WrathYellOpt then
 				SendChatMessage(L.SolarWrathYell, "Yell")
+				yellSolarWrath:Countdown(10,3)
 			end
 		else 
 			specWarnSolar:Show()
