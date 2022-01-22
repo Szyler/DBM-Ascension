@@ -11,9 +11,10 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnEmber 			= "Ember of Al'ar - Switch Targets!",
-	WarnDive			= "Al'ar Dive! Run away!",
-	SpecWarnFeather		= "Blazing Wings fading in 15Seconds!"
+	WarnEmber 			= "Ember of Al'ar spawned!",
+	-- WarnDive			= "Al'ar Dive! Run away!",
+	SpecWarnFeather		= "Blazing Wings fading in 15 Seconds!",
+	FlameBreath			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
@@ -23,17 +24,19 @@ L:SetTimerLocalization{
 	TimerEmberSpawn		= "Next ember of Al'ar spawn:"
 }
 
+
 L:SetOptionLocalization{
 	WarnEmber 			= "Show warning when Ember of Al'ar spawns",
 	WarnAlarRebirth		= "Show warning for Al'ar rebirth casts",
 	WarnFlameCascade	= "Show warning when Al'ar is about to cast Flame Cascade",
-	WarnDive			= "Show warning for Al'ar Dive",
+	-- WarnDive			= "Show warning for Al'ar Dive",
 	Berserk 			= "Show timer for Berserk",
 	NextPlatform 		= "Show timer for Al'ar platform switch",
 	AlarUp 				= "Show timer for Al'ar flying up in phase 2",
 	AlarDive			= "Show Al'ar dive timer countdown",
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
-	SpecWarnFeather		= "Show reminder for Blazing Wings"
+	SpecWarnFeather		= "Show reminder for Blazing Wings",
+	FlameBreath			= "Show $spell:2135155 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetMiscLocalization{
@@ -53,78 +56,81 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	SpecWarnAdds			= "Kill %s",
-	SpecWarnLunar			= "Lunar Wrath. Unable to move!",
-	SpecWarnFinishAdd		= "Finish off the priest!",
-	SpecWarnVoidSpawn		= "Solarian Voidspawn! KILL IT!"
+	specWarnPriest			= "Kill %s",
+	-- SpecWarnLunar			= "Lunar Wrath. Unable to move!",
+	-- SpecWarnFinishAdd		= "Finish off the priest!",
+	SpecWarnVoidSpawn		= "Solarian Voidspawn!",
+	WarnPhase2Soon			= "Phase 2 soon"
 }
 
 L:SetTimerLocalization{
-	TimerAdds				= "Add phase in :",
-	TimerWrathPop			= "%s Knock up in: ",
-	TimerNextFire			= "next $s in: ",
-	TimerVoidSpawn			= "Next Solarian Voidspawn in :",
-	TimerNextHealS			= "Next Solarian Priest Heal:",
-	TimerNextHealL			= "Next Lunarian Priest Heal:"
+	TimerAdds				= "Add phase in:",
+	-- TimerNextLWrathPop		= "%s going off in: ",
+	-- TimerNextSWrathPop		= "%s going off in: ",
+	TimerVoidSpawn			= "Next Solarian Voidspawn in:",
+	TimerNextHealS			= "Next Solarian Priest heal in:",
+	TimerNextHealL			= "Next Lunarian Priest heal in:"
 }
 
 L:SetOptionLocalization{
-	Berserk 				= "Show timer for Berserk",
-	TimerAdds				= "Show timer for adds phase start",
-	SpecWarnAdds			= "Show Warning which priest you should focus",
-	SpecWarnLunar			= "Show warning when lunar wrath casted on others",
+	-- Berserk 				= "Show timer for Berserk",
+	TimerAdds				= "Show timer for the first add phase",
+	specWarnPriest			= "Show warning of the Priest with the opposite phase of High Astromancer Solarian",
+	-- SpecWarnLunar			= "Show warning when lunar wrath casted on others",
 	SpecWarnVoidSpawn		= "Show warning when add spawns in void phase",
 	TimerVoidSpawn			= "Show timer for add spawn in void phase",
-	TimerNextFire			= "Show $spell:2135234 and $spell:2135230 cooldown",
-	SpecWarnFinishAdd		= "Show when You should switch to finish off Priest",
+	-- SpecWarnFinishAdd		= "Show when you should switch to finish off Priest",
 	WrathYellOpt			= "Yell when you are affected by $spell:2135278 or $spell:2135287",
-	TimerWrathPop			= "Show countdown for $spell:2135283 and $spell:2135278 explosion",
-	TimerNextHealS			= "Show timer for next Solarian Priest Heal",
-	TimerNextHealL			= "Show timer for next Lunarian Priest Heal"
+	-- TimerNextLWrathPop		= "Show countdown for $spell:2135283 explosion",
+	-- TimerNextSWrathPop		= "Show countdown for $spell:2135292 explosion",
+	TimerNextHealS			= "Show timer for next Solarian Priest heal",
+	TimerNextHealL			= "Show timer for next Lunarian Priest heal",
+	WarnPhase2Soon			= "Announce when phase 2 is about to start",
+	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
+	StartingSolarian        = "Mark Solarian Priest"
 }
 
 L:SetMiscLocalization{
 	SolarianPhase1			= "I will crush your delusions of grandeur!",
 	SolarianYellAddPhase	= "You are hopelessly outmatched!",
-	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I HAVE TO RUN!",
-	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! RUN! Save your life!"
+	LunarWrathYell			= "Lunar Wrath on "..UnitName("PLAYER").."! I have to run!",
+	SolarWrathYell 			= "Solar Wrath on "..UnitName("PLAYER").."! Run away from me!"
 }
 
 --------------------------
 -- Kael'thas Sunstrider --
 --------------------------
-kaelYellP1					= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
 L = DBM:GetModLocalization("KaelThas")
 
 L:SetGeneralLocalization{
-	name = "Kael'thas Sunstrider"
+	name = "Kael'thas Sunstrider",
 }
 
 L:SetWarningLocalization{
-	WarnGaze			= "Gaze on >%s<",
-	SpecWarnGaze		= "Gaze on YOU - Run away!",
-	SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
-
+	-- WarnGaze			= "Gaze on >%s<",
+	-- SpecWarnGaze		= "Gaze on YOU - Run away!",
+	-- SpecWarnSeal		= "Seal of blood stacks %s on %s, Tanks swap!"
+	KTSeal				= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetTimerLocalization{
-	TimerNextGaze		= "Thaladred target switch in: "
-
+	-- TimerNextGaze		= "Thaladred target switch in: "
 }
 
 L:SetOptionLocalization{
 	Berserk 			= "Show timer for Berserk",
-	WarnGaze			= "Show warning for Thaladred's Gaze target",
-	SpecWarnGaze		= "Show special warning when Gaze on you",
-	SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	-- WarnGaze			= "Show warning for Thaladred's Gaze target",
+	-- SpecWarnGaze		= "Show special warning when Gaze on you",
+	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 	GazeIcon			= "Set icon on Thaladred's Gaze target",
-	TimerNextGaze		= "Show timer for Thaladred's Gaze"
-	
+	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
 
-L:SetMiscLocalization{
-	
 
+L:SetMiscLocalization{
+	kaelYellP1			= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
+	emoteGaze			= "Thaladred the Darkener sets eyes on ";
 }
 
 

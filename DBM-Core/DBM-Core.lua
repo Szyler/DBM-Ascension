@@ -677,6 +677,14 @@ do
 		insert(v)
 	end
 
+	function scheduleCountdown(time, numAnnounces, func, mod, self, ...)
+		time = time or 5
+		numAnnounces = numAnnounces or 3
+		for i = 1, numAnnounces do
+			schedule(time - i, func, mod, self, i, ...)
+		end
+	end
+
 	function unschedule(f, mod, ...)
 		return removeAllMatching(f, mod, ...)
 	end
@@ -2651,6 +2659,22 @@ function bossModPrototype:IsHealer()
 			or (select(2, UnitClass("player")) == "PRIEST" and select(3, GetTalentTabInfo(3)) < 51)
 end
 
+-- An anti spam function to throttle spammy events (e.g. SPELL_AURA_APPLIED on all group members)
+-- @param time the time to wait between two events (optional, default 2.5 seconds)
+-- @param id the id to distinguish different events (optional, only necessary if your mod keeps track of two different spam events at the same time)
+function DBM:AntiSpam(time, id)
+    if GetTime() - (id and (self["lastAntiSpam" .. tostring(id)] or 0) or self.lastAntiSpam or 0) > (time or 2.5) then
+        if id then
+            self["lastAntiSpam" .. tostring(id)] = GetTime()
+        else
+            self.lastAntiSpam = GetTime()
+        end
+        return true
+    else
+        return false
+    end
+end
+
 
 -------------------------
 --  Boss Health Frame  --
@@ -2849,6 +2873,117 @@ do
 	function soundPrototype:Cancel(...)
 		return unschedule(self.Play, self.mod, self, ...)
 	end	
+end
+
+--------------------
+--  Yell Object  --
+--------------------
+do
+	local yellPrototype = {}
+	local mt = { __index = yellPrototype }
+	local function newYell(self, yellType, spellId, yellText, optionDefault, optionName, chatType)
+		if not spellId and not yellText then
+			error("NewYell: you must provide either spellId or yellText", 2)
+			return
+		end
+		-- if type(spellId) == "string" and spellId:match("OptionVersion") then
+		-- 	print("newYell for: "..yellText.." is using OptionVersion hack. This is depricated")
+		-- 	return
+		-- end
+		-- local optionVersion
+		-- if type(optionName) == "number" then
+		-- 	optionVersion = optionName
+		-- 	optionName = nil
+		-- end
+		local displayText
+		if not yellText then
+			-- if type(spellId) == "string" and spellId:match("ej%d+") then
+			-- 	displayText = DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT[yellType]:format(EJ_GetSectionInfo(string.sub(spellId, 3)) or DBM_CORE_UNKNOWN)
+			-- else
+			displayText = DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT[yellType]:format(GetSpellInfo(spellId) or DBM_CORE_UNKNOWN)
+			-- end
+		else
+			displayText = DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT[yellType]:format(GetSpellInfo(spellId), yellText)
+		end
+		--Passed spellid as yellText.
+		--Auto localize spelltext using yellText instead
+		-- if yellText  then --and type(yellText) == "number"
+		-- end
+		local obj = setmetatable(
+			{
+				text = displayText or yellText,
+				mod = self,
+				chatType = chatType,
+				yellType = yellType
+			},
+			mt
+		)
+		if optionName then
+			obj.option = optionName
+			self:AddBoolOption(obj.option, optionDefault, "misc")
+		elseif not (optionName == false) then
+			obj.option = "Yell"..(spellId or yellText)..(yellType ~= "yell" and yellType or "")..(optionVersion or "")
+			self:AddBoolOption(obj.option, optionDefault, "misc")
+			self.localization.options[obj.option] = DBM_CORE_AUTO_YELL_OPTION[yellType]:format(spellId)
+		end
+		return obj
+	end
+
+	function yellPrototype:Yell(...)
+		if self.yellType and self.yellType == "position" then return end
+		if not self.option or self.mod.Options[self.option] then
+			if self.yellType == "combo" then
+				SendChatMessage(pformat(self.text, ...), self.chatType or "YELL")
+			else
+				SendChatMessage(pformat(self.text, ...), self.chatType or "SAY")
+			end
+		end
+	end
+	yellPrototype.Show = yellPrototype.Yell
+
+	function yellPrototype:Schedule(t, ...)
+		return schedule(t, self.Yell, self.mod, self, ...)
+	end
+
+	function yellPrototype:Countdown(time, numAnnounces, ...)
+		scheduleCountdown(time, numAnnounces, self.Yell, self.mod, self, ...)
+	end
+
+	function yellPrototype:Cancel(...)
+		return unschedule(self.Yell, self.mod, self, ...)
+	end
+
+	function bossModPrototype:NewYell(...)
+		return newYell(self, "yell", ...)
+	end
+	
+	function bossModPrototype:NewShortYell(...)
+		return newYell(self, "shortyell", ...)
+	end
+
+	function bossModPrototype:NewCountYell(...)
+		return newYell(self, "count", ...)
+	end
+
+	function bossModPrototype:NewFadesYell(...)
+		return newYell(self, "fade", ...)
+	end
+	
+	function bossModPrototype:NewShortFadesYell(...)
+		return newYell(self, "shortfade", ...)
+	end
+	
+	function bossModPrototype:NewIconFadesYell(...)
+		return newYell(self, "iconfade", ...)
+	end
+	
+	function bossModPrototype:NewPosYell(...)
+		return newYell(self, "position", ...)
+	end
+	
+	function bossModPrototype:NewComboYell(...)
+		return newYell(self, "combo", ...)
+	end
 end
 
 ------------------------------

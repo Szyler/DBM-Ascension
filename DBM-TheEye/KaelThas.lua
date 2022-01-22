@@ -3,31 +3,47 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
-mod:RegisterCombat("yell", kaelYellP1)
+mod:RegisterCombat("combat", 19622, 20064, 20063, 20062, 20060)
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_EMOTE",
-	"CHAT_MSG_MONSTER_YELL",
-	"SPELL_CAST_START",
-	"SPELL_MISSED"
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED"
 )
 
-
 -- local warn
-local warnGaze			= mod:NewAnnounce("WarnGaze", 4, 39414)
-local warnMC			= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
-local warnConflag		= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
-local specWarnGaze		= mod:NewSpecialWarning("SpecWarnGaze")
-local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
+local warnGaze				= mod:NewTargetAnnounce(2135337, 4)
+local specWarnGaze			= mod:NewSpecialWarningYou(2135337)
+local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
+local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
+-- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
+local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
+
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
-local timerNextGaze		= mod:NewTimer(15, "TimerNextGaze", 39414)
-local timerFear			= mod:NewCdTimer(31, 2135340)
-local timerPyroblast	= mod:NewCdTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
+local timerCDBlastWave		= mod:NewCDTimer(12, 2135354) 
+local timerGaze				= mod:NewTargetTimer(15, 2135337)
+local timerNextGaze			= mod:NewNextTimer(15, 2135337)
+local timerBellow			= mod:NewNextTimer(40, 2135340)
+
+local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
+local pyroCast				= mod:NewCastTimer(6, 2135444)
+local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459) 
+local timerNextMC			= mod:NewNextTimer(40, 2135468)
+
+local timerBanish			= mod:NewNextTimer(22, 2135470)
+local KTLevitate			= mod:NewBuffActiveTimer(30, 2135477)
+
+-- Lieutenant timers
+local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
+local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
+local TelonicusPull			= mod:NewTimer(8, "Telonicus spawning in: ", 2135337)
+local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
+local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
+local AllPull				= mod:NewTimer(20, "Everyone spawning in: ", 2135337)
+local KaelThasPull			= mod:NewTimer(6, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
@@ -35,7 +51,6 @@ local warnConflagTargets = {}
 local warnMCTargets = {}
 
 -- local options
-
 mod:AddBoolOption("GazeIcon", false)
 
 local function showConflag()
@@ -43,32 +58,65 @@ local function showConflag()
 	table.wipe(warnConflagTargets)
 end
 
-local function showMC(self)
+local function showMC()
 	warnMC:Show(table.concat(warnMCTargets, "<, >"))
 	table.wipe(warnMCTargets)
 end
 
 function mod:OnCombatStart(delay)
-	
-
+	mod.vb.phase = 1
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(args)
 	
 end
 
-function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	local CapernianPull = "Capernian will see to it that your stay here is a short one."
+	local ThaladredPull = "Let us see how your nerves hold up against the Darkener, Thaladred!"
+	local TelonicusPull = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
+	local SanguinarPull = "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!"
+	local WeaponsPull 	= "As you see, I have many weapons in my arsenal...."
+	local AllPull 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
+	local KaelThasPull 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
+	-- local KTLevitate 	= "Having trouble staying grounded?"
 	if (msg == L.emoteGaze or msg:find(L.emoteGaze)) and target then
-		target = UnitName(target)
+		-- target = UnitName(target)
+		target = msg:match("Thaladred the Darkener sets eyes on (.+)!");
 		timerNextGaze:Start()
+		timerGaze:Start(target)
 		if target == UnitName("player") then
 			specWarnGaze:Show()
 		else
 			warnGaze:Show(target)
 		end
-		if self.Options.GazeIcon then
+		if self.Options.GazeIcon and DBM.GetRaidRank() >= 1 then
 			self:SetIcon(target, 1, 15)
 		end
+	elseif (msg == CapernianPull or msg:find(CapernianPull)) then
+		CapernianPull:Start()
+		mod.vb.phase = 1
+	elseif (msg == ThaladredPull or msg:find(ThaladredPull)) then
+		ThaladredPull:Start()
+	elseif (msg == TelonicusPull or msg:find(TelonicusPull)) then
+		TelonicusPull:Start()
+	elseif (msg == SanguinarPull or msg:find(SanguinarPull)) then
+		SanguinarPull:Start()
+	elseif (msg == WeaponsPull or msg:find(WeaponsPull)) then
+		WeaponsPull:Start()
+		mod.vb.phase = 2
+	elseif (msg == AllPull or msg:find(AllPull)) then
+		AllPull:Start()
+		timerBellow:Start(20)
+		mod.vb.phase = 3
+	elseif (msg == KaelThasPull or msg:find(KaelThasPull)) then
+		KaelThasPull:Start()
+		timerNextPyro:Start(10)
+		timerNextFlameStrike:Start(30)
+		timerNextMC:Start(40)
+		mod.vb.phase = 4
+	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
+		-- KTLevitate:Start()
 	end
 end
 
@@ -76,37 +124,46 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135467, 2135468, 2135469) then
 		warnMCTargets[#warnMCTargets + 1] = args.destName
 		self:Unschedule(showMC)
+		timerNextMC:Start()
 		if #warnMCTargets >= 3 then
-			showMC(self)
+			showMC()
 		else
-			self:Schedule(0.3, showMC, self)
+			self:Schedule(0.3, showMC)
 		end
 	elseif args:IsSpellID(2135350, 2135351, 2135352, 2135353) then
 		warnConflagTargets[#warnConflagTargets + 1] = args.destName
 		self:Unschedule(showConflag)
 		self:Schedule(0.3, showConflag)
 	elseif args:IsSpellID(2135340) then
-		timerFear:Start()
+		timerBellow:Start()
+	elseif args:IsSpellID(2135354, 2135355, 2135356, 2135357) then
+		timerCDBlastWave:Start()
+	elseif args:IsSpellID(2135470) then
+		timerBanish:Start()
+		KTLevitate:Schedule(20)
+		mod.vb.phase = 5
+		--Schedule mod.vb.phase = 6 20 seconds
+		--Schedule mod.vb.phase = 7 75 seconds
 	end
-
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135342, 2135343, 2135344, 2135345 ) and args.amount==4 then
+	if args:IsSpellID(2135342, 2135343, 2135344, 2135345) and args.amount==5 then
 		specWarnSeal:Show(args.amount, args.destName)
 	end
 end
 
-
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2135340) then
-		timerFear:Start()
-	end
 	
 end
 
 function mod:SPELL_CAST_START(args)
-	
+	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
+		pyroCast:Start()
+		timerNextPyro:Start()
+	elseif args:IsSpellID(2135459, 2135460, 2135461, 2135462) then
+		timerNextFlameStrike:Start()
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
