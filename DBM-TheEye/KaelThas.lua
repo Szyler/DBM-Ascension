@@ -6,10 +6,11 @@ mod:SetCreatureID(19622)
 mod:RegisterCombat("combat", 19622, 20064, 20063, 20062, 20060)
 
 mod:RegisterEvents(
-	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_START"
 )
 
 -- local warn
@@ -42,13 +43,14 @@ local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
 local TelonicusPull			= mod:NewTimer(8, "Telonicus spawning in: ", 2135337)
 local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
 local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
-local AllPull				= mod:NewTimer(20, "Everyone spawning in: ", 2135337)
+local AllPull				= mod:NewTimer(18, "Everyone spawning in: ", 2135337)
 local KaelThasPull			= mod:NewTimer(6, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
 local warnConflagTargets = {}
 local warnMCTargets = {}
+local AntiSpam = 0
 
 -- local options
 mod:AddBoolOption("GazeIcon", false)
@@ -65,16 +67,17 @@ end
 
 function mod:OnCombatStart(delay)
 	mod.vb.phase = 1
+	AntiSpam = GetTime()
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(args)
-	local CapernianPull = "Capernian will see to it that your stay here is a short one."
-	local ThaladredPull = "Let us see how your nerves hold up against the Darkener, Thaladred!"
-	local TelonicusPull = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
-	local SanguinarPull = "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!"
-	local WeaponsPull 	= "As you see, I have many weapons in my arsenal...."
-	local AllPull 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
-	local KaelThasPull 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	local CapernianPullYell = "Capernian will see to it that your stay here is a short one."
+	local ThaladredPullYell = "Let us see how your nerves hold up against the Darkener, Thaladred!"
+	local TelonicusPullYell = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
+	local SanguinarPullYell = "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!"
+	local WeaponsPullYell 	= "As you see, I have many weapons in my arsenal...."
+	local AllPullYell 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
+	local KaelThasPullYell 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
 	-- local KTLevitate 	= "Having trouble staying grounded?"
 	if (msg == L.emoteGaze or msg:find(L.emoteGaze)) and target then
 		-- target = UnitName(target)
@@ -89,34 +92,32 @@ function mod:CHAT_MSG_MONSTER_YELL(args)
 		if self.Options.GazeIcon and DBM.GetRaidRank() >= 1 then
 			self:SetIcon(target, 1, 15)
 		end
-	elseif (msg == CapernianPull or msg:find(CapernianPull)) then
+	elseif (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
 		CapernianPull:Start()
 		mod.vb.phase = 1
-	elseif (msg == ThaladredPull or msg:find(ThaladredPull)) then
+	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
-	elseif (msg == TelonicusPull or msg:find(TelonicusPull)) then
+	elseif (msg == TelonicusPullYell or msg:find(TelonicusPullYell)) then
 		TelonicusPull:Start()
-	elseif (msg == SanguinarPull or msg:find(SanguinarPull)) then
+	elseif (msg == SanguinarPullYell or msg:find(SanguinarPullYell)) then
 		SanguinarPull:Start()
-	elseif (msg == WeaponsPull or msg:find(WeaponsPull)) then
+	elseif (msg == WeaponsPullYell or msg:find(WeaponsPullYell)) then
 		WeaponsPull:Start()
 		mod.vb.phase = 2
-	elseif (msg == AllPull or msg:find(AllPull)) then
+	elseif (msg == AllPullYell or msg:find(AllPullYell)) then
 		AllPull:Start()
-		timerBellow:Start(20)
 		mod.vb.phase = 3
-	elseif (msg == KaelThasPull or msg:find(KaelThasPull)) then
+		timerCDBlastWave:Start(20)
+		timerBellow:Start(22)
+	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
 		KaelThasPull:Start()
 		timerNextPyro:Start(10)
-		timerNextFlameStrike:Start(30)
+		timerNextFlameStrike:Start(27)
 		timerNextMC:Start(40)
 		mod.vb.phase = 4
 	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
 		-- KTLevitate:Start()
 	end
-end
-
-function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -140,6 +141,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135470) then
 		timerBanish:Start()
 		KTLevitate:Schedule(20)
+		timerNextFlameStrike:Start(100)
+		timerNextPyro:Start(85)
 		mod.vb.phase = 5
 		--Schedule mod.vb.phase = 6 20 seconds
 		--Schedule mod.vb.phase = 7 75 seconds
@@ -152,22 +155,35 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	
-end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
 		pyroCast:Start()
 		timerNextPyro:Start()
-	elseif args:IsSpellID(2135459, 2135460, 2135461, 2135462) then
-		timerNextFlameStrike:Start()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	
 end
+
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 20060 then
+		timerBellow:Stop()
+	elseif cid == 20062 then
+		timerCDBlastWave:Stop()
+	end
+end
+
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2135459, 2135460, 2135461, 2135462) and GetTime() - AntiSpam > 30 then
+		AntiSpam = GetTime()
+		timerNextFlameStrike:Start()
+	end
+end	
 
 function mod:OnCombatEnd()
 
