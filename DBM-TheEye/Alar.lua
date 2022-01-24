@@ -159,7 +159,7 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
     -- local name = UnitName(args.destGUID);
     if cid == 19514 and self.vb.phase == 3 then
-		mod:EndCombat(self)
+		mod:EndCombat()
 	end
 end
 
