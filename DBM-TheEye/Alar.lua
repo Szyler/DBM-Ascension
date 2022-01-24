@@ -87,7 +87,7 @@ end
 
 function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2135174) and args:IsPlayer() then
-		specWarnFeather:Unschedule()
+		specWarnFeather:Stop()
 		specWarnFeather:Schedule(45)
 	end
 end
@@ -114,6 +114,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self.vb.phase = 3
 			timerNextBreath:Stop()
 			timerEmberSpawn:Stop()
+			timerAlarUp:Stop()
 		end
 	elseif args:IsSpellID(2135190) then
 		timerEmberSpawn:Start()
@@ -126,7 +127,8 @@ function mod:SPELL_CAST_START(args)
 		warnAlarRebirth:Show()
 		timerNextBreath:Start(3)
 		if self.vb.phase == 2 then
-			timerAlarUp:Start(30)
+			timerAlarUp:Start(33)
+			timerNextBreath:Start(18)
 		end
 		-- timerNextAlarRebirth:Start()
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
@@ -147,6 +149,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerEmberSpawn:Start(24)
 		warnDive:Schedule(12)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
+		timerAlarUp:Stop()
 		timerEmberSpawn:Start(22)
 		timerNextFlameCascade:Start()
 	end
@@ -156,9 +159,8 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
     -- local name = UnitName(args.destGUID);
     if cid == 19514 and self.vb.phase == 3 then
-		mod:EndCombat(self)
+		mod:EndCombat()
 	end
-
 end
 
 
