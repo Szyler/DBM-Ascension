@@ -49,6 +49,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135501) then -- [Maintenance Mode]
+		timerNextEnrage:Stop()
 		timerNextEnrage:Start()
 	elseif args:IsSpellID(2135324, 2135325, 2135326, 2135327) then
 		warnEradication:Show()
