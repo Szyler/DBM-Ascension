@@ -68,10 +68,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(args)
-	
-end
-
-function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	local CapernianPull = "Capernian will see to it that your stay here is a short one."
 	local ThaladredPull = "Let us see how your nerves hold up against the Darkener, Thaladred!"
 	local TelonicusPull = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
@@ -118,6 +114,9 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
 		-- KTLevitate:Start()
 	end
+end
+
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
