@@ -4,7 +4,8 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19514)
 mod:RegisterCombat("combat")
-mod:RegisterKill("Yell",L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
+mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
+mod:SetWipeTime(25) 
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -92,7 +93,10 @@ function mod:SPELL_AURA_REFRESH(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-
+	if args:IsSpellID(2135190) then
+		timerEmberSpawn:Start(11)
+		timerNextFlameCascade:Start()
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)

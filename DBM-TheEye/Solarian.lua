@@ -64,14 +64,13 @@ function mod:OnCombatStart(delay)
 	below55 = false;
 	self.vb.phase = 1
 	berserkTimer:Start(-delay)
-	timerNextFireS:Start(-delay)
+	timerNextFire:Start(-delay,"Fire")
 	timerAdds:Start(-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.SolarianYellAddPhase or msg:find(L.SolarianYellAddPhase) then
-		timerNextFireL:Stop()
-		timerNextFireS:Stop()
+		timerNextFire:Stop()
 		timerNextLunar:Stop()
 		timerNextSolar:Stop()
 		if nextPriest == "" and self.Options.StartingPriest then
@@ -111,6 +110,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerNextFireL:Start()
 			timerNextHealL:Stop()
 			timerNextHealS:Stop()
+		elseif UnitName(nextPriest) == "Lunarian Priest" then
+			timerNextSolar:Start()
+			timerNextFire:Start("Solar Fire")
+			timerNextHealL:Stop()
 		end
 	end
 end
