@@ -9,7 +9,9 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_CAST_START"
+	"SPELL_CAST_START",
+	"UNIT_HEALTH",
+	"SPELL_DAMAGE"
 )
 
 
@@ -59,18 +61,21 @@ mod:AddBoolOption(L.StartingSolarian, false)
 
 function mod:OnCombatStart(delay)
 	AntiSpam = GetTime()
+	AntiSpam2 = GetTime()
+	AntiSpam3 = GetTime()
 	nextPriest = ""
 	isSolarian = false;
 	below55 = false;
 	self.vb.phase = 1
 	berserkTimer:Start(-delay)
-	timerNextFire:Start(-delay,"Fire")
+	timerNextFireS:Start(-delay)
 	timerAdds:Start(-delay)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.SolarianYellAddPhase or msg:find(L.SolarianYellAddPhase) then
-		timerNextFire:Stop()
+		timerNextFireL:Stop()
+		timerNextFireS:Stop()
 		timerNextLunar:Stop()
 		timerNextSolar:Stop()
 		if nextPriest == "" and self.Options.StartingPriest then
@@ -112,7 +117,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerNextHealS:Stop()
 		elseif UnitName(nextPriest) == "Lunarian Priest" then
 			timerNextSolar:Start()
-			timerNextFire:Start("Solar Fire")
+			timerNextFireF:Start()
 			timerNextHealL:Stop()
 		end
 	end
@@ -147,7 +152,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135260) then
 		self.vb.phase = 2
-		voidSpawnTimer = 24
+		voidSpawnTimer = 23
 		warnPhase2:Show()
 		timerNextFireL:Stop()
 		timerNextFireS:Stop()
@@ -157,23 +162,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSWrathPop:Stop()
 		timerVoidSpawn:Start()
 		specWarnVoidSpawn:Schedule(20)
-	elseif UnitName(args.destName) == "Solarian Voidspawn" then
-		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
-			AntiSpam = GetTime()
-			specWarnVoidSpawn:Show()
-			timerVoidSpawn:Start(voidSpawnTimer)
-			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
-			if DBM:GetRaidRank() >= 1 then
-				self:SetIcon(args.destGUID, 8, 20)
-			end
-		end
-	elseif args:IsSpellID(2135230, 2135231, 2135232, 2135233)  then
+	elseif args:IsSpellID(2135230, 2135231, 2135232, 2135233) and GetTime() - AntiSpam2 > 10 then
+		AntiSpam2 = GetTime()
 		timerNextFireL:Start()
 		warnWarnFireL:Show()
 		if args.amount == 3 then
 			specWarnLunarStacks:Show()
 		end
-	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237)  then
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and GetTime() - AntiSpam3 > 10 then
+		AntiSpam3 = GetTime()
 		timerNextFireS:Start()
 		warnWarnFireS:Show()
 		if args.amount == 3 then
@@ -183,13 +180,15 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135230, 2135231, 2135232, 2135233)  then
+	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) and GetTime() - AntiSpam2 > 10 then
+		AntiSpam2 = GetTime()
 		timerNextFireL:Start()
 		warnWarnFireL:Show()
 		if args.amount == 3 then
 			specWarnLunarStacks:Show()
 		end
-	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237)  then
+	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and GetTime() - AntiSpam3 > 10 then
+		AntiSpam3 = GetTime()
 		timerNextFireS:Start()
 		warnWarnFireS:Show()
 		if args.amount == 3 then
@@ -198,9 +197,19 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	
-end
+function mod:SPELL_DAMAGE(args)
+	if UnitName(args.destName) == "Solarian Voidspawn" then
+		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
+			AntiSpam = GetTime()
+			specWarnVoidSpawn:Show()
+			timerVoidSpawn:Start(voidSpawnTimer)
+			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
+			if DBM:GetRaidRank() >= 1 then
+				self:SetIcon(args.destGUID, 8, 20)
+			end
+		end
+	end
+end	
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264, 2135265) then
