@@ -146,3 +146,8 @@ v5.09 20/10/2021
 - Fixed timer for Son of Hakkar on Hakkar
 - Fixed lua error in Black Morass
 ----------------------------------------------------------------------------------------------------
+v5.10 24/01/2022
+- Added all Tempest Keep bosses
+
+- Fixed lua error on Tidewalker
+----------------------------------------------------------------------------------------------------
