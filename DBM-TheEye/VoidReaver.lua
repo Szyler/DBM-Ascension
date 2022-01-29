@@ -52,7 +52,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextEnrage:Stop()
 		timerNextEnrage:Start()
 	elseif args:IsSpellID(2135324, 2135325, 2135326, 2135327) then
-		warnEradication:Show()
+		if args:IsPlayer() then
+			warnEradication:Show()
+		end
 	end
 end
 
