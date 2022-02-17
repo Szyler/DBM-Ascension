@@ -20,7 +20,7 @@ local warnEradication		= mod:NewSpecialWarningYou(21352325)
 -- local timer
 
 local timerNextEnrage		= mod:NewNextTimer(120, 2135312)
-local timerNextPounding		= mod:NewNextTimer(40, 2135296)
+local timerNextPounding		= mod:NewNextTimer(60, 2135296)
 local timerNextDismantle	= mod:NewNextTimer(15, 2135333)
 
 
@@ -35,7 +35,7 @@ local timerDismantle		= mod:NewTargetTimer(15, 2135333)
 
 function mod:OnCombatStart(delay)
 	timerNextEnrage:Start(-delay)
-	timerNextPounding:Start(-delay)
+	timerNextPounding:Start(40-delay)
 	timerNextDismantle:Start(15-delay)
 end
 
