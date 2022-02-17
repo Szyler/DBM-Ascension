@@ -169,7 +169,7 @@ function mod:UNIT_DIED(args)
 			-- table.insert(inCombat, mod)
 		elseif self.vb.phase == 2 then
 			self.vb.phase = 3
-		elseif self.vb.phase == 3 then
+		elseif self.vb.phase == 3 and lastPhase == true then
 			mod.inCombat = false
 			mod:RegisterKill()
 			mod:Stop()
