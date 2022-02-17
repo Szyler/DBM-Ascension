@@ -151,3 +151,10 @@ v5.10 24/01/2022
 
 - Fixed lua error on Tidewalker
 ----------------------------------------------------------------------------------------------------
+v5.11 17/02/2022
+- Fixed combatstop on Al'ar
+- Fixed repeat timer of Pound on Void Reaver
+- Fixed Void Reaver fire warning to only show on self
+- Fixed timer on Solarian's Lunar/Solar Wrath
+- Fixed timer on Solarian's Void Spawn (New timer on killing Void Spawn) 
+----------------------------------------------------------------------------------------------------
