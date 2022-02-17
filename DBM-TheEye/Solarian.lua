@@ -114,7 +114,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			 if self.Options.WrathYellOpt then
 				SendChatMessage(L.LunarWrathYell, "YELL")
-				yellLunarWrath:Countdown(10,3)
+				yellLunarWrath:Countdown(8,3)
 			end
 		else 
 			specWarnLunar:Show()
@@ -146,15 +146,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		AntiSpam2 = GetTime()
 		timerNextFireL:Start()
 		warnWarnFireL:Show()
-		if args.amount == 3 then
-			specWarnLunarStacks:Show()
+		if args.amount >= 3 then
+			specWarnLunarStacks:Show(args.amount)
 		end
 	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and GetTime() - AntiSpam3 > 10 then
 		AntiSpam3 = GetTime()
 		timerNextFireS:Start()
 		warnWarnFireS:Show()
-		if args.amount == 3 then
-			specWarnSolarStacks:Show()
+		if args.amount >= 3 then
+			specWarnSolarStacks:Show(args.amount)
 		end
 	end
 end
@@ -209,19 +209,6 @@ end
 -- end
 
 function mod:SPELL_DAMAGE(args)
-	if UnitName(args.destName) == "Solarian Voidspawn" then
-		if self:GetIcon(args.destGUID) ~= 8 and GetTime() - AntiSpam > 10 then
-			AntiSpam = GetTime()
-			specWarnVoidSpawn:Show()
-			timerVoidSpawn:Start(voidSpawnTimer)
-			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
-			if DBM:GetRaidRank() >= 1 then
-				self:SetIcon(args.destGUID, 8, 20)
-			end
-		end
-	end
-
-	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 14551 or cid == 14552 then
 		if nextPriest == "" and self.Options.StartingPriest then
 			if self.Options.StartingSolarian then
@@ -258,6 +245,17 @@ function mod:UNIT_DIED(args)
 		timerNextHealS:Stop()
 	elseif cid == 14552 then
 		timerNextHealL:Stop()
+	end
+	if cid == 14512 then
+		-- if self:GetIcon(args.destGUID) ~= 8 then
+			-- AntiSpam = GetTime()
+			specWarnVoidSpawn:Schedule(voidSpawnTimer)
+			timerVoidSpawn:Start(voidSpawnTimer)
+			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
+			-- if DBM:GetRaidRank() >= 1 then
+			-- 	self:SetIcon(args.destGUID, 8, 20)
+			-- end
+		-- end
 	end
   --[===[  local name = UnitName(unit);
     if name == "Solarian Priest" and self.vb.phase == 2 then

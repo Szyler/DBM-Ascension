@@ -3,8 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19514)
-mod:RegisterCombat("combat")
-mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
+mod:RegisterCombat("combat", 19551)
+-- mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
 mod:SetWipeTime(25) 
 
 mod:RegisterEvents(
@@ -44,10 +44,11 @@ local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 --Living bomb?
 
 -- local variables
+mod.vb.phase = 1
+local lastPhase = false
 
 
 -- local options
-mod.vb.phase = 1
 
 function mod:PlatformSwap()
 	self:UnscheduleMethod("PlatformSwap")
@@ -63,6 +64,8 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(30-delay, "PlatformSwap")
 	-- timerEmberSpawn:Start(42-delay)
 	timerNextBreath:Start(-delay)
+	self.vb.phase = 1
+	lastPhase = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -104,17 +107,16 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextBreath:Start()
 	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
 		if self.vb.phase == 1 then
-			self.vb.phase = 2
 			timerEmberSpawn:Stop()
 			timerAlarUp:Start(42)
 			timerNextBreath:Stop()
 			timerNextPlatform:Stop()
 			self:UnscheduleMethod("PlatformSwap")
 		elseif self.vb.phase == 2 then
-			self.vb.phase = 3
 			timerNextBreath:Stop()
 			timerEmberSpawn:Stop()
 			timerAlarUp:Stop()
+			lastPhase = true
 		end
 	elseif args:IsSpellID(2135190) then
 		timerEmberSpawn:Start()
@@ -128,7 +130,7 @@ function mod:SPELL_CAST_START(args)
 		timerNextBreath:Start(3)
 		if self.vb.phase == 2 then
 			timerAlarUp:Start(33)
-			timerNextBreath:Start(18)
+			timerNextBreath:Start(10)
 		end
 		-- timerNextAlarRebirth:Start()
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
@@ -158,8 +160,23 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
     -- local name = UnitName(args.destGUID);
-    if cid == 19514 and self.vb.phase == 3 then
-		mod:EndCombat()
+    if cid == 19514 then
+		if self.vb.phase == 1 then
+			self.vb.phase = 2
+			mod:IsInCombat()	
+			mod.inCombat = true
+			timerNextAlarRebirth:Start()
+			-- table.insert(inCombat, mod)
+		elseif self.vb.phase == 2 then
+			self.vb.phase = 3
+		elseif self.vb.phase == 3 and lastPhase == true then
+			mod.inCombat = false
+			mod:RegisterKill()
+			mod:Stop()
+			-- mod:EndCombat(self, false)
+			-- mod:EndCombat(self)
+			-- mod:EndCombat()
+		end
 	end
 end
 
