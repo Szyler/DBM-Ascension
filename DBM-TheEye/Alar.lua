@@ -75,6 +75,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135155) then --Flame Breath debuffs on tanks
 		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2135178) and args:IsPlayer() then
+		-- TODO opt in for say
 		SendChatMessage("Living Bomb on "..args.destName.."!", "SAY")
 	end
 end
