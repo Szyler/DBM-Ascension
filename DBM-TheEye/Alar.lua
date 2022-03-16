@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19514)
 mod:RegisterCombat("combat", 19551)
--- mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
+mod:RegisterKill("yell", L.NeverHappen) --There is no yell. Just abusing it so DBM doesnt end combat when al'ar dies in between Phases
 mod:SetWipeTime(25) 
 
 mod:RegisterEvents(
@@ -37,35 +37,30 @@ local timerAlarDive				= mod:NewTimer(12, "AlarDive", "Interface\\Icons\\Spell_F
 local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
 local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
 local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
-local timerNextFlameCascade		= mod:NewNextTimer(80, 2135190)
+local timerNextFlameCascade		= mod:NewNextTimer(60, 2135190)
 local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
 --Ascended mechanics:
 --Living bomb?
 
 -- local variables
-mod.vb.phase = 1
-local lastPhase = false
-
 
 -- local options
+mod.vb.phase = 1
 
 function mod:PlatformSwap()
 	self:UnscheduleMethod("PlatformSwap")
 	timerEmberSpawn:Start()
 	warnEmber:Schedule(12)
-	timerNextPlatform:Start(30)
-	self:ScheduleMethod(30, "PlatformSwap")
+	timerNextPlatform:Start(32)
+	self:ScheduleMethod(32, "PlatformSwap")
 end
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextPlatform:Start(-delay)
-	self:ScheduleMethod(30-delay, "PlatformSwap")
-	-- timerEmberSpawn:Start(42-delay)
+	self:ScheduleMethod(32-delay, "PlatformSwap")
 	timerNextBreath:Start(-delay)
-	self.vb.phase = 1
-	lastPhase = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -79,6 +74,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnFeather:Schedule(45)
 	elseif args:IsSpellID(2135155) then --Flame Breath debuffs on tanks
 		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(2135178) and args:IsPlayer() then
+		SendChatMessage("Living Bomb on "..args.destName.."!", "SAY")
 	end
 end
 
@@ -107,16 +104,17 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextBreath:Start()
 	elseif args:IsSpellID(2135196, 2135197, 2135198, 2135199) then
 		if self.vb.phase == 1 then
+			self.vb.phase = 2
 			timerEmberSpawn:Stop()
 			timerAlarUp:Start(42)
 			timerNextBreath:Stop()
 			timerNextPlatform:Stop()
 			self:UnscheduleMethod("PlatformSwap")
 		elseif self.vb.phase == 2 then
+			self.vb.phase = 3
 			timerNextBreath:Stop()
 			timerEmberSpawn:Stop()
 			timerAlarUp:Stop()
-			lastPhase = true
 		end
 	elseif args:IsSpellID(2135190) then
 		timerEmberSpawn:Start()
@@ -130,9 +128,8 @@ function mod:SPELL_CAST_START(args)
 		timerNextBreath:Start(3)
 		if self.vb.phase == 2 then
 			timerAlarUp:Start(33)
-			timerNextBreath:Start(10)
+			timerNextBreath:Start(18)
 		end
-		-- timerNextAlarRebirth:Start()
 	elseif args:IsSpellID(2135208, 2135209, 2135210, 2135211) then
 		warnEmber:Show()
 		self:SetIcon(args.sourceName, 5, 30)
@@ -159,23 +156,14 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-    -- local name = UnitName(args.destGUID);
     if cid == 19514 then
 		if self.vb.phase == 1 then
 			self.vb.phase = 2
 			mod:IsInCombat()	
 			mod.inCombat = true
 			timerNextAlarRebirth:Start()
-			-- table.insert(inCombat, mod)
 		elseif self.vb.phase == 2 then
 			self.vb.phase = 3
-		elseif self.vb.phase == 3 and lastPhase == true then
-			mod.inCombat = false
-			mod:RegisterKill()
-			mod:Stop()
-			-- mod:EndCombat(self, false)
-			-- mod:EndCombat(self)
-			-- mod:EndCombat()
 		end
 	end
 end
@@ -183,12 +171,6 @@ end
 
 -- Old Alar code
 
--- local warnPhase = false;
--- local phase2	= false;
--- local lastAdd	= 0;
--- local flying	= false;
--- local langError	= false;
--- local lastMeteor= 0;
 
 -- Alar:RegisterEvents(
 -- 	"SPELL_AURA_APPLIED"
@@ -203,12 +185,6 @@ end
 -- Alar:AddBarOption("Melt Armor: (.*)")
 
 -- function Alar:OnCombatStart(delay)
--- 	warnPhase = false;
--- 	phase2	= false;
--- 	lastAdd	= 0;
--- 	flying = false;
--- 	langError = false;
--- 	self:StartStatusBarTimer(35 - delay, "Next Platform", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendUnBurrow");
 -- 	self:ScheduleSelf(10, "CheckForAlar"); -- to prevent bugs if you are using an unsupported client language...
 -- end
 
@@ -247,8 +223,6 @@ end
 -- function Alar:OnSync(msg)
 -- 	if msg == "Rebirth" and not self:IsWipe() and self.InCombat then
 -- 		self:Announce(DBM_ALAR_WARN_REBIRTH, 2);
--- 		warnPhase = false;
--- 		phase2 = GetTime();
 -- 		self:EndStatusBarTimer("Next Platform");
 -- 		self:ScheduleSelf(47, "MeteorSoon");
 -- 		self:StartStatusBarTimer(52, "Meteor", "Interface\\Icons\\Spell_Fire_Fireball02");
@@ -284,8 +258,6 @@ end
 -- 		self:ScheduleSelf(49, "MeteorSoon");
 -- 		self:StartStatusBarTimer(54.5, "Meteor", "Interface\\Icons\\Spell_Fire_Fireball02");
 -- 	elseif msg == "NextPlatform" and self.InCombat then
--- 		flying = false;
--- 		self:StartStatusBarTimer(35, "Next Platform", "Interface\\AddOns\\DBM_API\\Textures\\CryptFiendUnBurrow");
 -- 	end
 -- end
 
