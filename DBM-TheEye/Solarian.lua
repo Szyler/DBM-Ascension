@@ -60,6 +60,7 @@ local priestID = 0
 mod:AddBoolOption(L.WrathYellOpt)
 mod:AddBoolOption(L.StartingPriest, false)
 mod:AddBoolOption(L.StartingSolarian, false)
+mod:AddBoolOption(L.PanicYellOpt, false)
 
 function mod:OnCombatStart(delay)
 	AntiSpam = GetTime()
@@ -141,9 +142,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnSeedYou:show()
 		else specWarnSeed:Show()
 		end
-	elseif args:IsSpellID(2135243) and args:IsPlayer() then
-		-- TODO opt in for say
-		SendChatMessage("Fear on "..args.destName.."!", "SAY")
+	elseif args:IsSpellID(2135243) and self.Options.PanicYellOpt and args:IsPlayer() then
+		SendChatMessage("Panic on "..args.destName.."!", "YELL")
 	end
 end
 

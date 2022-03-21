@@ -47,6 +47,7 @@ local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
 -- local options
 mod.vb.phase = 1
+mod:AddBoolOption(L.LivingBombYellOpt, false)
 
 function mod:PlatformSwap()
 	self:UnscheduleMethod("PlatformSwap")
@@ -74,9 +75,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnFeather:Schedule(45)
 	elseif args:IsSpellID(2135155) then --Flame Breath debuffs on tanks
 		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(2135178) and args:IsPlayer() then
-		-- TODO opt in for say
-		SendChatMessage("Living Bomb on "..args.destName.."!", "SAY")
+	elseif args:IsSpellID(2135178) and self.Options.LivingBombYellOpt and args:IsPlayer() then
+		SendChatMessage("Living Bomb on "..args.destName.."!", "YELL")
 	end
 end
 

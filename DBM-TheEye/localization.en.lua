@@ -37,6 +37,7 @@ L:SetOptionLocalization{
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 	SpecWarnFeather		= "Show reminder for Blazing Wings",
 	FlameBreath			= "Show $spell:2135155 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	LivingBombYellOpt	= "Yell when you are affected by $spell:2135178"
 }
 
 L:SetMiscLocalization{
@@ -87,7 +88,8 @@ L:SetOptionLocalization{
 	TimerNextHealL			= "Show timer for next Lunarian Priest heal",
 	WarnPhase2Soon			= "Announce when phase 2 is about to start",
 	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
-	StartingSolarian        = "Mark Solarian Priest"
+	StartingSolarian        = "Mark Solarian Priest",
+	PanicYellOpt			= "Yell when you are affected by $spell:2135243"
 }
 
 L:SetMiscLocalization{
