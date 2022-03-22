@@ -86,6 +86,10 @@ local function showMC()
 	table.wipe(warnMCTargets)
 end
 
+function mod:OnCombatStart()
+	allowGazeAlert = 1
+end
+
 function mod:OnCombatStart(delay)
 	mod.vb.phase = 1
 end
