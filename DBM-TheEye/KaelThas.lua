@@ -139,7 +139,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerCDBlastWave:Start(20)
 		timerBellow:Start(47)
 		timerNextWorldInFlames:Start(30)
-		timerNextBladestorm:Start(49)
+		timerNextBladestorm:Start(46)
 		timerNextFocusedBurst:Start(67.5)
 		timerNextBloodLeech:Start(87)
 	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
