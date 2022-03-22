@@ -69,7 +69,6 @@ local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 -- local variables
 local warnConflagTargets = {}
 local warnMCTargets = {}
-local AntiSpam = 0
 local leechSpam = 0
 local allowGazeAlert = 0
 local emoteGazeText = "sets eyes on"
@@ -89,7 +88,6 @@ end
 
 function mod:OnCombatStart(delay)
 	mod.vb.phase = 1
-	AntiSpam = GetTime()
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
