@@ -62,7 +62,7 @@ local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
 local TelonicusPull			= mod:NewTimer(7.5, "Telonicus spawning in: ", 2135337)
 local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
 local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
-local AllPull				= mod:NewTimer(20, "Everyone spawning in: ", 2135337)
+local AllPull				= mod:NewTimer(14, "Everyone spawning in: ", 2135337)
 local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 
 
