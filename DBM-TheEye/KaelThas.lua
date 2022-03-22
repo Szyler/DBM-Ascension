@@ -134,6 +134,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif (msg == AllPullYell or msg:find(AllPullYell)) then
 		AllPull:Start()
 		mod.vb.phase = 3
+		timerNextGaze:Start(16)
+		
 		timerCDBlastWave:Start(20)
 		timerBellow:Start(47)
 		timerNextWorldInFlames:Start(30)
