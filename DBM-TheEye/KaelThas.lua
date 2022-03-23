@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
-mod:RegisterCombat("combat", 19622, 20064, 20063, 20062, 20060)
+mod:RegisterCombat("yell", "Capernian will see to it that your stay here is a short one.")
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
@@ -76,9 +76,9 @@ local emoteGazeText = "sets eyes on"
 -- local options
 mod:AddBoolOption("GazeIcon", false)
 
-local function showConflag()
-	warnConflag:Show(table.concat(warnConflagTargets, "<, >"))
-	table.wipe(warnConflagTargets)
+function mod:OnCombatStart(delay)
+	allowGazeAlert = 1
+	mod.vb.phase = 1
 end
 
 local function showMC()
@@ -86,25 +86,25 @@ local function showMC()
 	table.wipe(warnMCTargets)
 end
 
-function mod:OnCombatStart()
-	allowGazeAlert = 1
-end
-
-function mod:OnCombatStart(delay)
-	mod.vb.phase = 1
+local function showConflag()
+	warnConflag:Show(table.concat(warnConflagTargets, "<, >"))
+	table.wipe(warnConflagTargets)
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 	if allowGazeAlert and (msg == emoteGazeText or msg:find(emoteGazeText)) then
 		timerNextGaze:Start()
+		
 		if target == UnitName("player") then
 			specWarnGaze:Show()
 		else
 			warnGaze:Show(target)
 		end
-		--if self.Options.GazeIcon then
-			--self:SetIcon(target, 1, 15)
-		--end
+			
+		if self.Options.GazeIcon then
+			-- TODO still not working
+			self:SetIcon(target, 8)
+		end
 	end
 end
 
@@ -121,7 +121,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
 		CapernianPull:Start()
 		timerNextWorldInFlames:Start(21)
-		mod.vb.phase = 1
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
 		timerNextBladestorm:Start(20)
@@ -212,7 +211,6 @@ end
 		specWarnSeal:Show(args.amount, args.destName)
 	end
 end]]
-
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
