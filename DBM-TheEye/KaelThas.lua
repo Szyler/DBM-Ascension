@@ -16,44 +16,46 @@ mod:RegisterEvents(
 )
 
 -- local warn
+local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
 local warnGaze				= mod:NewTargetAnnounce(2135337, 4)
 local specWarnGaze			= mod:NewSpecialWarningYou(2135337)
 local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
-local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
+
 -- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
 --local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
-local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531)
-local specWarnWiF			= mod:NewSpecialWarningSpell(2135369)
-local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362)
-local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338)
-local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453)
+local specWarnWiF			= mod:NewSpecialWarningSpell(2135369) -- ASC only mechanic
+local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338) -- ASC only mechanic
+local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362) -- ASC only mechanic
+local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only mechanic
+local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only mechanic
 local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
 local specWarnFlamestrike	= mod:NewSpecialWarningRun(2135459)
 
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
-local timerFocusedDamage	= mod:NewTimer(4.5, "FocusedDamage", 2135392)
-local timerCDBlastWave		= mod:NewCDTimer(12, 2135354)
-local timerNextBladestorm	= mod:NewNextTimer(60, 2135338)
-local timerNextGaze			= mod:NewNextTimer(15, 2135337)
-local timerBellow			= mod:NewNextTimer(30, 2135340)
-local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531)
+local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369) -- ASC only mechanic
+local timerCDBlastWave			= mod:NewCDTimer(12, 2135354)
+
 local DURATION_GAZE = 15;
+local timerNextGaze				= mod:NewNextTimer(DURATION_GAZE, 2135337)
+local timerNextBladestorm		= mod:NewNextTimer(60, 2135338) -- ASC only mechanic
+local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only mechanic
 local timerNextFocusedBurst		= mod:NewNextTimer(60, 2135362) -- 2135392 debuff on target when shooting
-local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369)
+local timerBellow				= mod:NewNextTimer(30, 2135340)
+local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only mechanic
 
 local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
 local pyroCast				= mod:NewCastTimer(6, 2135444)
 local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459)
 local timerExplosion 		= mod:NewTimer(5, "TimerExplosion",2135459)
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
+
 local capernianWiF			= mod:NewBuffActiveTimer(12, 2135369)
 local bladestormDuration	= mod:NewBuffActiveTimer(12, 2135338)
 local bloodLeechDuration	= mod:NewBuffActiveTimer(11, 2135531)
 local timerNextRebirth		= mod:NewNextTimer(40, 2135508)
 local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
-
 local timerBanish			= mod:NewNextTimer(22, 2135470)
 local KTLevitate			= mod:NewBuffActiveTimer(30, 2135477)
 
