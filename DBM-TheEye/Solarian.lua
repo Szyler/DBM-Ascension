@@ -49,6 +49,7 @@ local yellLunarWrath		= mod:NewFadesYell(2135278)
 local yellSolarWrath		= mod:NewFadesYell(2135287)
 
 -- local variables
+local isAscended = mod:IsDifficulty("heroic10", "heroic25")
 local nextPriest = ""
 local isSolarian = false;
 local below55 = false;
@@ -135,7 +136,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSWrathPop:Stop()
 		timerVoidSpawn:Start()
 		specWarnVoidSpawn:Schedule(20)
-		timerNextVoidSeed:Start(15)
+		if isAscended then
+			timerNextVoidSeed:Start(15)
+		end
 	elseif args:IsSpellID(2135499) then
 		timerNextVoidSeed:Start()
 		if args.IsPlayer() then
