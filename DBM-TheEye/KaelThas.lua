@@ -71,9 +71,11 @@ local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
+local isAscended = mod:IsDifficulty("heroic10", "heroic25")
 local warnConflagTargets = {}
 local warnMCTargets = {}
 local leechSpam = 0
+
 local allowGazeAlert = 0
 local emoteGazeText = "sets eyes on"
 
@@ -127,28 +129,36 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextWorldInFlames:Start(21)
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
-		timerNextBladestorm:Start(20)
+		if isAscended then
+			timerNextBladestorm:Start(20)
+		end
 	elseif (msg == TelonicusPullYell or msg:find(TelonicusPullYell)) then
 		TelonicusPull:Start()
-		timerNextFocusedBurst:Start(22.5)
+		if isAscended then
+			timerNextFocusedBurst:Start(22.5)
+		end
 	elseif (msg == SanguinarPullYell or msg:find(SanguinarPullYell)) then
 		SanguinarPull:Start()
-		timerNextBloodLeech:Start(28)
 		timerBellow:Start(32)
+		if isAscended then
+			timerNextBloodLeech:Start(28)
+		end
 	elseif (msg == WeaponsPullYell or msg:find(WeaponsPullYell)) then
 		WeaponsPull:Start()
 		mod.vb.phase = 2
 	elseif (msg == AllPullYell or msg:find(AllPullYell)) then
 		AllPull:Start()
 		mod.vb.phase = 3
-		timerNextGaze:Start(16)
 		
+		timerNextGaze:Start(16)
 		timerCDBlastWave:Start(20)
 		timerBellow:Start(47)
-		timerNextWorldInFlames:Start(30)
-		timerNextBladestorm:Start(46)
-		timerNextFocusedBurst:Start(67.5)
-		timerNextBloodLeech:Start(87)
+		if isAscended then
+			timerNextWorldInFlames:Start(30)
+			timerNextBladestorm:Start(46)
+			timerNextFocusedBurst:Start(67.5)
+			timerNextBloodLeech:Start(87)
+		end
 	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
 		KaelThasPull:Start()
 		timerNextPyro:Start(17)
@@ -158,7 +168,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextMC:Start(47)
 		mod.vb.phase = 4
 		timerNextRebirth:Start(32)
-		timerNextManaShield:Start(22)
+		
+		if isAscended then
+			timerNextManaShield:Start(22)
+		end
 	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
 		-- KTLevitate:Start()
 	end
@@ -256,20 +269,26 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 20060 then
-		timerNextBloodLeech:Stop()
-		bloodLeechDuration:Stop()
+		if isAscended then
+			timerNextBloodLeech:Stop()
+			bloodLeechDuration:Stop()
+		end
 		timerBellow:Stop()
 	elseif cid == 20062 then
 		timerCDBlastWave:Stop()
-		timerNextWorldInFlames:Stop()
-		capernianWiF:Stop()
-	elseif cid == 20063 then
+		if isAscended then
+			timerNextWorldInFlames:Stop()
+			capernianWiF:Stop()
+		end
+	elseif cid == 20063 and isAscended then
 		timerNextFocusedBurst:Stop()
-		timerFocusedDamage:Stop()
+		timerFocusedBurst:Stop()
 	elseif cid == 20064 then
-		bladestormDuration:Stop()
-		timerNextBladestorm:Stop()
 		timerNextGaze:Stop()
+		if isAscended then
+			bladestormDuration:Stop()
+			timerNextBladestorm:Stop()
+		end
 	end
 end
 
