@@ -4,6 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
 mod:RegisterCombat("yell", "Capernian will see to it that your stay here is a short one.")
+mod:SetUsedIcons(8)
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
@@ -38,6 +39,7 @@ local timerNextBladestorm	= mod:NewNextTimer(60, 2135338)
 local timerNextGaze			= mod:NewNextTimer(15, 2135337)
 local timerBellow			= mod:NewNextTimer(30, 2135340)
 local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531)
+local DURATION_GAZE = 15;
 local timerNextFocusedBurst		= mod:NewNextTimer(60, 2135362) -- 2135392 debuff on target when shooting
 local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369)
 
@@ -73,7 +75,7 @@ local allowGazeAlert = 0
 local emoteGazeText = "sets eyes on"
 
 -- local options
-mod:AddBoolOption("GazeIcon", false)
+mod:AddBoolOption(L.GazeIcon, false)
 
 function mod:OnCombatStart(delay)
 	allowGazeAlert = 1
@@ -101,8 +103,7 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 		end
 			
 		if self.Options.GazeIcon then
-			-- TODO still not working
-			self:SetIcon(target, 8)
+			self:SetIcon(target, 8, DURATION_GAZE)
 		end
 	end
 end
