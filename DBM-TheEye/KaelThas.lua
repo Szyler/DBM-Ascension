@@ -19,6 +19,7 @@ mod:RegisterEvents(
 local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
 local warnGaze				= mod:NewTargetAnnounce(2135337, 4)
 local specWarnGaze			= mod:NewSpecialWarningYou(2135337)
+local warnFocusedBurst		= mod:NewTargetAnnounce(2135362, 4) -- ASC only mechanic
 local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
 
 -- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
@@ -78,6 +79,7 @@ local emoteGazeText = "sets eyes on"
 
 -- local options
 mod:AddBoolOption(L.GazeIcon, false)
+mod:AddBoolOption(L.FocusedBurst)
 
 function mod:OnCombatStart(delay)
 	allowGazeAlert = 1
@@ -208,21 +210,32 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
---[[function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135342, 2135343, 2135344, 2135345) and args.amount==5 then
-		specWarnSeal:Show(args.amount, args.destName)
+-- TODO check for UnitName(boss1) / iterate through boss1-8 to find Telanicus to find and verify which one is the real one, then check his target
+local function GetFocusedBurstTarget()
+	local target
+	if self.vb.phase < 3 then
+		target = UnitName("boss1target")
+	else
+		target = UnitName("boss2target")
 	end
-end]]
+	return target
+end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
+		local target = GetFocusedBurstTarget()
+		warnFocusedBurst:Show(target)
+		
 		if self.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
-			specWarnFocusedBurst:Show()
-			timerFocusedDamage:Start()
+			timerFocusedBurst:Start()
+			
+			if UnitName("player") == target then
+				specWarnFocusedBurst:Show()
+			end
 		end
 	elseif args:IsSpellID(2135508) then
 		timerNextRebirth:Start()
