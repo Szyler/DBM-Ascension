@@ -147,7 +147,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerNextBreath:Stop()
 		timerAlarDive:Start()
 		timerEmberSpawn:Start(24)
-		warnDive:Schedule(12)
+		warnDive:Schedule(14)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
 		timerAlarUp:Stop()
 		timerEmberSpawn:Start(22)
