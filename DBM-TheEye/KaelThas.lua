@@ -71,7 +71,7 @@ local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
-local isAscended = mod:IsDifficulty("heroic10", "heroic25")
+local isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
 local warnConflagTargets = {}
 local warnMCTargets = {}
 local leechSpam = 0
@@ -129,18 +129,18 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextWorldInFlames:Start(21)
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextBladestorm:Start(20)
 		end
 	elseif (msg == TelonicusPullYell or msg:find(TelonicusPullYell)) then
 		TelonicusPull:Start()
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextFocusedBurst:Start(22.5)
 		end
 	elseif (msg == SanguinarPullYell or msg:find(SanguinarPullYell)) then
 		SanguinarPull:Start()
 		timerBellow:Start(32)
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextBloodLeech:Start(28)
 		end
 	elseif (msg == WeaponsPullYell or msg:find(WeaponsPullYell)) then
@@ -153,7 +153,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextGaze:Start(16)
 		timerCDBlastWave:Start(20)
 		timerBellow:Start(47)
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextWorldInFlames:Start(30)
 			timerNextBladestorm:Start(46)
 			timerNextFocusedBurst:Start(67.5)
@@ -169,7 +169,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		mod.vb.phase = 4
 		timerNextRebirth:Start(32)
 		
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextManaShield:Start(22)
 		end
 	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
@@ -269,23 +269,23 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 20060 then
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextBloodLeech:Stop()
 			bloodLeechDuration:Stop()
 		end
 		timerBellow:Stop()
 	elseif cid == 20062 then
 		timerCDBlastWave:Stop()
-		if isAscended then
+		if isAscendedDifficulty then
 			timerNextWorldInFlames:Stop()
 			capernianWiF:Stop()
 		end
-	elseif cid == 20063 and isAscended then
+	elseif cid == 20063 and isAscendedDifficulty then
 		timerNextFocusedBurst:Stop()
 		timerFocusedBurst:Stop()
 	elseif cid == 20064 then
 		timerNextGaze:Stop()
-		if isAscended then
+		if isAscendedDifficulty then
 			bladestormDuration:Stop()
 			timerNextBladestorm:Stop()
 		end
