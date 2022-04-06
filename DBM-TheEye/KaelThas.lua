@@ -299,6 +299,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
+	else if args:IsSpellID(2135528) then
+		-- Aura of Blood
+		print("aura of blood")
 	end
 end
 
