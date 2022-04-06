@@ -31,6 +31,7 @@ local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only
 local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only
 local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
 local specWarnFlamestrike	= mod:NewSpecialWarningRun(2135459)
+local specWarnFormDyingSun	= mod:NewSpecialWarningSpell(2135487) -- ASC only
 
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
@@ -255,6 +256,8 @@ function mod:SPELL_CAST_START(args)
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
 		self:SetIcon(args.sourceName, 8)
+	elseif args:IsSpellID(2135487)
+		specWarnFormDyingSun:Show()
 	end
 end
 
