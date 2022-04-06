@@ -177,26 +177,6 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
--- function mod:SPELL_INTERRUPT(args)  -- Check Interval
--- 	if args:IsSpellID(2135264, 2135265) then
--- 		if args.destName == "Solarian Priest" then
--- 			timerNextHealS:Start()
--- 		else 
--- 			timerNextHealL:Start()
--- 		end
--- 	end
--- end
-
--- function mod:SPELL_HEAL(args)
--- 	if args:IsSpellID(2135264, 2135265) then
--- 		if args.sourceName == "Solarian Priest" then
--- 			timerNextHealS:Start()
--- 		else 
--- 			timerNextHealL:Start()
--- 		end
--- 	end
--- end
-
 -- TODO implement usage
 function VoidSpawn()
 	self:UnscheduleMethod("VoidSpawn")
