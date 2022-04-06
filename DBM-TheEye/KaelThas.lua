@@ -87,6 +87,8 @@ mod:AddBoolOption(L.GazeIcon, false)
 mod:AddBoolOption(L.FocusedBurst)
 
 function mod:OnCombatStart(delay)
+	table.wipe(warnConflagTargets)
+	table.wipe(warnMCTargets)
 	allowGazeAlert = 1
 	nextGazeCounter = 0
 	mod.vb.phase = 1
