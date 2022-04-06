@@ -80,6 +80,7 @@ local leechSpam = 0
 
 local allowGazeAlert = 0
 local emoteGazeText = "sets eyes on"
+local nextGazeCounter = 0
 
 -- local options
 mod:AddBoolOption(L.GazeIcon, false)
@@ -87,6 +88,7 @@ mod:AddBoolOption(L.FocusedBurst)
 
 function mod:OnCombatStart(delay)
 	allowGazeAlert = 1
+	nextGazeCounter = 0
 	mod.vb.phase = 1
 end
 
@@ -100,18 +102,38 @@ local function showConflag()
 	table.wipe(warnConflagTargets)
 end
 
+-- Handle Common DBM actions for Gaze 
+local function handleCommonGaze(target)
+    if target == UnitName("player") then
+        specWarnGaze:Show()
+    else
+        warnGaze:Show(target)
+    end
+    
+    if self.Options.GazeIcon then
+        self:SetIcon(target, 8, DURATION_GAZE)
+    end
+end
+
+-- Handle Ascended only DBM actions for Gaze
+local function handleAscendedGaze(target)
+	if nextGazeCounter % 3 == 0 then
+		timerNextGaze:Start(DURATION_GAZE + DURATION_BLADESTORM)
+		nextGazeCounter = 1
+	else
+		timerNextGaze:Start()
+		nextGazeCounter = nextGazeCounter + 1
+	end
+	handleCommonGaze(target)
+end
+
 function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 	if allowGazeAlert and (msg == emoteGazeText or msg:find(emoteGazeText)) then
-		timerNextGaze:Start()
-		
-		if target == UnitName("player") then
-			specWarnGaze:Show()
+		if isAscendedDifficulty then
+			handleAscendedGaze(target)
 		else
-			warnGaze:Show(target)
-		end
-			
-		if self.Options.GazeIcon then
-			self:SetIcon(target, 8, DURATION_GAZE)
+			timerNextGaze:Start()
+			handleCommonGaze(target)
 		end
 	end
 end
@@ -152,11 +174,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		AllPull:Start()
 		mod.vb.phase = 3
 		
-		timerNextGaze:Start(16)
+		timerNextGaze:Start(DURATION_GAZE+1)
 		timerCDBlastWave:Start(20)
 		timerBellow:Start(47)
 		if isAscendedDifficulty then
 			timerNextWorldInFlames:Start(30)
+			nextGazeCounter = 2
 			timerNextBladestorm:Start(46)
 			timerNextFocusedBurst:Start(67.5)
 			timerNextBloodLeech:Start(87)
@@ -292,12 +315,14 @@ function mod:UNIT_DIED(args)
 		if isAscendedDifficulty then
 			bladestormDuration:Stop()
 			timerNextBladestorm:Stop()
+			nextGazeCounter = 0
 		end
 	end
 end
 
 function mod:OnCombatEnd()
 	allowGazeAlert = 0
+	nextGazeCounter = 0
 end
 
 -- Old Kaelthas DBM code
