@@ -289,7 +289,7 @@ function mod:SPELL_CAST_START(args)
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
 		self:SetIcon(args.sourceName, 8)
-	elseif args:IsSpellID(2135487)
+	elseif args:IsSpellID(2135487) then
 		specWarnFormDyingSun:Show()
 	end
 end
@@ -299,7 +299,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
-	else if args:IsSpellID(2135528) then
+	elseif args:IsSpellID(2135528) then
 		-- Aura of Blood
 		print("aura of blood")
 	end
