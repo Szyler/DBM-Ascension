@@ -40,7 +40,7 @@ local timerCDBlastWave			= mod:NewCDTimer(12, 2135354)
 
 local DURATION_GAZE = 15;
 local timerNextGaze				= mod:NewNextTimer(DURATION_GAZE, 2135337)
-local timerNextBladestorm		= mod:NewNextTimer(60, 2135338) -- ASC only mechanic
+local timerNextBladestorm		= mod:NewNextTimer(58, 2135338) -- ASC only
 local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only
 local timerNextFocusedBurst		= mod:NewNextTimer(60, 2135362) -- 2135392 debuff on target when shooting
 local timerBellow				= mod:NewNextTimer(30, 2135340)
@@ -53,7 +53,8 @@ local timerExplosion 		= mod:NewTimer(5, "TimerExplosion",2135459)
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
 
 local capernianWiF			= mod:NewBuffActiveTimer(12, 2135369)
-local bladestormDuration	= mod:NewBuffActiveTimer(12, 2135338)
+local DURATION_BLADESTORM = 13
+local bladestormDuration	= mod:NewBuffActiveTimer(DURATION_BLADESTORM, 2135338)
 local bloodLeechDuration	= mod:NewBuffActiveTimer(11, 2135531)
 local timerNextRebirth		= mod:NewNextTimer(40, 2135508)
 local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
