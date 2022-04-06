@@ -250,8 +250,16 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+local function FindFocusedBurstTarget()
+	for i = 1, 8 do
+		if UnitName("boss"..i) == L.Telonicus then
+			return UnitName("boss"..i.."target")
+		end
+	end
+end
+
 -- TODO check for UnitName(boss1) / iterate through boss1-8 to find Telanicus to find and verify which one is the real one, then check his target
-local function GetFocusedBurstTarget()
+--[[local function GetFocusedBurstTarget()
 	local target
 	if mod.vb.phase < 3 then
 		target = UnitName("boss1target")
@@ -259,14 +267,14 @@ local function GetFocusedBurstTarget()
 		target = UnitName("boss2target")
 	end
 	return target
-end
+end]]
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		local target = GetFocusedBurstTarget()
+		local target = FindFocusedBurstTarget()
 		warnFocusedBurst:Show(target)
 		
 		if mod.vb.phase == 3 then
