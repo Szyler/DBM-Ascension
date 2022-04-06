@@ -24,27 +24,27 @@ local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most
 
 -- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
 --local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
-local specWarnWiF			= mod:NewSpecialWarningSpell(2135369) -- ASC only mechanic
-local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338) -- ASC only mechanic
-local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362) -- ASC only mechanic
-local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only mechanic
-local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only mechanic
+local specWarnWiF			= mod:NewSpecialWarningSpell(2135369) -- ASC only
+local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338) -- ASC only
+local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362) -- ASC only
+local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only
+local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only
 local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
 local specWarnFlamestrike	= mod:NewSpecialWarningRun(2135459)
 
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
-local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369) -- ASC only mechanic
+local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369) -- ASC only
 local timerCDBlastWave			= mod:NewCDTimer(12, 2135354)
 
 local DURATION_GAZE = 15;
 local timerNextGaze				= mod:NewNextTimer(DURATION_GAZE, 2135337)
 local timerNextBladestorm		= mod:NewNextTimer(60, 2135338) -- ASC only mechanic
-local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only mechanic
+local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only
 local timerNextFocusedBurst		= mod:NewNextTimer(60, 2135362) -- 2135392 debuff on target when shooting
 local timerBellow				= mod:NewNextTimer(30, 2135340)
-local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only mechanic
+local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only
 
 local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
 local pyroCast				= mod:NewCastTimer(6, 2135444)
