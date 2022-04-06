@@ -251,7 +251,7 @@ end
 -- TODO check for UnitName(boss1) / iterate through boss1-8 to find Telanicus to find and verify which one is the real one, then check his target
 local function GetFocusedBurstTarget()
 	local target
-	if self.vb.phase < 3 then
+	if mod.vb.phase < 3 then
 		target = UnitName("boss1target")
 	else
 		target = UnitName("boss2target")
@@ -267,7 +267,7 @@ function mod:SPELL_CAST_START(args)
 		local target = GetFocusedBurstTarget()
 		warnFocusedBurst:Show(target)
 		
-		if self.vb.phase == 3 then
+		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()
 			
