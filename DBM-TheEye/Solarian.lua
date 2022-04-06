@@ -4,6 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(18805)
 mod:RegisterCombat("combat")
+mod:SetUsedIcons(8)
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
@@ -62,6 +63,7 @@ mod:AddBoolOption(L.WrathYellOpt)
 mod:AddBoolOption(L.StartingPriest, false)
 mod:AddBoolOption(L.StartingSolarian, false)
 mod:AddBoolOption(L.PanicYellOpt, false)
+mod:AddBoolOption("SetOrbitalIcon", false)
 
 function mod:OnCombatStart(delay)
 	AntiSpam = GetTime()
@@ -166,14 +168,21 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
+function announceBlastTarget()
+	target = UnitName("boss1target")
+	self:SetIcon(target, 8)
+end
+
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264, 2135265) then
-		specWarnHeal:Show()	-- need to add timer for next heal as well
+		specWarnHeal:Show()
 		if args.sourceName == "Solarian Priest" then
 			timerNextHealS:Start()
 		else 
 			timerNextHealL:Start()
 		end
+	elseif args:IsSpellID(2135224) and isAscendedDifficulty and self.Options.SetOrbitalIcon then
+		mod:Schedule(1, announceBlastTarget)
 	end
 end
 
