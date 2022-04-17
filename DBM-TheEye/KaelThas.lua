@@ -86,7 +86,7 @@ local nextGazeCounter = 0
 
 -- local options
 mod:AddBoolOption(L.GazeIcon, false)
-mod:AddBoolOption(L.FocusedBurst)
+mod:AddBoolOption(L.FocusedBurst, false)
 
 function mod:OnCombatStart(delay)
 	table.wipe(warnConflagTargets)
