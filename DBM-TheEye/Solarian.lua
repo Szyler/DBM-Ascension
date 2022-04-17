@@ -169,7 +169,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function announceBlastTarget()
-	target = UnitName("boss1target")
+	target = mod:GetBossTarget(18805)
 	self:SetIcon(target, 8)
 end
 
@@ -182,7 +182,7 @@ function mod:SPELL_CAST_START(args)
 			timerNextHealL:Start()
 		end
 	elseif args:IsSpellID(2135224) and isAscendedDifficulty and self.Options.SetOrbitalIcon then
-		mod:Schedule(1, announceBlastTarget)
+		self:Schedule(1, announceBlastTarget)
 	end
 end
 
