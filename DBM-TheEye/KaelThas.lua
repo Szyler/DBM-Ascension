@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
 mod:RegisterCombat("yell", "Capernian will see to it that your stay here is a short one.")
-mod:SetUsedIcons(8)
+mod:SetUsedIcons(7,8)
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
@@ -271,21 +271,30 @@ end
 	return target
 end]]
 
+local function handleFocusedBurstTarget(target)
+	--print(mod:GetBossTarget(20063))
+	warnFocusedBurst:Show(target)
+	if mod.vb.phase == 3 and UnitName("player") == target then
+		specWarnFocusedBurst:Show()
+	end
+	if self.Options.FocusedBurst then
+		mod:SetIcon(target, 7, 10)
+	end
+end
+
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		warnFocusedBurst:Show(target)
-		local target = findFocusedBurstTarget()
+		local target = mod:GetBossTarget(20063)
+		if target then
+			mod:Schedule(2, handleFocusedBurstTarget(target))
+		end
 		
 		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()
-			
-			if UnitName("player") == target then
-				specWarnFocusedBurst:Show()
-			end
 		end
 	elseif args:IsSpellID(2135508) then
 		timerNextRebirth:Start()
