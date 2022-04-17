@@ -59,8 +59,10 @@ local bladestormDuration	= mod:NewBuffActiveTimer(DURATION_BLADESTORM, 2135338)
 local bloodLeechDuration	= mod:NewBuffActiveTimer(11, 2135531)
 local timerNextRebirth		= mod:NewNextTimer(40, 2135508)
 local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
-local timerBanish			= mod:NewNextTimer(22, 2135470)
-local KTLevitate			= mod:NewBuffActiveTimer(30, 2135477)
+local DURATION_BANISH = 22
+local banishDuration		= mod:NewBuffActiveTimer(DURATION_BANISH, 2135470)
+local gravityLapse			= mod:NewBuffActiveTimer(30, 2135477)
+local timerNextDyingSun		= mod:NewNextTimer(75, 2135487)
 
 -- Lieutenant timers
 local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
