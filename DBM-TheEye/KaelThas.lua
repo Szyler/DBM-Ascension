@@ -48,7 +48,7 @@ local timerBellow				= mod:NewNextTimer(30, 2135340)
 local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only
 
 local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
-local pyroCast				= mod:NewCastTimer(6, 2135444)
+local pyroCast				= mod:NewCastTimer(7, 2135444)
 local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459)
 local timerExplosion 		= mod:NewTimer(5, "TimerExplosion",2135459)
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
