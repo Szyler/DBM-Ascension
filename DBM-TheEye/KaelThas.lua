@@ -206,6 +206,20 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
+local function handleBanishStart()
+	banishDuration:Start()
+	gravityLapse:Schedule(DURATION_BANISH - 10)
+	
+	timerNextManaShield:Stop()
+	timerNextPyro:Stop()
+	timerNextFlameStrike:Stop()
+	timerNextMC:Stop()
+end
+
+local function handleBanishEnd()
+	timerNextPyro:Start(10)
+end
+
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135467, 2135468, 2135469) then
 		warnMCTargets[#warnMCTargets + 1] = args.destName
@@ -225,13 +239,24 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135354, 2135355, 2135356, 2135357) then
 		timerCDBlastWave:Start()
 	elseif args:IsSpellID(2135470) then
-		timerBanish:Start()
-		KTLevitate:Schedule(20)
-		timerNextFlameStrike:Start(100)
-		timerNextPyro:Start(85)
+		handleBanishStart()
 		mod.vb.phase = 5
+		self:Schedule(DURATION_BANISH, handleBanishEnd)
+		
+		timerNextDyingSun:Start()
+		timerNextManaShield:Start(98)
+		timerNextFlameStrike:Start(100)
+		timerNextMC:Start(122)
+		
+		--TODO from here
+		--timerNextFlameStrike:Start(100)
+		--timerNextPyro:Start(85)
+		
 		--Schedule mod.vb.phase = 6 20 seconds
 		--Schedule mod.vb.phase = 7 75 seconds
+	-- 2135528 - Aura of Blood
+	-- 2135531 - Blood Leech
+	-- TODO fix: detect Aura of Blood instead of Blood Leech
 	elseif args:IsSpellID(2135531, 2135533) and (GetTime() - leechSpam > 20) then
 		leechSpam = GetTime()
 		specWarnBloodLeech:Show()
