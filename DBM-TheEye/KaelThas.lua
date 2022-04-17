@@ -191,6 +191,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			nextGazeCounter = 2
 			timerNextBladestorm:Start(SCHEDULE_ALL_PULL + 32) -- Delay(2) + 30s
 			timerNextFocusedBurst:Start(SCHEDULE_ALL_PULL + 49) -- Delay(4) + 45s
+			-- TODO the timer here is for the Aura of Blood. Blood Leech happens 1 second after Aura of blood
 			timerNextBloodLeech:Start(SCHEDULE_ALL_PULL + 66) -- Delay(6) + 60s
 		end
 	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
@@ -243,6 +244,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextGravityLapse:Start(DURATION_BANISH + 20)
 		timerNextPyro:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST)
 		timerNextManaShield:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST - 1)
+	elseif args:IsSpellID(2135528) then
+		print("SPELL_AURA_APPLIED: Aura of Blood") -- Starts the Blood Leech
 	elseif args:IsSpellID(2135531, 2135533) and (GetTime() - leechSpam > 20) then
 		-- 2135528 - Aura of Blood
 		-- 2135531 - Blood Leech
@@ -250,8 +253,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		leechSpam = GetTime()
 		specWarnBloodLeech:Show()
 		bloodLeechDuration:Start()
-		timerNextBloodLeech:Start()
-		bloodLeechDuration:Start()
+		-- TODO first leech applies 1 second later than the Aura of Blood
+		timerNextBloodLeech:Start(59)
 	elseif args:IsSpellID(2135369) then
 		capernianWiF:Start()
 		specWarnWiF:Show()
@@ -301,6 +304,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
+	elseif args:IsSpellID(2135528) then
+		print("SPELL_CAST_SUCCESS: Aura of Blood") -- Starts the Blood Leech
 	elseif args:IsSpellID(2135477) then
 		stopKaelTimers()
 		timerNextGravity:Start()
