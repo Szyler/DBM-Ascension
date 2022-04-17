@@ -39,7 +39,7 @@ local specWarnFormDyingSun	= mod:NewSpecialWarningSpell(2135487) -- ASC only
 local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369) -- ASC only
 local timerCDBlastWave			= mod:NewCDTimer(12, 2135354)
 
-local DURATION_GAZE = 15;
+local DURATION_GAZE = 15
 local timerNextGaze				= mod:NewNextTimer(DURATION_GAZE, 2135337)
 local timerNextBladestorm		= mod:NewNextTimer(58, 2135338) -- ASC only
 local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only
@@ -277,33 +277,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-local function findFocusedBurstTarget()
-	for i = 1, 8 do
-		if UnitName("boss"..i) == L.Telonicus then
-			return UnitName("boss"..i.."target")
-		end
-	end
-end
-
--- TODO check for UnitName(boss1) / iterate through boss1-8 to find Telanicus to find and verify which one is the real one, then check his target
---[[local function GetFocusedBurstTarget()
-	local target
-	if mod.vb.phase < 3 then
-		target = UnitName("boss1target")
-	else
-		target = UnitName("boss2target")
-	end
-	return target
-end]]
-
-local function handleFocusedBurstTarget(target)
-	--print(mod:GetBossTarget(20063))
+local function handleFocusedBurstTarget()
+	local target = mod:GetBossTarget(20063)
 	warnFocusedBurst:Show(target)
 	if mod.vb.phase == 3 and UnitName("player") == target then
 		specWarnFocusedBurst:Show()
 	end
 	if self.Options.FocusedBurst then
-		mod:SetIcon(target, 7, 10)
+		self:SetIcon(target, 7, 10)
 	end
 end
 
@@ -312,11 +293,7 @@ function mod:SPELL_CAST_START(args)
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		local target = mod:GetBossTarget(20063)
-		if target then
-			mod:Schedule(2, handleFocusedBurstTarget(target))
-		end
-		
+		self:Schedule(2, handleFocusedBurstTarget)
 		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()
@@ -335,9 +312,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
-	elseif args:IsSpellID(2135528) then
-		-- Aura of Blood
-		print("aura of blood")
 	end
 end
 
