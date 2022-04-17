@@ -70,7 +70,8 @@ local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
 local TelonicusPull			= mod:NewTimer(7.5, "Telonicus spawning in: ", 2135337)
 local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
 local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
-local AllPull				= mod:NewTimer(14, "Everyone spawning in: ", 2135337)
+local SCHEDULE_ALL_PULL = 14
+local AllPull				= mod:NewTimer(SCHEDULE_ALL_PULL, "Everyone spawning in: ", 2135337)
 local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 
 
@@ -150,59 +151,58 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	local WeaponsPullYell 	= "As you see, I have many weapons in my arsenal...."
 	local AllPullYell 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
 	local KaelThasPullYell 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
-	-- local KTLevitate 	= "Having trouble staying grounded?"
 
 	if (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
 		CapernianPull:Start()
-		timerNextWorldInFlames:Start(21)
+		timerNextWorldInFlames:Start(21) -- 15s + PullTimer(6)
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
 		if isAscendedDifficulty then
-			timerNextBladestorm:Start(20)
+			timerNextBladestorm:Start(20) -- 15s + PullTimer(5)
 		end
 	elseif (msg == TelonicusPullYell or msg:find(TelonicusPullYell)) then
 		TelonicusPull:Start()
 		if isAscendedDifficulty then
-			timerNextFocusedBurst:Start(22.5)
+			timerNextFocusedBurst:Start(22.5) -- 30s - PullTimer(7.5)
 		end
 	elseif (msg == SanguinarPullYell or msg:find(SanguinarPullYell)) then
 		SanguinarPull:Start()
-		timerBellow:Start(32)
+		timerBellow:Start(32) -- 20s + PullTimer(12)
 		if isAscendedDifficulty then
-			timerNextBloodLeech:Start(28)
+			timerNextBloodLeech:Start(27) -- 15s + PullTimer(12)
 		end
 	elseif (msg == WeaponsPullYell or msg:find(WeaponsPullYell)) then
 		WeaponsPull:Start()
 		mod.vb.phase = 2
 	elseif (msg == AllPullYell or msg:find(AllPullYell)) then
+		-- Capernian instant spawn, but each npc ress is delayed by 2 sec compared to the all pull timer
 		AllPull:Start()
 		mod.vb.phase = 3
 		
-		timerNextGaze:Start(DURATION_GAZE+1)
-		timerCDBlastWave:Start(20)
-		timerBellow:Start(47)
+		timerCDBlastWave:Start(SCHEDULE_ALL_PULL + 6) -- Delay(0) + 2 x FireBalls
+		timerNextGaze:Start(SCHEDULE_ALL_PULL + 2) -- Delay(2)
+		timerBellow:Start(SCHEDULE_ALL_PULL + 26) -- Delay(6) + 20s
+		
 		if isAscendedDifficulty then
-			timerNextWorldInFlames:Start(30)
+			timerNextWorldInFlames:Start(SCHEDULE_ALL_PULL + 15) -- Delay(0) + 15s
 			nextGazeCounter = 2
-			timerNextBladestorm:Start(46)
-			timerNextFocusedBurst:Start(67.5)
-			timerNextBloodLeech:Start(87)
+			timerNextBladestorm:Start(SCHEDULE_ALL_PULL + 32) -- Delay(2) + 30s
+			timerNextFocusedBurst:Start(SCHEDULE_ALL_PULL + 49) -- Delay(4) + 45s
+			timerNextBloodLeech:Start(SCHEDULE_ALL_PULL + 66) -- Delay(6) + 60s
 		end
 	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
 		KaelThasPull:Start()
-		timerNextPyro:Start(17)
-		timerNextFlameStrike:Start(27)
-		specWarnFlamestrike:Schedule(27)
-		timerExplosion:Start(32)
-		timerNextMC:Start(47)
+		timerNextPyro:Start(17) -- 10s + PullTimer(7)
+		timerNextFlameStrike:Start(27) -- 20s + PullTimer(7)
+		specWarnFlamestrike:Schedule(27) -- 20s + PullTimer(7)
+		timerExplosion:Start(32) -- 25s + PullTimer(7)
+		timerNextMC:Start(47) -- 40s +  + PullTimer(7)
 		mod.vb.phase = 4
-		timerNextRebirth:Start(32)
+		timerNextRebirth:Start(32) -- 25s + PullTimer(7)/
 		
 		if isAscendedDifficulty then
-			timerNextManaShield:Start(22)
+			timerNextManaShield:Start(22) -- 15s + PullTimer(7)
 		end
-	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
-		-- KTLevitate:Start()
 	end
 end
 
