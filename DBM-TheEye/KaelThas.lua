@@ -31,7 +31,7 @@ local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only
 local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only
 local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
 local specWarnFlamestrike	= mod:NewSpecialWarningRun(2135459)
-local specWarnFormDyingSun	= mod:NewSpecialWarningSpell(2135487) -- ASC only
+local specWarnFormDyingStar	= mod:NewSpecialWarningSpell(2135487) -- ASC only
 
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
@@ -62,7 +62,7 @@ local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
 local DURATION_BANISH = 22
 local banishDuration		= mod:NewBuffActiveTimer(DURATION_BANISH, 2135470)
 local gravityLapse			= mod:NewBuffActiveTimer(30, 2135477)
-local timerNextDyingSun		= mod:NewNextTimer(75, 2135487)
+local timerNextDyingStar	= mod:NewNextTimer(33, 2135487)
 
 -- Lieutenant timers
 local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
