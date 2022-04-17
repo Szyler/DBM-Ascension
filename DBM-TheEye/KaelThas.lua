@@ -48,7 +48,8 @@ local timerBellow				= mod:NewNextTimer(30, 2135340)
 local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only
 
 local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
-local pyroCast				= mod:NewCastTimer(7, 2135444)
+local DURATION_PYRO_CAST = 7
+local pyroCast				= mod:NewCastTimer(DURATION_PYRO_CAST, 2135444)
 local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459)
 local timerExplosion 		= mod:NewTimer(5, "TimerExplosion",2135459)
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
@@ -61,8 +62,10 @@ local timerNextRebirth		= mod:NewNextTimer(40, 2135508)
 local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
 local DURATION_BANISH = 22
 local banishDuration		= mod:NewBuffActiveTimer(DURATION_BANISH, 2135470)
-local gravityLapse			= mod:NewBuffActiveTimer(30, 2135477)
+local DURATION_DYING_STAR_CHANNEL = 6
 local timerNextDyingStar	= mod:NewNextTimer(33, 2135487)
+local DURATION_GRAVITY_LAPSE = 30
+local timerNextGravityLapse	= mod:NewNextTimer(129 , 2135477)
 
 -- Lieutenant timers
 local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
@@ -206,18 +209,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-local function handleBanishStart()
-	banishDuration:Start()
-	gravityLapse:Schedule(DURATION_BANISH - 10)
-	
+local function stopKaelTimers()
 	timerNextManaShield:Stop()
 	timerNextPyro:Stop()
 	timerNextFlameStrike:Stop()
+	timerNextRebirth:Stop()
+	timerExplosion:Stop()
 	timerNextMC:Stop()
-end
-
-local function handleBanishEnd()
-	timerNextPyro:Start(10)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -239,25 +237,16 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135354, 2135355, 2135356, 2135357) then
 		timerCDBlastWave:Start()
 	elseif args:IsSpellID(2135470) then
-		handleBanishStart()
+		banishDuration:Start()
 		mod.vb.phase = 5
-		self:Schedule(DURATION_BANISH, handleBanishEnd)
-		
-		timerNextDyingSun:Start()
-		timerNextManaShield:Start(98)
-		timerNextFlameStrike:Start(100)
-		timerNextMC:Start(122)
-		
-		--TODO from here
-		--timerNextFlameStrike:Start(100)
-		--timerNextPyro:Start(85)
-		
-		--Schedule mod.vb.phase = 6 20 seconds
-		--Schedule mod.vb.phase = 7 75 seconds
-	-- 2135528 - Aura of Blood
-	-- 2135531 - Blood Leech
-	-- TODO fix: detect Aura of Blood instead of Blood Leech
+		stopKaelTimers()
+		timerNextGravityLapse:Start(DURATION_BANISH + 20)
+		timerNextPyro:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST)
+		timerNextManaShield:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST - 1)
 	elseif args:IsSpellID(2135531, 2135533) and (GetTime() - leechSpam > 20) then
+		-- 2135528 - Aura of Blood
+		-- 2135531 - Blood Leech
+		-- TODO fix: detect Aura of Blood instead of Blood Leech, then we can remove leechspam
 		leechSpam = GetTime()
 		specWarnBloodLeech:Show()
 		bloodLeechDuration:Start()
@@ -274,6 +263,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135453) then
 		timerNextManaShield:Start()
 		specWarnManaShield:Show()
+	elseif args:IsSpellID(2135487) then
+		specWarnFormDyingStar:Show()
 	end
 end
 
@@ -302,8 +293,6 @@ function mod:SPELL_CAST_START(args)
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
 		self:SetIcon(args.sourceName, 8)
-	elseif args:IsSpellID(2135487) then
-		specWarnFormDyingSun:Show()
 	end
 end
 
@@ -312,6 +301,21 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
+	elseif args:IsSpellID(2135477) then
+		stopKaelTimers()
+		timerNextGravity:Start()
+		
+		local delayTime = 0
+		if isAscendedDifficulty then
+			delayTime = DURATION_DYING_STAR_CHANNEL
+			timerNextDyingStar:Start()
+			timerNextManaShield:Start(DURATION_GRAVITY_LAPSE + 13 + delayTime)
+		end
+		
+		timerNextPyro:Start(DURATION_GRAVITY_LAPSE + 14 + delayTime)
+		timerNextFlameStrike:Start(DURATION_GRAVITY_LAPSE + 24 + delayTime)
+		timerNextRebirth:Start(DURATION_GRAVITY_LAPSE + 28 + delayTime)
+		timerNextMC:Start(DURATION_GRAVITY_LAPSE + 44 + delayTime)
 	end
 end
 
