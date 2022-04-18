@@ -126,8 +126,8 @@ L:SetOptionLocalization{
 	-- SpecWarnGaze		= "Show special warning when Gaze on you",
 	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
 	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
-	GazeIcon			= "Set icon on Thaladred's Gaze target",
-	FocusedBurst		= "Set icon on Focused Burst target"
+	GazeIcon			= "Set icon on $spell:2135337 target",
+	FocusedBurst		= "Set icon on $spell:2135392 target"
 	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
 

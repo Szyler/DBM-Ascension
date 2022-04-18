@@ -257,8 +257,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		banishDuration:Start()
 		mod.vb.phase = 5
 		self:StopKaelTimers()
-		timerNextGravityLapse:Start(DURATION_BANISH + 20)
+		-- TODO find whatever spellID AND COMBAT_LOG_EVENT Gravity Lapse is triggered by and split it. SPELL_AURA_APPLIED, SPELL_CAST_START and SPELL_CAST_SUCCESS doesnt work
 		self:ScheduleMethod(DURATION_BANISH + 20, "HandleGravity")
+		timerNextGravityLapse:Start(DURATION_BANISH + 20)
 		timerNextPyro:Start(DURATION_BANISH + 10)
 		if isAscendedDifficulty then
 			timerNextManaShield:Start(DURATION_BANISH + 10 + DURATION_PYRO_CAST - 1)
@@ -280,14 +281,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135453) then
 		timerNextManaShield:Start()
 		specWarnManaShield:Show()
-	-- TODO find whatever Gravity Lapse is triggered by
 	elseif args:IsSpellID(2135487) then
 		timerNextDyingStar:Start()
 		specWarnFormDyingStar:Show()
 	end
 end
 
-function mod:handleFocusedBurstTarget()
+function mod:HandleFocusedBurstTarget()
 	local target = mod:GetBossTarget(20063)
 	if target then
 		warnFocusedBurst:Show(target)
@@ -305,7 +305,7 @@ function mod:SPELL_CAST_START(args)
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		self:ScheduleMethod(2, "handleFocusedBurstTarget")
+		self:ScheduleMethod(2, "HandleFocusedBurstTarget")
 		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()
@@ -324,7 +324,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerExplosion:Start(40)
 	end
 end
-
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
