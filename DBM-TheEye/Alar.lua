@@ -88,7 +88,7 @@ end
 
 function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2135174) and args:IsPlayer() then
-		specWarnFeather:Stop()
+		self:Unschedule(specWarnFeather)
 		specWarnFeather:Schedule(45)
 	end
 end
