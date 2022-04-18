@@ -63,7 +63,7 @@ local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
 local DURATION_BANISH = 22
 local banishDuration		= mod:NewBuffActiveTimer(DURATION_BANISH, 2135470)
 local DURATION_DYING_STAR_CHANNEL = 6
-local timerNextDyingStar	= mod:NewNextTimer(33, 2135487)
+local timerNextDyingStar	= mod:NewNextTimer(129, 2135487)
 local DURATION_GRAVITY_LAPSE = 30
 local timerNextGravityLapse	= mod:NewNextTimer(129 , 2135477)
 
@@ -79,7 +79,7 @@ local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
-local isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
+local isAscendedDifficulty = false
 local warnConflagTargets = {}
 local warnMCTargets = {}
 local leechSpam = 0
@@ -98,6 +98,7 @@ function mod:OnCombatStart(delay)
 	allowGazeAlert = 1
 	nextGazeCounter = 0
 	mod.vb.phase = 1
+	isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
 end
 
 local function showMC()
@@ -219,6 +220,23 @@ local function stopKaelTimers()
 	timerNextMC:Stop()
 end
 
+local function handleGravity()
+	stopKaelTimers()
+	timerNextGravityLapse:Start()
+	
+	local delayTime = 0
+	if isAscendedDifficulty then
+		delayTime = DURATION_DYING_STAR_CHANNEL
+		timerNextDyingStar:Start(33)
+		timerNextManaShield:Start(DURATION_GRAVITY_LAPSE + 13 + DURATION_PYRO_CAST + delayTime)
+	end
+	
+	timerNextPyro:Start(DURATION_GRAVITY_LAPSE + 14 + delayTime)
+	timerNextFlameStrike:Start(DURATION_GRAVITY_LAPSE + 24 + delayTime)
+	timerNextRebirth:Start(DURATION_GRAVITY_LAPSE + 28 + delayTime)
+	timerNextMC:Start(DURATION_GRAVITY_LAPSE + 44 + delayTime)
+end
+
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135467, 2135468, 2135469) then
 		warnMCTargets[#warnMCTargets + 1] = args.destName
@@ -242,18 +260,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		mod.vb.phase = 5
 		stopKaelTimers()
 		timerNextGravityLapse:Start(DURATION_BANISH + 20)
-		timerNextPyro:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST)
-		timerNextManaShield:Start(DURATION_BANISH + 3 + DURATION_PYRO_CAST - 1)
-	elseif args:IsSpellID(2135528) then
-		print("SPELL_AURA_APPLIED: Aura of Blood") -- Starts the Blood Leech
+		self:Schedule(DURATION_BANISH + 20, handleGravity)
+		timerNextPyro:Start(DURATION_BANISH + 10)
+		if isAscendedDifficulty then
+			timerNextManaShield:Start(DURATION_BANISH + 10 + DURATION_PYRO_CAST - 1)
+		end
 	elseif args:IsSpellID(2135531, 2135533) and (GetTime() - leechSpam > 20) then
-		-- 2135528 - Aura of Blood
-		-- 2135531 - Blood Leech
-		-- TODO fix: detect Aura of Blood instead of Blood Leech, then we can remove leechspam
 		leechSpam = GetTime()
 		specWarnBloodLeech:Show()
 		bloodLeechDuration:Start()
-		-- TODO first leech applies 1 second later than the Aura of Blood
+		--First leech applies 1 second later than the Aura of Blood
 		timerNextBloodLeech:Start(59)
 	elseif args:IsSpellID(2135369) then
 		capernianWiF:Start()
@@ -267,6 +283,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextManaShield:Start()
 		specWarnManaShield:Show()
 	elseif args:IsSpellID(2135487) then
+		timerNextDyingStar:Start()
 		specWarnFormDyingStar:Show()
 	end
 end
@@ -292,7 +309,7 @@ function mod:SPELL_CAST_START(args)
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()
 		end
-	elseif args:IsSpellID(2135508) then
+	elseif args:IsSpellID(2135506, 2135507, 2135508, 2135509) then
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
 		self:SetIcon(args.sourceName, 8)
@@ -304,23 +321,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextFlameStrike:Start(35)
 		specWarnFlamestrike:Schedule(35)
 		timerExplosion:Start(40)
-	elseif args:IsSpellID(2135528) then
-		print("SPELL_CAST_SUCCESS: Aura of Blood") -- Starts the Blood Leech
-	elseif args:IsSpellID(2135477) then
-		stopKaelTimers()
-		timerNextGravity:Start()
-		
-		local delayTime = 0
-		if isAscendedDifficulty then
-			delayTime = DURATION_DYING_STAR_CHANNEL
-			timerNextDyingStar:Start()
-			timerNextManaShield:Start(DURATION_GRAVITY_LAPSE + 13 + delayTime)
-		end
-		
-		timerNextPyro:Start(DURATION_GRAVITY_LAPSE + 14 + delayTime)
-		timerNextFlameStrike:Start(DURATION_GRAVITY_LAPSE + 24 + delayTime)
-		timerNextRebirth:Start(DURATION_GRAVITY_LAPSE + 28 + delayTime)
-		timerNextMC:Start(DURATION_GRAVITY_LAPSE + 44 + delayTime)
 	end
 end
 
