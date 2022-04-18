@@ -111,8 +111,7 @@ local function showConflag()
 	table.wipe(warnConflagTargets)
 end
 
--- Handle Common DBM actions for Gaze 
-local function handleCommonGaze(target)
+function mod:HandleCommonGaze(target)
     if target == UnitName("player") then
         specWarnGaze:Show()
     else
@@ -124,8 +123,7 @@ local function handleCommonGaze(target)
     end
 end
 
--- Handle Ascended only DBM actions for Gaze
-local function handleAscendedGaze(target)
+function mod:HandleAscendedGaze(target)
 	if nextGazeCounter % 3 == 0 then
 		timerNextGaze:Start(DURATION_GAZE + DURATION_BLADESTORM)
 		nextGazeCounter = 1
@@ -133,16 +131,16 @@ local function handleAscendedGaze(target)
 		timerNextGaze:Start()
 		nextGazeCounter = nextGazeCounter + 1
 	end
-	handleCommonGaze(target)
+	mod:HandleCommonGaze(target)
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 	if allowGazeAlert and (msg == emoteGazeText or msg:find(emoteGazeText)) then
 		if isAscendedDifficulty then
-			handleAscendedGaze(target)
+			mod:HandleAscendedGaze(target)
 		else
 			timerNextGaze:Start()
-			handleCommonGaze(target)
+			mod:HandleCommonGaze(target)
 		end
 	end
 end
@@ -167,7 +165,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif (msg == TelonicusPullYell or msg:find(TelonicusPullYell)) then
 		TelonicusPull:Start()
 		if isAscendedDifficulty then
-			timerNextFocusedBurst:Start(22.5) -- 30s - PullTimer(7.5)
+			timerNextFocusedBurst:Start(22.5) -- 15s + PullTimer(7.5)
 		end
 	elseif (msg == SanguinarPullYell or msg:find(SanguinarPullYell)) then
 		SanguinarPull:Start()
@@ -211,7 +209,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-local function stopKaelTimers()
+function mod:StopKaelTimers()
 	timerNextManaShield:Stop()
 	timerNextPyro:Stop()
 	timerNextFlameStrike:Stop()
@@ -220,8 +218,8 @@ local function stopKaelTimers()
 	timerNextMC:Stop()
 end
 
-local function handleGravity()
-	stopKaelTimers()
+function mod:HandleGravity()
+	self:StopKaelTimers()
 	timerNextGravityLapse:Start()
 	
 	local delayTime = 0
@@ -258,9 +256,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135470) then
 		banishDuration:Start()
 		mod.vb.phase = 5
-		stopKaelTimers()
+		self:StopKaelTimers()
 		timerNextGravityLapse:Start(DURATION_BANISH + 20)
-		self:Schedule(DURATION_BANISH + 20, handleGravity)
+		self:ScheduleMethod(DURATION_BANISH + 20, "HandleGravity")
 		timerNextPyro:Start(DURATION_BANISH + 10)
 		if isAscendedDifficulty then
 			timerNextManaShield:Start(DURATION_BANISH + 10 + DURATION_PYRO_CAST - 1)
@@ -282,20 +280,23 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135453) then
 		timerNextManaShield:Start()
 		specWarnManaShield:Show()
+	-- TODO find whatever Gravity Lapse is triggered by
 	elseif args:IsSpellID(2135487) then
 		timerNextDyingStar:Start()
 		specWarnFormDyingStar:Show()
 	end
 end
 
-local function handleFocusedBurstTarget()
+function mod:handleFocusedBurstTarget()
 	local target = mod:GetBossTarget(20063)
-	warnFocusedBurst:Show(target)
-	if mod.vb.phase == 3 and UnitName("player") == target then
-		specWarnFocusedBurst:Show()
-	end
-	if self.Options.FocusedBurst then
-		self:SetIcon(target, 7, 10)
+	if target then
+		warnFocusedBurst:Show(target)
+		if mod.vb.phase == 3 and UnitName("player") == target then
+			specWarnFocusedBurst:Show()
+		end
+		if self.Options.FocusedBurst then
+			self:SetIcon(target, 7, 8)
+		end
 	end
 end
 
@@ -304,7 +305,7 @@ function mod:SPELL_CAST_START(args)
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		self:Schedule(2, handleFocusedBurstTarget)
+		self:ScheduleMethod(2, "handleFocusedBurstTarget")
 		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
 			timerFocusedBurst:Start()

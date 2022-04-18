@@ -50,7 +50,6 @@ local yellLunarWrath		= mod:NewFadesYell(2135278)
 local yellSolarWrath		= mod:NewFadesYell(2135287)
 
 -- local variables
-local isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
 local nextPriest = ""
 local isSolarian = false;
 local below55 = false;
@@ -63,7 +62,7 @@ mod:AddBoolOption(L.WrathYellOpt)
 mod:AddBoolOption(L.StartingPriest, false)
 mod:AddBoolOption(L.StartingSolarian, false)
 mod:AddBoolOption(L.PanicYellOpt, false)
-mod:AddBoolOption("SetOrbitalIcon", false)
+mod:AddBoolOption(L.OrbitalBlastTargetOpt, false)
 
 function mod:OnCombatStart(delay)
 	AntiSpam = GetTime()
@@ -138,7 +137,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSWrathPop:Stop()
 		timerVoidSpawn:Start()
 		specWarnVoidSpawn:Schedule(20)
-		if isAscendedDifficulty then
+		if mod:IsDifficulty("heroic10", "heroic25") then
 			timerNextVoidSeed:Start(15)
 		end
 	elseif args:IsSpellID(2135499) then
@@ -168,9 +167,12 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
-function announceBlastTarget()
-	target = mod:GetBossTarget(18805)
-	self:SetIcon(target, 8)
+function mod:AnnounceBlastTarget()
+	local target = mod:GetBossTarget(18805)
+	-- solarian can disappear and change form midfight, thus the delay and the nil check
+	if target then
+		self:SetIcon(target, 8, 2)
+	end
 end
 
 function mod:SPELL_CAST_START(args)
@@ -181,8 +183,8 @@ function mod:SPELL_CAST_START(args)
 		else 
 			timerNextHealL:Start()
 		end
-	elseif args:IsSpellID(2135224) and isAscendedDifficulty and self.Options.SetOrbitalIcon then
-		self:Schedule(1, announceBlastTarget)
+	elseif args:IsSpellID(2135224) and self.Options.OrbitalBlastTargetOpt and mod:IsDifficulty("heroic10", "heroic25") then
+		self:ScheduleMethod(0.5, "AnnounceBlastTarget")
 	end
 end
 

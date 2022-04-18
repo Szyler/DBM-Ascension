@@ -18,7 +18,6 @@ mod:RegisterEvents(
 	"UNIT_DIED"
 )
 
-
 -- local warn
 local warnEmber					= mod:NewAnnounce("WarnEmber", 2, 2135208)
 -- local warnDive					= mod:NewAnnounce("WarnDive", 2, "Interface\\Icons\\Spell_Fire_Fireball02")

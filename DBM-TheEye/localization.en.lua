@@ -89,7 +89,8 @@ L:SetOptionLocalization{
 	WarnPhase2Soon			= "Announce when phase 2 is about to start",
 	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
 	StartingSolarian        = "Mark Solarian Priest",
-	PanicYellOpt			= "Yell when you are affected by $spell:2135243"
+	PanicYellOpt			= "Yell when you are affected by $spell:2135243",
+	OrbitalBlastTargetOpt	= "Set icon on $spell:2135224 target"
 }
 
 L:SetMiscLocalization{
@@ -126,6 +127,7 @@ L:SetOptionLocalization{
 	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
 	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
 	GazeIcon			= "Set icon on Thaladred's Gaze target",
+	FocusedBurst		= "Set icon on Focused Burst target"
 	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
 
