@@ -37,6 +37,7 @@ L:SetOptionLocalization{
 	TimerEmberSpawn   	= "Show timer for next Ember of Al'ar spawn",
 	SpecWarnFeather		= "Show reminder for Blazing Wings",
 	FlameBreath			= "Show $spell:2135155 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+	LivingBombYellOpt	= "Yell when you are affected by $spell:2135178"
 }
 
 L:SetMiscLocalization{
@@ -68,8 +69,8 @@ L:SetTimerLocalization{
 	-- TimerNextLWrathPop		= "%s going off in: ",
 	-- TimerNextSWrathPop		= "%s going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in:",
-	TimerNextHealS			= "Solarian Priest heal CD:",
-	TimerNextHealL			= "Lunarian Priest heal CD:"
+	TimerNextHealS			= "Next Solarian Priest heal in:",
+	TimerNextHealL			= "Next Lunarian Priest heal in:"
 }
 
 L:SetOptionLocalization{
@@ -87,7 +88,9 @@ L:SetOptionLocalization{
 	TimerNextHealL			= "Show timer for next Lunarian Priest heal",
 	WarnPhase2Soon			= "Announce when phase 2 is about to start",
 	StartingPriest          = "Automatically mark and warn Solarian/Lunarian Priest on the initial add phase",
-	StartingSolarian        = "Mark Solarian Priest"
+	StartingSolarian        = "Mark Solarian Priest",
+	PanicYellOpt			= "Yell when you are affected by $spell:2135243",
+	OrbitalBlastTargetOpt	= "Set icon on $spell:2135224 target"
 }
 
 L:SetMiscLocalization{
@@ -123,7 +126,8 @@ L:SetOptionLocalization{
 	-- SpecWarnGaze		= "Show special warning when Gaze on you",
 	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
 	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
-	GazeIcon			= "Set icon on Thaladred's Gaze target",
+	GazeIcon			= "Set icon on $spell:2135337 target",
+	FocusedBurst		= "Set icon on $spell:2135392 target"
 	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
 
