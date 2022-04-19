@@ -158,3 +158,37 @@ v5.11 17/02/2022
 - Fixed timer on Solarian's Lunar/Solar Wrath
 - Fixed timer on Solarian's Void Spawn (New timer on killing Void Spawn) 
 ----------------------------------------------------------------------------------------------------
+v5.12 19/04/2022
+- Fixed Dive Bomb timers on Al'ar
+- Fixed Flame Cascade (fire tornado) timer on Al'ar
+- Fixed Next Breath timer on Al'ar
+- Fixed platform change timer on Al'ar
+- Fixed Phasing issues on Al'ar
+- Fixed error on Feather refresh on Al'ar
+- Added Opt-In option to yell on receiving Living Bomb on Al'ar
+- Removed unused code, combat log events and simplified codings on Void Reaver
+- Fixed the wording of upcoming priest announcements on High Astromancer Solarian
+- Fixed timers for Solar and Lunar Wrath yells on High Astromancer Solarian
+- Changed the warning level of Solar and Lunar stacks from 3 to 5 on High Astromancer Solarian
+- Added timer and warning for Void Seed on High Astromancer Solarian
+- Added Opt-In option to yell on receiving Panic on High Astromancer Solarian
+- Added Opt-In option to set icon on Ascended Orbital Blast target on High Astromancer Solarian
+- Fixed the combat entry point on Kael'thas Sunstrider
+- Fixed the timer delays in last phase for Ascended difficulty on Kael'thas Sunstrider
+- Fixed first pull timer for Telonicus on Kael'thas Sunstrider
+- Fixed timers for council resurrection on Kael'thas Sunstrider
+- Fixed timer for Kael'thas Sunstrider activation on Kael'thas Sunstrider
+- Fixed Thaladred the Darkener's Gaze and Bladestorm mechanic change timers and warnings on Ascended difficulties on Kael'thas Sunstrider
+- Added warnings and timers for Focused Burst on Kael'thas Sunstrider
+- Added warnings and timers for World in Flames on Kael'thas Sunstrider
+- Added warnings and timers for Bladestorm on Kael'thas Sunstrider
+- Added warnings and timers for Blood Leech on Kael'thas Sunstrider
+- Added warnings and timers for Mana Shield on Kael'thas Sunstrider
+- Added warnings and timers for Rebirth on Kael'thas Sunstrider
+- Added warnings and timers for Flamestrike on Kael'thas Sunstrider
+- Added warnings and timers for Form Dying Star on Kael'thas Sunstrider
+- Added warnings and timers for Gravity Lapse on Kael'thas Sunstrider
+- Added Opt-In option to set icon on Gaze of the Darkener target on Kael'thas Sunstrider
+- Added Opt-In option to set icon on Focused Burst target on Kael'thas Sunstrider
+- Added checks for ascended only mechanics to only show on Ascended difficulties in Tempest Keep 
+----------------------------------------------------------------------------------------------------
