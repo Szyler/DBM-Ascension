@@ -3,13 +3,13 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(19622)
-mod:RegisterCombat("yell", "Capernian will see to it that your stay here is a short one.")
-mod:SetUsedIcons(7,8)
+mod:RegisterCombat("combat", 19622, 20064, 20063, 20062, 20060)
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"UNIT_DIED",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS"
@@ -19,53 +19,44 @@ mod:RegisterEvents(
 local warnConflag			= mod:NewTargetAnnounce(2135350, 4)		--Heroic: 2135351, ASC 10Man: 2135352, 25Man: 2135353
 local warnGaze				= mod:NewTargetAnnounce(2135337, 4)
 local specWarnGaze			= mod:NewSpecialWarningYou(2135337)
-local warnFocusedBurst		= mod:NewTargetAnnounce(2135362, 4) -- ASC only mechanic
 local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most likely) : 2135469
 
 -- local specWarnSeal		= mod:NewSpecialWarning("SpecWarnSeal", "spell", 2135342) --Heroic : 2135343 , Ascended 10Man: 2135344, 25Man: 2135345
---local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
+local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
 local specWarnWiF			= mod:NewSpecialWarningSpell(2135369) -- ASC only
 local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338) -- ASC only
 local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362) -- ASC only
 local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only
 local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only
-local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
-local specWarnFlamestrike	= mod:NewSpecialWarningRun(2135459)
-local specWarnFormDyingStar	= mod:NewSpecialWarningSpell(2135487) -- ASC only
+local specWarnRebirth		= mod:NewSpecialWarningMove(2135508)
 
 -- Pyroblasts seem to happen 10seconds after phase switch (exception is flying phase) and then 40sec after cast start (seen only 1)
 
 -- local timer
 local timerNextWorldInFlames	= mod:NewNextTimer(60, 2135369) -- ASC only
+local timerFocusedDamage		= mod:NewTimer(4.5, "FocusedDamage", 2135392)
 local timerCDBlastWave			= mod:NewCDTimer(12, 2135354)
+--local timerGaze					= mod:NewTargetTimer(15, 2135337)
 
-local DURATION_GAZE = 15
-local timerNextGaze				= mod:NewNextTimer(DURATION_GAZE, 2135337)
-local timerNextBladestorm		= mod:NewNextTimer(58, 2135338) -- ASC only
-local timerFocusedBurst			= mod:NewTimer(4.5, "FocusedBurst", 2135392) -- ASC only
+local timerNextGaze				= mod:NewNextTimer(15, 2135337)  -- set to 28 on ascended
+local timerNextBladestorm		= mod:NewNextTimer(60, 2135338) -- ASC only
 local timerNextFocusedBurst		= mod:NewNextTimer(60, 2135362) -- 2135392 debuff on target when shooting
-local timerBellow				= mod:NewNextTimer(30, 2135340)
+local timerBellow				= mod:NewNextTimer(40, 2135340)
 local timerNextBloodLeech		= mod:NewNextTimer(60, 2135531) -- ASC only
 
 local timerNextPyro			= mod:NewNextTimer(40, 2135444) --Heroic: 2135445, ASC 10Man: 2135446, 25Man: 2135447
-local DURATION_PYRO_CAST = 7
-local pyroCast				= mod:NewCastTimer(DURATION_PYRO_CAST, 2135444)
+local pyroCast				= mod:NewCastTimer(6, 2135444)
 local timerNextFlameStrike	= mod:NewNextTimer(40, 2135459)
-local timerExplosion 		= mod:NewTimer(5, "TimerExplosion",2135459)
 local timerNextMC			= mod:NewNextTimer(40, 2135468)
 
 local capernianWiF			= mod:NewBuffActiveTimer(12, 2135369)
-local DURATION_BLADESTORM = 13
-local bladestormDuration	= mod:NewBuffActiveTimer(DURATION_BLADESTORM, 2135338)
+local bladestormDuration	= mod:NewBuffActiveTimer(12, 2135338)
 local bloodLeechDuration	= mod:NewBuffActiveTimer(11, 2135531)
 local timerNextRebirth		= mod:NewNextTimer(40, 2135508)
 local timerNextManaShield	= mod:NewNextTimer(40, 2135453)
-local DURATION_BANISH = 22
-local banishDuration		= mod:NewBuffActiveTimer(DURATION_BANISH, 2135470)
-local DURATION_DYING_STAR_CHANNEL = 6
-local timerNextDyingStar	= mod:NewNextTimer(129, 2135487)
-local DURATION_GRAVITY_LAPSE = 30
-local timerNextGravityLapse	= mod:NewNextTimer(129 , 2135477)
+
+local timerBanish			= mod:NewNextTimer(22, 2135470)
+local KTLevitate			= mod:NewBuffActiveTimer(30, 2135477)
 
 -- Lieutenant timers
 local CapernianPull			= mod:NewTimer(6, "Capernian spawning in: ", 2135337)
@@ -73,32 +64,22 @@ local ThaladredPull			= mod:NewTimer(5, "Thaladred spawning in: ", 2135337)
 local TelonicusPull			= mod:NewTimer(7.5, "Telonicus spawning in: ", 2135337)
 local SanguinarPull			= mod:NewTimer(12, "Sanguinar spawning in: ", 2135337)
 local WeaponsPull			= mod:NewTimer(5, "Weapons spawning in: ", 2135337)
-local SCHEDULE_ALL_PULL = 14
-local AllPull				= mod:NewTimer(SCHEDULE_ALL_PULL, "Everyone spawning in: ", 2135337)
-local KaelThasPull			= mod:NewTimer(7, "Kael'Thas spawning in: ", 2135337)
+local AllPull				= mod:NewTimer(20, "Everyone spawning in: ", 2135337)
+local KaelThasPull			= mod:NewTimer(6, "Kael'Thas spawning in: ", 2135337)
 
 
 -- local variables
-local isAscendedDifficulty = false
 local warnConflagTargets = {}
 local warnMCTargets = {}
 local leechSpam = 0
-
-local allowGazeAlert = 0
-local emoteGazeText = "sets eyes on"
-local nextGazeCounter = 0
+local isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
 
 -- local options
 mod:AddBoolOption(L.GazeIcon, false)
-mod:AddBoolOption(L.FocusedBurst, false)
 
 function mod:OnCombatStart(delay)
 	table.wipe(warnConflagTargets)
-	table.wipe(warnMCTargets)
-	allowGazeAlert = 1
-	nextGazeCounter = 0
 	mod.vb.phase = 1
-	isAscendedDifficulty = mod:IsDifficulty("heroic10", "heroic25")
 end
 
 local function showMC()
@@ -111,36 +92,20 @@ local function showConflag()
 	table.wipe(warnConflagTargets)
 end
 
-function mod:HandleCommonGaze(target)
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	if (msg == L.EmoteGaze or msg:find(L.EmoteGaze)) then
+		local target = string.match(msg, '%u%a+')
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextGaze:Start(28)
+		else timerNextGaze:Start()
+		end
     if target == UnitName("player") then
         specWarnGaze:Show()
     else
         warnGaze:Show(target)
     end
-    
     if self.Options.GazeIcon then
-        self:SetIcon(target, 8, DURATION_GAZE)
-    end
-end
-
-function mod:HandleAscendedGaze(target)
-	if nextGazeCounter % 3 == 0 then
-		timerNextGaze:Start(DURATION_GAZE + DURATION_BLADESTORM)
-		nextGazeCounter = 1
-	else
-		timerNextGaze:Start()
-		nextGazeCounter = nextGazeCounter + 1
-	end
-	mod:HandleCommonGaze(target)
-end
-
-function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
-	if allowGazeAlert and (msg == emoteGazeText or msg:find(emoteGazeText)) then
-		if isAscendedDifficulty then
-			mod:HandleAscendedGaze(target)
-		else
-			timerNextGaze:Start()
-			mod:HandleCommonGaze(target)
+			self:SetIcon(target, 1, 15)
 		end
 	end
 end
@@ -153,10 +118,25 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	local WeaponsPullYell 	= "As you see, I have many weapons in my arsenal...."
 	local AllPullYell 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
 	local KaelThasPullYell 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
-
+	-- local KTLevitate 	= "Having trouble staying grounded?"
+	 --[===[if (msg == L.emoteGaze or msg:find(L.emoteGaze)) and target then
+		-- target = UnitName(target)
+		target = msg:match("Thaladred the Darkener sets eyes on (.+)!");
+		timerNextGaze:Start()
+		timerGaze:Start(target)
+		if target == UnitName("player") then
+			specWarnGaze:Show()
+		else
+			warnGaze:Show(target)
+		end
+		if self.Options.GazeIcon and DBM.GetRaidRank() >= 1 then
+			self:SetIcon(target, 1, 15)
+		end
+		--]===]
 	if (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
 		CapernianPull:Start()
-		timerNextWorldInFlames:Start(21) -- 15s + PullTimer(6)
+		timerNextWorldInFlames:Start(21)
+		mod.vb.phase = 1
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
 		if isAscendedDifficulty then
@@ -171,68 +151,31 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		SanguinarPull:Start()
 		timerBellow:Start(32) -- 20s + PullTimer(12)
 		if isAscendedDifficulty then
-			timerNextBloodLeech:Start(27) -- 15s + PullTimer(12)
+			timerNextBloodLeech:Start(28)
 		end
 	elseif (msg == WeaponsPullYell or msg:find(WeaponsPullYell)) then
 		WeaponsPull:Start()
 		mod.vb.phase = 2
 	elseif (msg == AllPullYell or msg:find(AllPullYell)) then
-		-- Capernian instant spawn, but each npc ress is delayed by 2 sec compared to the all pull timer
 		AllPull:Start()
 		mod.vb.phase = 3
-		
-		timerCDBlastWave:Start(SCHEDULE_ALL_PULL + 6) -- Delay(0) + 2 x FireBalls
-		timerNextGaze:Start(SCHEDULE_ALL_PULL + 2) -- Delay(2)
-		timerBellow:Start(SCHEDULE_ALL_PULL + 26) -- Delay(6) + 20s
-		
-		if isAscendedDifficulty then
-			timerNextWorldInFlames:Start(SCHEDULE_ALL_PULL + 15) -- Delay(0) + 15s
-			nextGazeCounter = 2
-			timerNextBladestorm:Start(SCHEDULE_ALL_PULL + 32) -- Delay(2) + 30s
-			timerNextFocusedBurst:Start(SCHEDULE_ALL_PULL + 49) -- Delay(4) + 45s
-			-- TODO the timer here is for the Aura of Blood. Blood Leech happens 1 second after Aura of blood
-			timerNextBloodLeech:Start(SCHEDULE_ALL_PULL + 66) -- Delay(6) + 60s
-		end
+		timerCDBlastWave:Start(20)
+		timerBellow:Start(22)
+		timerNextWorldInFlames:Start(30)
+		timerNextBladestorm:Start(49)
+		timerNextFocusedBurst:Start(67.5)
+		timerNextBloodLeech:Start(87)
 	elseif (msg == KaelThasPullYell or msg:find(KaelThasPullYell)) then
 		KaelThasPull:Start()
-		timerNextPyro:Start(17) -- 10s + PullTimer(7)
-		timerNextFlameStrike:Start(27) -- 20s + PullTimer(7)
-		specWarnFlamestrike:Schedule(27) -- 20s + PullTimer(7)
-		timerExplosion:Start(32) -- 25s + PullTimer(7)
-		timerNextMC:Start(47) -- 40s +  + PullTimer(7)
+		timerNextPyro:Start(16)
+		timerNextFlameStrike:Start(31)
+		timerNextMC:Start(46)
 		mod.vb.phase = 4
-		timerNextRebirth:Start(32) -- 25s + PullTimer(7)/
-		
-		if isAscendedDifficulty then
-			timerNextManaShield:Start(22) -- 15s + PullTimer(7)
-		end
+		timerNextRebirth:Start(30)
+		timerNextManaShield:Start(22)
+	-- elseif (msg == KTLevitate or msg:find(KTLevitate)) then
+		-- KTLevitate:Start()
 	end
-end
-
-function mod:StopKaelTimers()
-	timerNextManaShield:Stop()
-	timerNextPyro:Stop()
-	timerNextFlameStrike:Stop()
-	timerNextRebirth:Stop()
-	timerExplosion:Stop()
-	timerNextMC:Stop()
-end
-
-function mod:HandleGravity()
-	self:StopKaelTimers()
-	timerNextGravityLapse:Start()
-	
-	local delayTime = 0
-	if isAscendedDifficulty then
-		delayTime = DURATION_DYING_STAR_CHANNEL
-		timerNextDyingStar:Start(33)
-		timerNextManaShield:Start(DURATION_GRAVITY_LAPSE + 13 + DURATION_PYRO_CAST + delayTime)
-	end
-	
-	timerNextPyro:Start(DURATION_GRAVITY_LAPSE + 14 + delayTime)
-	timerNextFlameStrike:Start(DURATION_GRAVITY_LAPSE + 24 + delayTime)
-	timerNextRebirth:Start(DURATION_GRAVITY_LAPSE + 28 + delayTime)
-	timerNextMC:Start(DURATION_GRAVITY_LAPSE + 44 + delayTime)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -254,22 +197,19 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135354, 2135355, 2135356, 2135357) then
 		timerCDBlastWave:Start()
 	elseif args:IsSpellID(2135470) then
-		banishDuration:Start()
+		timerBanish:Start()
+		KTLevitate:Schedule(20)
+		timerNextFlameStrike:Start(100)
+		timerNextPyro:Start(85)
 		mod.vb.phase = 5
-		self:StopKaelTimers()
-		-- TODO find whatever spellID AND COMBAT_LOG_EVENT Gravity Lapse is triggered by and split it. SPELL_AURA_APPLIED, SPELL_CAST_START and SPELL_CAST_SUCCESS doesnt work
-		self:ScheduleMethod(DURATION_BANISH + 20, "HandleGravity")
-		timerNextGravityLapse:Start(DURATION_BANISH + 20)
-		timerNextPyro:Start(DURATION_BANISH + 10)
-		if isAscendedDifficulty then
-			timerNextManaShield:Start(DURATION_BANISH + 10 + DURATION_PYRO_CAST - 1)
-		end
-	elseif args:IsSpellID(2135531, 2135533) and (GetTime() - leechSpam > 20) then
+		--Schedule mod.vb.phase = 6 20 seconds
+		--Schedule mod.vb.phase = 7 75 seconds
+	elseif args:IsSpellID(2135531) and GetTime() - leechSpam > 20 then
 		leechSpam = GetTime()
 		specWarnBloodLeech:Show()
 		bloodLeechDuration:Start()
-		--First leech applies 1 second later than the Aura of Blood
-		timerNextBloodLeech:Start(59)
+		timerNextBloodLeech:Start()
+		bloodLeechDuration:Start()
 	elseif args:IsSpellID(2135369) then
 		capernianWiF:Start()
 		specWarnWiF:Show()
@@ -281,22 +221,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135453) then
 		timerNextManaShield:Start()
 		specWarnManaShield:Show()
-	elseif args:IsSpellID(2135487) then
-		timerNextDyingStar:Start()
-		specWarnFormDyingStar:Show()
-	end
 end
 
-function mod:HandleFocusedBurstTarget()
-	local target = mod:GetBossTarget(20063)
-	if target then
-		warnFocusedBurst:Show(target)
-		if mod.vb.phase == 3 and UnitName("player") == target then
-			specWarnFocusedBurst:Show()
 		end
-		if self.Options.FocusedBurst then
-			self:SetIcon(target, 7, 8)
-		end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2135342, 2135343, 2135344, 2135345) and args.amount==5 then
+		specWarnSeal:Show(args.amount, args.destName)
 	end
 end
 
@@ -305,23 +236,20 @@ function mod:SPELL_CAST_START(args)
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
-		self:ScheduleMethod(2, "HandleFocusedBurstTarget")
 		if mod.vb.phase == 3 then
 			timerNextFocusedBurst:Start(60)
-			timerFocusedBurst:Start()
+			specWarnFocusedBurst:Show()
+			timerFocusedDamage:Start()
 		end
 	elseif args:IsSpellID(2135506, 2135507, 2135508, 2135509) then
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
-		self:SetIcon(args.sourceName, 8)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(2135459, 2135460, 2135461, 2135462) then
-		timerNextFlameStrike:Start(35)
-		specWarnFlamestrike:Schedule(35)
-		timerExplosion:Start(40)
+		timerNextFlameStrike:Start()
 	end
 end
 
@@ -341,20 +269,18 @@ function mod:UNIT_DIED(args)
 		end
 	elseif cid == 20063 and isAscendedDifficulty then
 		timerNextFocusedBurst:Stop()
-		timerFocusedBurst:Stop()
+		timerFocusedDamage:Stop()
 	elseif cid == 20064 then
 		timerNextGaze:Stop()
 		if isAscendedDifficulty then
 			bladestormDuration:Stop()
 			timerNextBladestorm:Stop()
-			nextGazeCounter = 0
 		end
 	end
 end
 
 function mod:OnCombatEnd()
-	allowGazeAlert = 0
-	nextGazeCounter = 0
+
 end
 
 -- Old Kaelthas DBM code

@@ -118,6 +118,7 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	-- TimerNextGaze		= "Thaladred target switch in: "
+	FocusedDamage			= "Telonicus starts shooting in :"
 }
 
 L:SetOptionLocalization{
@@ -125,16 +126,16 @@ L:SetOptionLocalization{
 	-- WarnGaze			= "Show warning for Thaladred's Gaze target",
 	-- SpecWarnGaze		= "Show special warning when Gaze on you",
 	-- SpecWarnSeal		= "Show warning for Seal of blood stacks", --set to 4 currently 
+	FocusedDamage		= "Show countdown till telonicus starts shooting",
 	KTSeal				= "Show $spell:2135342 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
-	GazeIcon			= "Set icon on $spell:2135337 target",
-	FocusedBurst		= "Set icon on $spell:2135392 target"
+	GazeIcon			= "Set icon on Thaladred's Gaze target",
 	-- TimerNextGaze		= "Show timer for Thaladred's Gaze"
 }
 
 
 L:SetMiscLocalization{
 	kaelYellP1			= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome... to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!";
-	emoteGaze			= "Thaladred the Darkener sets eyes on ";
+	EmoteGaze			= "Sets eyes on";
 }
 
 
