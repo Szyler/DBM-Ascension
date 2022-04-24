@@ -32,7 +32,7 @@ local warnFlameBreath			= mod:NewAnnounce(L.FlameBreath, 2, 2135155)
 local timerNextPlatform        	= mod:NewTimer(30, "NextPlatform", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") -- timer might be slightly off need to test in action
 local berserkTimer				= mod:NewTimer(720, "Berserk", 26662)
 local timerAlarUp				= mod:NewTimer(30, "AlarUp", "Interface\\Icons\\Spell_Fire_Fireball02")
-local timerAlarDive				= mod:NewTimer(14, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
+local timerAlarDive				= mod:NewTimer(12, "AlarDive", "Interface\\Icons\\Spell_Fire_Fireball02")
 local timerEmberSpawn			= mod:NewTimer(12, "TimerEmberSpawn", 2135208)  --heroic 2135209 , Ascended 10Man-2135210, 25Man-2135211
 local timerNextBreath			= mod:NewNextTimer(10, 2135154)  --Heroic 2135155 , Ascended 10Man-2135156, 25Man-2135157
 local timerNextAlarRebirth		= mod:NewNextTimer(10, 2135200)
@@ -146,7 +146,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerNextBreath:Stop()
 		timerAlarDive:Start()
 		timerEmberSpawn:Start(24)
-		warnDive:Schedule(14)
+		warnDive:Schedule(12)
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
 		timerAlarUp:Stop()
 		timerEmberSpawn:Start(22)
@@ -156,15 +156,9 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-    if cid == 19514 then
-		if self.vb.phase == 1 then
-			self.vb.phase = 2
-			mod:IsInCombat()	
-			mod.inCombat = true
-			timerNextAlarRebirth:Start()
-		elseif self.vb.phase == 2 then
-			self.vb.phase = 3
-		end
+    -- local name = UnitName(args.destGUID);
+    if cid == 19514 and self.vb.phase == 3 then
+		mod:EndCombat()
 	end
 end
 

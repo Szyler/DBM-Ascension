@@ -100,7 +100,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerNextHealS:Stop()
 		elseif UnitName(nextPriest) == "Lunarian Priest" then
 			timerNextSolar:Start()
-			timerNextFireF:Start()
+			timerNextFireL:Start()
 			timerNextHealL:Stop()
 		end
 	end
@@ -177,7 +177,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135264, 2135265) then
-		specWarnHeal:Show()
+		specWarnHeal:Show()	-- need to add timer for next heal as well
 		if args.sourceName == "Solarian Priest" then
 			timerNextHealS:Start()
 		else 
@@ -188,7 +188,26 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
--- TODO implement usage
+-- function mod:SPELL_INTERRUPT(args)  -- Check Interval
+-- 	if args:IsSpellID(2135264, 2135265) then
+-- 		if args.destName == "Solarian Priest" then
+-- 			timerNextHealS:Start()
+-- 		else 
+-- 			timerNextHealL:Start()
+-- 		end
+-- 	end
+-- end
+
+-- function mod:SPELL_HEAL(args)
+-- 	if args:IsSpellID(2135264, 2135265) then
+-- 		if args.sourceName == "Solarian Priest" then
+-- 			timerNextHealS:Start()
+-- 		else 
+-- 			timerNextHealL:Start()
+-- 		end
+-- 	end
+-- end
+
 function VoidSpawn()
 	self:UnscheduleMethod("VoidSpawn")
 	specWarnVoidSpawn:Show()
@@ -218,18 +237,6 @@ function mod:UNIT_DIED(args)
 			-- end
 		-- end
 	end
-  --[===[  local name = UnitName(unit);
-    if name == "Solarian Priest" and self.vb.phase == 2 then
-		lastPriestDied = name
-		self.vb.phase = 1		rewriting it. Doesnt seem to work at all and its better to tie it to boss yell anyways IMO
-		timerNextLunar:Start()
-		timerNextFireL:Start()
-	elseif name == "Lunarian Priest" and self.vb.phase == 2 then
-		lastPriestDied = name
-		self.vb.phase = 1
-		timerNextSolar:Start()
-		timerNextFireS:Start()
-	end --]===]
 end
 
 
