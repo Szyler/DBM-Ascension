@@ -192,3 +192,7 @@ v5.12 19/04/2022
 - Added Opt-In option to set icon on Focused Burst target on Kael'thas Sunstrider
 - Added checks for ascended only mechanics to only show on Ascended difficulties in Tempest Keep 
 ----------------------------------------------------------------------------------------------------
+v5.13 dd/mm/yyyy
+- Fixed the combat entry point for long and short intro on Kael'thas Sunstrider
+- Added possiblity to add trashmob mechanics to DBM announcements in Tempest Keep
+----------------------------------------------------------------------------------------------------
