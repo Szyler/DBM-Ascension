@@ -1,8 +1,7 @@
-local mod		= DBM:NewMod("mobs", "DBM-Karazhan")
+local mod		= DBM:NewMod("mobs", "DBM-TheEye", 1)
 local L			= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
-
+mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 
 mod:RegisterEvents(
 	"SPELL_CAST_START"
