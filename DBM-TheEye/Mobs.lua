@@ -14,6 +14,8 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135057, 2135058, 2135059, 2135060) then
 		warningElectroPulse:Show()
 		warningElectroPulse:Start()
+	elseif args:IsSpellID(2135064, 2135065, 2135066, 2135067) then
+		--TODO Disintegrate announcement
 	end
 end
 
