@@ -69,8 +69,8 @@ L:SetTimerLocalization{
 	-- TimerNextLWrathPop		= "%s going off in: ",
 	-- TimerNextSWrathPop		= "%s going off in: ",
 	TimerVoidSpawn			= "Next Solarian Voidspawn in:",
-	TimerNextHealS			= "Next Solarian Priest heal in:",
-	TimerNextHealL			= "Next Lunarian Priest heal in:"
+	TimerNextHealS			= "Solarian Priest heal CD:",
+	TimerNextHealL			= "Lunarian Priest heal CD:"
 }
 
 L:SetOptionLocalization{
