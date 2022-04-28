@@ -194,5 +194,10 @@ v5.12 19/04/2022
 ----------------------------------------------------------------------------------------------------
 v5.13 dd/mm/yyyy
 - Fixed the combat entry point for long and short intro on Kael'thas Sunstrider
-- Added possiblity to add trashmob mechanics to DBM announcements in Tempest Keep
+- Fixed a LUA error on Solarian
+- Fixed the "Lunar Fire (Unknown" bug on Solarion
+- Fixed double Voidspawn timers going off on Solarion
+- Fixed Lunar Wrath yell countdown timer on Solarion
+
+- Added some of the mechanics for the mobs in Tempest Keep 
 ----------------------------------------------------------------------------------------------------
