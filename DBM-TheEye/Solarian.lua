@@ -112,7 +112,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextLWrathPop:Start(args.destName)
 		if self.Options.WrathYellOpt and args:IsPlayer() then
 			SendChatMessage(L.LunarWrathYell, "YELL")
-			yellLunarWrath:Countdown(10,3)
+			yellLunarWrath:Countdown(8,3)
 		else 
 			specWarnLunar:Show()
 		end
