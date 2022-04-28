@@ -29,7 +29,7 @@ local specWarnLunarStacks	= mod:NewSpecialWarningStack(2135230, nil, 3)
 local specWarnSolarStacks	= mod:NewSpecialWarningStack(2135234, nil, 3)
 local specWarnVoidSpawn		= mod:NewSpecialWarning("SpecWarnVoidSpawn")
 local specWarnSeed			= mod:NewSpecialWarningSpell(2135499)
-local specWarnSeedYou		= mod:NewSpecialWarningTarget(2135499)
+local specWarnSeedYou		= mod:NewSpecialWarningYou(2135499)
 -- local specWarnDisrupt		= mod:NewSpecialWarningSpell("SpecWarnVoidSpawn")
 
 -- local timer
@@ -77,6 +77,7 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFireS:Start(-delay)
 	timerAdds:Start(-delay)
+	voidSpawnTimer = 0
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
@@ -143,8 +144,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135499) then
 		timerNextVoidSeed:Start()
 		if args.IsPlayer() then
-			specWarnSeedYou:show()
-		else specWarnSeed:Show()
+			specWarnSeedYou:Show()
+		else 
+			specWarnSeed:Show()
 		end
 	elseif args:IsSpellID(2135243) and self.Options.PanicYellOpt and args:IsPlayer() then
 		SendChatMessage("Panic on "..args.destName.."!", "YELL")
@@ -156,13 +158,13 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		timerNextFireL:Start()
 		warnWarnFireL:Show()
 		if args.amount >= 5 then
-			specWarnLunarStacks:Show()
+			specWarnLunarStacks:Show(args.amount)
 		end
 	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and args:IsPlayer() then
 		timerNextFireS:Start()
 		warnWarnFireS:Show()
 		if args.amount >= 5 then
-			specWarnSolarStacks:Show()
+			specWarnSolarStacks:Show(args.amount)
 		end
 	end
 end
@@ -208,14 +210,19 @@ end
 -- 	end
 -- end
 
-function VoidSpawn()
+function mod:VoidSpawn()
 	self:UnscheduleMethod("VoidSpawn")
-	specWarnVoidSpawn:Show()
-	voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
+	self:Unschedule("specWarnVoidSpawn")
+	specWarnVoidSpawn:Schedule(voidSpawnTimer)
 	timerVoidSpawn:Start(voidSpawnTimer)
-	if DBM:GetRaidRank() >= 1 then
-		self:SetIcon(args.destGUID, 8, 20)
+	if voidSpawnTimer > 3 then
+		voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
+	else
+		voidSpawnTimer = 3
 	end
+	-- if DBM:GetRaidRank() >= 1 then
+	-- 	self:SetIcon(args.destGUID, 8, 20)
+	-- end
 	self:ScheduleMethod(voidSpawnTimer,"VoidSpawn")
 end
 
@@ -228,10 +235,11 @@ function mod:UNIT_DIED(args)
 	end
 	if cid == 14512 then
 		-- if self:GetIcon(args.destGUID) ~= 8 then
-			-- AntiSpam = GetTime()
-			specWarnVoidSpawn:Schedule(voidSpawnTimer)
-			timerVoidSpawn:Start(voidSpawnTimer)
-			voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
+			-- AntiSpam = GetTime()cccccc
+			mod:VoidSpawn()
+			-- specWarnVoidSpawn:Schedule(voidSpawnTimer)
+			-- timerVoidSpawn:Start(voidSpawnTimer)
+			-- voidSpawnTimer = voidSpawnTimer - 1 -- Spawning faster and faster
 			-- if DBM:GetRaidRank() >= 1 then
 			-- 	self:SetIcon(args.destGUID, 8, 20)
 			-- end
