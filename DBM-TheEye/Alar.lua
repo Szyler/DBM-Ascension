@@ -106,7 +106,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.vb.phase == 1 then
 			self.vb.phase = 2
 			timerEmberSpawn:Stop()
-			timerAlarUp:Start(42)
+			timerAlarUp:Start(40)
 			timerNextBreath:Stop()
 			timerNextPlatform:Stop()
 			self:UnscheduleMethod("PlatformSwap")
@@ -125,7 +125,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135200, 2135201, 2135202, 2135203) then
 		warnAlarRebirth:Show()
-		timerNextBreath:Start(3)
+		timerNextBreath:Start(2)
 		if self.vb.phase == 2 then
 			timerAlarUp:Start(33)
 			timerNextBreath:Start(18)
@@ -147,6 +147,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerAlarDive:Start()
 		timerEmberSpawn:Start(24)
 		warnDive:Schedule(14)
+		timerAlarUp:Start()
 	elseif msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
 		timerAlarUp:Stop()
 		timerEmberSpawn:Start(22)
