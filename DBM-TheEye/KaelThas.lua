@@ -2,8 +2,8 @@ local mod	= DBM:NewMod("KaelThas", "DBM-TheEye", 1)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
-mod:SetCreatureID(19622)
-mod:RegisterCombat("combat")
+mod:SetCreatureID(19622, 20064, 20063, 20060, 20062)
+mod:RegisterCombat("yell", "Capernian will see to it that your stay here is a short one." ,"Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!")
 mod:SetUsedIcons(7,8)
 
 mod:RegisterEvents(
@@ -26,7 +26,7 @@ local warnMC				= mod:NewTargetAnnounce(2135467, 4)		--Heroic: 2135468, Asc(most
 --local specWarnSeal			= mod:NewAnnounce(L.KTSeal, 2, 2135342)
 local specWarnWiF			= mod:NewSpecialWarningSpell(2135369) -- ASC only
 local specWarnBladestorm 	= mod:NewSpecialWarningRun(2135338) -- ASC only
-local specWarnFocusedBurst	= mod:NewSpecialWarningSpell(2135362) -- ASC only
+local specWarnFocusedBurstYou	= mod:NewSpecialWarningYou(2135362) -- ASC only
 local specWarnBloodLeech	= mod:NewSpecialWarningSpell(2135531) -- ASC only
 local specWarnManaShield	= mod:NewSpecialWarningDispel(2135453) -- ASC only
 local specWarnRebirth		= mod:NewSpecialWarningRun(2135508)
@@ -92,6 +92,7 @@ local nextGazeCounter = 0
 mod:AddBoolOption(L.GazeIcon, false)
 mod:AddBoolOption(L.FocusedBurst, false)
 
+
 function mod:OnCombatStart(delay)
 	table.wipe(warnConflagTargets)
 	table.wipe(warnMCTargets)
@@ -117,7 +118,7 @@ function mod:HandleCommonGaze(target)
     else
         warnGaze:Show(target)
     end
-    
+
     if self.Options.GazeIcon then
         self:SetIcon(target, 8, DURATION_GAZE)
     end
@@ -125,7 +126,7 @@ end
 
 function mod:HandleAscendedGaze(target)
 	if nextGazeCounter % 3 == 0 then
-		timerNextGaze:Start(DURATION_GAZE + DURATION_BLADESTORM)
+		timerNextGaze:Start(DURATION_GAZE + DURATION_BLADESTORM) --Why is this needed, doesn't he still gaze while bladestorming? the next gaze will come at the same time as bladestorm.
 		nextGazeCounter = 1
 	else
 		timerNextGaze:Start()
@@ -146,6 +147,7 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	local FirstPull			= "Energy. Power. My people are addicted to it... a dependence made manifest after the Sunwell was destroyed. Welcome to the future. A pity you are too late to stop it. No one can stop me now! Selama ashal'anore!"
 	local CapernianPullYell = "Capernian will see to it that your stay here is a short one."
 	local ThaladredPullYell = "Let us see how your nerves hold up against the Darkener, Thaladred!"
 	local TelonicusPullYell = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus."
@@ -154,9 +156,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	local AllPullYell 		= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor."
 	local KaelThasPullYell 	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!"
 
-	if (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
+	if (msg == FirstPull or msg:find(FirstPull)) then
+		CapernianPull:Start(29) -- 23 + capernain pull timer
+	elseif (msg == CapernianPullYell or msg:find(CapernianPullYell)) then
 		CapernianPull:Start()
-		timerNextWorldInFlames:Start(21) -- 15s + PullTimer(6)
+		if isAscendedDifficulty then
+			timerNextWorldInFlames:Start(21) -- 15s + PullTimer(6)
+		end
 	elseif (msg == ThaladredPullYell or msg:find(ThaladredPullYell)) then
 		ThaladredPull:Start()
 		if isAscendedDifficulty then
@@ -284,19 +290,40 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135487) then
 		timerNextDyingStar:Start()
 		specWarnFormDyingStar:Show()
+	elseif args:IsSpellID(2135392) then --2135362
+		if args:IsPlayer() then
+			specWarnFocusedBurstYou:Show()
+		else 
+			warnFocusedBurst:Show(args.destName)
+		end
+		if self.Options.FocusedBurst then
+			self:SetIcon(args.destName, 7, 8)
+		end
+		timerNextFocusedBurst:Start(60)
+		timerFocusedBurst:Start()
 	end
 end
 
 function mod:HandleFocusedBurstTarget()
 	local target = mod:GetBossTarget(20063)
 	if target then
-		warnFocusedBurst:Show(target)
-		if mod.vb.phase == 3 and UnitName("player") == target then
-			specWarnFocusedBurst:Show()
+		if args:IsPlayer() then
+			specWarnFocusedBurstYou:Show()
+		else 
+			warnFocusedBurst:Show(target)
 		end
 		if self.Options.FocusedBurst then
 			self:SetIcon(target, 7, 8)
 		end
+		timerNextFocusedBurst:Start(60)
+		timerFocusedBurst:Schedule(3)
+		-- warnFocusedBurst:Show(target)
+		-- if mod.vb.phase == 3 and target == UnitName("player") then
+		-- 	specWarnFocusedBurstYou:Show()
+		-- end
+		-- if self.Options.FocusedBurst then
+		-- 	self:SetIcon(target, 7, 8)
+		-- end
 	end
 end
 
@@ -304,12 +331,12 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
 		pyroCast:Start()
 		timerNextPyro:Start()
-	elseif args:IsSpellID(2135362) then
-		self:ScheduleMethod(2, "HandleFocusedBurstTarget")
-		if mod.vb.phase == 3 then
-			timerNextFocusedBurst:Start(60)
-			timerFocusedBurst:Start()
-		end
+	-- elseif args:IsSpellID(2135362) then
+		-- self:ScheduleMethod(2, "HandleFocusedBurstTarget")
+		-- if mod.vb.phase == 3 then
+		-- 	timerNextFocusedBurst:Start(60)
+		-- 	timerFocusedBurst:Start()
+		-- end
 	elseif args:IsSpellID(2135506, 2135507, 2135508, 2135509) then
 		timerNextRebirth:Start()
 		specWarnRebirth:Show()
