@@ -31,6 +31,10 @@ L:SetGeneralLocalization{
 	name = "Magtheridon"
 }
 
+L:SetTimerLocalization{
+	TimerFingers			= "Next Finger of Death",
+	TimerHands	 			= "Next Hand of Death"
+}
 L:SetWarningLocalization{
 	MagCleave				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
