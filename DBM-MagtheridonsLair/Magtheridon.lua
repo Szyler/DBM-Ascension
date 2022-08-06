@@ -185,7 +185,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerNextHandofDeath:Cancel()
 			self:UnscheduleMethod("NextFingerofDeath")
 			self:UnscheduleMethod("NextHandofDeath")
-			if deathAbility == 1 then
+			if deathAbility == 2 then
 				timerNextFingerofDeath:Start(21)
 				timerNextHandofDeath:Start(36)
 				self:ScheduleMethod(21,"NextFingerofDeath");
@@ -196,6 +196,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 				self:ScheduleMethod(36,"NextFingerofDeath");
 				self:ScheduleMethod(21,"NextHandofDeath");
 			end
+		end
 	end
 end
 
