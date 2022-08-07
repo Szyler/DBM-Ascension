@@ -42,13 +42,13 @@ local timerFallingRoof	= mod:NewTimer(10, "Roof is collapsing!")
 --Heroic
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(85437,2)
 local specWarnYouHand			= mod:NewSpecialWarningYou(85437)
-local warnHandofDeath			= mod:NewTargetAnnounce(85437, 3.75)
+local warnHandofDeath			= mod:NewTargetAnnounce(85437, 3.8)
 local timerHandofDeath			= mod:NewTargetTimer(4, 85437)
 local timerNextHandofDeath		= mod:NewNextTimer(30, 85437)
 
 -- local AnnounceFingerofDeath 	= mod:NewTargetAnnounce(85408,2)
 local specWarnYouFinger			= mod:NewSpecialWarningYou(85408)
-local warnFingerofDeath			= mod:NewTargetAnnounce(85408, 3.75)
+local warnFingerofDeath			= mod:NewTargetAnnounce(85408, 3.8)
 local timerFingerofDeath		= mod:NewTargetTimer(4, 85408)
 local timerNextFingerofDeath	= mod:NewNextTimer(30, 85408)
 
@@ -158,8 +158,8 @@ end
 -- 	end
 -- end
 
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.DBM_MAG_YELL_PHASE2 then
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
+	if msg == L.DBM_MAG_EMOTE_PHASE2 then
 		timerQuake:Cancel()
 		timerNova:Cancel()
 		if mod:IsDifficulty("heroic10", "heroic25") then
@@ -170,13 +170,32 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 		timerPhaseTwo:Cancel()
 		self.vb.phase = 2
-
 		timerQuake:Start(41)
 		timerNova:Start(66, tostring(Nova))
 		below30 = false;
 		isMag	= true;
 		warnPhaseTwo:Show()
 	end
+end
+
+	function mod:CHAT_MSG_MONSTER_YELL(msg)
+--	if msg == L.DBM_MAG_YELL_PHASE2 then
+--		timerQuake:Cancel()
+--		timerNova:Cancel()
+--		if mod:IsDifficulty("heroic10", "heroic25") then
+--			timerNextFingerofDeath:Start(21)
+--			timerNextHandofDeath:Start(36)
+--			self:ScheduleMethod(21,"NextFingerofDeath");
+--			self:ScheduleMethod(36,"NextHandofDeath");
+--		end
+--		timerPhaseTwo:Cancel()
+--		self.vb.phase = 2
+--		timerQuake:Start(41)
+--		timerNova:Start(66, tostring(Nova))
+--		below30 = false;
+--		isMag	= true;
+--		warnPhaseTwo:Show()
+
 	if msg == L.DBM_MAG_YELL_PHASE3 then
 		warnPhaseThree:Show()
 		timerFallingRoof:Start()
@@ -218,9 +237,9 @@ function mod:SPELL_CAST_START(args)
 	end
 
 	if args:IsSpellID(85437, 85409) then
-			self:ScheduleMethod(0.25, "HandofDeath")
+			self:ScheduleMethod(0.2, "HandofDeath")
 	elseif args:IsSpellID(85408) then
-			self:ScheduleMethod(0.25, "FingerofDeath")
+			self:ScheduleMethod(0.2, "FingerofDeath")
 		end
 end
 
@@ -237,7 +256,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		WarnInfernal:Show()
 	end
 end
-
 
 -- function mod:SPELL_DAMAGE(args)
 --	if args:IsSpellID(85032) and args.destName and args:IsPlayer() then

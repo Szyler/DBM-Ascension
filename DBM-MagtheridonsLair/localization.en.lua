@@ -17,6 +17,7 @@ DBM_MAG_EMOTE_NOVA		= "%s begins to cast Blast Nova!";
 
 DBM_MAG_PHASE2_WARN		= "*** Phase 2 in %s sec ***";
 DBM_MAG_WARN_P2			= "*** Magtheridon is free ***";
+DBM_MAG_EMOTE_P2		= "Maghteridon breaks free!";
 DBM_MAG_WARN_P3			= "*** Phase 3 incoming!";
 
 DBM_MAG_WARN_INFERNAL	= "*** Infernal ***";
@@ -48,5 +49,6 @@ L:SetOptionLocalization{
 
 L:SetMiscLocalization{
 	DBM_MAG_YELL_PHASE2		= "I... am... unleashed!",
-	DBM_MAG_YELL_PHASE3		= "I will not be taken so easily! Let the walls of this prison tremble... and fall!"
+	DBM_MAG_YELL_PHASE3		= "I will not be taken so easily! Let the walls of this prison tremble... and fall!",
+	DBM_MAG_EMOTE_PHASE2	= "%s breaks free!"
 }
