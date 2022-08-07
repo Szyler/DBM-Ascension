@@ -159,7 +159,7 @@ end
 -- end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
-	if msg == L.DBM_MAG_EMOTE_PHASE2 then
+	if msg == L.DBM_MAG_EMOTE_PHASE2 and self.vb.phase == 1 then
 		timerQuake:Cancel()
 		timerNova:Cancel()
 		if mod:IsDifficulty("heroic10", "heroic25") then
