@@ -158,28 +158,8 @@ end
 -- 	end
 -- end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
-	if msg == L.DBM_MAG_EMOTE_PHASE2 and self.vb.phase == 1 then
-		timerQuake:Cancel()
-		timerNova:Cancel()
-		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerNextFingerofDeath:Start(21)
-			timerNextHandofDeath:Start(36)
-			self:ScheduleMethod(21,"NextFingerofDeath");
-			self:ScheduleMethod(36,"NextHandofDeath");
-		end
-		timerPhaseTwo:Cancel()
-		self.vb.phase = 2
-		timerQuake:Start(41)
-		timerNova:Start(66, tostring(Nova))
-		below30 = false;
-		isMag	= true;
-		warnPhaseTwo:Show()
-	end
-end
-
-	function mod:CHAT_MSG_MONSTER_YELL(msg)
---	if msg == L.DBM_MAG_YELL_PHASE2 then
+--function mod:CHAT_MSG_RAID_BOSS_EMOTE(args)
+--	if msg == L.DBM_MAG_EMOTE_PHASE2 and self.vb.phase == 1 then
 --		timerQuake:Cancel()
 --		timerNova:Cancel()
 --		if mod:IsDifficulty("heroic10", "heroic25") then
@@ -195,7 +175,27 @@ end
 --		below30 = false;
 --		isMag	= true;
 --		warnPhaseTwo:Show()
+--	end
+--end
 
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.DBM_MAG_YELL_PHASE2 and self.vb.phase == 1 then
+		timerQuake:Cancel()
+		timerNova:Cancel()
+		if mod:IsDifficulty("heroic10", "heroic25") then
+		timerNextFingerofDeath:Start(21)
+			timerNextHandofDeath:Start(36)
+			self:ScheduleMethod(21,"NextFingerofDeath");
+			self:ScheduleMethod(36,"NextHandofDeath");
+		end
+		timerPhaseTwo:Cancel()
+		timerQuake:Start(41)
+		timerNova:Start(66, tostring(Nova))
+		below30 = false;
+		isMag	= true;
+		self.vb.phase = 2
+		warnPhaseTwo:Show()
+	end
 	if msg == L.DBM_MAG_YELL_PHASE3 then
 		warnPhaseThree:Show()
 		timerFallingRoof:Start()
