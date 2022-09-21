@@ -1,5 +1,4 @@
-## Interface: 20501
-## X-Min-Interface: 20501
+## Interface: 30300
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Zul'Aman|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0줄아만|r
 ## LoadOnDemand: 1
@@ -7,9 +6,9 @@
 ## SavedVariablesPerCharacter: DBMZulAman_SavedVars, DBMZulAman_SavedStats
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC
-## X-DBM-StatTypes: normal
-## X-DBM-Mod-MapID: 568
-## X-DBM-Mod-Sort: 1005
+## X-DBM-Mod-Name: Zul'Aman
+## X-DBM-Tab-Sort: 305
+## X-DBM-Mod-LoadZone: Zul'Aman
 localization.en.lua
 localization.cn.lua
 localization.de.lua
