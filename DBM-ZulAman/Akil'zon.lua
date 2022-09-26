@@ -3,10 +3,6 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision("20210404052635")
 mod:SetCreatureID(23574)
-mod:SetEncounterID(2482)
-mod:SetZone()
-mod:SetUsedIcons(1)
-
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -23,6 +19,7 @@ local timerStormCD		= mod:NewCDTimer(55, 43648, nil, nil, nil, 3)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
+mod:SetUsedIcons(1)
 mod:AddRangeFrameOption("10")
 mod:AddSetIconOption("StormIcon", 43648, true, false, {1})
 

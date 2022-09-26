@@ -3,9 +3,6 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision("20210404052635")
 mod:SetCreatureID(23863)
-mod:SetEncounterID(2487)--Data says Daakara, but it's not daakara in TBC it's Zul'jin
-mod:SetZone()
-
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(

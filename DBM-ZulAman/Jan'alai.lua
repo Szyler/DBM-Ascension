@@ -3,10 +3,6 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision("20210404052635")
 mod:SetCreatureID(23578)
-mod:SetEncounterID(2484)
-mod:SetZone()
-mod:SetUsedIcons(1)
-
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -27,6 +23,7 @@ local timerAdds			= mod:NewNextTimer(92, 43962, nil, nil, nil, 1, nil, DBM_CORE_
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
+mod:SetUsedIcons(1)
 mod:AddSetIconOption("FlameIcon", 43140, true, false, {1})
 
 function mod:FlameTarget(targetname, uId)
