@@ -42,10 +42,10 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 5012 $"):sub(12, -3),
-	Version = "5.14",
-	DisplayVersion = "5.14", -- the string that is shown as version
-	ReleaseRevision = 5011 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 5015 $"):sub(12, -3),
+	Version = "5.15",
+	DisplayVersion = "5.15", -- the string that is shown as version
+	ReleaseRevision = 5013 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -2864,7 +2864,6 @@ do
 	end
 	bossModPrototype.NewRunAwaySound = bossModPrototype.NewSound
 	
-	function soundPrototype:Play(file)
 		if not self.option or self.mod.Options[self.option] then
 			PlaySoundFile(file or "Sound\\Creature\\HoodWolf\\HoodWolfTransformPlayer01.wav")
 		end
