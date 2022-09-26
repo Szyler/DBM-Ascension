@@ -2834,6 +2834,10 @@ do
 	function bossModPrototype:NewPhaseAnnounce(phase, color, icon, ...)
 		return newAnnounce(self, "phase", phase, color or 1, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
 	end
+	
+	function bossModPrototype:NewInterruptAnnounce(spellId, color, ...)
+		return newAnnounce(self, "interrupt", phase, color or 3, ...)
+	end
 end
 
 --------------------
