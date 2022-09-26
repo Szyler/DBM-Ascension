@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ZulJin", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
 mod:SetCreatureID(23863)
 mod:RegisterCombat("combat")
 
@@ -43,7 +43,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnParalyzeSoon:Schedule(22)
 		if self.Options.SpecWarn43095dispel and self:CheckDispelFilter() then
 			specWarnParalyze:Show(DBM_CORE_L.ALLIES)
-			specWarnParalyze:Play("helpdispel")
 		else
 			warnParalyze:Show()
 		end
@@ -54,21 +53,17 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellPhase2 or msg:find(L.YellPhase2) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
-		warnPhase:Play("ptwo")
 		self.vb.phase = 2
 	elseif msg == L.YellPhase3 or msg:find(L.YellPhase3) then
 		warnParalyzeSoon:Cancel()
 		timerParalyzeCD:Cancel()
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
-		warnPhase:Play("pthree")
 		self.vb.phase = 3
 	elseif msg == L.YellPhase4 or msg:find(L.YellPhase4) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(4))
-		warnPhase:Play("pfour")
 		self.vb.phase = 4
 	elseif msg == L.YellPhase5 or msg:find(L.YellPhase5) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(5))
-		warnPhase:Play("pfive")
 		self.vb.phase = 5
 	end
 end

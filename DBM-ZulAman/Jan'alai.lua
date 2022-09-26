@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Janalai", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
 mod:SetCreatureID(23578)
 mod:RegisterCombat("combat")
 
@@ -30,7 +30,6 @@ function mod:FlameTarget(targetname, uId)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnBreath:Show()
-		specWarnBreath:Play("targetyou")
 		yellFlamebreath:Yell()
 	else
 		warnFlame:Show(targetname)
@@ -58,7 +57,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerAdds:Start()
 	elseif msg == L.YellBomb or msg:find(L.YellBomb) then
 		specWarnBomb:Show()
-		specWarnBomb:Play("watchstep")
 		timerBomb:Start()
 	end
 end

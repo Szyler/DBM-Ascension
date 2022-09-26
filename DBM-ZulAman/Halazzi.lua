@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Halazzi", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
 mod:SetCreatureID(23577)
 mod:RegisterCombat("combat")
 
@@ -36,7 +36,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(43139) then
 		if self.Options.SpecWarn43139dispel then
 			specWarnEnrage:Show(args.destName)
-			specWarnEnrage:Play("enrage")
 		else
 			warnEnrage:Show()
 		end
@@ -54,7 +53,6 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(43302) then
 		specWarnTotem:Show()
-		specWarnTotem:Play("attacktotem")
 	end
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Akilzon", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
 mod:SetCreatureID(23574)
 mod:RegisterCombat("combat")
 
@@ -12,16 +12,16 @@ mod:RegisterEvents(
 local warnStorm			= mod:NewTargetAnnounce(43648, 4)
 local warnStormSoon		= mod:NewSoonAnnounce(43648, 5, 3)
 
-local specWarnStorm		= mod:NewSpecialWarningSpell(43648, nil, nil, nil, 2, 2)
+local specWarnStorm		= mod:NewSpecialWarningSpell(43648)
 
-local timerStorm		= mod:NewCastTimer(8, 43648, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
-local timerStormCD		= mod:NewCDTimer(55, 43648, nil, nil, nil, 3)
+local timerStorm		= mod:NewCastTimer(8, 43648)
+local timerStormCD		= mod:NewCDTimer(55, 43648)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:SetUsedIcons(1)
-mod:AddRangeFrameOption("10")
-mod:AddSetIconOption("StormIcon", 43648, true, false, {1})
+mod:AddBoolOption("RangeFrame", true)
+mod:AddBoolOption("StormIcon")
 
 function mod:OnCombatStart(delay)
 	warnStormSoon:Schedule(43)
@@ -42,7 +42,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(43648) then
 		warnStorm:Show(args.destName)
 		specWarnStorm:Show()
-		specWarnStorm:Play("specialsoon")
 		timerStorm:Start()
 		warnStormSoon:Schedule(50)
 		timerStormCD:Start()

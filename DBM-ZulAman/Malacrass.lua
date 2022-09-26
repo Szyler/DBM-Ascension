@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Malacrass", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
 mod:SetCreatureID(24239)
 mod:RegisterCombat("combat_yell", L.YellPull)
 
@@ -45,7 +45,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(43421) and not args:IsDestTypePlayer() then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHeal4:Show(args.destName)
-			specWarnHeal4:Play("dispelboss")
 		else
 			warnHeal4:Show(args.destName)
 		end
@@ -56,21 +55,18 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(43548) then
 		if self.Options.SpecWarn43548interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHeal1:Show(args.sourceName)
-			specWarnHeal1:Play("kickcast")
 		else
 			warnHeal1:Show()
 		end
 	elseif args:IsSpellID(43451) then
 		if self.Options.SpecWarn43451interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHeal2:Show(args.sourceName)
-			specWarnHeal2:Play("kickcast")
 		else
 			warnHeal2:Show()
 		end
 	elseif args:IsSpellID(43431) then
 		if self.Options.SpecWarn43431interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHeal3:Show(args.sourceName)
-			specWarnHeal3:Play("kickcast")
 		else
 			warnHeal3:Show()
 		end
@@ -80,7 +76,6 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(43383) then
 		specWarnBolt:Show()
-		specWarnBolt:Play("aesoon")
 		warnBoltSoon:Schedule(35)
 		timerBolt:Start()
 		timerBoltCD:Start()
@@ -93,6 +88,5 @@ end
 function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(43436) then
 		specWarnTotem:Show()
-		specWarnTotem:Play("attacktotem")
 	end
 end
