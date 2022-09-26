@@ -5,20 +5,20 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(23863)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 43093 43150 43213",
-	"SPELL_CAST_SUCCESS 43095",
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local warnThrow			= mod:NewTargetNoFilterAnnounce(43093, 3, nil, "Tank|Healer")
+local warnThrow			= mod:NewTargetAnnounce(43093, 3)
 local warnParalyze		= mod:NewSpellAnnounce(43095, 4)
 local warnParalyzeSoon	= mod:NewPreWarnAnnounce(43095, 5, 3)
-local warnClaw			= mod:NewTargetNoFilterAnnounce(43150, 3)
+local warnClaw			= mod:NewTargetAnnounce(43150, 3)
 local warnFlame			= mod:NewSpellAnnounce(43213, 3)
 local warnPhase			= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
-local specWarnParalyze	= mod:NewSpecialWarningDispel(43095, "RemoveMagic", nil, nil, 1, 2)
+local specWarnParalyze	= mod:NewSpecialWarningDispel(43095)
 
 local timerParalyzeCD	= mod:NewCDTimer(27, 43095, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
 

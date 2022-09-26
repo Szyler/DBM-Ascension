@@ -5,23 +5,23 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(23577)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 43303 43139 43290",
-	"SPELL_AURA_REMOVED 43303",
-	"SPELL_SUMMON 43302",
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"SPELL_SUMMON",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local warnShock			= mod:NewTargetNoFilterAnnounce(43303, 3, "RemoveMagic")
-local warnEnrage		= mod:NewSpellAnnounce(43139, 3, nil, "Tank|Healer|RemoveEnrage")
+local warnShock			= mod:NewTargetAnnounce(43303, 3)
+local warnEnrage		= mod:NewSpellAnnounce(43139, 3)
 local warnFrenzy		= mod:NewSpellAnnounce(43290, 3)
 local warnSpirit		= mod:NewAnnounce("WarnSpirit", 4, 39414)
 local warnNormal		= mod:NewAnnounce("WarnNormal", 4, 39414)
 
-local specWarnTotem		= mod:NewSpecialWarningSpell(43302, "Dps", nil, nil, 1, 2)
-local specWarnEnrage	= mod:NewSpecialWarningDispel(43139, "RemoveEnrage", nil, nil, 1, 6)
+local specWarnTotem		= mod:NewSpellAnnounce(43302)
+local specWarnEnrage	= mod:NewSpecialWarningDispel(43139)
 
-local timerShock		= mod:NewTargetTimer(12, 43303, nil, "RemoveMagic", nil, 5, nil, DBM_CORE_L.MAGIC_ICON)
+local timerShock		= mod:NewTargetTimer(12, 43303)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 

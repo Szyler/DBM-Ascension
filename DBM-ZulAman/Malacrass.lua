@@ -5,28 +5,28 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(24239)
 mod:RegisterCombat("combat_yell", L.YellPull)
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 43501 43421",
-	"SPELL_CAST_START 43548 43451 43431",
-	"SPELL_CAST_SUCCESS 43383 43329",
-	"SPELL_SUMMON 43436"
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_SUMMON"
 )
 
 --TODO, GTFO for standing in shit
-local warnSiphon	= mod:NewTargetNoFilterAnnounce(43501, 3)
+local warnSiphon	= mod:NewTargetAnnounce(43501, 3)
 local warnBoltSoon	= mod:NewPreWarnAnnounce(43383, 5, 3)
 local warnHeal1		= mod:NewCastAnnounce(43548, 3)
 local warnHeal2		= mod:NewCastAnnounce(43451, 3)
 local warnHeal3		= mod:NewCastAnnounce(43431, 3)
-local warnHeal4		= mod:NewTargetNoFilterAnnounce(43421, 3)
+local warnHeal4		= mod:NewTargetAnnounce(43421, 3)
 local warnPatch		= mod:NewSpellAnnounce(43429, 3)
 
 local specWarnBolt	= mod:NewSpecialWarningSpell(43383, nil, nil, nil, 2, 2)
-local specWarnHeal1	= mod:NewSpecialWarningInterrupt(43548, "HasInterrupt", nil, nil, 1, 2)
-local specWarnHeal2	= mod:NewSpecialWarningInterrupt(43451, "HasInterrupt", nil, nil, 1, 2)
-local specWarnHeal3	= mod:NewSpecialWarningInterrupt(43431, "HasInterrupt", nil, nil, 1, 2)
-local specWarnHeal4	= mod:NewSpecialWarningDispel(43421, "MagicDispeller", nil, nil, 1, 2)
-local specWarnTotem	= mod:NewSpecialWarningSwitch(43436, "Dps", nil, nil, 1, 2)
+local specWarnHeal1	= mod:NewInterruptAnnounce(43548)
+local specWarnHeal2	= mod:NewInterruptAnnounce(43451)
+local specWarnHeal3	= mod:NewInterruptAnnounce(43431)
+local specWarnHeal4	= mod:NewSpecialWarningDispel(43421)
+local specWarnTotem	= mod:NewSpecialWarningSwitch(43436)
 
 local timerSiphon	= mod:NewTargetTimer(30, 43501, nil, nil, nil, 6)
 local timerBoltCD	= mod:NewCDTimer(41, 43383, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)

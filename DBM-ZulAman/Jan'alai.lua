@@ -5,12 +5,12 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(23578)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 43140",
+mod:RegisterEvents(
+	"SPELL_CAST_START",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local warnFlame			= mod:NewTargetNoFilterAnnounce(43140, 3)
+local warnFlame			= mod:NewTargetAnnounce(43140, 3)
 local warnAddsSoon		= mod:NewSoonAnnounce(43962, 3)
 
 local specWarnAdds		= mod:NewSpecialWarningSpell(43962, "dps", nil, nil, 1, 2)

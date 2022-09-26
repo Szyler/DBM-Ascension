@@ -5,8 +5,8 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(23576)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 42398",
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
 	"CHAT_MSG_MONSTER_YELL"
 )
 

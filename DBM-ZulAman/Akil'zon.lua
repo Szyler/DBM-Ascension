@@ -5,11 +5,11 @@ mod:SetRevision("20210404052635")
 mod:SetCreatureID(23574)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 43648"
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED"
 )
 
-local warnStorm			= mod:NewTargetNoFilterAnnounce(43648, 4)
+local warnStorm			= mod:NewTargetAnnounce(43648, 4)
 local warnStormSoon		= mod:NewSoonAnnounce(43648, 5, 3)
 
 local specWarnStorm		= mod:NewSpecialWarningSpell(43648, nil, nil, nil, 2, 2)
