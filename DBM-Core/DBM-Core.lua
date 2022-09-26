@@ -2864,6 +2864,7 @@ do
 	end
 	bossModPrototype.NewRunAwaySound = bossModPrototype.NewSound
 	
+	function soundPrototype:Play(file)
 		if not self.option or self.mod.Options[self.option] then
 			PlaySoundFile(file or "Sound\\Creature\\HoodWolf\\HoodWolfTransformPlayer01.wav")
 		end
