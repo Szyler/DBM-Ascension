@@ -2836,7 +2836,7 @@ do
 	end
 	
 	function bossModPrototype:NewInterruptAnnounce(spellId, color, ...)
-		return newAnnounce(self, "interrupt", phase, color or 3, ...)
+		return newAnnounce(self, "interrupt", spellId, color or 3, ...)
 	end
 end
 
