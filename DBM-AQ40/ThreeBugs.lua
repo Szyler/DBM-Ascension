@@ -26,10 +26,6 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0.1, "checkIsVis")
 end
 
-function mod:alarmSound()
-	soundBurrow:Play()
-end
-
 function mod:preBurrow()
 	prewarnBurrow:Show()
 end

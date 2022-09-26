@@ -109,14 +109,10 @@ function mod:alertSDeath()
 end
 
 -----MISC FUNCTIONS-----
-function mod:alarmSound()
-	soundKick:Play()
-end
 function mod:kickThisCunt()
 	kickAnnounce:Show()
 end
 function mod:runBitch()
-	soundMelee:Play()
 	meleeOut:Show()
 end
 

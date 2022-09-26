@@ -138,7 +138,6 @@ function mod:alertGiantEye()
 end
 function mod:alertGlare()
 	warnDarkGlare:Show()
-	soundGlare:Play()
 end
 function mod:alertFear()
 	if phase == 1 then

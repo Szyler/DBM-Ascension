@@ -28,7 +28,6 @@ end
 
 function mod:alertEnrage()
 	warnEnrage:Show()
-	soundEnrage:Play();
 end
 
 function mod:alertAdds()

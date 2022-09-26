@@ -24,7 +24,6 @@ local WarnJackHammer		= mod:NewSpellAnnounce(39194)
 local specWarnJackHammer	= mod:NewSpecialWarningRun(39194, mod:IsMelee())
 local specWarnShadowpower   = mod:NewSpecialWarningDispel(35322, isDispeller)
 
-local soundJackhammer = mod:NewSound(39194, nil, mod:IsMelee())
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(39193, 35322) and not args:IsDestTypePlayer() and self:IsInCombat() then     --Shadow Power
@@ -50,6 +49,5 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.JackHammer then
 		WarnJackHammer:Show()
 		specWarnJackHammer:Show()
-		soundJackhammer:Play()
 	end
 end

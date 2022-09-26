@@ -111,6 +111,5 @@ end
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 38236 then
 		specWarnTotem:Show()
-		-- specWarnTotem:Play("attacktotem")
 	end
 end

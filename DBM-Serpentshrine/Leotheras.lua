@@ -107,7 +107,6 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 37640 then
 		specWarnWhirl:Show()
-		-- specWarnWhirl:Play("justrun")
 		timerWhirl:Start()
 		if self.vb.phase == 2 then
 			timerNextWhirl:Start()
@@ -121,7 +120,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- end
 		-- if args:IsPlayer() then
 			-- specWarnDemon:Show()
-			-- -- specWarnDemon:Play("targetyou")
 		-- end
 		-- if #warnDemonTargets >= 5 then
 			-- showDemonTargets(self)

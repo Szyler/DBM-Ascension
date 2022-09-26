@@ -47,10 +47,6 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(600-delay, "twinTeleport")
 end
 
-function mod:alarmSound()
-	soundTele:Play()
-end
-
 function mod:teleSoon()
 	warnTeleportSoon:Show()
 end

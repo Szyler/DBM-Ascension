@@ -28,7 +28,6 @@ function mod:preAdds()
 end
 function mod:alertVoid()
 	warnVoid:Show()
-	soundVoid:Play()
 end
 function mod:alertAdds()
 	warnAdds:Show()
