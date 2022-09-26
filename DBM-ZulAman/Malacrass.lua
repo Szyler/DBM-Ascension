@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Malacrass", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
 mod:SetCreatureID(24239)
 mod:RegisterCombat("combat_yell", L.YellPull)
 
@@ -21,17 +21,17 @@ local warnHeal3		= mod:NewCastAnnounce(43431, 3)
 local warnHeal4		= mod:NewTargetAnnounce(43421, 3)
 local warnPatch		= mod:NewSpellAnnounce(43429, 3)
 
-local specWarnBolt	= mod:NewSpecialWarningSpell(43383, nil, nil, nil, 2, 2)
+local specWarnBolt	= mod:NewSpecialWarningSpell(43383)
 local specWarnHeal1	= mod:NewInterruptAnnounce(43548)
 local specWarnHeal2	= mod:NewInterruptAnnounce(43451)
 local specWarnHeal3	= mod:NewInterruptAnnounce(43431)
 local specWarnHeal4	= mod:NewSpecialWarningDispel(43421)
 local specWarnTotem	= mod:NewSpecialWarningSwitch(43436)
 
-local timerSiphon	= mod:NewTargetTimer(30, 43501, nil, nil, nil, 6)
-local timerBoltCD	= mod:NewCDTimer(41, 43383, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
-local timerBolt		= mod:NewCastTimer(10, 43383, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
-local timerPatch	= mod:NewCastTimer(20, 43429, nil, nil, nil, 3)
+local timerSiphon	= mod:NewTargetTimer(30, 43501)
+local timerBoltCD	= mod:NewCDTimer(41, 43383)
+local timerBolt		= mod:NewCastTimer(10, 43383)
+local timerPatch	= mod:NewCastTimer(20, 43429)
 
 function mod:OnCombatStart(delay)
 	timerBoltCD:Start(30)
@@ -43,33 +43,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSiphon:Show(args.destName)
 		timerSiphon:Show(args.destName)
 	elseif args:IsSpellID(43421) and not args:IsDestTypePlayer() then
-		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnHeal4:Show(args.destName)
-		else
-			warnHeal4:Show(args.destName)
-		end
+		warnHeal4:Show(args.destName)
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(43548) then
-		if self.Options.SpecWarn43548interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnHeal1:Show(args.sourceName)
-		else
-			warnHeal1:Show()
-		end
+		specWarnHeal1:Show(args.sourceName)
+		warnHeal1:Show()
 	elseif args:IsSpellID(43451) then
-		if self.Options.SpecWarn43451interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnHeal2:Show(args.sourceName)
-		else
-			warnHeal2:Show()
-		end
+		specWarnHeal2:Show(args.sourceName)
+		warnHeal2:Show()
 	elseif args:IsSpellID(43431) then
-		if self.Options.SpecWarn43431interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnHeal3:Show(args.sourceName)
-		else
-			warnHeal3:Show()
-		end
+		specWarnHeal3:Show(args.sourceName)
+		warnHeal3:Show()
 	end
 end
 

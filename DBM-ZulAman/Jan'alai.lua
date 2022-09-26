@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Janalai", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
 mod:SetCreatureID(23578)
 mod:RegisterCombat("combat")
 
@@ -13,18 +13,18 @@ mod:RegisterEvents(
 local warnFlame			= mod:NewTargetAnnounce(43140, 3)
 local warnAddsSoon		= mod:NewSoonAnnounce(43962, 3)
 
-local specWarnAdds		= mod:NewSpecialWarningSpell(43962, "dps", nil, nil, 1, 2)
-local specWarnBomb		= mod:NewSpecialWarningDodge(42630, nil, nil, nil, 2, 2)
-local specWarnBreath	= mod:NewSpecialWarningYou(43140, nil, nil, nil, 1, 2)
+local specWarnAdds		= mod:NewSpecialWarningSpell(43962)
+local specWarnBomb		= mod:NewSpecialWarningSpell(42630)
+local specWarnBreath	= mod:NewSpecialWarningYou(43140)
 local yellFlamebreath	= mod:NewYell(43140)
 
-local timerBomb			= mod:NewCastTimer(12, 42630, nil, nil, nil, 3)--Cast bar?
-local timerAdds			= mod:NewNextTimer(92, 43962, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerBomb			= mod:NewCastTimer(12, 42630)--Cast bar?
+local timerAdds			= mod:NewNextTimer(92, 43962)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:SetUsedIcons(1)
-mod:AddSetIconOption("FlameIcon", 43140, true, false, {1})
+mod:AddBoolOption("FlameIcon")
 
 function mod:FlameTarget(targetname, uId)
 	if not targetname then return end

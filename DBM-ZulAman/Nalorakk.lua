@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Nalorakk", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
 mod:SetCreatureID(23576)
 mod:RegisterCombat("combat")
 
@@ -16,8 +16,8 @@ local warnNormal		= mod:NewAnnounce("WarnNormal", 4, 39414)
 local warnNormalSoon	= mod:NewAnnounce("WarnNormalSoon", 3, 39414)
 local warnSilence		= mod:NewSpellAnnounce(42398, 3)
 
-local timerBear			= mod:NewTimer(45, "TimerBear", 39414, nil, nil, 6)
-local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414, nil, nil, 6)
+local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
+local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 

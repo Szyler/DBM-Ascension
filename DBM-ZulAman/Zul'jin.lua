@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ZulJin", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("$Revision: 5015 $"):sub(12, -3)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
 mod:SetCreatureID(23863)
 mod:RegisterCombat("combat")
 
@@ -16,11 +16,11 @@ local warnParalyze		= mod:NewSpellAnnounce(43095, 4)
 local warnParalyzeSoon	= mod:NewPreWarnAnnounce(43095, 5, 3)
 local warnClaw			= mod:NewTargetAnnounce(43150, 3)
 local warnFlame			= mod:NewSpellAnnounce(43213, 3)
-local warnPhase			= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+local warnPhase			= mod:NewPhaseAnnounce(2)
 
 local specWarnParalyze	= mod:NewSpecialWarningDispel(43095)
 
-local timerParalyzeCD	= mod:NewCDTimer(27, 43095, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+local timerParalyzeCD	= mod:NewCDTimer(27, 43095)
 
 mod.vb.phase = 1
 
