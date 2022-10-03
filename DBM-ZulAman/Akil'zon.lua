@@ -20,6 +20,7 @@ local nextLightningStrike 	= mod:NewNextTimer(10, 2135702)
 local timerNextVortex		= mod:NewNextTimer(10, 2135733)
 local timerNextRod			= mod:NewNextTimer(20, 2135700)
 
+local timerNextWinds 		= mod:NewSoonAnnounce(3, 2135710)
 local specWarnWinds			= mod:NewSpecialWarningSpell(2135710)
 local warnWindsTarget 		= mod:NewTargetAnnounce(2135710, 4)
 local warnStorm				= mod:NewTargetAnnounce(2135724, 4)
@@ -84,6 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		nextLightningStrike:Cancel()
 		timerNextRod:Cancel()
 		self.vb.phase = 2
+		timerNextWinds:Start()
 	end
 end
 
@@ -103,20 +105,24 @@ end
 
 function mod:UNIT_HEALTH(unit)
 	
-	if (self.vb.phase ==2) and (mod:GetUnitCreatureId(unit) == 23574) then
+	if (self.vb.phase == 2) and (mod:GetUnitCreatureId(unit) == 23574) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp>60 and hp<=65) and platform1 then
 			warnVortexSoon:Show()
 			platform1 = false
+			timerNextWinds:Start(6)
 		elseif (hp>50 and hp<=55) and platform2  then
 			warnVortexSoon:Show()
 			platform2 = false
+			timerNextWinds:Start(6)
 		elseif (hp>40 and hp<=45) and platform3  then
 			warnVortexSoon:Show()
 			platform3 = false
+			timerNextWinds:Start(6)
 		elseif (hp>30 and hp<=35) and platform4 then
 			warnVortexSoon:Show()
 			platform4 = false
+			timerNextWinds:Start(6)
 		elseif (hp<=30) then
 			self.vb.phase = 3
 			timerNextVortex:Start()
