@@ -46,7 +46,8 @@ L:SetGeneralLocalization{
 
 L:SetOptionLocalization{
 	StormIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43648),
-	RangeFrame				= "Show range frame"
+	RangeFrame				= "Show range frame",
+	RodYellOpt  = "Yell when you are affected by $spell:2135700"
 }
 
 ---------------
@@ -82,13 +83,17 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnSpirit	= "Show warning for Spirit phase",
-	WarnNormal	= "Show warning for Normal phase"
+	WarnSpirit		= "Show warning for Spirit phase",
+	WarnNormal		= "Show warning for Normal phase",
+	ShockYellOpt	= "Yell when you are affected by $spell:2136003 , $spell:2136024 or $spell:2136016",
 }
 
 L:SetMiscLocalization{
-	YellSpirit	= "I fight wit' untamed spirit....",
-	YellNormal	= "Spirit, come back to me!"
+	YellSpirit		= "I fight wit' untamed spirit....",
+	YellNormal		= "Spirit, come back to me!",
+	FlameShockYell  = "Flame Shock on"..UnitName("PLAYER") "Moving out!",
+	EarthShockYell	= "Earth shock on "..UnitName("PLAYER")" Moving out!",
+	FrostShockYell	= "Frost shock on "..UnitName("PLAYER").."Stunned Soon!"
 }
 
 --------------------------
@@ -117,5 +122,8 @@ L:SetMiscLocalization{
 	YellPhase2	= "Got me some new tricks... like me brudda bear....",
 	YellPhase3	= "Dere be no hidin' from da eagle!",
 	YellPhase4	= "Let me introduce you to me new bruddas: fang and claw!",
-	YellPhase5	= "Ya don' have to look to da sky to see da dragonhawk!"
+	YellPhase5	= "Ya don' have to look to da sky to see da dragonhawk!",
+	DBM_JANALAI_HATCHERS = "Where ma hatcha? Get to work on dem eggs!",
+	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
+	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!"
 }
