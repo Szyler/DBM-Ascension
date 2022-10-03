@@ -64,20 +64,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSaber:Cancel()
 	elseif args:IsSpellID(2136002, 2136003, 2136004, 2136005) then
 		timerNextFlameShock:Start()
-		if args.isPlayer() then
+		if args:IsPlayer() then
 			SendChatMessage(L.FlameShockYell, "YELL")
 			yellFlameShock:Countdown(12, 3)
 		end
 	elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) then
 		timerNextEarthShock:Start()
-		if args.isPlayer() then
+		if args:IsPlayer() then
 			SendChatMessage(L.EarthShockYell, "YELL")
 			yellEarthShock:Countdown(4, 4)
 		end
 		
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) then
 		timerNextEarthShock:Start()
-		if args.isPlayer() then
+		if args:IsPlayer() then
 			SendChatMessage(L.FrostShockYell, "YELL")
 			yellFrostShock:Countdown(5, 3)
 		end

@@ -143,7 +143,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135499) then
 		timerNextVoidSeed:Start()
-		if args.IsPlayer() then
+		if args:IsPlayer() then
 			specWarnSeedYou:Show()
 		else 
 			specWarnSeed:Show()
