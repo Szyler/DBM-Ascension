@@ -10,6 +10,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED",
 	"SPELL_SUMMON",
 	"SPELL_DISPEL",
+	"SPELL_PERIODIC_DAMAGE",
+	"SPELL_PERIODIC_MISSED",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -35,6 +37,8 @@ local berserkTimer			= mod:NewBerserkTimer(600)
 local yellFlameShock		= mod:NewFadesYell(2136002)
 local yellEarthShock		= mod:NewFadesYell(2136015)
 local yellFrostShock		= mod:NewFadesYell(2136023)
+
+local specWarnMagma			= mod:NewSpecialWarningRun(2136011)
 
 mod:AddBoolOption(L.ShockYellOpt)
 
@@ -68,13 +72,14 @@ function mod:SPELL_AURA_APPLIED(args)
 			SendChatMessage(L.FlameShockYell, "YELL")
 			yellFlameShock:Countdown(12, 3)
 		end
+	elseif args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+		specWarnMagma:Show()
 	elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) then
 		timerNextEarthShock:Start()
 		if args:IsPlayer() then
 			SendChatMessage(L.EarthShockYell, "YELL")
 			yellEarthShock:Countdown(4, 4)
 		end
-		
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) then
 		timerNextEarthShock:Start()
 		if args:IsPlayer() then
@@ -91,20 +96,28 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerNextEarthShock:Cancel()
 		timerNextFlameShock:Cancel()
 		timerNextFrostShock:Cancel()
-	end
-	
+	elseif args:IsSpellID(2136002, 2136003, 2136004, 2136005) and args:IsPlayer() then
+		yellFlameShock:Cancel()
+		SendChatMessage("Molten Earth on me!", "YELL")
+	-- elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) and args:IsPlayer() then
+	-- 	yellEarthShock:Cancel()
+	-- 	SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
+	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) and args:IsPlayer() then
+		yellFrostShock:Cancel()
+		SendChatMessage("I'm Frozen!", "YELL")
+	end	
 end
 
 function mod:SPELL_DISPEL(args)
 	if args:IsSpellID(2136002, 2136003, 2136004, 2136005) and args:IsPlayer() then
 		yellFlameShock:Cancel()
-		SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
-	elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) and args:IsPlayer() then
-		yellEarthShock:Cancel()
-		SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
+		SendChatMessage("Molten Earth on me!", "YELL")
+	-- elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) and args:IsPlayer() then
+	-- 	yellEarthShock:Cancel()
+	-- 	SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) and args:IsPlayer() then
 		yellFrostShock:Cancel()
-		SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
+		SendChatMessage("I'm Frozen!", "YELL")
 	end
 end
 
@@ -112,6 +125,18 @@ function mod:SPELL_SUMMON(args)
 	if args:IsSpellID(2136034) then
 		specWarnTotem:Show()
 		timerNextCapacitor:Start()
+	end
+end
+
+function mod:SPELL_PERIODIC_DAMAGE(args)
+	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+		specWarnMagma:Show()
+	end
+end
+
+function mod:SPELL_PERIODIC_MISSED(args)
+	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+		specWarnMagma:Show()
 	end
 end
 
