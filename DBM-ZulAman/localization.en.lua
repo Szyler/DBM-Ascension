@@ -50,6 +50,12 @@ L:SetOptionLocalization{
 	RodYellOpt  = "Yell when you are affected by $spell:2135700"
 }
 
+L:SetMiscLocalization{
+	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
+	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
+	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER")..", Position! Move!"
+}
+
 ---------------
 --  Jan'alai --
 ---------------

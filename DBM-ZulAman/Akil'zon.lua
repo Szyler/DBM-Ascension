@@ -14,16 +14,16 @@ mod:RegisterEvents(
 
 local warnVortexSoon		= mod:NewSoonAnnounce(2135733, 5, 3)
 
-local timerNextStorm		= mod:NewNextTimer(50, 2135892)
-local timerStorm			= mod:NewCastTimer(10, 2135892)
+local timerNextStorm		= mod:NewNextTimer(50, 2135724)
+local timerStorm			= mod:NewCastTimer(10, 2135724)
 local nextLightningStrike 	= mod:NewNextTimer(10, 2135702)
 local timerNextVortex		= mod:NewNextTimer(10, 2135733)
 local timerNextRod			= mod:NewNextTimer(20, 2135700)
 
 local specWarnWinds			= mod:NewSpecialWarningSpell(2135710)
 local warnWindsTarget 		= mod:NewTargetAnnounce(2135710, 4)
-local warnStorm				= mod:NewTargetAnnounce(2135892, 4)
-local specWarnStorm			= mod:NewSpecialWarningSpell(2135892)
+local warnStorm				= mod:NewTargetAnnounce(2135724, 4)
+local specWarnStorm			= mod:NewSpecialWarningSpell(2135724)
 local specWarnRodYou		= mod:NewSpecialWarningYou(2135700)
 local specWarnRod			= mod:NewSpecialWarningTarget(2135700, false)
 local warnTalon				= mod:NewTargetAnnounce(2135747)
@@ -95,7 +95,7 @@ function mod:SPELL_CAST_START(args)
 		target = mod:GetBossTarget(23574)
 		warnWindsTarget:Show(target)
 		if target == myName then
-			SendChatMessage("Turbulent winds on "..UnitName("PLAYER")..", Position! Move!",  "YELL")
+			SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
 		end
 		
 	end
