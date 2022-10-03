@@ -76,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2135747, 2135748, 2135749, 2135750) then
 		warnTalon:Show(args.destName)
-		if args.amount > 5 then
+		if args.amount and args.amount > 5 then
 			warnTalonStacks:Show(args.amount,args.destName)
 		end
 	elseif args:IsSpellID(2135715) then
