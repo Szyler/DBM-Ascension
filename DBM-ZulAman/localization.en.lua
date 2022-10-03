@@ -91,9 +91,9 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	YellSpirit		= "I fight wit' untamed spirit....",
 	YellNormal		= "Spirit, come back to me!",
-	FlameShockYell  = "Flame Shock on"..UnitName("PLAYER") "Moving out!",
-	EarthShockYell	= "Earth shock on "..UnitName("PLAYER")" Moving out!",
-	FrostShockYell	= "Frost shock on "..UnitName("PLAYER").."Stunned Soon!"
+	FlameShockYell  = "Flame Shock on "..UnitName("PLAYER"),
+	EarthShockYell	= "Earth Shock on "..UnitName("PLAYER"),
+	FrostShockYell	= "Frost Shock on "..UnitName("PLAYER")
 }
 
 --------------------------
