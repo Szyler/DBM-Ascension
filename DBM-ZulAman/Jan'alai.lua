@@ -22,7 +22,7 @@ local specWarnBomb		= mod:NewSpecialWarningSpell(2135933)
 local timerNextBomb		= mod:NewNextTimer(37, 2135933)--Cast bar?
 local bombCast			= mod:NewCastTimer(7, 2135933)
 local timerNextAdds		= mod:NewNextTimer(57, 43962)
-local timerNextBreath	= mod:NewNextTimer(15,2135901)
+local timerNextBreath	= mod:NewNextTimer(15, 2135901)
 local timerNextWhirl	= mod:NewNextTimer(32, 2135909)
 local whirlCast			= mod:NewCastTimer(6, 2135909)
 
@@ -34,7 +34,7 @@ mod:SetUsedIcons(1)
 mod:AddBoolOption("FlameIcon")
 
 function mod:OnCombatStart(delay)
-	timerNextAdds:Start(15)
+	timerNextAdds:Start(20)
 	timerNextBomb:Start(30)
 	timerNextBreath:Start(6)
 	berserkTimer:Start(-delay)
