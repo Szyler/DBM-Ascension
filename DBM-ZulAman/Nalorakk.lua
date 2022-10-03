@@ -24,8 +24,8 @@ local specWarnRend		= mod:NewSpecialWarningTarget(2135834)
 
 local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
 local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
-local timerCharge1		= mod:NewTimer(15, "Charge (1)", 2135805)
-local timerCharge2		= mod:NewTimer(15, "Charge (2)", 2135805)
+local timerCharge1		= mod:NewTimer(13, "Charge (1)", 2135805)
+local timerCharge2		= mod:NewTimer(14, "Charge (2)", 2135805)
 local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135805)
 local timerNextFury		= mod:NewNextTimer(45, 2135837)
 local timerNextRoar		= mod:NewNextTimer(2135829, 14) -- HC 2135830 , ASC 10Man 2135831, ASC25man 2135832 --2136323 is ZUL'JIN ROAR!!!
@@ -35,17 +35,19 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 local roarSpam = 0
 local roarCount = 0
 local chargeCount = 0
-function mod:bearCharge()
-	self:unscheduleMethod("bearCharge")
-		timerCharge1:Start(13)
-		timerCharge2:Start(14)
-		timerCharge3:Start(15)
-		chargeCount = 0
-end
+
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFury:Start()
 	self:bearCharge()
+end
+
+function mod:bearCharge()
+	self:unscheduleMethod("bearCharge")
+	timerCharge1:Start()
+	timerCharge2:Start()
+	timerCharge3:Start()
+	chargeCount = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)
