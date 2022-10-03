@@ -22,9 +22,9 @@ local warnHeal4		= mod:NewTargetAnnounce(43421, 3)
 local warnPatch		= mod:NewSpellAnnounce(43429, 3)
 
 local specWarnBolt	= mod:NewSpecialWarningSpell(43383)
-local specWarnHeal1	= mod:NewInterruptAnnounce(43548)
-local specWarnHeal2	= mod:NewInterruptAnnounce(43451)
-local specWarnHeal3	= mod:NewInterruptAnnounce(43431)
+local specWarnHeal1	= mod:NewSpecialWarning("Interrupt Heal!")--#NewInterruptAnnounce(43548)
+local specWarnHeal2	= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43451)
+local specWarnHeal3	= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43431)
 local specWarnHeal4	= mod:NewSpecialWarningDispel(43421)
 local specWarnTotem	= mod:NewSpecialWarningSwitch(43436)
 
