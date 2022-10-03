@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_DAMAGE",
+	"SPELL_CAST_START",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -20,7 +21,10 @@ local warnNormalSoon	= mod:NewAnnounce("WarnNormalSoon", 3, 39414)
 local warnSilence		= mod:NewSpellAnnounce(42398, 3)
 local specWarnFury		= mod:NewSpecialWarningSpell(2135837)
 local specWarnFuryStacks= mod:NewSpecialWarningStack(2135838)
-local specWarnRend		= mod:NewSpecialWarningTarget(2135834)
+local specWarnRend		= mod:NewSpecialWarningTarget(2135833)
+
+local timerNextImpale	= mod:NewNextTimer(15, 2135823)
+local warnImpale		= mod:NewTargetAnnounce(2135824, 3) --2135823, 2135824, 2135825, 2135826, 2135827
 
 local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
 local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
@@ -29,7 +33,7 @@ local timerCharge2		= mod:NewTimer(14, "Charge (2)", 2135805)
 local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135805)
 local timerNextFury		= mod:NewNextTimer(45, 2135837)
 local timerNextRoar		= mod:NewNextTimer(2135829, 14) -- HC 2135830 , ASC 10Man 2135831, ASC25man 2135832 --2136323 is ZUL'JIN ROAR!!!
-local timerNextRend 	= mod:NewNextTimer(10,2135834) --timer seems to not be constant, need to find out 
+local timerNextRend 	= mod:NewNextTimer(10, 2135833) --timer seems to not be constant, need to find out 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 local roarSpam = 0
@@ -65,20 +69,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2135833, 2135834, 2135835, 2135836) then
 		specWarnRend:Show(args.destName)
 		timerNextRend:Start()
-	end
-end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and (GetTime() - roarSpam > 2.5)then
-		roarSpam = GetTime()
-		roarCount = roarCount+1
-		timerNextRoar:Start(math.max(3,14-roarCount))
+	elseif args:IsSpellID(2135824, 2135825, 2135826, 2135827) then
+		warnImpale:Show(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2135838) then
-		if args.amount == 25 or args.amount == 50 or args.amount == 75 then
+		if args.amount == 25 or args.amount == 50 or args.amount == 75  or args.amount == 100 then
 			specWarnFuryStacks:Show(args.amount)
 		end
 	end
@@ -88,6 +86,20 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2135812) then
 		timerNextRoar:Stop()
 		timerNextFury:Start()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and (GetTime() - roarSpam > 2.5) then
+		roarSpam = GetTime()
+		roarCount = roarCount+1
+		timerNextRoar:Start(math.max(3,14-roarCount))
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2135823) then
+		timerNextImpale:Start()
 	end
 end
 
