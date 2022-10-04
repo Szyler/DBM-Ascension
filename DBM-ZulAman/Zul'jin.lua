@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
+	"UNIT_DIED",
 	"UNIT_AURA",
 	"CHAT_MSG_MONSTER_YELL"
 )
@@ -24,7 +25,6 @@ local warnPhase3				= mod:NewPhaseAnnounce(3)
 local warnPhase4				= mod:NewPhaseAnnounce(4)
 
 local warnPhaseBerserk			= mod:NewPhaseAnnounce(5) --2136318, 2136319
-
 
 local warnPhaseEagle			= mod:NewSpecialWarningSpell(2136336) --2136336, Shape of the Bear, ASC D0 T5
 local timerNextTurbulentWinds	= mod:NewNextTimer(15, 2136342) --2136342, 2136343, 2136344, 2136345, 2136346
@@ -48,6 +48,7 @@ local bombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2
 
 
 local warnPhaseLynx				= mod:NewSpecialWarningSpell(2136376) --2136376, Shape of the Lynx, ASC D0 T5
+local timerNextLynxRush			= mod:NewNextTimer(24, 2136382) --2136382, 2136383, 2136384, 2136385
 
 		
 local timerNextGrievous			= mod:NewNextTimer(10, 2136300) --2136301, 2136302, 2136303
@@ -88,7 +89,8 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	timerNextGrievous:Start(4)
+	timerNextGrievous:Start(5)
+	timerNextImpale:Start(12)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -103,44 +105,50 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.phase = 5
 		timerNextGrievous:Start(7)
 		timerNextImpale:Start(15)
+		timerNextWhirlwind:Start(33)
 	elseif args:IsSpellID(2136436, 2136196) then --Phase 6-7-8-9
 		if args.sourceName == "Akil'zon" then
+			self:PhaseIncrease()
 			warnPhaseEagle:Show()
 			nextLightningStrike:Start(21)
 			self:ScheduleMethod(21,"lightningStrike")
 			timerNextStorm:Start(5)
 		elseif args.sourceName == "Nalorakk" then
+			self:PhaseIncrease()
 			warnPhaseBear:Show()
 		elseif args.sourceName == "Jan'alai" then
+			self:PhaseIncrease()
 			warnPhaseDragonhawk:Show()
 			timerNextBomb:Start(7)
 			timerNextScorchingBreath:Start(22)
 		elseif args.sourceName == "Halazzi" then
+			self:PhaseIncrease()
 			warnPhaseLynx:Show()
 		end
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2136336) then
+	if args:IsSpellID(2136336) then --Phase 2-3-4-5
 		warnPhaseEagle:Show()
 		timerNextTurbulentWinds:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Lightning")
 		self:PhaseIncrease()
-	elseif args:IsSpellID(2136337) then
+	elseif args:IsSpellID(2136337) then --Phase 2-3-4-5
 		warnPhaseBear:Show()
 		timerNextDeafeningRoar:Start(8)
 		timerNextStampede:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Bear")
 		self:PhaseIncrease()
-	elseif args:IsSpellID(2136357) then
+	elseif args:IsSpellID(2136357) then --Phase 2-3-4-5
 		warnPhaseDragonhawk:Show()
 		timerNextScorchingBreath:Start()
 		timerNextArmageddon:Start()
 		self:PhaseIncrease()
-	elseif args:IsSpellID(2136376) then
+	elseif args:IsSpellID(2136376) then --Phase 2-3-4-5
 		warnPhaseLynx:Show()
 		self:PhaseIncrease()
+		timerNextLynxRush:Start()
 	elseif args:IsSpellID(2136316) then
 		timerNextWhirlwind:Start()
 	elseif args:IsSpellID(2136402) then
@@ -165,7 +173,6 @@ function mod:SPELL_DAMAGE(args)
 	end
 end
 
-
 function mod:UNIT_AURA(unit)
 	local Name = UnitName(unit)
 	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
@@ -185,4 +192,19 @@ function mod:OnCombatEnd()
 		DBM.RangeCheck:Hide()
 	end
 	self:UnscheduleMethod("lightningStrike")
+end
+
+function mod:UNIT_DIED(args)
+	if args.destName == "Akil'zon" and self.vb.phase == 9 then
+		self.vb.phase = 10
+	elseif args.destName == "Nalorakk" and self.vb.phase == 9 then
+		self.vb.phase = 10
+	elseif args.destName == "Jan'alai" and self.vb.phase == 9 then
+		self.vb.phase = 10
+	elseif args.destName == "Halazzi" and self.vb.phase == 9 then
+		self.vb.phase = 10
+	else 
+		return
+	end
+	print("Should only appear if phase = 10, otherwise contact DBM developers.")
 end
