@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
+	"UNIT_AURA",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -28,10 +29,14 @@ local warnPhaseBerserk			= mod:NewPhaseAnnounce(5) --2136318, 2136319
 local warnPhaseEagle			= mod:NewSpecialWarningSpell(2136336) --2136336, Shape of the Bear, ASC D0 T5
 local timerNextTurbulentWinds	= mod:NewNextTimer(15, 2136342) --2136342, 2136343, 2136344, 2136345, 2136346
 local timerCastTurbulentWinds	= mod:NewCastTimer(5, 2136343) --2136342, 2136343, 2136344, 2136345, 2136346
-
+local timerNextLightningWall	= mod:NewNextTimer(10, 2136349) --2136348, 2136349, 2136350, 2136351, 2136352
+local timerNextStorm			= mod:NewNextTimer(50, 2136429) --2136429, 2136430, 2136431, 2136432, 2136433, 2136434
+local timerStorm				= mod:NewCastTimer(10, 2136429) --2136429, 2136430, 2136431, 2136432, 2136433, 2136434
+local nextLightningStrike 		= mod:NewNextTimer(10, 2136429)
 
 local warnPhaseBear				= mod:NewSpecialWarningSpell(2136337) --2136337, Shape of the Eagle, ASC D0 T5
 local timerNextDeafeningRoar	= mod:NewNextTimer(15, 2135829) --2135829, 2135830, 2135831, 2135832
+local timerNextStampede			= mod:NewNextTimer(10, 2136332) --2136332, 2136333, 2136334, 2136335
 
 
 local warnPhaseDragonhawk		= mod:NewSpecialWarningSpell(2136357) --2136357, Shape of the Dragonhawk, ASC D0 T5
@@ -47,6 +52,7 @@ local timerNextWhirlwind		= mod:NewNextTimer(45, 2136316) --2136316, Whirlwind
 local timerNextImpale			= mod:NewNextTimer(45, 2136304) --2136304, 2136305, 2136306, 2136307, 2136308, 2136309
 
 mod.vb.phase = 1
+local eosSpam = 0
 
 
 function mod:PhaseIncrease()
@@ -59,6 +65,22 @@ function mod:PhaseIncrease()
 	elseif self.vb.phase == 4 then
 		warnPhase4:Show()
 	end
+end
+
+function mod:WallMechanic(wallType)
+	if wallType == "Bear" then
+		timerNextStampede:Start()
+		self:ScheduleMethod(10, "WallMechanic", "Bear")
+	elseif wallType == "Lightning" then
+		timerNextLightningWall:Start()
+		self:ScheduleMethod(10, "WallMechanic", "Lightning")
+	end
+end
+
+function mod:lightningStrike()
+	self:UnscheduleMethod("lightningStrike")
+	nextLightningStrike:Start()
+	self:ScheduleMethod(10,"lightningStrike")
 end
 
 function mod:OnCombatStart(delay)
@@ -78,25 +100,41 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.phase = 5
 		timerNextGrievous:Start(7)
 		timerNextImpale:Start(15)
+	elseif args:IsSpellID(2136436, 2136196) then --Phase 6-7-8-9
+		if args.sourceName == "Akil'zon" then
+			warnPhaseEagle:Show()
+			nextLightningStrike:Start(21)
+			self:ScheduleMethod(21,"lightningStrike")
+			timerNextStorm:Start(5)
+		elseif args.sourceName == "Nalorakk" then
+			warnPhaseBear:Show()
+		elseif args.sourceName == "Jan'alai" then
+			warnPhaseDragonhawk:Show()
+		elseif args.sourceName == "Halazzi" then
+			warnPhaseLynx:Show()
+		end
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(2136336) then
-		warnPhaseEagle:Start()
+		warnPhaseEagle:Show()
 		timerNextTurbulentWinds:Start()
+		self:ScheduleMethod(10, "WallMechanic", "Lightning")
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136337) then
-		warnPhaseBear:Start()
+		warnPhaseBear:Show()
 		timerNextDeafeningRoar:Start(8)
+		timerNextStampede:Start()
+		self:ScheduleMethod(10, "WallMechanic", "Bear")
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136357) then
-		warnPhaseDragonhawk:Start()
+		warnPhaseDragonhawk:Show()
 		timerNextScorchingBreath:Start()
 		timerNextArmageddon:Start()
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136376) then
-		warnPhaseLynx:Start()
+		warnPhaseLynx:Show()
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136316) then
 		timerNextWhirlwind:Start()
@@ -117,4 +155,26 @@ function mod:SPELL_DAMAGE(args)
 	elseif args:IsSpellID(2135829, 2135830, 2135831, 2135832) then
 		timerNextDeafeningRoar:Start()
 	end
+end
+
+
+function mod:UNIT_AURA(unit)
+	local Name = UnitName(unit)
+	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
+		eosSpam = GetTime()
+		timerStorm:Start()
+		warnStorm:Show(Name)
+		specWarnStorm:Show()
+		-- timerNextStorm:Start()
+		if Name == UnitName("player") then
+			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
+		end
+	end
+end
+
+function mod:OnCombatEnd()
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Hide()
+	end
+	self:UnscheduleMethod("lightningStrike")
 end
