@@ -42,6 +42,9 @@ local timerNextStampede			= mod:NewNextTimer(10, 2136332) --2136332, 2136333, 21
 local warnPhaseDragonhawk		= mod:NewSpecialWarningSpell(2136357) --2136357, Shape of the Dragonhawk, ASC D0 T5
 local timerNextScorchingBreath	= mod:NewNextTimer(26, 2136358) --2136358, 2136359, 2136360, 2136361, 2136362
 local timerNextArmageddon		= mod:NewNextTimer(23, 2136372) --2136372, 2136373, 2136374, 2136375
+local specWarnBomb				= mod:NewSpecialWarningSpell(2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
+local timerNextBomb				= mod:NewNextTimer(37, 2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
+local bombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 
 
 local warnPhaseLynx				= mod:NewSpecialWarningSpell(2136376) --2136376, Shape of the Lynx, ASC D0 T5
@@ -110,6 +113,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnPhaseBear:Show()
 		elseif args.sourceName == "Jan'alai" then
 			warnPhaseDragonhawk:Show()
+			timerNextBomb:Start(7)
+			timerNextScorchingBreath:Start(22)
 		elseif args.sourceName == "Halazzi" then
 			warnPhaseLynx:Show()
 		end
@@ -138,6 +143,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136316) then
 		timerNextWhirlwind:Start()
+	elseif args:IsSpellID(2136402) then
+		bombCast:Start()
+		specWarnBomb:Show()
 	end
 end
 
