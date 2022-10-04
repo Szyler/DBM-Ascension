@@ -8,6 +8,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"CHAT_MSG_MONSTER_YELL"
 )
@@ -115,21 +116,5 @@ function mod:SPELL_DAMAGE(args)
 		timerNextGrievous:Start()
 	elseif args:IsSpellID(2135829, 2135830, 2135831, 2135832) then
 		timerNextDeafeningRoar:Start()
-	end
-end
-
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.YellPhase2 or msg:find(L.YellPhase2) then
-		warnPhase2:Show()
-		self.vb.phase = 2
-	elseif msg == L.YellPhase3 or msg:find(L.YellPhase3) then
-		warnPhase3:Show()
-		self.vb.phase = 3
-	elseif msg == L.YellPhase4 or msg:find(L.YellPhase4) then
-		warnPhase4:Show()
-		self.vb.phase = 4
-	elseif msg == L.YellPhase5 or msg:find(L.YellPhase5) then
-		warnPhase5:Show()
-		self.vb.phase = 5
 	end
 end
