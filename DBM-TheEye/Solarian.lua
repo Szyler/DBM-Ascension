@@ -157,13 +157,13 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2135230, 2135231, 2135232, 2135233) and args:IsPlayer() then
 		timerNextFireL:Start()
 		warnWarnFireL:Show()
-		if args.amount >= 5 then
+		if args.amount >= 4 then
 			specWarnLunarStacks:Show(args.amount)
 		end
 	elseif args:IsSpellID(2135234, 2135235, 2135236, 2135237) and args:IsPlayer() then
 		timerNextFireS:Start()
 		warnWarnFireS:Show()
-		if args.amount >= 5 then
+		if args.amount >= 4 then
 			specWarnSolarStacks:Show(args.amount)
 		end
 	end
