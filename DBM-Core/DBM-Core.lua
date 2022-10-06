@@ -795,7 +795,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 			if DBM:GetRaidRank() >= 1 then
 				sendSync("DBMv4-Pizza-Cancel")
 			end
-			SendChatMessage(DBM_CORE_ANNOUNCE_PULL_CANCEL..pullMessage, channel)
+			SendChatMessage(DBM_CORE_ANNOUNCE_PULL_CANCEL, channel)
 		end
 		if timer == 0 then  end
 	elseif cmd:sub(1, 5) == "arrow" then
