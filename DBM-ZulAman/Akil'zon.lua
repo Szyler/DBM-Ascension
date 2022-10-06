@@ -12,25 +12,26 @@ mod:RegisterEvents(
 	"UNIT_HEALTH"
 )
 
-local warnVortexSoon		= mod:NewSoonAnnounce(2135733, 5, 3)
+local warnVortexSoon			= mod:NewSoonAnnounce(2135733, 5, 3)
 
-local timerNextStorm		= mod:NewNextTimer(50, 2135724)
-local timerStorm			= mod:NewCastTimer(10, 2135724)
-local nextLightningStrike 	= mod:NewNextTimer(10, 2135702)
-local timerNextVortex		= mod:NewNextTimer(10, 2135733)
-local timerNextRod			= mod:NewNextTimer(20, 2135700)
+local timerNextStorm			= mod:NewNextTimer(50, 2135724)
+local timerStorm				= mod:NewCastTimer(10, 2135724)
+local nextLightningStrike 		= mod:NewNextTimer(10, 2135702)
+local timerNextVortex			= mod:NewNextTimer(10, 2135733)
+local timerNextRod				= mod:NewNextTimer(20, 2135700)
 
-local timerNextWinds 		= mod:NewSoonAnnounce(3, 2135710)
-local specWarnWinds			= mod:NewSpecialWarningSpell(2135710)
-local warnWindsTarget 		= mod:NewTargetAnnounce(2135710, 4)
-local warnStorm				= mod:NewTargetAnnounce(2135724, 4)
-local specWarnStorm			= mod:NewSpecialWarningSpell(2135724)
-local specWarnRodYou		= mod:NewSpecialWarningYou(2135700)
-local specWarnRod			= mod:NewSpecialWarningTarget(2135700, false)
-local warnTalon				= mod:NewTargetAnnounce(2135747)
-local warnTalonStacks		= mod:NewSpecialWarningStack(2135747)
+local timerNextTurbulentWinds	= mod:NewSoonAnnounce(3, 2135710)
+local timerCastTurbulentWinds	= mod:NewCastTimer(5, 2135710)
+local specWarnTurbulentWinds	= mod:NewSpecialWarningYou(2135710)
+local warnTurbulentWindsTarget 	= mod:NewTargetAnnounce(2135710, 4)
+local warnStorm					= mod:NewTargetAnnounce(2135724, 4)
+local specWarnStorm				= mod:NewSpecialWarningSpell(2135724)
+local specWarnRodYou			= mod:NewSpecialWarningYou(2135700)
+local specWarnRod				= mod:NewSpecialWarningTarget(2135700, false)
+local warnTalon					= mod:NewTargetAnnounce(2135747)
+local warnTalonStacks			= mod:NewSpecialWarningStack(2135747)
 
-local berserkTimer			= mod:NewBerserkTimer(600)
+local berserkTimer				= mod:NewBerserkTimer(600)
 
 local eosSpam = 0
 
@@ -40,10 +41,23 @@ mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption("StormIcon")
 local platform1, platform2, platform3, platform4 = true , true , true , true
 
-function mod:lightningStrike()
-	self:UnscheduleMethod("lightningStrike")
+function mod:LightningStrike()
+	self:UnscheduleMethod("LightningStrike")
 	nextLightningStrike:Start()
-	self:ScheduleMethod(10,"lightningStrike")
+	self:ScheduleMethod(10,"LightningStrike")
+end
+
+function mod:TurbulentWinds()
+	local target = nil
+	local myName = UnitName("player")
+	target = mod:GetBossTarget(23574)
+	if target == myName then
+		specWarnTurbulentWinds(target)
+		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
+	else
+		warnTurbulentWindsTarget(target)
+	end
+
 end
 
 function mod:OnCombatStart(delay)
@@ -51,7 +65,7 @@ function mod:OnCombatStart(delay)
 	timerNextStorm:Start(40)
 	nextLightningStrike:Start(6.5)
 	timerNextRod:Start(13)
-	self:ScheduleMethod(6.5,"lightningStrike")
+	self:ScheduleMethod(6.5,"LightningStrike")
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end
@@ -62,7 +76,7 @@ function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-	self:UnscheduleMethod("lightningStrike")
+	self:UnscheduleMethod("LightningStrike")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -81,25 +95,18 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnTalonStacks:Show(args.amount,args.destName)
 		end
 	elseif args:IsSpellID(2135715) then
-		self:UnscheduleMethod("lightningStrike")
+		self:UnscheduleMethod("LightningStrike")
 		nextLightningStrike:Cancel()
 		timerNextRod:Cancel()
 		self.vb.phase = 2
-		timerNextWinds:Start()
+		timerNextTurbulentWinds:Start()
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135710) then
-		specWarnWinds:Show()
-		local target = nil
-		local myName = UnitName("player")
-		target = mod:GetBossTarget(23574)
-		warnWindsTarget:Show(target)
-		if target == myName then
-			SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
-		end
-		
+		timerCastTurbulentWinds:Start()
+		self:ScheduleMethod(0.2, "TurbulentWinds")
 	end
 end
 
@@ -110,24 +117,24 @@ function mod:UNIT_HEALTH(unit)
 		if (hp>60 and hp<=65) and platform1 then
 			warnVortexSoon:Show()
 			platform1 = false
-			timerNextWinds:Start(6)
+			timerNextTurbulentWinds:Start(6)
 		elseif (hp>50 and hp<=55) and platform2  then
 			warnVortexSoon:Show()
 			platform2 = false
-			timerNextWinds:Start(6)
+			timerNextTurbulentWinds:Start(6)
 		elseif (hp>40 and hp<=45) and platform3  then
 			warnVortexSoon:Show()
 			platform3 = false
-			timerNextWinds:Start(6)
+			timerNextTurbulentWinds:Start(6)
 		elseif (hp>30 and hp<=35) and platform4 then
 			warnVortexSoon:Show()
 			platform4 = false
-			timerNextWinds:Start(6)
+			timerNextTurbulentWinds:Start(6)
 		elseif (hp<=30) then
 			self.vb.phase = 3
 			timerNextVortex:Start()
 			nextLightningStrike:Start(21)
-			self:ScheduleMethod(21, "lightningStrike")
+			self:ScheduleMethod(21, "LightningStrike")
 			timerNextRod:Start(28)
 		end
 	end
