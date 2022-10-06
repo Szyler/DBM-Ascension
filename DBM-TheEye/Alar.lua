@@ -40,13 +40,13 @@ local timerNextFlameCascade		= mod:NewNextTimer(60, 2135190)
 local timerFlameCascade			= mod:NewBuffActiveTimer(17, 2135190)
 
 --Ascended mechanics:
---Living bomb?
+local yellLivingBomb			= mod:NewFadesYell(2135176)
+mod:AddBoolOption(L.LivingBombYellOpt, true)
 
 -- local variables
 
 -- local options
 mod.vb.phase = 1
-mod:AddBoolOption(L.LivingBombYellOpt, false)
 
 function mod:PlatformSwap()
 	self:UnscheduleMethod("PlatformSwap")
@@ -72,10 +72,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnGround:Show()
 	elseif args:IsSpellID(2135174) and args:IsPlayer() then
 		specWarnFeather:Schedule(45)
-	elseif args:IsSpellID(2135155) then --Flame Breath debuffs on tanks
+	elseif args:IsSpellID(2135154, 2135155, 2135156, 2135157) then --Flame Breath debuffs on tanks
 		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(2135178) and self.Options.LivingBombYellOpt and args:IsPlayer() then
+	elseif args:IsSpellID(2135176, 2135177, 2135178, 2135179) and self.Options.LivingBombYellOpt and args:IsPlayer() then
 		SendChatMessage("Living Bomb on "..args.destName.."!", "YELL")
+		yellLivingBomb:Countdown(12)
 	end
 end
 
