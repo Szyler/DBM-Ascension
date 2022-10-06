@@ -47,7 +47,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:bearCharge()
-	self:unscheduleMethod("bearCharge")
+	self:UnscheduleMethod("bearCharge")
 	timerCharge1:Start()
 	timerCharge2:Start()
 	timerCharge3:Start()
