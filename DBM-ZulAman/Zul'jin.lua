@@ -33,6 +33,10 @@ local timerNextLightningWall	= mod:NewNextTimer(10, 2136349) --2136348, 2136349,
 local timerNextStorm			= mod:NewNextTimer(50, 2136429) --2136429, 2136430, 2136431, 2136432, 2136433, 2136434
 local timerStorm				= mod:NewCastTimer(10, 2136429) --2136429, 2136430, 2136431, 2136432, 2136433, 2136434
 local nextLightningStrike 		= mod:NewNextTimer(10, 2136429)
+local specWarnTurbulentWinds	= mod:NewSpecialWarningYou(2136342)
+local warnTurbulentWindsTarget 	= mod:NewTargetAnnounce(2136342, 4)
+local warnStorm					= mod:NewTargetAnnounce(2135724, 4)
+local specWarnStorm				= mod:NewSpecialWarningSpell(2135724)
 
 local warnPhaseBear				= mod:NewSpecialWarningSpell(2136337) --2136337, Shape of the Eagle, ASC D0 T5
 local timerNextDeafeningRoar	= mod:NewNextTimer(15, 2135829) --2135829, 2135830, 2135831, 2135832
@@ -81,10 +85,23 @@ function mod:WallMechanic(wallType)
 	end
 end
 
-function mod:lightningStrike()
-	self:UnscheduleMethod("lightningStrike")
+function mod:LightningStrike()
+	self:UnscheduleMethod("LightningStrike")
 	nextLightningStrike:Start()
-	self:ScheduleMethod(10,"lightningStrike")
+	self:ScheduleMethod(10,"LightningStrike")
+end
+
+function mod:TurbulentWinds()
+	local target = nil
+	local myName = UnitName("player")
+	target = mod:GetBossTarget(23574) -- need to check ID !
+	if target == myName then
+		specWarnTurbulentWinds(target)
+		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
+	else
+		warnTurbulentWindsTarget(target)
+	end
+
 end
 
 function mod:OnCombatStart(delay)
@@ -111,7 +128,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:PhaseIncrease()
 			warnPhaseEagle:Show()
 			nextLightningStrike:Start(21)
-			self:ScheduleMethod(21,"lightningStrike")
+			self:ScheduleMethod(21,"LightningStrike")
 			timerNextStorm:Start(5)
 		elseif args.sourceName == "Nalorakk" then
 			self:PhaseIncrease()
@@ -161,6 +178,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2136342) then
 		timerNextTurbulentWinds:Start()
 		timerCastTurbulentWinds:Start()
+		self:ScheduleMethod(0.2, "TurbulentWinds")
 		--Turbulent winds targeting function here
 	end
 end
@@ -191,7 +209,7 @@ function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-	self:UnscheduleMethod("lightningStrike")
+	self:UnscheduleMethod("LightningStrike")
 end
 
 function mod:UNIT_DIED(args)
