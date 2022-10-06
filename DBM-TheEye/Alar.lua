@@ -81,7 +81,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2135155) then
+	if args:IsSpellID(2135154, 2135155, 2135156, 2135157) then
 		warnFlameBreath:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
