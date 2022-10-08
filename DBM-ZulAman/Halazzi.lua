@@ -72,7 +72,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			SendChatMessage(L.FlameShockYell, "YELL")
 			yellFlameShock:Countdown(12, 3)
 		end
-	elseif args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+	elseif args:IsSpellID(2136011, 2136012, 2136013, 2136014) and args:IsPlayer() then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
 		specWarnMagma:Show()
 	elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) then
 		timerNextEarthShock:Start()
@@ -81,7 +81,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellEarthShock:Countdown(4, 4)
 		end
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) then
-		timerNextEarthShock:Start()
+		timerNextFrostShock:Start()
 		if args:IsPlayer() then
 			SendChatMessage(L.FrostShockYell, "YELL")
 			yellFrostShock:Countdown(5, 3)
@@ -129,13 +129,13 @@ function mod:SPELL_SUMMON(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) and args:IsPlayer() then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
 		specWarnMagma:Show()
 	end
 end
 
 function mod:SPELL_PERIODIC_MISSED(args)
-	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
+	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) and args:IsPlayer() then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
 		specWarnMagma:Show()
 	end
 end
