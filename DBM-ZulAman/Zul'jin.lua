@@ -96,10 +96,10 @@ function mod:TurbulentWinds()
 	local myName = UnitName("player")
 	target = mod:GetBossTarget(23574) -- need to check ID !
 	if target == myName then
-		specWarnTurbulentWinds(target)
+		specWarnTurbulentWinds:Show(target)
 		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
 	else
-		warnTurbulentWindsTarget(target)
+		warnTurbulentWindsTarget:Show(target)
 	end
 
 end
