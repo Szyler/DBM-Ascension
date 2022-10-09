@@ -49,6 +49,9 @@ local timerNextArmageddon		= mod:NewNextTimer(23, 2136372) --2136372, 2136373, 2
 local specWarnBomb				= mod:NewSpecialWarningSpell(2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local timerNextBomb				= mod:NewNextTimer(37, 2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local bombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
+local timerNextFlameWhirl		= mod:NewNextTimer(50, 2135908)
+local flameWhirlCast			= mod:NewCastTimer(6, 2135908)
+
 
 
 local warnPhaseLynx				= mod:NewSpecialWarningSpell(2136376) --2136376, Shape of the Lynx, ASC D0 T5
@@ -113,10 +116,10 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2136301) then
 		warnThrow:Show(args.destName)
-	elseif args:IsSpellID(2136378) then
+	elseif args:IsSpellID(2136378, 2136379, 2136380, 2136381) then
 		warnClaw:Show(args.destName)
-	elseif args:IsSpellID(2135909) then
-		warnFlame:Show()
+	--elseif args:IsSpellID(2135909) then
+	--	warnFlame:Show()
 	elseif args:IsSpellID(2136318, 2136319) then
 		warnPhaseBerserk:Show()
 		self.vb.phase = 5
@@ -161,6 +164,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnPhaseDragonhawk:Show()
 		timerNextScorchingBreath:Start()
 		timerNextArmageddon:Start()
+		timerNextFlameWhirl:Start(1.5)
 		self:PhaseIncrease()
 	elseif args:IsSpellID(2136376) then --Phase 2-3-4-5
 		warnPhaseLynx:Show()
@@ -171,6 +175,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2136402) then
 		bombCast:Start()
 		specWarnBomb:Show()
+	elseif args:IsSpellID(2136363) then
+		flameWhirlCast:Start()
+		timerNextFlameWhirl:Start() -- timer is probably wrong
 	end
 end
 
@@ -179,7 +186,6 @@ function mod:SPELL_CAST_START(args)
 		timerNextTurbulentWinds:Start()
 		timerCastTurbulentWinds:Start()
 		self:ScheduleMethod(0.2, "TurbulentWinds")
-		--Turbulent winds targeting function here
 	end
 end
 
