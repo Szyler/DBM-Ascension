@@ -38,12 +38,12 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 
 local roarSpam = 0
 local roarCount = 0
-local chargeCount = 0
+-- local chargeCount = 0
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFury:Start()
-	self:bearCharge()
+	-- self:bearCharge()
 end
 
 function mod:bearCharge()
@@ -51,7 +51,7 @@ function mod:bearCharge()
 	timerCharge1:Start()
 	timerCharge2:Start()
 	timerCharge3:Start()
-	chargeCount = 0
+	-- chargeCount = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -60,12 +60,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFury:Start()
 	elseif args:IsSpellID(2135837) then
 		specWarnFury:Show()
-	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) then
-		
-		chargeCount = chargeCount+1
-		if chargeCount == 3 then
-			self:bearCharge()
-		end
+	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) and AntiSpam(5) then
+		timerCharge1:Start()
+		timerCharge2:Start()
+		timerCharge3:Start()
+		-- chargeCount = chargeCount+1
+		-- if chargeCount == 3 then
+		-- 	self:bearCharge()
+		-- end
 	elseif args:IsSpellID(2135833, 2135834, 2135835, 2135836) then
 		specWarnRend:Show(args.destName)
 		timerNextRend:Start()
