@@ -49,6 +49,11 @@ local timerBestialWrath			= mod:NewTargetTimer(10, 2136135)
 
 
 local warnMageSoul				= mod:NewSpecialWarning("Mage Soul Absorbed")
+local timerNextRuneOfPower		= mod:NewNextTimer(5, 2136136) --2136136
+local timerRuneOfPower			= mod:NewTargetTimer(6, 2136136) --2136136
+local timerNextBlizzard			= mod:NewNextTimer(15, 2136137) --2136137, 2136138, 2136139, 2136140
+local timerNextLivingBomb		= mod:NewNextTimer(25, 2136141) --Dot: 2136141, 2136142, 2136143, 2136144,       Explosion damage: 2136145, 2136146, 2136147, 2136148
+local timerLivingBomb			= mod:NewTargetTimer(12, 2136141) --2136141
 
 local warnPaladinSoul			= mod:NewSpecialWarning("Paladin Soul Absorbed")
 local timerNextBlindingLight	= mod:NewNextTimer(5, 2136155)
@@ -62,6 +67,7 @@ local timerNextDivinePrayer		= mod:NewNextTimer(5, 2136156)
 local timerCastDivinePrayer		= mod:NewCastTimer(4, 2136156)
 local timerNextDomination		= mod:NewNextTimer(15, 2136157) --2136157, 2136158
 local timerNextManaBurn			= mod:NewNextTimer(25, 2136159) --2136159, 2136160, 2136161, 2136162
+local timerDomination			= mod:NewTargetTimer(10, 2136157)
 
 local warnRogueSoul				= mod:NewSpecialWarning("Rogue Soul Absorbed")
 local timerNextFanofKnives		= mod:NewNextTimer(5, 2136164) --2136163, 2136164
@@ -76,12 +82,19 @@ local timerNextChainHeal		= mod:NewNextTimer(25, 2136176) --2136176
 local timerCastChainHeal		= mod:NewCastTimer(3, 2136176)
 
 local warnWarlockSoul			= mod:NewSpecialWarning("Warlock Soul Absorbed")
+local timerNextCurseOfDoom		= mod:NewNextTimer(5, 2136177) --2136177, 2136178, 2136179, 2136180
+local timerCurseOfDoom			= mod:NewTargetTimer(15, 2136177)
+local timerNextHellfire			= mod:NewNextTimer(15, 2136181) --2136181, 2136182, 2136183, 2136184, 2136185
+local timerNextRainofFire		= mod:NewNextTimer(25, 2136186) --2136186, 2136187, 2136188, 2136189
+local specWarnRainofFire		= mod:NewSpecialWarningRun(2136182)
+local specWarnHellfire			= mod:NewSpecialWarningRun(2136186)
 
 local warnWarriorSoul			= mod:NewSpecialWarning("Warrior Soul Absorbed")
 local timerNextSpellReflect		= mod:NewNextTimer(5, 2136190) --2136190
 local timerNextHeroicLeap		= mod:NewNextTimer(15, 2136191) --2136191, 2136192
 local timerNextColossusSmash	= mod:NewNextTimer(25, 2136193) --2136193
 local timerColossusSmash		= mod:NewTargetTimer(6, 2136193) --2136193
+local timerSpellReflect			= mod:NewTargetTimer(6, 2136190) --2136190
 
 function mod:OnCombatStart(delay)
 	timerNextBolt:Start(10)
@@ -106,6 +119,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerBestialWrath:Show(args.destName)
 	elseif args:IsSpellID(2136116) then
 		warnMageSoul:Show()
+		timerNextRuneOfPower:Start()
+		timerNextBlizzard:Start()
+		timerNextLivingBomb:Start()
+	elseif args:IsSpellID(2136136) then
+		timerRuneOfPower:Show(args.destName)
+	elseif args:IsSpellID(2136137, 2136138, 2136139, 2136140) then
+		specWarnRainofFire:Show()
 	elseif args:IsSpellID(2136117) then
 		warnPaladinSoul:Show()
 		timerNextBlindingLight:Start()
@@ -116,6 +136,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextDivinePrayer:Start()
 		timerNextDomination:Start()
 		timerNextManaBurn:Start()
+	elseif args:IsSpellID(2136157) then
+		timerDomination:Show()
 	elseif args:IsSpellID(2136119) then
 		warnRogueSoul:Show()
 		timerNextFanofKnives:Start()
@@ -130,11 +152,22 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextChainHeal:Start()
 	elseif args:IsSpellID(2136121) then
 		warnWarlockSoul:Show()
+		timerNextCurseOfDoom:Start()
+		timerNextHellfire:Start()
+		timerNextRainofFire:Start()
+	elseif args:IsSpellID(2136177, 2136178, 2136179, 2136180) then
+		timerCurseOfDoom:Show(args.destName)
+	elseif args:IsSpellID(2136186, 2136187, 2136188, 2136189) then
+		specWarnRainofFire:Show()
+	elseif args:IsSpellID(2136182, 2136183, 2136184, 2136185) then
+		specWarnHellfire:Show()
 	elseif args:IsSpellID(2136122) then
 		warnWarriorSoul:Show()
 		timerNextSpellReflect:Start()
 		timerNextHeroicLeap:Start()
 		timerNextColossusSmash:Start()
+	elseif args:IsSpellID(2136190) then
+		timerSpellReflect:Show(args.destName)
 	elseif args:IsSpellID(2136193) then
 		timerColossusSmash:Show(args.destName)
 	end
