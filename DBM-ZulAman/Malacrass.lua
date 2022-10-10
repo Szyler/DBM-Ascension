@@ -13,27 +13,27 @@ mod:RegisterEvents(
 )
 
 --TODO, GTFO for standing in shit
-local warnSiphon				= mod:NewTargetAnnounce(43501, 3)
-local warnBoltSoon				= mod:NewPreWarnAnnounce(43383, 5, 3)
-local warnHeal1					= mod:NewCastAnnounce(43548, 3)
-local warnHeal2					= mod:NewCastAnnounce(43451, 3)
+local warnSiphon				= mod:NewTargetAnnounce(2136107, 3) --2136107, 
+local warnBoltSoon				= mod:NewPreWarnAnnounce(2136100, 5, 3) --2136100, 2136101, 2136102, 2136103, 2136104
+local warnHeal1					= mod:NewCastAnnounce(2136150, 3)
+local warnHeal2					= mod:NewCastAnnounce(2136156, 3)
 local warnHeal3					= mod:NewCastAnnounce(43431, 3)
 local warnHeal4					= mod:NewTargetAnnounce(43421, 3)
 local warnPatch					= mod:NewSpellAnnounce(43429, 3)
 
-local specWarnBolt				= mod:NewSpecialWarningSpell(43383)
+local specWarnBolt				= mod:NewSpecialWarningSpell(2136100)
 local specWarnHeal				= mod:NewSpecialWarning("Interrupt Heal!")--#NewInterruptAnnounce(43548)
 -- local specWarnHeal2				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43451)
 -- local specWarnHeal3				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43431)
 -- local specWarnHeal4				= mod:NewSpecialWarning("Dispel!")--mod:NewSpecialWarningDispel(43421)
 -- local specWarnTotem				= mod:NewSpecialWarning("Switch targets!")--mod:NewSpecialWarningSwitch(43436)
 
-local timerSiphon				= mod:NewTargetTimer(30, 43501)
-local timerNextBolt				= mod:NewNextTimer(50, 43383)
-local timerBolt					= mod:NewCastTimer(10, 43383)
+local timerSiphon				= mod:NewTargetTimer(30, 2136107)
+local timerNextBolt				= mod:NewNextTimer(50, 2136100)
+local timerBolt					= mod:NewCastTimer(10, 2136100)
 local timerPatch				= mod:NewCastTimer(20, 43429)
 
-local timerNextDrain			= mod:NewNextTimer(50, 43383)
+local timerNextDrain			= mod:NewNextTimer(50, 2136100)
 
 local warnDruidSoul				= mod:NewSpecialWarning("Druid Soul Absorbed")
 local timerNextTranquility		= mod:NewNextTimer(5, 2136126) 
@@ -77,12 +77,9 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(43501) then
+	if args:IsSpellID(2136107) then
 		warnSiphon:Show(args.destName)
 		timerSiphon:Show(args.destName)
-	elseif args:IsSpellID(43421) and not args:IsDestTypePlayer() then
-		warnHeal4:Show(args.destName)
-		
 	elseif args:IsSpellID(2136114) then
 		warnDruidSoul:Show()
 		timerNextTranquility:Start()
@@ -120,25 +117,22 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2136150) then
 		timerCastHearthstone:Start()
-		warnHeal:Show()
+		specWarnHeal:Show()
 	elseif args:IsSpellID(2136156) then
 		timerCastDivinePrayer:Start()
-		warnHeal:Show()
+		specWarnHeal:Show()
 	elseif args:IsSpellID(2136126) then
 		timerCastTranquility:Start()
-		warnHeal:Show()
+		specWarnHeal:Show()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(43383) then
+	if args:IsSpellID(2136100) then --2136101, 2136102, 2136103, 2136104
 		specWarnBolt:Show()
 		warnBoltSoon:Schedule(35)
 		timerBolt:Start()
 		timerNextBolt:Start()
-	elseif args:IsSpellID(43329) then
-		warnPatch:Show()
-		timerPatch:Start()
 	end
 end
 
