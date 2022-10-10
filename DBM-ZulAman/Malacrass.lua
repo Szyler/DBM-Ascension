@@ -33,7 +33,7 @@ local timerNextBolt				= mod:NewNextTimer(50, 2136100)
 local timerBolt					= mod:NewCastTimer(10, 2136100)
 local timerPatch				= mod:NewCastTimer(20, 43429)
 
-local timerNextDrain			= mod:NewNextTimer(50, 2136100)
+local timerNextDrain			= mod:NewNextTimer(60, 2136100)
 
 local warnDruidSoul				= mod:NewSpecialWarning("Druid Soul Absorbed")
 local timerNextTranquility		= mod:NewNextTimer(5, 2136126) 
@@ -63,6 +63,7 @@ local warnRogueSoul				= mod:NewSpecialWarning("Rogue Soul Absorbed")
 local timerNextFanofKnives		= mod:NewNextTimer(5, 2136164) --2136163, 2136164
 local timerNextSmokeBomb		= mod:NewNextTimer(15, 2136165) --2136165, 2136166
 local timerNextDismantle		= mod:NewNextTimer(25, 2136167)
+local timerSiphon				= mod:NewTargetTimer(6, 2136167)
 
 local warnShamanSoul			= mod:NewSpecialWarning("Shaman Soul Absorbed")
 
@@ -71,16 +72,16 @@ local warnWarlockSoul			= mod:NewSpecialWarning("Warlock Soul Absorbed")
 local warnWarriorSoul			= mod:NewSpecialWarning("Warrior Soul Absorbed")
 
 function mod:OnCombatStart(delay)
-	timerNextBolt:Start(8)
+	timerNextBolt:Start(10)
 	warnBoltSoon:Schedule(5)
-	timerNextDrain:Start(18)
+	timerNextDrain:Start(20)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2136107) then
-		warnSiphon:Show(args.destName)
-		timerSiphon:Show(args.destName)
-	elseif args:IsSpellID(2136114) then
+	-- if args:IsSpellID(2136107) then -- This spams everyone, don't add
+	-- 	warnSiphon:Show(args.destName) 
+	-- 	timerSiphon:Show(args.destName)
+	if args:IsSpellID(2136114) then
 		warnDruidSoul:Show()
 		timerNextTranquility:Start()
 	elseif args:IsSpellID(2136115) then
@@ -133,6 +134,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnBoltSoon:Schedule(35)
 		timerBolt:Start()
 		timerNextBolt:Start()
+		timerNextDrain:Schedule(10)
 	end
 end
 
