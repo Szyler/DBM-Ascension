@@ -12,6 +12,7 @@ mod:RegisterEvents(
 	"SPELL_DISPEL",
 	"SPELL_PERIODIC_DAMAGE",
 	"SPELL_PERIODIC_MISSED",
+	"SPELL_DAMAGE",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -39,6 +40,7 @@ local yellEarthShock		= mod:NewFadesYell(2136015)
 local yellFrostShock		= mod:NewFadesYell(2136023)
 
 local specWarnMagma			= mod:NewSpecialWarningRun(2136011)
+local specWarnSpiritLink	= mod:NewSpecialWarningRun(2136040)
 
 mod:AddBoolOption(L.ShockYellOpt)
 
@@ -137,6 +139,12 @@ end
 function mod:SPELL_PERIODIC_MISSED(args)
 	if args:IsSpellID(2136011, 2136012, 2136013, 2136014) and args:IsPlayer() then --2136010, 2136011, 2136012, 2136013, 2136014 Molten Earth AOE dot
 		specWarnMagma:Show()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2136040, 2136041, 2136042, 2136043) and args:IsPlayer() then --2136039, 2136040, 2136041, 2136042, 2136043
+		specWarnSpiritLink:Show()
 	end
 end
 
