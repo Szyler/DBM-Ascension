@@ -20,7 +20,7 @@ local nextLightningStrike 		= mod:NewNextTimer(10, 2135702)
 local timerNextVortex			= mod:NewNextTimer(10, 2135733)
 local timerNextRod				= mod:NewNextTimer(20, 2135700)
 
-local timerNextTurbulentWinds	= mod:NewSoonAnnounce(3, 2135710)
+local timerNextTurbulentWinds	= mod:NewNextTimer(3, 2135710)
 local timerCastTurbulentWinds	= mod:NewCastTimer(5, 2135710)
 local specWarnTurbulentWinds	= mod:NewSpecialWarningYou(2135710)
 local warnTurbulentWindsTarget 	= mod:NewTargetAnnounce(2135710, 4)
@@ -49,15 +49,13 @@ end
 
 function mod:TurbulentWinds()
 	local target = nil
-	local myName = UnitName("player")
 	target = mod:GetBossTarget(23574)
-	if target == myName then
+	if target == UnitName("player") then
 		specWarnTurbulentWinds:Show(target)
 		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
 	else
 		warnTurbulentWindsTarget:Show(target)
 	end
-
 end
 
 function mod:OnCombatStart(delay)
