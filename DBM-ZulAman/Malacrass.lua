@@ -61,7 +61,7 @@ local warnPriestSoul			= mod:NewSpecialWarning("Priest Soul Absorbed")
 local timerNextDivinePrayer		= mod:NewNextTimer(5, 2136156) 
 local timerCastDivinePrayer		= mod:NewCastTimer(4, 2136156)
 local timerNextDomination		= mod:NewNextTimer(15, 2136157) --2136157, 2136158
-local timerNextManaBurn			= mod:NewNextTimer(25, 2136159)--2136159, 2136160, 2136161, 2136162
+local timerNextManaBurn			= mod:NewNextTimer(25, 2136159) --2136159, 2136160, 2136161, 2136162
 
 local warnRogueSoul				= mod:NewSpecialWarning("Rogue Soul Absorbed")
 local timerNextFanofKnives		= mod:NewNextTimer(5, 2136164) --2136163, 2136164
@@ -70,10 +70,18 @@ local timerNextDismantle		= mod:NewNextTimer(25, 2136167)
 local timerDismantle			= mod:NewTargetTimer(6, 2136167)
 
 local warnShamanSoul			= mod:NewSpecialWarning("Shaman Soul Absorbed")
+local timerNextEarthQuake		= mod:NewNextTimer(5, 2136168) --2136168, 2136169, 2136170, 2136171
+local timerNextThunderStorm		= mod:NewNextTimer(15, 2136172) --2136172, 2136173, 2136174, 2136175
+local timerNextChainHeal		= mod:NewNextTimer(25, 2136176) --2136176
+local timerCastChainHeal		= mod:NewCastTimer(3, 2136176)
 
 local warnWarlockSoul			= mod:NewSpecialWarning("Warlock Soul Absorbed")
 
 local warnWarriorSoul			= mod:NewSpecialWarning("Warrior Soul Absorbed")
+local timerNextSpellReflect		= mod:NewNextTimer(5, 2136190) --2136190
+local timerNextHeroicLeap		= mod:NewNextTimer(15, 2136191) --2136191, 2136192
+local timerNextColossusSmash	= mod:NewNextTimer(25, 2136193) --2136193
+local timerColossusSmash		= mod:NewTargetTimer(6, 2136193) --2136193
 
 function mod:OnCombatStart(delay)
 	timerNextBolt:Start(10)
@@ -117,10 +125,18 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerDismantle:Show(args.destName)
 	elseif args:IsSpellID(2136120) then
 		warnShamanSoul:Show()
+		timerNextEarthQuake:Start()
+		timerNextThunderStorm:Start()
+		timerNextChainHeal:Start()
 	elseif args:IsSpellID(2136121) then
 		warnWarlockSoul:Show()
 	elseif args:IsSpellID(2136122) then
 		warnWarriorSoul:Show()
+		timerNextSpellReflect:Start()
+		timerNextHeroicLeap:Start()
+		timerNextColossusSmash:Start()
+	elseif args:IsSpellID(2136193) then
+		timerColossusSmash:Show(args.destName)
 	end
 end
 
@@ -133,6 +149,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnHeal:Show()
 	elseif args:IsSpellID(2136126) then
 		timerCastTranquility:Start()
+		specWarnHeal:Show()
+	elseif args:IsSpellID(2136176) then
+		timerCastChainHeal:Start()
 		specWarnHeal:Show()
 	elseif args:IsSpellID(2136155) then
 		timerCastBlindingLight:Start()
