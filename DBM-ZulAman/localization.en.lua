@@ -67,11 +67,13 @@ L:SetGeneralLocalization{
 
 L:SetMiscLocalization{
 	YellBomb	= "I burn ya now!",
-	YellAdds	= "Where ma hatcha? Get to work on dem eggs!"
+	YellAdds	= "Where ma hatcha? Get to work on dem eggs!",
+	Hatchlings	= "Hatchlings alive >%s<" --(args.amount or 1)
 }
 
 L:SetOptionLocalization{
-	FlameIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43140)
+	FlameIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43140),
+	Hatchlings				= "Show warning for each increments of 5 Dragonhawk Hatchlings" --(args.spellName, args.destName, args.amount or 1)
 }
 
 --------------
