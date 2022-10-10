@@ -11,6 +11,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED",
 	"SPELL_DAMAGE",
 	"SPELL_CAST_START",
+	"SPELL_SUMMON",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -22,6 +23,7 @@ local warnSilence		= mod:NewSpellAnnounce(42398, 3)
 local specWarnFury		= mod:NewSpecialWarningSpell(2135837)
 local specWarnFuryStacks= mod:NewSpecialWarningStack(2135838)
 local specWarnRend		= mod:NewSpecialWarningTarget(2135833)
+local timerNextWhirling	= mod:NewNextTimer(15, 2135814)
 
 local timerNextImpale	= mod:NewNextTimer(15, 2135823)
 local warnImpale		= mod:NewTargetAnnounce(2135824, 3) --2135823, 2135824, 2135825, 2135826, 2135827
@@ -38,21 +40,25 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 
 local roarSpam = 0
 local roarCount = 0
+local roarTimer = 0
 -- local chargeCount = 0
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFury:Start()
+	roarSpam = 0
+	roarCount = 0
+	roarTimer = 0
 	-- self:bearCharge()
 end
 
-function mod:bearCharge()
-	self:UnscheduleMethod("bearCharge")
-	timerCharge1:Start()
-	timerCharge2:Start()
-	timerCharge3:Start()
-	-- chargeCount = 0
-end
+-- function mod:bearCharge()
+-- 	self:UnscheduleMethod("bearCharge")
+-- 	timerCharge1:Start()
+-- 	timerCharge2:Start()
+-- 	timerCharge3:Start()
+-- 	-- chargeCount = 0
+-- end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2135812) then
@@ -92,16 +98,22 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and (GetTime() - roarSpam > 2.5) then
-		roarSpam = GetTime()
-		roarCount = roarCount+1
-		timerNextRoar:Start(math.max(3,14-roarCount))
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
+		roarCount = roarCount + 1
+		roarTimer = math.max(3, 14-roarCount)
+		timerNextRoar:Start(roarTimer)
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2135823) then
 		timerNextImpale:Start()
+	end
+end
+
+function mod:SPELL_SUMMON(args)
+	if args:IsSpellID(2135814) and AntiSpam() then
+		timerNextWhirling:Start()
 	end
 end
 
