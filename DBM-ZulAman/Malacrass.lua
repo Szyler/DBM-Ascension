@@ -23,6 +23,7 @@ local warnPatch					= mod:NewSpellAnnounce(43429, 3)
 
 local specWarnBolt				= mod:NewSpecialWarningSpell(2136100)
 local specWarnHeal				= mod:NewSpecialWarning("Interrupt Heal!")--#NewInterruptAnnounce(43548)
+local specWarnBlindingLight		= mod:NewSpecialWarning("Look Away!")
 -- local specWarnHeal2				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43451)
 -- local specWarnHeal3				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43431)
 -- local specWarnHeal4				= mod:NewSpecialWarning("Dispel!")--mod:NewSpecialWarningDispel(43421)
@@ -51,6 +52,7 @@ local warnMageSoul				= mod:NewSpecialWarning("Mage Soul Absorbed")
 
 local warnPaladinSoul			= mod:NewSpecialWarning("Paladin Soul Absorbed")
 local timerNextBlindingLight	= mod:NewNextTimer(5, 2136155)
+local timerCastBlindingLight	= mod:NewCastTimer(2, 2136155)
 local timerNextConsecration		= mod:NewNextTimer(15, 2136151) --2136151, #2136152, #2136153, #2136154
 local timerNextDivineShield		= mod:NewNextTimer(25, 2136149)
 local timerCastHearthstone		= mod:NewCastTimer(6, 2136150)
@@ -132,6 +134,9 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2136126) then
 		timerCastTranquility:Start()
 		specWarnHeal:Show()
+	elseif args:IsSpellID(2136155) then
+		timerCastBlindingLight:Start()
+		specWarnBlindingLight:Show()
 	end
 end
 
