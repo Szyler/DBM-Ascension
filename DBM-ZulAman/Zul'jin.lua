@@ -56,7 +56,7 @@ local flameWhirlCast			= mod:NewCastTimer(6, 2135908)
 
 local warnPhaseLynx				= mod:NewSpecialWarningSpell(2136376) --2136376, Shape of the Lynx, ASC D0 T5
 local timerNextLynxRush			= mod:NewNextTimer(24, 2136382) --2136382, 2136383, 2136384, 2136385
-
+local specWarnSpiritLink		= mod:NewSpecialWarningRun(2136414) --2136413, 2136414, 2136415, 2136416, 2136417
 		
 local timerNextGrievous			= mod:NewNextTimer(10, 2136300) --2136301, 2136302, 2136303
 local timerNextWhirlwind		= mod:NewNextTimer(45, 2136316) --2136316, Whirlwind
@@ -194,6 +194,8 @@ end
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
 		timerNextDeafeningRoar:Start()
+	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() then --2136413, 2136414, 2136415, 2136416, 2136417
+		specWarnSpiritLink:Show()
 	end
 end
 
