@@ -116,6 +116,8 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2136301) then
 		warnThrow:Show(args.destName)
+	elseif args:IsSpellID(2136301, 2136302, 2136303) then
+		timerNextGrievous:Start()
 	elseif args:IsSpellID(2136378, 2136379, 2136380, 2136381) then
 		warnClaw:Show(args.destName)
 	--elseif args:IsSpellID(2135909) then
@@ -190,9 +192,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2136301, 2136302, 2136303) then
-		timerNextGrievous:Start()
-	elseif args:IsSpellID(2135829, 2135830, 2135831, 2135832) then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
 		timerNextDeafeningRoar:Start()
 	end
 end
