@@ -63,7 +63,7 @@ local warnRogueSoul				= mod:NewSpecialWarning("Rogue Soul Absorbed")
 local timerNextFanofKnives		= mod:NewNextTimer(5, 2136164) --2136163, 2136164
 local timerNextSmokeBomb		= mod:NewNextTimer(15, 2136165) --2136165, 2136166
 local timerNextDismantle		= mod:NewNextTimer(25, 2136167)
-local timerSiphon				= mod:NewTargetTimer(6, 2136167)
+local timerDismantle			= mod:NewTargetTimer(6, 2136167)
 
 local warnShamanSoul			= mod:NewSpecialWarning("Shaman Soul Absorbed")
 
@@ -106,6 +106,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFanofKnives:Start()
 		timerNextSmokeBomb:Start()
 		timerNextDismantle:Start()
+	elseif args:IsSpellID(2136167) then
+		timerDismantle:Show(args.destName)
 	elseif args:IsSpellID(2136120) then
 		warnShamanSoul:Show()
 	elseif args:IsSpellID(2136121) then
