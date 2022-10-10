@@ -43,6 +43,8 @@ local warnHunterSoul			= mod:NewSpecialWarning("Hunter Soul Absorbed")
 local timerNextMultiShot		= mod:NewNextTimer(5, 2136127)
 local timerNextFeign			= mod:NewNextTimer(15, 2136128)
 local timerNextExplosiveTrap	= mod:NewNextTimer(20, 2136131) --2136129, 2136130, 2136131, 2136132, 2136133, 2136134
+local timerNextBestialWrath		= mod:NewNextTimer(25, 2136135) --2136135
+local timerBestialWrath			= mod:NewTargetTimer(10, 2136135)
 
 
 local warnMageSoul				= mod:NewSpecialWarning("Mage Soul Absorbed")
@@ -89,6 +91,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextMultiShot:Start()
 		timerNextFeign:Start()
 		timerNextExplosiveTrap:Start()
+		timerNextBestialWrath:Start()
+	elseif args:IsSpellID(2136135) then
+		timerBestialWrath:Show(args.destName)
 	elseif args:IsSpellID(2136116) then
 		warnMageSoul:Show()
 	elseif args:IsSpellID(2136117) then
