@@ -97,7 +97,7 @@ end
 function mod:TurbulentWinds()
 	local target = nil
 	local myName = UnitName("player")
-	target = mod:GetBossTarget(23574) -- need to check ID !
+	target = mod:GetBossTarget(80468) -- need to confirm ID !
 	if target == myName then
 		specWarnTurbulentWinds:Show(target)
 		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
