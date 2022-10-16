@@ -201,3 +201,18 @@ v5.13 dd/mm/yyyy
 
 - Added some of the mechanics for the mobs in Tempest Keep 
 ----------------------------------------------------------------------------------------------------
+v5.14 08/08/2022
+- Added failsafe to avoid double triggers going into Phase 2
+- Redid timers for Finger and Hand of Death
+- Fixed Phase 3 timers
+- Added timer for the Debris damage going into Phase 3
+- Added a proper target function to always show who's the target of Finger and Hand of Death
+----------------------------------------------------------------------------------------------------
+v5.15 16/10/2022
+- Added all Zul'Aman bosses and timers for Normal and Heroic
+
+- Fixed pull cancel message to no longer have an extra "0" at the end
+- Fixed and improved yellLivingBomb on Alar. This option is now turned on by default and will now count down from 3 before you drop it.
+- Fixed warnFlameBreath on Alar not working for all difficulties
+- Solarion now warns stack number at 4 instead of 5
+----------------------------------------------------------------------------------------------------
