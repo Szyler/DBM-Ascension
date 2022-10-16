@@ -42,10 +42,10 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 5012 $"):sub(12, -3),
-	Version = "5.14",
-	DisplayVersion = "5.14", -- the string that is shown as version
-	ReleaseRevision = 5011 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 5015 $"):sub(12, -3),
+	Version = "5.15",
+	DisplayVersion = "5.15", -- the string that is shown as version
+	ReleaseRevision = 5013 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -2835,6 +2835,10 @@ do
 	
 	function bossModPrototype:NewPhaseAnnounce(phase, color, icon, ...)
 		return newAnnounce(self, "phase", phase, color or 1, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
+	end
+	
+	function bossModPrototype:NewInterruptAnnounce(spellId, color, ...)
+		return newAnnounce(self, "interrupt", spellId, color or 3, ...)
 	end
 end
 

@@ -175,7 +175,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif args:IsSpellID(85077) then
 		warningShadowRealm:Show(args.destName)
-		if args.IsPlayer() then
+		if args:IsPlayer() then
 			specWarnSRealm:Show()
 		end
 		if mod:IsDifficulty("heroic10", "heroic25") then
