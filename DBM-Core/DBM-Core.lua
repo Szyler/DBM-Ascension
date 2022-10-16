@@ -2297,36 +2297,38 @@ end
 do
 	local testMod
 	local testWarning1, testWarning2, testWarning3
-	local testTimer
+	-- local testTimer
 	local testSpecialWarning
+	local timerTestBar, timerPewPewPew,	timerEvilSpell,	timerBoom
 	function DBM:DemoMode()
 		if not testMod then
 			testMod = DBM:NewMod("TestMod", "DBM-PvP")	-- temp fix, as it requires a modId
 			testWarning1 = testMod:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
 			testWarning2 = testMod:NewAnnounce("%s", 2, "Interface\\Icons\\Spell_Shadow_ShadesOfDarkness")
 			testWarning3 = testMod:NewAnnounce("%s", 3, "Interface\\Icons\\Spell_Fire_SelfDestruct")
-			testTimer = testMod:NewTimer(20, "%s")			
+			-- testTimer = testMod:NewTimer(20, "%s", "%%s")	
+			timerTestBar	= testMod:NewTimer(10, "Test Bar", "Interface\\Icons\\Spell_Nature_WispSplode")
+			timerPewPewPew	= testMod:NewTimer(20, "Pew Pew Pew...", "Interface\\Icons\\Spell_Nature_Starfall")
+			timerEvilSpell	= testMod:NewTimer(43, "Evil Spell", "Interface\\Icons\\Spell_Shadow_ShadesOfDarkness")
+			timerBoom		= testMod:NewTimer(60, "Boom!", "Interface\\Icons\\Spell_Fire_SelfDestruct")		
 			testSpecialWarning = testMod:NewSpecialWarning("%s")
 		end
-		testTimer:Start(20, "Pew Pew Pew...")
-		testTimer:UpdateIcon("Interface\\Icons\\Spell_Nature_Starfall", "Pew Pew Pew...")
-		testTimer:Start(10, "Test Bar")
-		testTimer:UpdateIcon("Interface\\Icons\\Spell_Nature_WispSplode", "Test Bar")
-		testTimer:Start(43, "Evil Spell")
-		testTimer:UpdateIcon("Interface\\Icons\\Spell_Shadow_ShadesOfDarkness", "Evil Spell")
-		testTimer:Start(60, "Boom!")
-		testTimer:UpdateIcon("Interface\\Icons\\Spell_Fire_SelfDestruct", "Boom!")
+		timerTestBar:Start()
+		timerPewPewPew:Start()
+		timerEvilSpell:Start()
+		timerBoom:Start()
+
 		testWarning1:Cancel()
 		testWarning2:Cancel()
 		testWarning3:Cancel()
 		testSpecialWarning:Cancel()
 		testWarning1:Show("Test-mode started...")
-		testWarning1:Schedule(62, "Test-mode finished!")
-		testWarning3:Schedule(50, "Boom in 10 sec!")
+		testWarning1:Schedule(10, "Test bar expired!")
 		testWarning3:Schedule(20, "Pew Pew Laser Owl!")
 		testWarning2:Schedule(38, "Evil Spell in 5 sec!")
 		testWarning2:Schedule(43, "Evil Spell!")
-		testWarning1:Schedule(10, "Test bar expired!")
+		testWarning3:Schedule(50, "Boom in 10 sec!")
+		testWarning1:Schedule(62, "Test-mode finished!")
 		testSpecialWarning:Schedule(60, "Boom!")
 	end
 end
