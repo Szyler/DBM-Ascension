@@ -48,9 +48,9 @@ local timerNextScorchingBreath	= mod:NewNextTimer(26, 2136358) --2136358, 213635
 local timerNextArmageddon		= mod:NewNextTimer(23, 2136372) --2136372, 2136373, 2136374, 2136375
 local specWarnBomb				= mod:NewSpecialWarningSpell(2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local timerNextBomb				= mod:NewNextTimer(37, 2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
-local bombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
+local timerBombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local timerNextFlameWhirl		= mod:NewNextTimer(50, 2135908)
-local flameWhirlCast			= mod:NewCastTimer(6, 2135908)
+local timerFlameWhirlCast			= mod:NewCastTimer(6, 2135908)
 
 
 
@@ -175,10 +175,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2136316) then
 		timerNextWhirlwind:Start()
 	elseif args:IsSpellID(2136402) then
-		bombCast:Start()
+		timerBombCast:Start()
 		specWarnBomb:Show()
 	elseif args:IsSpellID(2136363) then
-		flameWhirlCast:Start()
+		timerFlameWhirlCast:Start()
 		timerNextFlameWhirl:Start() -- timer is probably wrong
 	end
 end
@@ -192,9 +192,9 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and mod:AntiSpam() then
 		timerNextDeafeningRoar:Start()
-	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
+	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and mod:AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
 		specWarnSpiritLink:Show()
 	end
 end

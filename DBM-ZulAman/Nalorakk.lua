@@ -66,7 +66,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFury:Start()
 	elseif args:IsSpellID(2135837) then
 		specWarnFury:Show()
-	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) and AntiSpam(5) then
+	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) and mod:AntiSpam(5) then
 		timerCharge1:Start()
 		timerCharge2:Start()
 		timerCharge3:Start()
@@ -98,7 +98,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and mod:AntiSpam() then
 		roarCount = roarCount + 1
 		roarTimer = math.max(3, 14-roarCount)
 		timerNextRoar:Start(roarTimer)
@@ -112,7 +112,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(2135814) and AntiSpam() then
+	if args:IsSpellID(2135814) and mod:AntiSpam() then
 		timerNextWhirling:Start()
 	end
 end
