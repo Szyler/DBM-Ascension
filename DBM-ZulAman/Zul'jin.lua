@@ -67,8 +67,6 @@ local eosSpam = 0
 
 
 function mod:PhaseIncrease()
-	self.vb.phase = self.vb.phase + 1
-
 	if self.vb.phase == 2 then
 		warnPhase2:Show()
 	elseif self.vb.phase == 3 then
@@ -130,20 +128,24 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextWhirlwind:Start(33)
 	elseif args:IsSpellID(2136436, 2136196) then --Phase 6-7-8-9
 		if args.sourceName == "Akil'zon" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseEagle:Show()
 			nextLightningStrike:Start(21)
 			self:ScheduleMethod(21,"LightningStrike")
 			timerNextStorm:Start(5)
 		elseif args.sourceName == "Nalorakk" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseBear:Show()
 		elseif args.sourceName == "Jan'alai" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseDragonhawk:Show()
 			timerNextBomb:Start(7)
 			timerNextScorchingBreath:Start(22)
 		elseif args.sourceName == "Halazzi" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseLynx:Show()
 		end
@@ -221,14 +223,14 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_DIED(args)
-	if args.destName == "Akil'zon" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Nalorakk" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Jan'alai" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Halazzi" and self.vb.phase == 9 then
-		self.vb.phase = 10
+	if args.destName == "Akil'zon" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Nalorakk" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Jan'alai" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Halazzi" then
+		self.vb.phase = self.vb.phase + 1
 	else 
 		return
 	end
