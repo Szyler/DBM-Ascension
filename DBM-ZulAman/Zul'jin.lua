@@ -199,19 +199,19 @@ function mod:SPELL_DAMAGE(args)
 	end
 end
 
-function mod:UNIT_AURA(unit)
-	local Name = UnitName(unit)
-	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
-		eosSpam = GetTime()
-		timerStorm:Start()
-		warnStorm:Show(Name)
-		specWarnStorm:Show()
-		-- timerNextStorm:Start()
-		if Name == UnitName("player") then
-			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
-		end
-	end
-end
+-- function mod:UNIT_AURA(unit) -- triggers from Akilzon (same code)
+-- 	local Name = UnitName(unit)
+-- 	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
+-- 		eosSpam = GetTime()
+-- 		timerStorm:Start()
+-- 		warnStorm:Show(Name)
+-- 		specWarnStorm:Show()
+-- 		-- timerNextStorm:Start()
+-- 		if Name == UnitName("player") then
+-- 			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
+-- 		end
+-- 	end
+-- end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
