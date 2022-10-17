@@ -51,6 +51,7 @@ local timerBestialWrath			= mod:NewTargetTimer(10, 2136135)
 local warnMageSoul				= mod:NewSpecialWarning("Mage Soul Absorbed")
 local timerNextRuneOfPower		= mod:NewNextTimer(5, 2136136) --2136136
 local timerRuneOfPower			= mod:NewTargetTimer(6, 2136136) --2136136
+local timerRuneOfPowerduration	= mod:NewTimer(10, "Rune of Power duration", 2136136)
 local timerNextBlizzard			= mod:NewNextTimer(15, 2136137) --2136137, 2136138, 2136139, 2136140
 local timerNextLivingBomb		= mod:NewNextTimer(25, 2136141) --Dot: 2136141, 2136142, 2136143, 2136144,       Explosion damage: 2136145, 2136146, 2136147, 2136148
 local timerLivingBomb			= mod:NewTargetTimer(12, 2136141) --2136141
@@ -84,8 +85,8 @@ local timerCastChainHeal		= mod:NewCastTimer(3, 2136176)
 local warnWarlockSoul			= mod:NewSpecialWarning("Warlock Soul Absorbed")
 local timerNextCurseOfDoom		= mod:NewNextTimer(5, 2136177) --2136177, 2136178, 2136179, 2136180
 local timerCurseOfDoom			= mod:NewTargetTimer(15, 2136177)
-local timerNextHellfire			= mod:NewNextTimer(15, 2136181) --2136181, 2136182, 2136183, 2136184, 2136185
-local timerNextRainofFire		= mod:NewNextTimer(25, 2136186) --2136186, 2136187, 2136188, 2136189
+local timerNextRainofFire		= mod:NewNextTimer(15, 2136186) --2136186, 2136187, 2136188, 2136189
+local timerNextHellfire			= mod:NewNextTimer(25, 2136181) --2136181, 2136182, 2136183, 2136184, 2136185
 local specWarnRainofFire		= mod:NewSpecialWarningRun(2136182)
 local specWarnHellfire			= mod:NewSpecialWarningRun(2136186)
 
@@ -122,8 +123,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextRuneOfPower:Start()
 		timerNextBlizzard:Start()
 		timerNextLivingBomb:Start()
-	elseif args:IsSpellID(2136136) then
+	elseif args:IsSpellID(2136136) and args.destName == "Malacrass" then
 		timerRuneOfPower:Show(args.destName)
+		timerRuneOfPowerduration:Start()
+	elseif args:IsSpellID(2136141) then
+		timerLivingBomb:Show(args.destName)
 	elseif args:IsSpellID(2136137, 2136138, 2136139, 2136140) then
 		specWarnRainofFire:Show()
 	elseif args:IsSpellID(2136117) then
