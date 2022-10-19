@@ -109,7 +109,6 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:UNIT_HEALTH(unit)
-	
 	if (self.vb.phase == 2) and (mod:GetUnitCreatureId(unit) == 23574) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp>60 and hp<=65) and platform1 then
@@ -136,6 +135,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextRod:Start(28)
 		end
 	end
+end
 
 function mod:UNIT_AURA(unit)
 	local Name = UnitName(unit)
@@ -149,6 +149,4 @@ function mod:UNIT_AURA(unit)
 			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
 		end
 	end
-end
-
 end
