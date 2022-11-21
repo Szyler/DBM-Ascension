@@ -48,9 +48,9 @@ local timerNextScorchingBreath	= mod:NewNextTimer(26, 2136358) --2136358, 213635
 local timerNextArmageddon		= mod:NewNextTimer(23, 2136372) --2136372, 2136373, 2136374, 2136375
 local specWarnBomb				= mod:NewSpecialWarningSpell(2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local timerNextBomb				= mod:NewNextTimer(37, 2136404) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
-local bombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
+local timerBombCast					= mod:NewCastTimer(7, 2136402) --2136402, 2136403, 2136404, 2136405, 2136406, 2136407
 local timerNextFlameWhirl		= mod:NewNextTimer(50, 2135908)
-local flameWhirlCast			= mod:NewCastTimer(6, 2135908)
+local timerFlameWhirlCast			= mod:NewCastTimer(6, 2135908)
 
 
 
@@ -67,8 +67,6 @@ local eosSpam = 0
 
 
 function mod:PhaseIncrease()
-	self.vb.phase = self.vb.phase + 1
-
 	if self.vb.phase == 2 then
 		warnPhase2:Show()
 	elseif self.vb.phase == 3 then
@@ -130,20 +128,24 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextWhirlwind:Start(33)
 	elseif args:IsSpellID(2136436, 2136196) then --Phase 6-7-8-9
 		if args.sourceName == "Akil'zon" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseEagle:Show()
 			nextLightningStrike:Start(21)
 			self:ScheduleMethod(21,"LightningStrike")
 			timerNextStorm:Start(5)
 		elseif args.sourceName == "Nalorakk" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseBear:Show()
 		elseif args.sourceName == "Jan'alai" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseDragonhawk:Show()
 			timerNextBomb:Start(7)
 			timerNextScorchingBreath:Start(22)
 		elseif args.sourceName == "Halazzi" then
+			self.vb.phase = self.vb.phase + 1
 			self:PhaseIncrease()
 			warnPhaseLynx:Show()
 		end
@@ -175,10 +177,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2136316) then
 		timerNextWhirlwind:Start()
 	elseif args:IsSpellID(2136402) then
-		bombCast:Start()
+		timerBombCast:Start()
 		specWarnBomb:Show()
 	elseif args:IsSpellID(2136363) then
-		flameWhirlCast:Start()
+		timerFlameWhirlCast:Start()
 		timerNextFlameWhirl:Start() -- timer is probably wrong
 	end
 end
@@ -192,26 +194,26 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and AntiSpam() then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and mod:AntiSpam() then
 		timerNextDeafeningRoar:Start()
-	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
+	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and mod:AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
 		specWarnSpiritLink:Show()
 	end
 end
 
-function mod:UNIT_AURA(unit)
-	local Name = UnitName(unit)
-	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
-		eosSpam = GetTime()
-		timerStorm:Start()
-		warnStorm:Show(Name)
-		specWarnStorm:Show()
-		-- timerNextStorm:Start()
-		if Name == UnitName("player") then
-			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
-		end
-	end
-end
+-- function mod:UNIT_AURA(unit) -- triggers from Akilzon (same code)
+-- 	local Name = UnitName(unit)
+-- 	if (UnitDebuff(unit, "Eye of the storm")) and (GetTime() - eosSpam) > 15  then
+-- 		eosSpam = GetTime()
+-- 		timerStorm:Start()
+-- 		warnStorm:Show(Name)
+-- 		specWarnStorm:Show()
+-- 		-- timerNextStorm:Start()
+-- 		if Name == UnitName("player") then
+-- 			SendChatMessage(L.DBM_EOS_PLAYER, "YELL")
+-- 		end
+-- 	end
+-- end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
@@ -221,14 +223,14 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_DIED(args)
-	if args.destName == "Akil'zon" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Nalorakk" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Jan'alai" and self.vb.phase == 9 then
-		self.vb.phase = 10
-	elseif args.destName == "Halazzi" and self.vb.phase == 9 then
-		self.vb.phase = 10
+	if args.destName == "Akil'zon" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Nalorakk" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Jan'alai" then
+		self.vb.phase = self.vb.phase + 1
+	elseif args.destName == "Halazzi" then
+		self.vb.phase = self.vb.phase + 1
 	else 
 		return
 	end

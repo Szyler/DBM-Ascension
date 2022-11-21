@@ -143,7 +143,7 @@ function mod:SPELL_PERIODIC_MISSED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2136040, 2136041, 2136042, 2136043) and args:IsPlayer() and AntiSpam(1) then --2136039, 2136040, 2136041, 2136042, 2136043
+	if args:IsSpellID(2136040, 2136041, 2136042, 2136043) and args:IsPlayer() and mod:AntiSpam(1) then --2136039, 2136040, 2136041, 2136042, 2136043
 		specWarnSpiritLink:Show()
 	end
 end
