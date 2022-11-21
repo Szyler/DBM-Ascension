@@ -98,6 +98,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextRod:Cancel()
 		self.vb.phase = 2
 		timerNextTurbulentWinds:Start()
+		timerNextStorm:Cancel()
 	end
 end
 
@@ -133,6 +134,7 @@ function mod:UNIT_HEALTH(unit)
 			nextLightningStrike:Start(21)
 			self:ScheduleMethod(21, "LightningStrike")
 			timerNextRod:Start(28)
+			timerNextStorm:Start(55)
 		end
 	end
 end
