@@ -30,9 +30,10 @@ local warnImpale		= mod:NewTargetAnnounce(2135824, 3) --2135823, 2135824, 213582
 
 local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
 local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
-local timerCharge1		= mod:NewTimer(13, "Charge (1)", 2135805)
-local timerCharge2		= mod:NewTimer(14, "Charge (2)", 2135805)
-local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135805)
+local timerCharge		= mod:NewTimer(15, "Charge", 2135804)
+-- local timerCharge1		= mod:NewTimer(14, "Charge (1)", 2135804)
+-- local timerCharge2		= mod:NewTimer(15, "Charge (2)", 2135804)
+-- local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135804)
 local timerNextFury		= mod:NewNextTimer(45, 2135837)
 local timerNextRoar		= mod:NewNextTimer(2135829, 14) -- HC 2135830 , ASC 10Man 2135831, ASC25man 2135832 --2136323 is ZUL'JIN ROAR!!!
 local timerNextRend 	= mod:NewNextTimer(10, 2135833) --timer seems to not be constant, need to find out 
@@ -46,6 +47,8 @@ local roarTimer = 0
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerNextFury:Start()
+	timerCharge:Start(12)
+	-- timerCharge2:Start(13)
 	roarSpam = 0
 	roarCount = 0
 	roarTimer = 0
@@ -66,10 +69,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFury:Start()
 	elseif args:IsSpellID(2135837) then
 		specWarnFury:Show()
-	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) and mod:AntiSpam(5) then
-		timerCharge1:Start()
-		timerCharge2:Start()
-		timerCharge3:Start()
+	elseif args:IsSpellID(2135804, 2135805, 2135806, 2135807) and self:AntiSpam(5) then
+		timerCharge:Start()
+		-- timerCharge1:Start()
+		-- timerCharge2:Start()
+		-- timerCharge3:Start()
 		-- chargeCount = chargeCount+1
 		-- if chargeCount == 3 then
 		-- 	self:bearCharge()
@@ -98,7 +102,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and mod:AntiSpam() then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and self:AntiSpam() then
 		roarCount = roarCount + 1
 		roarTimer = math.max(3, 14-roarCount)
 		timerNextRoar:Start(roarTimer)
@@ -112,7 +116,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(2135814) and mod:AntiSpam() then
+	if args:IsSpellID(2135814) and self:AntiSpam() then
 		timerNextWhirling:Start()
 	end
 end
