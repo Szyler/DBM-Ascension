@@ -101,11 +101,11 @@ function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2135924, 2135925, 2135926, 2135927) and args:IsPlayer() then
 		warnFlame:Show()
 	elseif args:IsSpellID(2135924, 2135925, 2135926, 2135927) then
-		if self:AntiSpam(pillarTimer-0.1, 1) then -- Antispam at 20-0.1 seconds to not have other people walking into the pillar change the next timer.
+		if DBM:AntiSpam(pillarTimer-0.1, 1) then -- Antispam at 20-0.1 seconds to not have other people walking into the pillar change the next timer.
 			pillarTimer = ((pillarTimer + 5) <= 20) and 20 or 15 -- Alternates between 20 and 15. If pillartimer + 5 is 20, then 20 otherwise (ie. if 20+5 is not 20, then) 15
 			timerNextPillar:Start(pillarTimer) --
 		end
-	elseif args:IsSpellID(2135915, 2135933, 2135934, 2135935) and self:AntiSpam(1, 2) and self.vb.phase == 2 then
+	elseif args:IsSpellID(2135915, 2135933, 2135934, 2135935) and DBM:AntiSpam(1, 2) and self.vb.phase == 2 then
 		specWarnBomb:Schedule(bombNextTimer-6)
 		timerBombCast:Schedule(bombNextTimer-6)
 		timerNextBomb:Start(bombNextTimer-6)
@@ -115,7 +115,7 @@ end
 
 function mod:SPELL_MISSED(args)
 	if args:IsSpellID(2135924, 2135925, 2135926, 2135927) then
-		if self:AntiSpam(pillarTimer-0.1, 1) then -- Antispam at 20-0.1 seconds to not have other people walking into the pillar change the next timer. AntiSpam(x,1) means Antispam ID1, so this would be the same antispam timer as the Spell_damage one.
+		if DBM:AntiSpam(pillarTimer-0.1, 1) then -- Antispam at 20-0.1 seconds to not have other people walking into the pillar change the next timer. AntiSpam(x,1) means Antispam ID1, so this would be the same antispam timer as the Spell_damage one.
 			pillarTimer = ((pillarTimer + 5) <= 20) and 20 or 15 -- Alternates between 20 and 15. If pillartimer + 5 is 20, then 20 otherwise (ie. if 20+5 is not 20, then) 15
 			timerNextPillar:Start(pillarTimer) --
 		end
