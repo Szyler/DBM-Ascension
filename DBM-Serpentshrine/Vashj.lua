@@ -45,6 +45,8 @@ local timerMulti		= mod:NewNextTimer(15, 2138011)
 local timerEnvenom		= mod:NewNextTimer(30, 2138049)
 local timerMark			= mod:NewTargetTimer(6, 2138044)
 local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 2138040)
+
+local timerBreath		= mod:NewNextTimer(10, 2138076)
 local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
@@ -274,9 +276,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2138000, 2138001, 2138002, 2138003) then
 		timerPhoenix:Start()
 		warnPhoenix:Show()
+	elseif args:IsSpellID(2138076) then
+		if timerDischarge:GetTime() == 0 then
+			timerBreath:Start()
+		end
 	end
 end
-
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
