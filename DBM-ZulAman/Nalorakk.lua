@@ -30,13 +30,17 @@ local warnImpale		= mod:NewTargetAnnounce(2135824, 3) --2135823, 2135824, 213582
 
 local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
 local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
-local timerCharge		= mod:NewTimer(15, "Charge", 2135804)
--- local timerCharge1		= mod:NewTimer(14, "Charge (1)", 2135804)
--- local timerCharge2		= mod:NewTimer(15, "Charge (2)", 2135804)
--- local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135804)
+local specWarnCharge	= mod:NewSpecialWarningYou(2135805)
+local timerCharge1		= mod:NewTimer(13, "Charge (1)", 2135805)
+local timerCharge2		= mod:NewTimer(14, "Charge (2)", 2135805)
+local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135805)
 local timerNextFury		= mod:NewNextTimer(45, 2135837)
 local timerNextRoar		= mod:NewNextTimer(2135829, 14) -- HC 2135830 , ASC 10Man 2135831, ASC25man 2135832 --2136323 is ZUL'JIN ROAR!!!
 local timerNextRend 	= mod:NewNextTimer(10, 2135833) --timer seems to not be constant, need to find out 
+
+local timerSpirit		= mod:NewTargetTimer(15, 2135881)
+local warnSpiritYou		= mod:NewSpecialWarningYou(2135881) 
+
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 local roarSpam = 0
@@ -78,11 +82,19 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- if chargeCount == 3 then
 		-- 	self:bearCharge()
 		-- end
+		if args:IsPlayer() and (args.amount and args.amount > 1) then
+			specWarnCharge:Show()
+		end
 	elseif args:IsSpellID(2135833, 2135834, 2135835, 2135836) then
 		specWarnRend:Show(args.destName)
 		timerNextRend:Start()
 	elseif args:IsSpellID(2135824, 2135825, 2135826, 2135827) then
 		warnImpale:Show(args.destName)
+	elseif args:IsSpellID(2135881) then
+		timerSpirit:Start(args.destName)
+		if args:IsPlayer() then
+			warnSpiritYou:Show()
+		end
 	end
 end
 
