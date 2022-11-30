@@ -87,13 +87,15 @@ L:SetGeneralLocalization{
 
 L:SetWarningLocalization{
 	WarnSpirit	= "Spirit Phase",
-	WarnNormal	= "Normal Phase"
+	WarnNormal	= "Normal Phase",
+	WarnMerge	= "Normal Phase"
 }
 
 L:SetOptionLocalization{
 	WarnSpirit		= "Show warning for Spirit phase",
 	WarnNormal		= "Show warning for Normal phase",
-	ShockYellOpt	= "Yell when you are affected by $spell:2136003 , $spell:2136024 or $spell:2136016",
+	WarnMerge		= "Show warning for Merge phase",
+	ShockYellOpt	= "Yell when you are affected by $spell:2136002 , $spell:2136023 or $spell:2136015",
 }
 
 L:SetMiscLocalization{

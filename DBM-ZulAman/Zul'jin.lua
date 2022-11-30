@@ -194,9 +194,9 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and mod:AntiSpam() then
+	if args:IsSpellID(2135829, 2135830, 2135831, 2135832) and DBM:AntiSpam() then
 		timerNextDeafeningRoar:Start()
-	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and mod:AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
+	elseif args:IsSpellID(2136414, 2136415, 2136416, 2136417) and args:IsPlayer() and DBM:AntiSpam(1) then --2136413, 2136414, 2136415, 2136416, 2136417
 		specWarnSpiritLink:Show()
 	end
 end

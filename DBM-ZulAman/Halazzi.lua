@@ -21,10 +21,14 @@ local warnEnrage			= mod:NewSpellAnnounce(43139, 3)
 local warnFrenzy			= mod:NewSpellAnnounce(43290, 3)
 local warnSpirit			= mod:NewAnnounce("WarnSpirit", 4, 39414)
 local warnNormal			= mod:NewAnnounce("WarnNormal", 4, 39414)
+local warnMerge				= mod:NewAnnounce("WarnMerge", 4, 39414)
 local warnSplit				= mod:NewSpellAnnounce(2136032, 3)
+local warnClaw				= mod:NewSpellAnnounce(2136054, 3)
+local warnRush				= mod:NewSpellAnnounce(2136058, 3)
 
 local specWarnTotem			= mod:NewSpellAnnounce(2136034)
 local specWarnEnrage		= mod:NewSpecialWarningDispel(2136001)
+local timerNextSavagery		= mod:NewNextTimer(10, 2136001)
 --local specWarnSaberStack= mod:NewSpecialWarningStack(2136000, nil, 3)
 
 local timerNextFlameShock	= mod:NewNextTimer(10, 2136002)
@@ -32,6 +36,11 @@ local timerNextEarthShock	= mod:NewNextTimer(10, 2136015)
 local timerNextFrostShock	= mod:NewNextTimer(10, 2136023)
 local timerNextSaber		= mod:NewNextTimer(15, 2136000)
 local timerNextCapacitor	= mod:NewNextTimer(20, 2136034)
+
+local timerNextClaw			= mod:NewNextTimer(45, 2136054)
+local timerClaw				= mod:NewTargetTimer(9, 2136054)
+local timerNextRush			= mod:NewNextTimer(45, 2136058)
+local timerRush				= mod:NewCastTimer(15, 2136058)
 
 local berserkTimer			= mod:NewBerserkTimer(600)
 
@@ -46,8 +55,10 @@ mod:AddBoolOption(L.ShockYellOpt)
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
+	timerNextCapacitor:Start(6)
+	timerNextSavagery:Start(8)
 	timerNextSaber:Start(13)
-
+	self.vb.phase = 1
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -57,6 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnEnrage:Show()
 		end
+		timerNextSavagery:Start()
 	elseif args:IsSpellID(43290) then
 		warnFrenzy:Show()
 	elseif args:IsSpellID(2136000) then
@@ -64,13 +76,19 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2136032) then
 		warnSplit:Show()
 		timerNextCapacitor:Cancel()
+		timerNextSavagery:Cancel()
 		timerNextFlameShock:Start(4)
 		timerNextEarthShock:Start(8)
 		timerNextFrostShock:Start(12)
 		timerNextSaber:Cancel()
+		self.vb.phase = self.vb.phase + 1
+	elseif args:IsSpellID(2136052) then
+		warnMerge:Show()
+		timerNextClaw:Start(5)
+		timerNextRush:Start(24)
 	elseif args:IsSpellID(2136002, 2136003, 2136004, 2136005) then
 		timerNextFlameShock:Start()
-		if args:IsPlayer() then
+		if args:IsPlayer() and self.Options.ShockYellOpt then
 			SendChatMessage(L.FlameShockYell, "YELL")
 			yellFlameShock:Countdown(12, 3)
 		end
@@ -78,18 +96,25 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnMagma:Show()
 	elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) then
 		timerNextEarthShock:Start()
-		if args:IsPlayer() then
+		if args:IsPlayer() and self.Options.ShockYellOpt then
 			SendChatMessage(L.EarthShockYell, "YELL")
 			yellEarthShock:Countdown(4, 4)
 		end
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) then
 		timerNextFrostShock:Start()
-		if args:IsPlayer() then
+		if args:IsPlayer() and self.Options.ShockYellOpt then
 			SendChatMessage(L.FrostShockYell, "YELL")
 			yellFrostShock:Countdown(5, 3)
 		end
+	elseif args:IsSpellID(2136053) then
+		warnClaw:Show()
+		timerClaw:Start(args.destName)
+		timerNextClaw:Start()
+	elseif args:IsSpellID(2136058, 2136059, 2136060, 2136061) and DBM:AntiSpam(30) then
+		warnRush:Show()
+		timerRush:Start()
+		timerNextRush:Start()
 	end
-
 end
 
 function mod:SPELL_AURA_REMOVED(args)
@@ -100,26 +125,40 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerNextFrostShock:Cancel()
 	elseif args:IsSpellID(2136002, 2136003, 2136004, 2136005) and args:IsPlayer() then
 		yellFlameShock:Cancel()
-		SendChatMessage("Molten Earth on me!", "YELL")
+		if self.Options.ShockYellOpt then
+			SendChatMessage("Molten Earth on me!", "YELL")
+		end
 	-- elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) and args:IsPlayer() then
 	-- 	yellEarthShock:Cancel()
-	-- 	SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) and args:IsPlayer() then
 		yellFrostShock:Cancel()
-		SendChatMessage("I'm Frozen!", "YELL")
+		if self.Options.ShockYellOpt then
+			SendChatMessage("I'm Frozen!", "YELL")
+		end
+	elseif args:IsSpellID(2136032) then
+		self.vb.phase = self.vb.phase + 1
+		if self.vb.phase <= 3 then
+			warnNormal:Show()
+			timerNextCapacitor:Start(6)
+			timerNextSavagery:Start(8)
+			timerNextSaber:Start(13)
+		end
 	end	
 end
 
 function mod:SPELL_DISPEL(args)
 	if args:IsSpellID(2136002, 2136003, 2136004, 2136005) and args:IsPlayer() then
 		yellFlameShock:Cancel()
-		SendChatMessage("Molten Earth on me!", "YELL")
+		if self.Options.ShockYellOpt then
+			SendChatMessage("Molten Earth on me!", "YELL")
+		end
 	-- elseif args:IsSpellID(2136015, 2136016, 2136017, 2136018) and args:IsPlayer() then
 	-- 	yellEarthShock:Cancel()
-	-- 	SendChatMessage("Dispelled by" ..args.sourceName, "YELL")
 	elseif args:IsSpellID(2136023, 2136024, 2136025, 2136026) and args:IsPlayer() then
 		yellFrostShock:Cancel()
-		SendChatMessage("I'm Frozen!", "YELL")
+		if self.Options.ShockYellOpt then
+			SendChatMessage("I'm Frozen!", "YELL")
+		end
 	end
 end
 
@@ -143,7 +182,7 @@ function mod:SPELL_PERIODIC_MISSED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2136040, 2136041, 2136042, 2136043) and args:IsPlayer() and mod:AntiSpam(1) then --2136039, 2136040, 2136041, 2136042, 2136043
+	if args:IsSpellID(2136040, 2136041, 2136042, 2136043) and args:IsPlayer() and DBM:AntiSpam(1) then --2136039, 2136040, 2136041, 2136042, 2136043
 		specWarnSpiritLink:Show()
 	end
 end
