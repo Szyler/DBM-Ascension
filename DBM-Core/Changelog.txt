@@ -216,3 +216,10 @@ v5.15 16/10/2022
 - Fixed warnFlameBreath on Alar not working for all difficulties
 - Solarion now warns stack number at 4 instead of 5
 ----------------------------------------------------------------------------------------------------
+v5.16 30/11/2022
+- Added Mythic mechanics for Nalorak and Halazzi in ZA
+- Added a few missing spells from Malacrass' clones
+- Fixed double announce of Electrical Storm on Akilzon and Zuljin
+- Fixed lua error with DBM:AntiSpam
+- Fixed spellIDs for SSC
+----------------------------------------------------------------------------------------------------
