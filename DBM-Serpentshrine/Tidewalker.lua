@@ -17,23 +17,23 @@ mod:RegisterEvents(
 
 -- local warnTidal			= mod:NewSpellAnnounce(37730, 3) -- useless, nobody cares about the tank debuff, might as well remove to reduce bloat
 local warnBubble			= mod:NewSpellAnnounce(37854, 4)
-local warnEarthquakeSoon	= mod:NewSoonAnnounce(37764, 3)
-local warnShield			= mod:NewSpellAnnounce(83548, 4)
+local warnEarthquakeSoon	= mod:NewSoonAnnounce(2137704, 3)
+local warnShield			= mod:NewSpellAnnounce(2137716, 4)
 local WarnWatery			= mod:NewAnnounce("WarnWateryGlobule", 4)
 
 local warnBubble		= mod:NewSpecialWarning("WarnRisingBubble",3)
 local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
-local timerShield		= mod:NewNextTimer(10, 83548)
+local timerShield		= mod:NewNextTimer(10, 2137716)
 -- local timerTidal		= mod:NewNextTimer(20, 37730)
-local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 39088)
+local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 2137719)
 local timerWatery		= mod:NewTimer(30, "TimerWateryGlobule", "Interface\\Icons\\Spell_Frost_FrozenCore")
 local timerBubble		= mod:NewTimer(30, "TimerBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
-local timerBurst		= mod:NewTimer(25, "TimerBurst", 83560)
+local timerBurst		= mod:NewTimer(25, "TimerBurst", 2137730)
 
-local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--83544
+local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--2137713
 local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
-local warnMage			= mod:NewSpecialWarning(L.WarnMage)--83554
+local warnMage			= mod:NewSpecialWarning(L.WarnMage)--2137720
 local warnHealthLost	= mod:NewAnnounce("HPLoss", 3)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
@@ -64,18 +64,18 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 83544 then
+	if args.spellId == 2137713 then
 		warnHealer:Show()
 		if self.Options.HealerIcon then
 			self:SetIcon(args.sourceName, 1)
 		end
-	elseif args.spellId == 83554 and MageAntiSpam > 120 then
+	elseif args.spellId == 2137720 and MageAntiSpam > 120 then
 		MageAntiSpam = GetTime()
 		warnMage:Show()
 		if self.Options.MageIcon then
 			self:SetIcon(args.sourceName, 2)
 		end
-	elseif args.spellId == 83548 then
+	elseif args.spellId == 2137716 then
 		warnShield:Show()
 		timerShield:Start()
 	end
@@ -85,12 +85,12 @@ end
 -- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 37764 then
+	if args:IsSpellID(2137704, 2137705, 2137706, 2137707) then
 		murlocCount = murlocCount + 1;
 		warnEarthquakeSoon:Show()
 		specWarnMurlocs:Show()
 		timerMurlocs:Start(murlocType[(murlocCount % 3)])
-	elseif args.spellId == 83551 and warriorAntiSpam > 120 then
+	elseif args.spellId == 2137718 and warriorAntiSpam > 120 then
 		warriorAntiSpam = GetTime()
 		warnWarrior:Show()
 		if self.Options.WarriorIcon then

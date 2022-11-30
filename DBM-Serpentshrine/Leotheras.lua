@@ -15,25 +15,25 @@ mod:RegisterEvents(
 )
 
 local warnPhase			= mod:NewAnnounce("WarnPhase", 2)
-local warnDemon			= mod:NewTargetAnnounce(37676, 4)
-local warnMC			= mod:NewTargetAnnounce(37749, 4)
+local warnDemon			= mod:NewTargetAnnounce(2137830, 4)
+local warnMC			= mod:NewTargetAnnounce(2137835, 4)
 local warnPhase2		= mod:NewPhaseAnnounce(2, 2)
 
-local specWarnWhirl		= mod:NewSpecialWarningRun(37640)
-local specWarnDemon		= mod:NewSpecialWarningYou(37676)
+local specWarnWhirl		= mod:NewSpecialWarningRun(2137805)
+local specWarnDemon		= mod:NewSpecialWarningYou(2137830)
 
-local warnEven			= mod:NewTargetAnnounce(351201, 3)
--- local specWarnEvenYou	= mod:NewSpecialWarningYou(351201)
-local warnChaos			= mod:NewTargetAnnounce(85365, 3)
-local specWarnChaosYou	= mod:NewSpecialWarningYou(85365)
+local warnEven			= mod:NewTargetAnnounce(2137839, 3)
+-- local specWarnEvenYou	= mod:NewSpecialWarningYou(2137839)
+local warnChaos			= mod:NewTargetAnnounce(2137831, 3)
+local specWarnChaosYou	= mod:NewSpecialWarningYou(2137831)
 
-local timerNextWhirl	= mod:NewNextTimer(45, 37640)
-local timerWhirl		= mod:NewBuffActiveTimer(12, 37640)
+local timerNextWhirl	= mod:NewNextTimer(45, 2137805)
+local timerWhirl		= mod:NewBuffActiveTimer(12, 2137805)
 local timerPhase		= mod:NewTimer(62, "TimerPhase", 39088)
-local timerNextDemon	= mod:NewNextTimer(23, 37676)
-local timerDemon		= mod:NewBuffActiveTimer(30, 37676)
-local timerChaos		= mod:NewTargetTimer(4, 85365) --351271, 351272, 351273
-local timerNextEven		= mod:NewNextTimer(32, 351201)
+local timerNextDemon	= mod:NewNextTimer(23, 2137830)
+local timerDemon		= mod:NewBuffActiveTimer(30, 2137830)
+local timerChaos		= mod:NewTargetTimer(4, 2137831) --351271, 351272, 351273
+local timerNextEven		= mod:NewNextTimer(32, 2137839)
 
 local berserkTimer		= mod:NewBerserkTimer(720)
 
@@ -105,13 +105,13 @@ function mod:OnCombatEnd(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 37640 then
+	if args.spellId == 2137805 then
 		specWarnWhirl:Show()
 		timerWhirl:Start()
 		if self.vb.phase == 2 then
 			timerNextWhirl:Start()
 		end
-	-- elseif args:IsSpellID(37676, 85361) then -- 85361
+	-- elseif args:IsSpellID(2137830, 85361) then -- 85361
 		-- warnDemonTargets[#warnDemonTargets + 1] = args.destName
 		-- self:Unschedule(showDemonTargets)
 		-- if self.Options.DemonIcon then
@@ -126,7 +126,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		-- else
 			-- self:Schedule(0.7, showDemonTargets, self)
 		-- end
-	-- elseif args:IsSpellID(37749, 85361) then -- 85361
+	-- elseif args:IsSpellID(2137835, 85361) then -- 85361
 		-- warnMCTargets[#warnMCTargets + 1] = args.destName
 		-- self:Unschedule(showMCTargets)
 		-- self:Schedule(0.3, showMCTargets)
@@ -136,13 +136,13 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(85365, 351271, 351272, 351273) then
+	if args:IsSpellID(2137831, 2137832, 2137833, 2137834) then
 		self:ScheduleMethod(0.3, "Chaos")
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(351200, 351201, 351202) then -- Tank swap (Even out the Odds)
+	if args:IsSpellID(2137838, 2137839, 2137840) then -- Tank swap (Even out the Odds)
 	warnEven:Show(args.destName)
 	timerNextEven:Start()
 	end

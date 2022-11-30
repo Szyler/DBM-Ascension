@@ -22,11 +22,11 @@ mod:RegisterEvents(
 
 local warnPhase2		= mod:NewPhaseAnnounce(2)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
-local warnCharge		= mod:NewTargetAnnounce(38280, 4)
-local warnEnvenom		= mod:NewTargetAnnounce(351381, 3)
-local warnAimedShot		= mod:NewTargetAnnounce(351310, 4)
-local warnMulti			= mod:NewSpellAnnounce(38310, 3)
-local WarnHeal			= mod:NewSpellAnnounce(83565, 3)
+local warnCharge		= mod:NewTargetAnnounce(2138039, 4)
+local warnEnvenom		= mod:NewTargetAnnounce(2138049, 3)
+local warnAimedShot		= mod:NewTargetAnnounce(2138044, 4)
+local warnMulti			= mod:NewSpellAnnounce(2138011, 3)
+local WarnHeal			= mod:NewSpellAnnounce(2138024, 3)
 local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 local warnElemental		= mod:NewAnnounce("WarnElemental", 4, "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")
 local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "Interface\\Icons\\achievement_boss_bazil_akumai")
@@ -35,16 +35,18 @@ local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 3, "Interface\\Icons\
 local warnLoot			= mod:NewAnnounce("WarnLoot", 3, "Interface\\Icons\\Spell_Nature_ElementalShields")
 local warnPhoenix		= mod:NewAnnounce("WarnPhoenix", 3, "Interface\\Icons\\INV_Misc_PheonixPet_01")
 
-local specWarnCharge	= mod:NewSpecialWarningMove(38280)
-local specWarnDischarge	= mod:NewSpecialWarningMove(351379)
-local specWarnToxic		= mod:NewSpecialWarningMove(38575)
+local specWarnCharge	= mod:NewSpecialWarningMove(2138039)
+local specWarnDischarge	= mod:NewSpecialWarningMove(2138020)
+local specWarnToxic		= mod:NewSpecialWarningMove(2138035)
 
-local timerCharge		= mod:NewNextTimer(30, 38280)
-local timerAimedShot	= mod:NewNextTimer(30, 351388)
-local timerMulti		= mod:NewNextTimer(15, 38310)
-local timerEnvenom		= mod:NewNextTimer(30, 351381)
-local timerMark			= mod:NewTargetTimer(6, 351310)
-local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 351375)
+local timerCharge		= mod:NewNextTimer(30, 2138039)
+local timerAimedShot	= mod:NewNextTimer(30, 2138045)
+local timerMulti		= mod:NewNextTimer(15, 2138011)
+local timerEnvenom		= mod:NewNextTimer(30, 2138049)
+local timerMark			= mod:NewTargetTimer(6, 2138044)
+local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 2138040)
+
+local timerBreath		= mod:NewNextTimer(10, 2138076)
 local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
 local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
 local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
@@ -55,12 +57,12 @@ local timerSporebat		= mod:NewTimer(23, "NextSporebat", "Interface\\Icons\\Abili
 
 -- Ascended Mechanics
 
-local timerParasite		= mod:NewNextTimer(45, 83568)
-local timerSiren		= mod:NewNextTimer(17, 83566)
-local timerPhoenix		= mod:NewNextTimer(16, 351414) 
+local timerParasite		= mod:NewNextTimer(45, 2138027)
+local timerSiren		= mod:NewNextTimer(17, 2138025)
+local timerPhoenix		= mod:NewNextTimer(16, 2138015) 
 
-local warnParasite		= mod:NewTargetAnnounce(83568, 3)        
-local warnSong			= mod:NewTargetAnnounce(83567, 3) 
+local warnParasite		= mod:NewTargetAnnounce(2138027, 3)        
+local warnSong			= mod:NewTargetAnnounce(2138026, 3) 
 
 local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
 
@@ -92,9 +94,9 @@ end
 
 function mod:NagaSpawn()
 	timerNaga:Stop()
-	warnNaga:Show(tostring(self.vb.nagaCount))
-	timerNaga:Start(nil, tostring(self.vb.nagaCount))
-	self.vb.nagaCount = self.vb.nagaCount + 1
+	warnNaga:Show(tostring(mod.vb.nagaCount))
+	timerNaga:Start(nil, tostring(mod.vb.nagaCount))
+	mod.vb.nagaCount = mod.vb.nagaCount + 1
 end
 
 function mod:EnchantressSpawn()
@@ -106,8 +108,8 @@ end
 
 function mod:TaintedSpawn()
 	timerElementalCD:Stop()
-	warnElemental:Show(tostring(self.vb.elementalCount))
-	self.vb.elementalCount = self.vb.elementalCount + 1
+	warnElemental:Show(tostring(mod.vb.elementalCount))
+	mod.vb.elementalCount = mod.vb.elementalCount + 1
 end
 
 local function warnChargeTargets()
@@ -129,9 +131,9 @@ end
 	
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
-	self.vb.nagaCount = 1
-	self.vb.elementalCount = 1
+	mod.vb.phase = 1
+	mod.vb.nagaCount = 1
+	mod.vb.elementalCount = 1
 	if mod:IsDifficulty("heroic10", "heroic25") then
 		timerMulti:Start(22-delay)
 		timerEnvenom:Start(19-delay)
@@ -163,7 +165,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(38280, 351307) then
+	if args:IsSpellID(2138039) then
 		ChargeTargets[#ChargeTargets + 1] = args.destName
 		self:Unschedule(warnChargeTargets)
 		self:Schedule(0.3, warnChargeTargets)
@@ -181,7 +183,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 		timerCharge:Start()
 		end
-	elseif args:IsSpellID(38509) then
+	elseif args:IsSpellID(2138013) then
 		warnAimedShot:Show(args.destName)
 		timerMark:Start(args.destName)
 		if mod:IsDifficulty("heroic10", "heroic25") then
@@ -199,23 +201,23 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 6)
 		end
-	elseif args:IsSpellID(83565) and (GetTime() - lastTriggerTime) >= 35 then
+	elseif args:IsSpellID(2138024) and (GetTime() - lastTriggerTime) >= 35 then
 		lastTriggerTime = GetTime()
 		self:UnscheduleMethod("EnchantressSpawn")
 		self:EnchantressSpawn()
-	elseif args.spellId	== 83568 then
+	elseif args:IsSpellID(2138027, 2138028, 2138029, 2138030) then
 		warnParasite:Show(args.destName)
 		timerParasite:Start()
-	elseif args.spellId == 83567 then
+	elseif args.spellId == 2138026 then
 		warnSong:Show(args.destName)
 		specWarnSiren:Show()
-	elseif args.spellId == 85411 and args:IsPlayer() then
+	elseif args:IsSpellID(2138035, 2138036, 2138037, 2138038) and args:IsPlayer() then
 		specWarnToxic:Show()
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(38280, 351307) then
+	if args:IsSpellID(2138039, 351307) then
 		timerChargeDmg:Stop(args.destName)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 0)
@@ -233,14 +235,14 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 38310 then
+	if args.spellId == 2138011 then
 		warnMulti:Show()
 		timerMulti:Start()
 	end
 end
 
 function mod:SPELL_PERIODIC_HEAL(args)
-	if args.spellId == 83565 then
+	if args.spellId == 2138024 then
 		warnHeal:Show()
 	end
 end
@@ -249,9 +251,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.DBM_VASHJ_DISCHARGE or msg:find(L.DBM_VASHJ_DISCHARGE) then
 		timerDischarge:Start()
 		specWarnDischarge:Show()
-		if self.vb.phase == 2 and mod:IsDifficulty("heroic10", "heroic25") then
+		if mod.vb.phase == 2 and mod:IsDifficulty("heroic10", "heroic25") then
 		timerSiren:Start()
-		elseif self.vb.phase == 3 then
+		elseif mod.vb.phase == 3 then
 		timerGenerator:Start()
 		end
 	elseif msg == L.DBM_VASHJ_ELITE or msg:find(L.DBM_VASHJ_ELITE) then
@@ -261,22 +263,25 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	elseif msg == L.DBM_VASHJ_TAINTED or msg:find(L.DBM_VASHJ_TAINTED) then
 		self:TaintedSpawn()
 	elseif msg == L.DBM_VASHJ_TAINTED_DEAD or msg:find(L.DBM_VASHJ_TAINTED_DEAD) then
-		timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
+		timerElementalCD:Start(nil, tostring(mod.vb.elementalCount))
 	end
 end
 	
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 351381 then
+	if args:IsSpellID(2138049, 2138050, 2138051, 2138052) then
 		warnEnvenom:Show(args.destName)
 		timerEnvenom:Start()
-	elseif args.spellID == 83566 then
+	elseif args.spellID == 2138025 then
 		specWarnSiren:Show()
-	elseif args.spellID == 351393 then
+	elseif args:IsSpellID(2138000, 2138001, 2138002, 2138003) then
 		timerPhoenix:Start()
 		warnPhoenix:Show()
+	elseif args:IsSpellID(2138076) then
+		if timerDischarge:GetTime() == 0 then
+			timerBreath:Start()
+		end
 	end
 end
-
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
@@ -284,19 +289,19 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerEnvenom:Cancel()
 		timerAimedShot:Cancel()
 		timerCharge:Cancel()
-		self.vb.phase = 2
-		self.vb.nagaCount = 1
-		self.vb.elementalCount = 1
+		mod.vb.phase = 2
+		mod.vb.nagaCount = 1
+		mod.vb.elementalCount = 1
 		warnPhase2:Show()
-		timerNaga:Start(13, tostring(self.vb.nagaCount))
+		timerNaga:Start(13, tostring(mod.vb.nagaCount))
 		timerEnchantress:Start(25)
 		timerElementalCD:Start()
 		timerHydra:Start(35)
 		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
-	elseif (msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3)) and self.vb.phase == 2 then
-		self.vb.phase = 3
+	elseif (msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3)) and mod.vb.phase == 2 then
+		mod.vb.phase = 3
 		warnPhase3:Show()
 		timerNaga:Cancel()
 		warnNaga:Cancel()
