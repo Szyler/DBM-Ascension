@@ -25,6 +25,7 @@ local warnSplit				= mod:NewSpellAnnounce(2136032, 3)
 
 local specWarnTotem			= mod:NewSpellAnnounce(2136034)
 local specWarnEnrage		= mod:NewSpecialWarningDispel(2136001)
+local timerNextSavagery		= mod:NewNextTimer(10, 2136001)
 --local specWarnSaberStack= mod:NewSpecialWarningStack(2136000, nil, 3)
 
 local timerNextFlameShock	= mod:NewNextTimer(10, 2136002)
@@ -32,6 +33,7 @@ local timerNextEarthShock	= mod:NewNextTimer(10, 2136015)
 local timerNextFrostShock	= mod:NewNextTimer(10, 2136023)
 local timerNextSaber		= mod:NewNextTimer(15, 2136000)
 local timerNextCapacitor	= mod:NewNextTimer(20, 2136034)
+
 
 local berserkTimer			= mod:NewBerserkTimer(600)
 
@@ -46,8 +48,9 @@ mod:AddBoolOption(L.ShockYellOpt)
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
+	timerNextCapacitor:Start(6)
+	timerNextSavagery:Start(8)
 	timerNextSaber:Start(13)
-
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -57,6 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnEnrage:Show()
 		end
+		timerNextSavagery:Start()
 	elseif args:IsSpellID(43290) then
 		warnFrenzy:Show()
 	elseif args:IsSpellID(2136000) then
@@ -64,6 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2136032) then
 		warnSplit:Show()
 		timerNextCapacitor:Cancel()
+		timerNextSavagery:Cancel()
 		timerNextFlameShock:Start(4)
 		timerNextEarthShock:Start(8)
 		timerNextFrostShock:Start(12)
