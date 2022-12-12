@@ -37,6 +37,8 @@ local specWarnTurbulentWinds	= mod:NewSpecialWarningYou(2136342)
 local warnTurbulentWindsTarget 	= mod:NewTargetAnnounce(2136342, 4)
 local warnStorm					= mod:NewTargetAnnounce(2135724, 4)
 local specWarnStorm				= mod:NewSpecialWarningSpell(2135724)
+local timerNextBladestorm		= mod:NewNextTimer(45, 2136315)
+local timerBladestorm 			= mod:NewCastTimer(15, 2136315)
 
 local warnPhaseBear				= mod:NewSpecialWarningSpell(2136337) --2136337, Shape of the Eagle, ASC D0 T5
 local timerNextDeafeningRoar	= mod:NewNextTimer(15, 2135829) --2135829, 2135830, 2135831, 2135832
@@ -61,6 +63,9 @@ local specWarnSpiritLink		= mod:NewSpecialWarningRun(2136414) --2136413, 2136414
 local timerNextGrievous			= mod:NewNextTimer(10, 2136300) --2136301, 2136302, 2136303
 local timerNextWhirlwind		= mod:NewNextTimer(45, 2136316) --2136316, Whirlwind
 local timerNextImpale			= mod:NewNextTimer(45, 2136304) --2136304, 2136305, 2136306, 2136307, 2136308, 2136309
+
+local specWarnBloodScythe		= mod:NewSpecialWarningYou(2136461)
+local warnBloodScythe			= mod:NewTargetAnnounce(2136461, 4)
 
 mod.vb.phase = 1
 local eosSpam = 0
@@ -92,10 +97,22 @@ function mod:LightningStrike()
 	self:ScheduleMethod(10,"LightningStrike")
 end
 
+function mod:BloodScythe()
+	local target = nil
+	local myName = UnitName("player")
+	target = mod:GetBossTarget(14982)
+	if target == myName then
+		specWarnBloodScythe:Show()
+		SendChatMessage(L.DBM_BLOOD_SCYTHE, "YELL")
+	else
+		warnBloodScythe:Show(target)
+	end
+end
+
 function mod:TurbulentWinds()
 	local target = nil
 	local myName = UnitName("player")
-	target = mod:GetBossTarget(80468) -- need to confirm ID !
+	target = mod:GetBossTarget(23863) -- need to confirm ID !
 	if target == myName then
 		specWarnTurbulentWinds:Show(target)
 		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
@@ -149,6 +166,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:PhaseIncrease()
 			warnPhaseLynx:Show()
 		end
+	elseif args:IsSpellID(2136315) then
+		timerBladestorm:Start()
+		timerNextImpale:Start(27)
+		timerNextBladestorm:Start()
 	end
 end
 
@@ -174,8 +195,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnPhaseLynx:Show()
 		self:PhaseIncrease()
 		timerNextLynxRush:Start()
-	elseif args:IsSpellID(2136316) then
-		timerNextWhirlwind:Start()
+	elseif args:IsSpellID(2136315) then
+		timerNextImpale:Cancel()
 	elseif args:IsSpellID(2136402) then
 		timerBombCast:Start()
 		specWarnBomb:Show()
@@ -190,6 +211,8 @@ function mod:SPELL_CAST_START(args)
 		timerNextTurbulentWinds:Start()
 		timerCastTurbulentWinds:Start()
 		self:ScheduleMethod(0.2, "TurbulentWinds")
+	elseif args:IsSpellID(2136461) then
+		self:ScheduleMethod(0.2, "BloodScythe")
 	end
 end
 

@@ -53,7 +53,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
 	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
-	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER")..", Position! Move!"
+	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER")"!"
 }
 
 ---------------
@@ -129,11 +129,14 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	YellPhase2	= "Got me some new tricks... like me brudda bear....",
-	YellPhase3	= "Dere be no hidin' from da eagle!",
-	YellPhase4	= "Let me introduce you to me new bruddas: fang and claw!",
-	YellPhase5	= "Ya don' have to look to da sky to see da dragonhawk!",
-	DBM_JANALAI_HATCHERS = "Where ma hatcha? Get to work on dem eggs!",
-	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
-	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!"
+	YellPhase2				= "Got me some new tricks... like me brudda bear....",
+	YellPhase3				= "Dere be no hidin' from da eagle!",
+	YellPhase4				= "Let me introduce you to me new bruddas: fang and claw!",
+	YellPhase5				= "Ya don' have to look to da sky to see da dragonhawk!",
+	DBM_JANALAI_HATCHERS 	= "Where ma hatcha? Get to work on dem eggs!",
+	DBM_ROD_PLAYER 			= "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
+	DBM_EOS_PLAYER 			= "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
+	DBM_TURBULENT_WINDS 	= "Turbulent winds on "..UnitName("PLAYER").."!",
+	DBM_BLOOD_SCYTHE 		= "Massive Blood Scythe on "..UnitName("PLAYER"),
+	DBM_BLOOD_ORBS 			= "Blood orbs on"..UnitName("PLAYER").."! "
 }
