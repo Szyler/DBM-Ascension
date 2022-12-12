@@ -90,8 +90,8 @@ local timerNextCurseOfDoom		= mod:NewNextTimer(5, 2136177) --2136177, 2136178, 2
 local timerCurseOfDoom			= mod:NewTargetTimer(15, 2136177)
 local timerNextRainofFire		= mod:NewNextTimer(15, 2136186) --2136186, 2136187, 2136188, 2136189
 local timerNextHellfire			= mod:NewNextTimer(25, 2136181) --2136181, 2136182, 2136183, 2136184, 2136185
-local specWarnRainofFire		= mod:NewSpecialWarningRun(2136182)
-local specWarnHellfire			= mod:NewSpecialWarningRun(2136186)
+local specWarnRainofFire		= mod:NewSpecialWarningRun(2136186)
+local specWarnHellfire			= mod:NewSpecialWarningRun(2136182)
 
 local warnWarriorSoul			= mod:NewSpecialWarning("Warrior Soul Absorbed")
 local timerNextSpellReflect		= mod:NewNextTimer(5, 2136190) --2136190
