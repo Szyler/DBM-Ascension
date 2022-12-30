@@ -31,6 +31,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	YellP2 			= "This meaningless exertion bores me. I'll incinerate you all from above!",
 	YellP3 			= "It seems you'll need another lesson, mortals!",
-	EmoteDeepBreath = "%s takes in a deep breath..."
+	EmoteDeepBreath = "%s takes in a deep breath...",
+	EmoteSpear		= "A scream releases as the spear is picked up by"
 }
 

@@ -173,24 +173,24 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-function mod:UNIT_DIED(args)
-	local cId = self:GetCIDFromGUID(args.destGUID)
-	if cId == 21806 then
-		self.vb.binderKill = self.vb.binderKill + 1
-		if self.vb.binderKill == 3 and not self:IsInCombat() then
-			DBM:StartCombat(self, 0)
---			self.vb.demonIcon = 8
-			self.vb.whirlCount = 0
-			self.vb.phase = 1
---			table.wipe(warnMCTargets)
---			table.wipe(warnDemonTargets)
-			timerNextWhirl:Start(30)
-			timerNextEven:Start(15)
-			timerPhase:Start(nil, L.Demon)
-			berserkTimer:Start()
+		function mod:UNIT_DIED(args)
+			local cId = self:GetCIDFromGUID(args.destGUID)
+			if cId == 21806 then
+				self.vb.binderKill = self.vb.binderKill + 1
+				if self.vb.binderKill == 3 and not self:IsInCombat() then
+					DBM:StartCombat(self, 0)
+		--			self.vb.demonIcon = 8
+					self.vb.whirlCount = 0
+					self.vb.phase = 1
+		--			table.wipe(warnMCTargets)
+		--			table.wipe(warnDemonTargets)
+					timerNextWhirl:Start(30)
+					timerNextEven:Start(15)
+					timerPhase:Start(nil, L.Demon)
+					berserkTimer:Start()
+				end
+			end
 		end
-	end
-end
 
 --  351306 - Mind Flay
 --  351339 - Mind Flay - (Heroic)

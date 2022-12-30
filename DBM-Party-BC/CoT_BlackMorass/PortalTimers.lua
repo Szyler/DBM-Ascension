@@ -22,7 +22,7 @@ local timerNextPortal		= mod:NewTimer(120, "TimerNextPortal", 57687)
 local lastPortal = 0
 
 function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
+	local cid = self:GetCIDFromGUID(	)
 	if cid == 17879 then
 		timerNextPortal:Start(40, lastPortal + 1)
 		warnWavePortalSoon:Schedule(35)

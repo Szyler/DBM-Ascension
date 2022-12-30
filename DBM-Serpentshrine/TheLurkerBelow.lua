@@ -6,7 +6,7 @@ mod:SetCreatureID(21217)
 mod:RegisterCombat("combat", 21217)
 
 mod:RegisterEvents(
-	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"	",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
