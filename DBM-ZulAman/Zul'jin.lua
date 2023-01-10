@@ -63,6 +63,7 @@ local specWarnSpiritLink		= mod:NewSpecialWarningRun(2136414) --2136413, 2136414
 local timerNextGrievous			= mod:NewNextTimer(10, 2136300) --2136301, 2136302, 2136303
 local timerNextWhirlwind		= mod:NewNextTimer(45, 2136316) --2136316, Whirlwind
 local timerNextImpale			= mod:NewNextTimer(45, 2136304) --2136304, 2136305, 2136306, 2136307, 2136308, 2136309
+local timerNextScentOfCorruption = mod:NewNextTimer(35, 2136464) -- 2136464, 2136465, Scent of Corruption
 
 local specWarnBloodScythe		= mod:NewSpecialWarningYou(2136461)
 local warnBloodScythe			= mod:NewTargetAnnounce(2136461, 4)
@@ -179,22 +180,33 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextTurbulentWinds:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Lightning")
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136337) then --Phase 2-3-4-5
 		warnPhaseBear:Show()
 		timerNextDeafeningRoar:Start(8)
 		timerNextStampede:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Bear")
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136357) then --Phase 2-3-4-5
 		warnPhaseDragonhawk:Show()
 		timerNextScorchingBreath:Start()
 		timerNextArmageddon:Start()
 		timerNextFlameWhirl:Start(1.5)
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136376) then --Phase 2-3-4-5
 		warnPhaseLynx:Show()
 		self:PhaseIncrease()
 		timerNextLynxRush:Start()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136315) then
 		timerNextImpale:Cancel()
 	elseif args:IsSpellID(2136402) then
@@ -203,6 +215,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(2136363) then
 		timerFlameWhirlCast:Start()
 		timerNextFlameWhirl:Start() -- timer is probably wrong
+	elseif args:IsSpellID(2136304,2136305,2136306,2136307) then
+		timerNextImpale:Start(45)
+		timerNextWhirlwind:Start(18)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextScentOfCorruption:Start(20)
+		end
 	end
 end
 
