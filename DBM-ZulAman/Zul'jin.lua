@@ -275,5 +275,4 @@ function mod:UNIT_DIED(args)
 	else 
 		return
 	end
-	print("Should only appear if phase = 10, otherwise contact DBM developers.")
 end
