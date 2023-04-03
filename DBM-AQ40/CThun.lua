@@ -68,7 +68,6 @@ local timerMalignant				= mod:NewTimer(15, "Malignant Tentacle", 4500053)
 local timerLesserEldritch			= mod:NewCastTimer(3, 2117084)
 local timerNextEyeTent				= mod:NewTimer(45, "Next Eye Tentacle", 4500000)
 local timerIntoStomach				= mod:NewTimer(10, "From Beneath You it Devours", 2117117)
-local timerDevSmash1				= mod:NewCastTimer(3, 2117076)
 
 ----------Misc----------
 mod:AddBoolOption("RangeFrame", true)
@@ -136,7 +135,6 @@ function mod:LesserEldritch()
 		warnLesserEldritch:Show(target)
 	end
 	timerLesserEldritch:Start(target)
-		self:SetIcon(target, 4, 3)
 end
 
 function mod:alertShadow()
@@ -610,7 +608,6 @@ function mod:SPELL_CAST_START(args)
 		warnDarkGlare:Show()
 	end
 	if args:IsSpellID(2117076) then
-		timerDevSmash1:start()
 		SpecWarnDevSmash:Show()
 	end
 end
