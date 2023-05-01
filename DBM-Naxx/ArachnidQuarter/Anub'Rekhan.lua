@@ -12,16 +12,16 @@ mod:RegisterEvents(
 )
 
 -----LOCUST SWARM-----
-local prewarnLocust			= mod:NewSoonAnnounce(28785, 2)
-local warnLocust			= mod:NewCastAnnounce(28785, 3)
-local timerLocust			= mod:NewNextTimer(90, 28785)
-local specWarnLocust		= mod:NewSpecialWarningSpell(28785)
-local timerLocustRemaining	= mod:NewBuffActiveTimer(16, 28785)
+local prewarnLocust			= mod:NewSoonAnnounce(2123004, 2)
+local warnLocust			= mod:NewCastAnnounce(2123004, 3)
+local timerLocust			= mod:NewNextTimer(90, 2123004)
+local specWarnLocust		= mod:NewSpecialWarningSpell(2123004)
+local timerLocustRemaining	= mod:NewBuffActiveTimer(17, 2123004)
 -----DARK GAZE-----
 local specWarnDarkGaze		= mod:NewSpecialWarningYou(1003011)
 -----IMPALE------
-local timerImpale			= mod:NewCDTimer(10, 28783)
-local warnImpale			= mod:NewTargetAnnounce(28783, 2)
+local timerImpale			= mod:NewCDTimer(10, 2123001)
+local warnImpale			= mod:NewTargetAnnounce(2123001, 2)
 -----MISC-----
 local berserkTimer			= mod:NewBerserkTimer(600)
 
@@ -35,7 +35,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(1003011) then 
+	if args:IsSpellID(1003011) then
 		if args:IsPlayer() then
 			specWarnDarkGaze:Show();
 			SendChatMessage(L.YellDarkGaze, "YELL")
@@ -44,12 +44,12 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(28785) then
+	if args:IsSpellID(2123003) then
 		timerLocust:Start()
 		specWarnLocust:Show()
 		prewarnLocust:Schedule(85)
 		timerLocustRemaining:Schedule(3)
-	elseif args:IsSpellID(28783) then
+	elseif args:IsSpellID(2123001) then
 		timerImpale:Start()
 		tankName = mod:GetBossTarget(15956)
 		self:ScheduleMethod(0.1, "anubImpale")
