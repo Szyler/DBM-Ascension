@@ -48,7 +48,7 @@ local warnStomach					= mod:NewAnnounce("Stomach Phase Now", 2, 26476)
 local warnPhase2					= mod:NewPhaseAnnounce(2)
 local warnLesserEldritch			= mod:NewSpellAnnounce(2117084, 4)
 local specWarnLesserEldritch		= mod:NewSpecialWarningYou(2117084, 4)
-local SpecWarnDevSmash				= mod:NewSpecialWarning(2117076, 4)
+local SpecWarnDevSmash				= mod:NewSpecialWarning("Devastating Smash!",2117076, 4)
 
 ----------Timers----------
 local timerDarkGlareCD				= mod:NewCDTimer(89, 26029)
@@ -577,7 +577,6 @@ function mod:SPELL_AURA_APPLIED(args) -- Weakened phase (C'Thun and tentacles)
 			else
 				warnStomach:Show(args.destName);
 			end
-		timerIntoStomach:Start(10)
 		end
 end
 
@@ -607,7 +606,7 @@ function mod:SPELL_CAST_START(args)
 		timerDarkGlare:Start()
 		warnDarkGlare:Show()
 	end
-	if args:IsSpellID(2117076) then
+	if args:IsSpellID(2117076) and args.UnitName == "Giant Claw Tentacle" then
 		SpecWarnDevSmash:Show()
 	end
 end
