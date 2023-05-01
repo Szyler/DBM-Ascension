@@ -21,10 +21,9 @@ local warnNecrotic				= mod:NewAnnounce(L.MaexxnaNecrotic, 2, 28798)
 local warnWebWrap			= mod:NewTargetAnnounce(28622, 2)
 local timerWebWrap			= mod:NewNextTimer(40, 28622)
 -----WEB SPRAY-----
-local warnWebSpraySoon		= mod:NewSoonAnnounce(2123206, 1)
-local warnWebSprayNow		= mod:NewSpellAnnounce(2123206, 3)
-local timerWebSpray			= mod:NewNextTimer(40, 2123206)
-local timerWebStun			=mod:NewCastTimer(4,2123210)
+local warnWebSpraySoon		= mod:NewSoonAnnounce(29484, 1)
+local warnWebSprayNow		= mod:NewSpellAnnounce(29484, 3)
+local timerWebSpray			= mod:NewNextTimer(40, 29484)
 -----SPIDERLINGS-----
 local timerSpider			= mod:NewNextTimer(16, 43134)
 -----SOFT ENRAGE-----
@@ -47,20 +46,19 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		timerSpider:Start(timer)
 	end
 end
-function SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2123206) then -- Web Spray
-	warnWebSprayNow:Show()
-	timerWebStun:start()
-	timerWebSpray:Start(50)
-	end
-end
+
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2123211,2123212,2123216,2123217) then -- Web Wrap
+	if args:IsSpellID(28622) then -- Web Wrap
 		warnWebWrap:Show(args.destName)
 		timerWebWrap:Start()
 		if args.destName == UnitName("player") then
 			SendChatMessage(L.YellWebWrap, "YELL")
 		end
+	elseif args:IsSpellID(29484, 54125, 350287) then -- Web Spray
+		timer = 40
+		warnWebSprayNow:Show()
+		warnWebSpraySoon:Schedule(timer-5)
+		timerWebSpray:Start(timer)
 	elseif args:IsSpellID(28776) then
 		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
 		timerNecrotic:Start()
@@ -68,7 +66,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2123202) then
+	if args:IsSpellID(28776) then
 		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
