@@ -223,3 +223,7 @@ v5.16 30/11/2022
 - Fixed lua error with DBM:AntiSpam
 - Fixed spellIDs for SSC
 ----------------------------------------------------------------------------------------------------
+v5.17 07/05/2023
+- Rewrote C'Thun, adding new Spell IDs and fixed functions
+- Rewrote most of Naxx, adding new Spell IDs and updating old.
+- Added triggers and functions to fit with new mechanics
