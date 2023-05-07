@@ -8,7 +8,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED", --This should allow the addon to process this Event using the scripting from Kel'Thuzad for Harvest Soul.
 	"SPELL_AURA_APPLIED_DOSE", --This should allow the addon to process this Event using the scripting from Kel'Thuzad for Harvest Soul.
 	"UNIT_DIED",
-	"PLAYER_ALIVE" 
+	"PLAYER_ALIVE",
+	"UNIT_HEALTH" 
 )
 
 -----ADD DEATHS-----
@@ -27,16 +28,20 @@ local timerGothik				= mod:NewTimer(100, "Gothik Arrives", 46573, nil, "Show tim
 local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "Show pre-warning for the arrival of Gothik")
 local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 3, 46573, nil, "Show warning for the arrival of Gothik")
 
+--------MISC--------
+local phase
+
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	self:ScheduleMethod(115, "HarvestSoul")
+	self:ScheduleMethod(120, "HarvestSoul")
+	phase = 1
 	-----HARVEST SOUL-----
-	harvestSoulIntiialTimer = 115
+	harvestSoulIntiialTimer = 120
 	warnHarvestSoon:Schedule(harvestSoulIntiialTimer-5)
 	warnHarvest:Schedule(harvestSoulIntiialTimer)
 	timerHarvest:Start(harvestSoulIntiialTimer)
 	-----COMBAT START----
-	combatStartTimer = 25 
+	combatStartTimer = 25
 	timerCombatStart:Start(combatStartTimer)
 	warnCombatStartSoon:Schedule(combatStartTimer-5)
 	warnCombatStart:Schedule(combatStartTimer)
@@ -49,11 +54,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:HarvestSoul()
-	timer = 15
-	timerHarvest:Start(timer)
-	warnHarvestSoon:Schedule(timer-3, 15)
-	warnHarvest:Schedule(timer)
-	self:ScheduleMethod(timer, "HarvestSoul")
+	timerHarvest:Start(20)
+	warnHarvestSoon:Schedule(17)
+	warnHarvest:Schedule(17)
+	self:ScheduleMethod(20, "HarvestSoul")
 end
 
 function mod:UNIT_DIED(args)
@@ -64,5 +68,13 @@ function mod:UNIT_DIED(args)
 		elseif guid == 16125 then -- Unrelenting Death Knight
 			warnKnightDown:Show()
 		end
+	end
+end
+
+function mod:UNIT_HEALTH(uId)
+	if self:GetUnitCreatureId(uId) == 16060 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.11 and phase ==1 then
+	self:UnscheduleMethod("HarvestSoul")
+	timerHarvest:Stop()
+	phase = 2
 	end
 end

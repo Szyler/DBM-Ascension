@@ -7,13 +7,19 @@ mod:RegisterCombat("combat")
 mod:EnableModel()
 mod:RegisterEvents(
 	"SPELL_DAMAGE",
-	"PLAYER_ALIVE"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE"
 )
 
 -----DECIMATE-----
-local warnDecimateSoon	= mod:NewSoonAnnounce(54426, 2)
-local warnDecimateNow	= mod:NewSpellAnnounce(54426, 3)
-local timerDecimate		= mod:NewNextTimer(120, 54426)
+local warnDecimateSoon	= mod:NewSoonAnnounce(2122905, 2)
+local warnDecimateNow	= mod:NewSpellAnnounce(2122905, 3)
+local timerDecimate		= mod:NewNextTimer(120, 2122905)
+-------MOOD--------
+local warnHungry		= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
+local warnAngry			= mod:NewAnnounce("Gluth is Angry", 2, 2122904, nil, "Show a warning when Gluth gets angry")
+local warnViciousStacks = mod:NewAnnounce("Vicious Strike stacks", 2, 2122901, nil, "Show a warning when Tanks gets the Vicious debuff")
 -----MISC-----
 local enrageTimer		= mod:NewBerserkTimer(480)
 
@@ -24,12 +30,32 @@ function mod:OnCombatStart(delay)
 	warnDecimateSoon:Schedule(115 - delay)
 end
 
-local decimateSpam = 0
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(28375) and (GetTime() - decimateSpam) > 20 then
-		decimateSpam = GetTime()
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(2122905)then
 		warnDecimateNow:Show()
 		timerDecimate:Start()
 		warnDecimateSoon:Schedule(115)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2122901) then
+		if args.amount >= 4 then
+			warnViciousStacks:Show(args.spellName, args.amount)
+		end
+	end
+	if args:IsSpellID(2122904) then
+		if args.amount >=2 then
+			warnAngry:Show(args.spellName, args.amount)
+		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2122904) then
+		warnAngry:Show(args.spellName, args.amount)
+	end
+	if args:IsSpellID(2122903) then
+		warnHungry:Show()
 	end
 end

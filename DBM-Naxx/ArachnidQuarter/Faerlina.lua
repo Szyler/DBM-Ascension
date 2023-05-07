@@ -16,8 +16,9 @@ mod:RegisterEvents(
 -- local warnEnrageSoon			= mod:NewSoonAnnounce(28798, 3)
 -----Frenzy-----
 -- local warnFrenzyNow				= mod:NewSpellAnnounce(28798, 4)
-local timerFrenzy				= mod:NewNextTimer(60, 28798)
-local warnFrenzy				= mod:NewAnnounce(L.FaerlinaFrenzy, 2, 28798)
+local timerSadism				= mod:NewNextTimer(30, 2123101)
+local timerBloodBath			= mod:NewTimer(45, 2123102)
+local warnSadism				= mod:NewSpellAnnounce(2123101, 3)
 -----EMBRACE-----
 local warnEmbraceActive			= mod:NewSpellAnnounce(28732, 1)
 local timerEmbrace				= mod:NewBuffActiveTimer(20, 28732)
@@ -36,7 +37,7 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
-	timerFrenzy:Start(-delay)
+	timerSadism:Start(60-delay)
 	-- timer = 60
 	-- timerEnrage:Start(timer - delay)
 	-- warnEnrageSoon:Schedule(timer - 5 - delay)
@@ -62,9 +63,12 @@ end
 -- end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(28798, 54100) then
-		warnFrenzy:Show(args.spellName, args.destName, args.amount or 1)
-		timerFrenzy:Start()
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start(30)
+	elseif args:IsSpellID(2123102) then
+		timerSadism:Stop()
+		timerBloodBath:Start()
 	elseif args:IsSpellID(1003054) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
@@ -83,9 +87,11 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(28798, 54100) then
-		warnFrenzy:Show(args.spellName, args.destName, args.amount or 1)
-		timerFrenzy:Start()
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start()
+	elseif args:IsSpellID(2123102) then 
+
 	elseif args:IsSpellID(1003054) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
