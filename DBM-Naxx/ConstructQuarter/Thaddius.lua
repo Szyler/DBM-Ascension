@@ -113,12 +113,22 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 end
 
 function mod:UNIT_AURA(unit)
-	local Name = UnitName(unit)
-    while UnitDebuff(unit,"Negative Charge") and Name == UnitName("player") do
-		specWarnNegative:Show()
-	end
-	while UnitDebuff(unit,"Positive Charge") and Name == UnitName("player") do
-		specWarnPositive:Show()
+	if DBM:AntiSpam(0.5, 3) then
+		if DBM_CheckForDebuff("Negative Charge") then
+			if DBM:AntiSpam(3, 1) then
+				specWarnNegative:Show()
+			end
+		else
+			specWarnNegative:Hide()
+		end
+
+		if DBM_CheckForDebuff("Positive Charge") then
+			if DBM:AntiSpam(3, 2) then
+				specWarnPositive:Show()
+			end
+		else
+			specWarnPositive:Hide()
+		end
 	end
 end
 
