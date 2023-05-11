@@ -12,20 +12,19 @@ mod:RegisterEvents(
 	"UNIT_AURA",
 	"PLAYER_ALIVE",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_REMOVED",
+	"UNIT_DIED"
 )
 -----POLARITY SHIFT-----
 local timerShiftCast		= mod:NewCastTimer(4, 2124201)
 local timerNextShift		= mod:NewNextTimer(34, 2124201)
 local warnShiftCasting		= mod:NewCastAnnounce(2124201, 3)
-local specWarnNegative		= mod:NewSpecialWarning("Negative Charge", 2, "Interface\\Icons\\Spell_ChargeNegative")
-local specWarnPositive		= mod:NewSpecialWarning("Positive Charge", 2, "Interface\\Icons\\Spell_ChargePositive")
-local specWarnMagnetic		= mod:NewSpecialWarningYou("Warning Magnetic Reversal",2124245)
+local specWarnNegative		= mod:NewSpecialWarningMove(2124203)
+local specWarnPositive		= mod:NewSpecialWarningMove(2124203)
+local specWarnMagnetic		= mod:NewSpecialWarningYou(2124245)
 local warnMagnetic			= mod:NewAnnounce("Magnetic Reversal", 2, 2124245, nil, "Show warning for Magnetic Reversal")
-local warnChargeChanged		= mod:NewSpecialWarning("WarningChargeChanged")
-local warnChargeNotChanged	= mod:NewSpecialWarning("WarningChargeNotChanged", false)
-local timerMagnetic			= mod:NewTimer(15, 2124245)
-local warnTankOvercharged	= mod:NewAnnounce("Tank is Overcharged", 1, 2124222, nil, "Show warning for Overcharged")
+local timerMagnetic			= mod:NewTimer(15, "Magnetic Reversal duration", 2124245)
+local warnTankOvercharged	= mod:NewTargetAnnounce(2124222, 3)
 -----THROW-----
 local warnThrow				= mod:NewSpellAnnounce(2124244, 2)
 local warnThrowSoon			= mod:NewSoonAnnounce(2124244, 1)
@@ -43,19 +42,37 @@ local currentCharge
 local phase2
 local i
 
-
 -- Polarity shift (2124201)
 -- Overcharged (2124222)
 -- Magnetic Reversal (2124245)
+--TEST REALM--
+local negativePolarity = CreateFrame("Frame", nil, UIParent)
+negativePolarity:Hide()
+local negativeTexture = negativePolarity:CreateTexture(nil, "BACKGROUND")
+negativeTexture:SetTexture("Interface\\Icons\\Spell_ChargeNegative")
+negativeTexture:SetPoint("CENTER", negativePolarity, "CENTER")
+negativePolarity:SetHeight(0.8)
+negativePolarity:SetWidth(0.8)
+negativePolarity:SetPoint("CENTER", UIParent, "CENTER", 0, 445)
 
+local positivePolarity = CreateFrame("Frame", nil, UIParent)
+positivePolarity:Hide()
+local positiveTexture = positivePolarity:CreateTexture(nil, "BACKGROUND")
+positiveTexture:SetTexture("Interface\\Icons\\Spell_ChargePositive")
+positiveTexture:SetPoint("CENTER", positivePolarity, "CENTER")
+positivePolarity:SetHeight(0.8)
+positivePolarity:SetWidth(0.8)
+positivePolarity:SetPoint("CENTER", UIParent, "CENTER", 0, 445)
 
+-- Polarity Positive (2124202)
+-- Polarity Negative (2124203)
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase2 = false
 	self.vb.phase = 1
-	currentCharge = nil
-	i = 8
+	currentCharge = 0
+	i = 7
 	down = 0
 	self:ScheduleMethod(20.6 - delay, "TankThrow")
 	timerThrow:Start(-delay)
@@ -76,29 +93,32 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2124201) then
 		phase2 = true
 		self.vb.phase = 2
-		self:ScheduleMethod("ShiftingPolarity")
+		self:ScheduleMethod(0, "ShiftingPolarity")
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124245) then
 		if args:IsPlayer() then
-			specWarnMagnetic:Show();
+			specWarnMagnetic:Show()
+			SendChatMessage("Magnetic Reversal on "..UnitName("PLAYER").."!", "Say")
 		else
-			warnMagnetic:Show();
+			warnMagnetic:Show(args.destName);
 		end
 			timerMagnetic:Start()
-			mod:SetIcon(args.DestName, i, 15)
+			mod:SetIcon(args.destName, i, 15)
 			i = i-1
 	end
 	if args:IsSpellID(2124222) then
-		warnTankOvercharged:Show(args.DestName)
+		local tanktarget = args.destName
+		warnTankOvercharged:Show(tanktarget)
+		mod:SetIcon(tanktarget, 8, 15)
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2124245) then
-		i = 8
+		i = 7
 	end
 end
 
@@ -112,66 +132,46 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	end
 end
 
-function mod:UNIT_AURA(unit)
-	if DBM:AntiSpam(0.5, 3) then
-		if DBM_CheckForDebuff("Negative Charge") then
-			if DBM:AntiSpam(3, 1) then
-				specWarnNegative:Show()
-			end
-		else
-			specWarnNegative:Hide()
-		end
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15928 or cid == 26629 then
+	positivePolarity:Hide()
+	negativePolarity:Hide()
+	self:UnscheduleMethod("ShiftingPolarity")
+	end
+end
 
-		if DBM_CheckForDebuff("Positive Charge") then
-			if DBM:AntiSpam(3, 2) then
-				specWarnPositive:Show()
-			end
-		else
-			specWarnPositive:Hide()
+function mod:UNIT_AURA(unit)
+	if UnitDebuff("Player","Polarity: Negative") then
+		if currentCharge == 1 or currentCharge == 0 then
+			specWarnNegative:Show()
 		end
+	 	 	currentCharge = 2
+	 	 	negativePolarity:Show()
+	 	 	positivePolarity:Hide()
+	end
+	if UnitDebuff("Player","Polarity: Positive") then
+		if currentCharge == 2 or currentCharge == 0 then
+			specWarnPositive:Show()
+		end
+		  	currentCharge = 1
+	 		negativePolarity:Hide()
+	 		positivePolarity:Show()
 	end
 end
 
 function mod:ShiftingPolarity()
-	self:UnscheduleMethod("ShiftingPolarity")
 	timerNextShift:Start()
 	timerShiftCast:Start()
 	warnShiftCasting:Show()
 	self:ScheduleMethod(34,"ShiftingPolarity")
 end
 
---local negativePolarity = CreateFrame("Frame", nil, UIParent)
---negativePolarity:Hide()
---local negativePolarity = NegativePolarity:CreateTexture(nil, "BACKGROUND")
---negativeTexture:SetTexture("Interface\\Icons\\Spell_ChargeNegative")
---negativeTexture:SetPoint("CENTER", negativePolarity, "CENTER")
---negativePolarity:SetHeight(1)
---negativePolarity:SetWidth(1)
---negativePolarity:SetPoint("CENTER", UIParent, "CENTER", -150, -30)
---negativePolarity:SetScript("OnShow", PolarityOnShow)
---negativePolarity:SetScript("OnUpdate", PolarityOnUpdate)
-
---local positivePolarity = CreateFrame("Frame", nil, UIParent)
---positivePolarity:Hide()
---local positivePolarity = positivePolarity:CreateTexture(nil, "BACKGROUND")
---positiveTexture:SetTexture("Interface\\Icons\\Spell_ChargePositive")
---positiveTexture:SetPoint("CENTER", positivePolarity, "CENTER")
---positivePolarity:SetHeight(1)
---positivePolarity:SetWidth(1)
---positivePolarity:SetPoint("CENTER", UIParent, "CENTER", -150, -30)
---positivePolarity:SetScript("OnShow", PolarityOnShow)
---positivePolarity:SetScript("OnUpdate", PolarityOnUpdate)
-
-
---local function PolarityOnUpdate(self, elapsed)
---	self.elapsed = (self.elapsed or 0) + elapsed
---	if self.elapsed >= 3.5 and self.elapsed < 4.5 then
---		self:SetAlpha(4.5 - self.elapsed)
---	elseif self.elapsed >= 4.5 then
---		self:Hide()
---	end
---end
-
+function mod:OnCombatEnd()
+	negativePolarity:Hide()
+	positivePolarity:Hide()
+	self:UnscheduleMethod("ShiftingPolarity")
+end
 --local function PolarityOnShow(self)
 --	self.elapsed = 0
 --	self:SetAlpha(1)

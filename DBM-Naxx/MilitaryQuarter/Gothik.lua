@@ -9,7 +9,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE", --This should allow the addon to process this Event using the scripting from Kel'Thuzad for Harvest Soul.
 	"UNIT_DIED",
 	"PLAYER_ALIVE",
-	"UNIT_HEALTH" 
+	"UNIT_HEALTH",
+	"CHAT_MSG_MONSTER_YELL"
 )
 
 -----ADD DEATHS-----
@@ -29,34 +30,16 @@ local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "
 local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 3, 46573, nil, "Show warning for the arrival of Gothik")
 
 --------MISC--------
-local phase
+local phase = nil
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	self:ScheduleMethod(120, "HarvestSoul")
-	phase = 1
-	-----HARVEST SOUL-----
-	harvestSoulIntiialTimer = 120
-	warnHarvestSoon:Schedule(harvestSoulIntiialTimer-5)
-	warnHarvest:Schedule(harvestSoulIntiialTimer)
-	timerHarvest:Start(harvestSoulIntiialTimer)
-	-----COMBAT START----
-	combatStartTimer = 25
-	timerCombatStart:Start(combatStartTimer)
-	warnCombatStartSoon:Schedule(combatStartTimer-5)
-	warnCombatStart:Schedule(combatStartTimer)
-	-----GOTHIK ARRIVES----
-	gothikTimer = 100
-	timerGothik:Start(gothikTimer)
-	warnGothikSoon:Schedule(gothikTimer-5)
-	warnGothik:Schedule(gothikTimer)
-
 end
 
 function mod:HarvestSoul()
 	timerHarvest:Start(20)
 	warnHarvestSoon:Schedule(17)
-	warnHarvest:Schedule(17)
+	warnHarvest:Schedule(20)
 	self:ScheduleMethod(20, "HarvestSoul")
 end
 
@@ -71,10 +54,33 @@ function mod:UNIT_DIED(args)
 	end
 end
 
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if (msg == L.yell or msg:find(L.yell)) and phase == nil then
+		self:ScheduleMethod(100, "HarvestSoul")
+		phase = 1
+		-----HARVEST SOUL-----
+		warnHarvestSoon:Schedule(115)
+		warnHarvest:Schedule(120)
+		timerHarvest:Start(120)
+		-----COMBAT START----
+		timerCombatStart:Start(25)
+		warnCombatStartSoon:Schedule(20)
+		warnCombatStart:Schedule(25)
+		-----GOTHIK ARRIVES----
+		timerGothik:Start(100)
+		warnGothikSoon:Schedule(95)
+		warnGothik:Schedule(100)
+	end
+end
+
 function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 16060 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.11 and phase ==1 then
 	self:UnscheduleMethod("HarvestSoul")
 	timerHarvest:Stop()
 	phase = 2
 	end
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("HarvestSoul")
 end

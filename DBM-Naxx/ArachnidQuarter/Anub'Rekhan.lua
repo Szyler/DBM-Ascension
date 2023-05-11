@@ -60,18 +60,10 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:anubImpale()
-	local target = mod:GetBossTarget(15956)
-	if target then
+	local target = mod:GetBossTarget(15956) or mod:GetBossTarget(26614)
+	if target ~= tankName then
 		warnImpale:Show(target)
-		if target == UnitName("player") then 
-		end
 	elseif target == tankName then
 		self:ScheduleMethod(0.1, "anubImpale")
-	end
-	local targetShade = mod:GetBossTarget(1003012)
-	if targetShade then
-		warnImpale:Show(targetShade)
-		if targetShade == UnitName("player") then 
-		end
 	end
 end

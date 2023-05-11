@@ -111,7 +111,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:PoisonCloud()
-	self:UnsceduleMethod("PoisonCloud")
 	timerPoisonCloud:Stop()
 	timerPoisonCloud:Start()
 	warnCloud:Show()
@@ -119,7 +118,6 @@ function mod:PoisonCloud()
 end
 
 function mod:StitchedGiant()
-	self:UnsceduleMethod("StitchedGiant")
 	timerStitchedGiant:Stop()
 	timerStitchedGiant:Start()
 	self:ScheduleMethod(60,"StitchedGiant")

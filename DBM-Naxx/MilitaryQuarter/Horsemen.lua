@@ -10,7 +10,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"PLAYER_ALIVE"
+	"PLAYER_ALIVE",
+	"UNIT_DIED"
 )
 
 -----MARKS-----
@@ -26,18 +27,19 @@ local warnMeteor			= mod:NewTargetAnnounce(2124128,3)
 local specWarnFamineYou		= mod:NewSpecialWarningYou(2124166,2)
 local warnFamine			= mod:NewTargetAnnounce(2124166,3)
 
-----timers----
+----timers----				
 local timerMark				= mod:NewNextTimer(12, 2124103)
-local timerHolyWrath		= mod:NewCastTimer(4, 2124141)
+local timerHolyWrath		= mod:NewTargetTimer(3.8, 2124141)
 local timerNextHolyWrath	= mod:NewNextTimer(20, 2124141)
-local timerDeepChill		= mod:NewCastTimer(4, 2124167)
+local timerDeepChill		= mod:NewTargetTimer(3.8, 2124167)
 local timerNextDeepChill	= mod:NewNextTimer(20, 2124167)
-local timerMeteor			= mod:NewCastTimer(8, 2124128)
+local timerMeteor			= mod:NewTargetTimer(7.8, 2124128)
 local timerNextMeteor		= mod:NewNextTimer(20, 2124128)
-local timerFamine			= mod:NewCastTimer(8, 2124166)
+local timerFamine			= mod:NewTargetTimer(3.8, 2124166)
 local timerNextFamine		= mod:NewNextTimer(20, 2124166)
 -----MISC-----
 local berserkTimer			= mod:NewBerserkTimer(606)
+local meteorTarget = nil
 mod:AddBoolOption("HealthFrame", true)
 mod:SetBossHealthInfo(
 	16064, L.Korthazz,
@@ -51,12 +53,12 @@ local markCounter = 0
 function mod:OnCombatStart(delay)
 	berserkTimer:Start()
 	timerMark:Start(18-delay)
+	timerNextMeteor:Start(21-delay)
+	timerNextDeepChill:Start(11-delay)
+	timerNextHolyWrath:Start(25-delay)
+	timerNextFamine:Start(16-delay)
 	self:ScheduleMethod(18,"Mark")
 	markCounter = 0
-	self:ScheduleMethod("MarkZeliek")
-	self:ScheduleMethod("MarkKorthazz")
-	self:ScheduleMethod("MarkMograine")
-	self:ScheduleMethod("MarkBlaumeux")
 end
 
 function mod:Mark()
@@ -66,68 +68,56 @@ timerMark:Start()
 self:ScheduleMethod(12,"Mark")
 end
 
-function mod:HolyWrath()
-	local targetHW = nil
-	targetHW = mod:GetBossTarget(16063)
+function mod:Meteor()
 	local myName = UnitName("player")
-	if targetHW == myName then
-		specWarnHolyWrathYou:Show()
-		SendChatMessage("Holy Wrath on"..UnitName("PLAYER").."!", "Say")
+	if meteorTarget == myName then
+		specWarnMeteorYou:Show()
+		SendChatMessage("Meteor on "..UnitName("PLAYER").."!", "Say")
 	else
-		warnHolyWrath:Show(targetHW)
+		warnMeteor:Show(meteorTarget)
 	end
-	timerHolyWrath:Start(targetHW)
-	timerNextHolyWrath:Start()
-	self:SetIcon(targetHW, 1, 4)
-	self:ScheduleMethod(4, "MarkZeliek")
+	timerMeteor:Start(meteorTarget)
+	timerNextMeteor:Start()
+	self:SetIcon(meteorTarget, 7, 8)
 end
 
 function mod:DeepChill()
-	local targetDC = nil
-	targetDC = mod:GetBossTarget(30549)
-	local myName = UnitName("player")
-	if targetDC == myName then
+	local targetDC = mod:GetBossTarget(30549) or mod:GetBossTarget(26622)
+	if targetDC == UnitName("player") then
 		specWarnDeepChillYou:Show()
-		SendChatMessage("Deep Chill on"..UnitName("PLAYER").."!", "Say")
+		SendChatMessage("Deep Chill on "..UnitName("PLAYER").."!", "Say")
 	else
 		warnDeepChill:Show(targetDC)
 	end
 	timerDeepChill:Start(targetDC)
 	timerNextDeepChill:Start()
 	self:SetIcon(targetDC, 6, 4)
-	self:ScheduleMethod(4, "MarkMograine")
 end
 
-function mod:Meteor()
-	local targetM = nil
-	targetM = mod:GetBossTarget(16064)
-	local myName = UnitName("player")
-	if targetM == myName then
-		specWarnMeteorYou:Show()
-		SendChatMessage("Meteor on"..UnitName("PLAYER").."!", "Say")
+function mod:HolyWrath()
+	local targetHW = mod:GetBossTarget(16063) or mod:GetBossTarget(26624)
+	if targetHW == UnitName("player") then
+		specWarnHolyWrathYou:Show()
+		SendChatMessage("Holy Wrath on "..UnitName("PLAYER").."!", "Say")
 	else
-		warnMeteor:Show(targetM)
+		warnHolyWrath:Show(targetHW)
 	end
-	timerMeteor:Start(targetM)
-	timerNextMeteor:Start()
-	self:SetIcon(targetM, 7, 8)
-	self:ScheduleMethod(8, "MarkKorthazz")
+	timerHolyWrath:Start(targetHW)
+	timerNextHolyWrath:Start()
+	self:SetIcon(targetHW, 1, 4)
 end
 
 function mod:Famine()
-	local targetF = nil
-	targetF = mod:GetBossTarget(16065)
-	local myName = UnitName("player")
-	if targetF == myName then
-		specWarnFamineYou:Show()
-		SendChatMessage("Field of Famine on"..UnitName("PLAYER").."!", "Say")
-	else
-		warnFamine:Show(targetF)
-	end
-	timerFamine:Start(targetF)
-	timerNextFamine:Start()
-	self:SetIcon(targetF, 3, 3)
-	self:ScheduleMethod(3, "MarkBlaumeux")
+    local famineTarget = mod:GetBossTarget(16065) or mod:GetBossTarget(26625) --Finds target of boss (if exsists) otherwise, find target of shade (if exists)
+        if famineTarget == UnitName("player") then --if target == player
+            specWarnFamineYou:Show()
+            SendChatMessage("Field of Famine on "..UnitName("PLAYER").."!", "Say")
+        else
+            warnFamine:Show(famineTarget)
+        end
+        timerFamine:Start(famineTarget) --we want timers to start even if player is the target, you had the timers only in the "if not player".
+        timerNextFamine:Start()
+        self:SetIcon(famineTarget, 3, 4)
 end
 
 local markSpam = 0
@@ -140,19 +130,20 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2124141) then
-		self:scheduleMethod(0.2, "HolyWrath")
+		self:ScheduleMethod(0.25, "HolyWrath")
 	end
 	if args:IsSpellID(2124167) then
-		self:scheduleMethod(0.2, "DeepChill")
+		self:ScheduleMethod(0.25, "DeepChill")
 	end
 	if args:IsSpellID(2124166) then
-		self:ScheduleMethod(0.2, "Famine")
+		self:ScheduleMethod(0.25, "Famine")
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124128) then
-		self:scheduleMethod(0.2, "Meteor")
+		self:ScheduleMethod(0.25, "Meteor")
+		meteorTarget = args.destName
 	end
 end
 
@@ -164,22 +155,21 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	end
 end
 
-function mod:MarkZeliek(uId)
-	Zeliek = (self:GetUnitCreatureId(uId) == 16063)
-	self:SetIcon(Zeliek, 1)
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 16063 or 26624 then
+		timerNextHolyWrath:Stop()
+	end
+	if cid == 16064 or 26623 then
+		timerNextMeteor:Stop()
+	end
+	if cid == 16065 or 26625 then
+		timerNextFamine:Stop()
+	end
+	if cid == 30549 or 26622 then
+		timerNextDeepChill:Stop()
+	end
 end
-
-function mod:MarkKorthazz(uId)
-	Korthazz = (self:GetUnitCreatureId(uId) == 16064)
-	self:SetIcon(Korthazz, 7)
-end
-
-function mod:MarkMograine(uId)
-	Mograine = (self:GetUnitCreatureId(uId) == 30549)
-	self:SetIcon(Mograine, 6)
-end
-
-function mod:MarkBlaumeux(uId)
-	Blaumeux = (self:GetUnitCreatureId(uId) == 16065)
-	self:SetIcon(Blaumeux, 3)
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("Mark")
 end

@@ -9,7 +9,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_PERIODIC_DAMAGE",
-	"PLAYER_ALIVE"
+	"PLAYER_ALIVE",
+	"UNIT_DIED",
+	"SPELL_AURA_REFRESH"
 )
 
 -----ENRAGE-----
@@ -18,6 +20,7 @@ mod:RegisterEvents(
 -- local warnFrenzyNow				= mod:NewSpellAnnounce(28798, 4)
 local timerSadism				= mod:NewNextTimer(30, 2123101)
 local timerBloodBath			= mod:NewTimer(45, 2123102)
+local warnBloodBathSoon			= mod:NewAnnounce("Faerlina is getting hungry for blood!", 2, 2123102)
 local warnSadism				= mod:NewSpellAnnounce(2123101, 3)
 -----EMBRACE-----
 local warnEmbraceActive			= mod:NewSpellAnnounce(28732, 1)
@@ -69,7 +72,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2123102) then
 		timerSadism:Stop()
 		timerBloodBath:Start()
-	elseif args:IsSpellID(1003054) then 
+		warnBloodBathSoon:Schedule(40)
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
 		end
@@ -86,17 +90,24 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+function mod:SPELL_AURA_REFRESH(args)
+	if args:IsSpellID(2123102) then
+	timerSadism:Stop()
+	timerBloodBath:Start()
+	warnBloodBathSoon:Unschedule()
+	warnBloodBathSoon:Schedule(40)
+	end
+end
+
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2123101) then
 		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
 		timerSadism:Start()
-	elseif args:IsSpellID(2123102) then 
-
-	elseif args:IsSpellID(1003054) then 
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
 		end
-	elseif args:IsSpellID(869762, 350284) then 
+	elseif args:IsSpellID(2123115,2123116,2123117,2123118) then 
 		if args:IsPlayer() then
 			specWarnPoisonPool:Show();
 		end
@@ -110,7 +121,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(350286) then
+	if args:IsSpellID(2123107,2123108,2123109,2123110) then
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show()
 		end

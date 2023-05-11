@@ -7,6 +7,7 @@ mod:RegisterCombat("combat")
 mod:EnableModel()
 mod:RegisterEvents(
 	"SPELL_DAMAGE",
+	"PLAYER_ALIVE",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE"
@@ -16,10 +17,13 @@ mod:RegisterEvents(
 local warnDecimateSoon	= mod:NewSoonAnnounce(2122905, 2)
 local warnDecimateNow	= mod:NewSpellAnnounce(2122905, 3)
 local timerDecimate		= mod:NewNextTimer(120, 2122905)
+local timerFeedFrenzy 	= mod:NewTimer(30, "Gluth is in a Frenzy", 2122923)
 -------MOOD--------
 local warnHungry		= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
-local warnAngry			= mod:NewAnnounce("Gluth is Angry", 2, 2122904, nil, "Show a warning when Gluth gets angry")
-local warnViciousStacks = mod:NewAnnounce("Vicious Strike stacks", 2, 2122901, nil, "Show a warning when Tanks gets the Vicious debuff")
+local warnAngry			= mod:NewSpecialWarning(2122904,2)
+local warnViciousStacks	= mod:NewTargetAnnounce(2122901, 2)
+local SpecWarnVicStacks = mod:NewSpecialWarning("You have a high amount of Vicious Bite", 2, 2122901, nil, "Show a special warning for the tank when he has too many stacks")
+
 -----MISC-----
 local enrageTimer		= mod:NewBerserkTimer(480)
 
@@ -40,22 +44,43 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2122901) then
-		if args.amount >= 4 then
-			warnViciousStacks:Show(args.spellName, args.amount)
+		if args.amount >= 5 and args:IsPlayer() then
+			SpecWarnVicStacks:Show()
 		end
+		warnViciousStacks:Show(args.destName, args.amount)
 	end
 	if args:IsSpellID(2122904) then
-		if args.amount >=2 then
+		if args.amount >=1 then
 			warnAngry:Show(args.spellName, args.amount)
 		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2122901) then
+		warnViciousStacks:Show(args.destName, args.amount)
+	end
 	if args:IsSpellID(2122904) then
 		warnAngry:Show(args.spellName, args.amount)
 	end
 	if args:IsSpellID(2122903) then
 		warnHungry:Show()
 	end
+	if args:IsSpellID(2122923) and (args.destName == "Gluth") then
+		timerFeedFrenzy:Start()
+	end
 end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15932 or cid == 26628 then
+	timerDecimate:Stop()
+	end
+end
+
+
+--Vicious Strike debuff 2122901 || Feeding Frenzy 2122923
+--DBM_MOROES_GARROTE		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+--local warningGarrote		= mod:NewAnnounce(DBM_GLUTH_VICIOUS_BITE, 3, 37066)
+--warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
+--L:SetWarningLocalization{
