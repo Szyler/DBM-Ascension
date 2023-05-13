@@ -14,18 +14,18 @@ mod:RegisterEvents(
 )
 
 -----DECIMATE-----
-local warnDecimateSoon	= mod:NewSoonAnnounce(2122905, 2)
-local warnDecimateNow	= mod:NewSpellAnnounce(2122905, 3)
-local timerDecimate		= mod:NewNextTimer(120, 2122905)
-local timerFeedFrenzy 	= mod:NewTimer(30, "Gluth is in a Frenzy", 2122923)
+local warnDecimateSoon		= mod:NewSoonAnnounce(2122905, 2)
+local warnDecimateNow		= mod:NewSpellAnnounce(2122905, 3)
+local timerDecimate			= mod:NewNextTimer(120, 2122905)
+local timerFeedFrenzy 		= mod:NewTimer(30, "Gluth is in a Frenzy", 2122923)
 -------MOOD--------
-local warnHungry		= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
-local warnAngry			= mod:NewSpecialWarning(2122904,2)
-local warnViciousStacks	= mod:NewTargetAnnounce(2122901, 2)
-local SpecWarnVicStacks = mod:NewSpecialWarning("You have a high amount of Vicious Bite", 2, 2122901, nil, "Show a special warning for the tank when he has too many stacks")
+local warnHungry			= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
+local specWarnAngry			= mod:NewSpecialWarning("%s on >%s< (%d)", 3, 2122904)
+local warnViciousStacks		= mod:NewTargetAnnounce(2122901, 2)
+local SpecWarnVicStacks 	= mod:NewSpecialWarning("%s on >%s< (%d)", 2, 2122901, nil, "Show a special warning for the tank when he has too many stacks")
 
 -----MISC-----
-local enrageTimer		= mod:NewBerserkTimer(480)
+local enrageTimer			= mod:NewBerserkTimer(480)
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
@@ -47,21 +47,21 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args.amount >= 5 and args:IsPlayer() then
 			SpecWarnVicStacks:Show()
 		end
-		warnViciousStacks:Show(args.destName, args.amount)
+		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
 	end
 	if args:IsSpellID(2122904) then
 		if args.amount >=1 then
-			warnAngry:Show(args.spellName, args.amount)
+			specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
 		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2122901) then
-		warnViciousStacks:Show(args.destName, args.amount)
+		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
 	end
 	if args:IsSpellID(2122904) then
-		warnAngry:Show(args.spellName, args.amount)
+		specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
 	end
 	if args:IsSpellID(2122903) then
 		warnHungry:Show()
