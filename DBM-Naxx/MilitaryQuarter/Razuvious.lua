@@ -14,26 +14,26 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
 	"UNIT_HEALTH",
+	"UNIT_DIED",
 	"PLAYER_ALIVE",
-	"SPELL_MISSED",
-	"UNIT_AURA"
+	"SPELL_MISSED"
 )
 
 -----DISRUPTING SHOUT-----
 local timerShout			= mod:NewCDTimer(8, 2123920)
 -----Break Unholy Blade-----
 local warnUnholyBladeNow	= mod:NewSpellAnnounce(2123928, 2)
-local warnUnholyBladeSoon	= mod:NewSoonAnnounce(2123928, 3)
+local warnUnholyBladeSoon	= mod:NewSoonAnnounce(2123928, 2)
 local timerUnholyBlade		= mod:NewNextTimer(30, 2123928)
 local timerCastUnholyBlade	= mod:NewCastTimer(3, 2123928)
 -----JAGGED KNIFE-----
 local warnKnifeNow			= mod:NewTargetAnnounce(2123924, 2)
-local specWarnKnife			= mod:NewSpecialWarningSpell(2123924, nil, nil, nil, 10)
+local specWarnKnife			= mod:NewSpecialWarningSpell(2123924, nil, nil, nil, 3)
 local timerKnife			= mod:NewNextTimer(15, 2123924)
 -----Death Strike-----
 local timerDeathStrike		= mod:NewNextTimer(15,2123919)
 local warnDeathStrike		= mod:NewCastAnnounce(2123919)
-local specwarnDeathStrike	= mod:NewSpecialWarning("You have a high amount of Death Strike stacks", 3, 2123919, nil, "Show warning when the Understudy has too many Death Strike stacks")
+local specwarnDeathStrike	= mod:NewSpecialWarningStack(2123919, 2)
 --------Strikes--------------
 local timerPlagueStrike		= mod:NewTimer(12, "Plague Strike active", 2123905)
 local timerFrostStrike		= mod:NewTimer(12, "Frost Strike active", 2123904)
@@ -65,8 +65,10 @@ function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	-----Break Unholy Blade-----
 	timerUnholyBlade:Start(-delay)
-	timerDeathStrike:Start(20-delay)
+	if mod:GetBossTarget(16061) ~= nil then
 	timerKnife:Start(-delay)
+	timerDeathStrike:Start(20-delay)
+	end
 end
 
 function mod:BreakUnholyBlade()
@@ -105,9 +107,9 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2123919) and args.amount >=2 then
+	if args:IsSpellID(2123919) and args.amount >=1 then
 		if args:IsPlayer() then
-		specwarnDeathStrike:Show()
+		specwarnDeathStrike:Show(args.amount)
 		end
 	end
 end
@@ -149,4 +151,18 @@ function mod:UNIT_HEALTH(uId)
 		warnPhase2Soon:Show()
 		prewarn = 2
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 16061 or cid == 26620 then
+		timerenrage:Stop()
+		timerKnife:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("WarriorSkeletons")
+	timerenrage:Stop()
+	timerKnife:Stop()
 end

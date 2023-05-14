@@ -10,12 +10,13 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_SUCCESS",
+	"UNIT_DIED"
 )
 
 -----TELEPORT-----
 local warnTeleportSoon			= mod:NewAnnounce("The Dance is starting soon", 2, 46573, nil, "Show pre-warning for Heigan teleporting to the platform")
-local warnTeleportNow			= mod:NewAnnounce("Teleport to Platform Now", 3, 46573, nil, "Show warning for Heigan teleporting to the platform")
+local warnTeleportNow			= mod:NewAnnounce("Teleport to Platform Now", 2, 46573, nil, "Show warning for Heigan teleporting to the platform")
 local timerTeleport				= mod:NewTimer(90, "Heigan's Dance (Teleport)", 46573, nil, "Show timer for Heigan teleporting to the platform")
 -----POSITIONS-----
 local timerPositionOne			= mod:NewTimer(10, "Position: Entrance", 2122702)
@@ -24,14 +25,12 @@ local timerPositionThree		= mod:NewTimer(10, "Position: Center East", 2122702)
 local timerPositionFour			= mod:NewTimer(10, "Position: Exit", 2122702)
 -----DANCE ENDS----
 local timerDanceEnds			= mod:NewTimer(50, "Dance Ends", 46573, nil, "Show timer for the end of the Safety Dance")
-local warnDanceEndsSoon			= mod:NewAnnounce("Dance Ends Soon", 2, 46573, nil, "Show pre-warning for the end of the Safety Dance")
-local warnDanceEnds				= mod:NewAnnounce("Dance Ends Now", 3, 46573, nil, "Show warning for the end of the Safety Dance")
 -----SPELL DISRUPTION------
 local specWarnSpellDisruption	= mod:NewSpecialWarningYou(2122708)
 local specWarnDecrepitFever		= mod:NewSpecialWarningYou(1003068)
 -----Touch of the Unclean-----
-local specWarnTouch				= mod:NewSpecialWarningStack(2122722, nil, 3)
-local warnTouch					= mod:NewTargetAnnounce(2122722,3)
+local specWarnTouch				= mod:NewSpecialWarningStack(2122722, nil, 2)
+local warnTouch					= mod:NewAnnounce("%s on >%s< (%d)",2, 2122722)
 ----PLAGUE NOVA----
 local specWarnPlagueNova		= mod:NewSpecialWarningSpell(2122717, 2)
 local timerPlagueNova			= mod:NewNextTimer(60, 2122717)
@@ -165,11 +164,11 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2122722) then
-		if args.amount >= 6 and args:IsPlayer() then
+		if args:IsPlayer() then
 			specWarnTouch:Show(args.amount)
 		else
-			warnTouch:Show(args.destName, args.amount or 1)
-		end	
+			warnTouch:Show(args.spellName, args.destName, args.amount or 1)
+		end
 	end
 end
 

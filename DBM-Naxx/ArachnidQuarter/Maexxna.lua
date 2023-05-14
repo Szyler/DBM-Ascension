@@ -11,7 +11,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"PLAYER_ALIVE",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"UNIT_DIED"
 )
 
 -----Necrotic Poison-----
@@ -35,8 +36,8 @@ local timerSpider				= mod:NewNextTimer(16, 43134)
 local warnSoftEnrageSoon		= mod:NewSpellAnnounce(54123, 3)
 local warnSoftEnrageNow			= mod:NewSoonAnnounce(54123, 2)
 local phase
-local webSpam
-local necroticSpam
+local webSpam	= 0
+local necroticSpam	= 0
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	webSpam = 0
@@ -47,6 +48,9 @@ function mod:OnCombatStart(delay)
 	timerSpider:Start(8 - delay)
 	self:ScheduleMethod(8-delay, "Spiders")
 end
+
+-- "Kel'Thuzad strikes!"
+
 
 function mod:Spiders()
 	timerSpider:Start()
@@ -99,5 +103,24 @@ function mod:UNIT_HEALTH(uId)
 	elseif self:GetUnitCreatureId(uId) == 15952 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.20 and phase == 2 then
 		phase = 3
 		warnSoftEnrageNow:Show()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerWebSpray:Stop()
+	warnWebSpraySoon:Cancel()
+	timerSpider:Stop()
+	timerWebWrap:Stop()
+	self:UnscheduleMethod("Spiders")
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15952 or cid == 26616 then
+		timerWebSpray:Stop()
+		warnWebSpraySoon:Cancel()
+		timerSpider:Stop()
+		timerWebWrap:Stop()
+		self:UnscheduleMethod("Spiders")
 	end
 end

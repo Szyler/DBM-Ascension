@@ -10,6 +10,7 @@ mod:RegisterEvents(
 	"UNIT_DIED",
 	"PLAYER_ALIVE",
 	"UNIT_HEALTH",
+	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -17,17 +18,17 @@ mod:RegisterEvents(
 local warnRiderDown				= mod:NewAnnounce("Unrelenting Rider Killed", 2, 36461, nil, "Show a warning when an Unrelenting Rider is killed")
 local warnKnightDown			= mod:NewAnnounce("Unrelenting Death Knight Killed", 2, 36461, nil, "Show a warning when an Unrelenting Rider is killed")
 -----HARVEST SOUL-----
-local warnHarvestSoon			= mod:NewSoonAnnounce(28679, 3)
+local warnHarvestSoon			= mod:NewSoonAnnounce(28679, 2)
 local warnHarvest				= mod:NewSpellAnnounce(28679, 2)
 local timerHarvest				= mod:NewNextTimer(15, 28679)
 -----COMBAT START----
 local timerCombatStart			= mod:NewTimer(25, "Combat Starts", 2457, nil, "Show timer for the start of combat")
 local warnCombatStartSoon		= mod:NewAnnounce("Combat Starts Soon", 2, 2457, nil, "Show pre-warning for the end of the Safety Dance")
-local warnCombatStart			= mod:NewAnnounce("Combat Starts Now", 3, 2457, nil, "Show warning for the end of the Safety Dance")
+local warnCombatStart			= mod:NewAnnounce("Combat Starts Now", 2, 2457, nil, "Show warning for the end of the Safety Dance")
 -----GOTHIK ARRIVES----
 local timerGothik				= mod:NewTimer(100, "Gothik Arrives", 46573, nil, "Show timer for the arrival of Gothik")
 local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "Show pre-warning for the arrival of Gothik")
-local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 3, 46573, nil, "Show warning for the arrival of Gothik")
+local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 2, 46573, nil, "Show warning for the arrival of Gothik")
 
 --------MISC--------
 local phase = nil

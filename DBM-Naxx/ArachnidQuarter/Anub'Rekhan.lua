@@ -8,7 +8,8 @@ mod:EnableModel()
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
-	"PLAYER_ALIVE"
+	"PLAYER_ALIVE",
+	"UNIT_DIED"
 )
 
 -----LOCUST SWARM-----
@@ -65,5 +66,22 @@ function mod:anubImpale()
 		warnImpale:Show(target)
 	elseif target == tankName then
 		self:ScheduleMethod(0.1, "anubImpale")
+	end
+end
+
+function mod:OnCombatEnd()
+	timerLocust:Stop()
+	warnLocust:Cancel()
+	timerImpale:Stop()
+	warnImpale:Cancel()
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15956 or cid == 26614 then
+		timerLocust:Stop()
+		warnLocust:Cancel()
+		timerImpale:Stop()
+		warnImpale:Cancel()
 	end
 end

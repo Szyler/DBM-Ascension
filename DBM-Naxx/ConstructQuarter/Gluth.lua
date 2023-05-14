@@ -10,19 +10,20 @@ mod:RegisterEvents(
 	"PLAYER_ALIVE",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE"
+	"SPELL_AURA_APPLIED_DOSE",
+	"UNIT_DIED"
 )
 
 -----DECIMATE-----
 local warnDecimateSoon		= mod:NewSoonAnnounce(2122905, 2)
-local warnDecimateNow		= mod:NewSpellAnnounce(2122905, 3)
+local warnDecimateNow		= mod:NewSpellAnnounce(2122905, 2)
 local timerDecimate			= mod:NewNextTimer(120, 2122905)
 local timerFeedFrenzy 		= mod:NewTimer(30, "Gluth is in a Frenzy", 2122923)
 -------MOOD--------
 local warnHungry			= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
-local specWarnAngry			= mod:NewSpecialWarning("%s on >%s< (%d)", 3, 2122904)
-local warnViciousStacks		= mod:NewTargetAnnounce(2122901, 2)
-local SpecWarnVicStacks 	= mod:NewSpecialWarning("%s on >%s< (%d)", 2, 2122901, nil, "Show a special warning for the tank when he has too many stacks")
+local specWarnAngry			= mod:NewSpecialWarning("%s on >%s< (%d)", 2, 2122904)
+local warnViciousStacks		= mod:NewAnnounce("%s on >%s< (%d)", 2, 2122901)
+local SpecWarnVicStacks 	= mod:NewSpecialWarningStack(2122901, 2)
 
 -----MISC-----
 local enrageTimer			= mod:NewBerserkTimer(480)
@@ -44,10 +45,11 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2122901) then
-		if args.amount >= 5 and args:IsPlayer() then
-			SpecWarnVicStacks:Show()
-		end
+		if args:IsPlayer() then
+			SpecWarnVicStacks:Show(args.amount)
+		else
 		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
+		end
 	end
 	if args:IsSpellID(2122904) then
 		if args.amount >=1 then
@@ -58,7 +60,11 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2122901) then
+		if args:IsPlayer() then
+			SpecWarnVicStacks:Show(args.amount or 1)
+		else
 		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
+		end
 	end
 	if args:IsSpellID(2122904) then
 		specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
@@ -78,6 +84,9 @@ function mod:UNIT_DIED(args)
 	end
 end
 
+function mod:OnCombatEnd()
+	timerDecimate:Stop()
+end
 
 --Vicious Strike debuff 2122901 || Feeding Frenzy 2122923
 --DBM_MOROES_GARROTE		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)

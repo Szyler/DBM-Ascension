@@ -11,29 +11,26 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS",
+	"UNIT_DIED",
 	"PLAYER_ALIVE"
 )
 
 -----MUTATING INJECTION-----
-local warnInjection		= mod:NewTargetAnnounce(28169, 2)
-local specWarnInjection	= mod:NewSpecialWarningYou(2122807)
-local timerInjection	= mod:NewTargetTimer(10, 2122807)
+local warnInjection			= mod:NewTargetAnnounce(28169, 2)
+local specWarnInjection		= mod:NewSpecialWarningYou(2122807)
+local timerInjection		= mod:NewTargetTimer(10, 2122807)
+local timerNextInjection	= mod:NewNextTimer(15, 2122807)
 -----POISON CLOUD-----
-local timerPoisonCloud	= mod:NewNextTimer(8, 2122812)
-local warnCloud			= mod:NewSpellAnnounce(2122812, 2)
-local prewarnCloud		= mod:NewSoonAnnounce(2122812, 3)
-local specWarnPoison1	= mod:NewSpecialWarningMove(2122812, true, nil, true)
-local specWarnPoison2	= mod:NewSpecialWarningMove(2122812, true, nil, true)
+local timerPoisonCloud		= mod:NewNextTimer(8, 2122812)
+local warnCloud				= mod:NewSpellAnnounce(2122812, 2)
+local specWarnPoison1		= mod:NewSpecialWarningMove(2122812, true, nil, true)
 -----VIVIFYING TOXIN-----
-local timerStitchedGiant = mod:NewTimer(60, "Stitched Giant", 79012)
-local timerToxin		= mod:NewNextTimer(45, 79012)
-local warnToxin			= mod:NewSpellAnnounce(79012, 2)
-local prewarnToxin		= mod:NewSoonAnnounce(79012, 3)
+local timerStitchedGiant 	= mod:NewTimer(60, "Stitched Giant", 79012)
 -----SLIME SPRAY-----
-local timerSpray		= mod:NewCDTimer(20, 2122818)
-local warnSpray			= mod:NewSpellAnnounce(2122818, 2)
+local timerSpray			= mod:NewCDTimer(20, 2122818)
+local warnSpray				= mod:NewSpellAnnounce(2122818, 2)
 -----MISC-----
-local enrageTimer		= mod:NewBerserkTimer(480)
+local enrageTimer			= mod:NewBerserkTimer(480)
 mod:AddBoolOption("SetIconOnInjectionTarget", true)
 local mutateIcons = {}
 
@@ -42,13 +39,15 @@ function mod:OnCombatStart(delay)
 	table.wipe(mutateIcons)
 	enrageTimer:Start(-delay)
 	-----Poison Cloud-----
-	timerPoisonCloud:Start(10)
-	self:ScheduleMethod(10,"PoisonCloud")
+	timerPoisonCloud:Start(10-delay)
+	self:ScheduleMethod(10-delay,"PoisonCloud")
 	-----Vivifying Toxin-----
-	timerStitchedGiant:Start(20)
-	self:ScheduleMethod(20, "StitchedGiant")
+	timerStitchedGiant:Start(20-delay)
+	self:ScheduleMethod(20-delay, "StitchedGiant")
 	-----Slime Spray-----
 	timerSpray:Start(25-delay)
+	----Injection----
+	timerNextInjection:Start(10-delay)
 end
 
 local function addIcon()
@@ -70,11 +69,13 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2122807) then
-		warnInjection:Show(args.destName)
-		timerInjection:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnInjection:Show()
+		else
+		warnInjection:Show(args.destName)
 		end
+		timerInjection:Start(args.destName)
+		timerNextInjection:Start()
 		if self.Options.SetIconOnInjectionTarget then
 			table.insert(mutateIcons, args.destName)
 			addIcon()
@@ -127,3 +128,18 @@ end
 --	timerCloud:Start(timer)
 --	warnCloud:Schedule(timer)
 --	prewarnCloud:Schedule(timer-5)
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15931 or cid == 26627 then
+	timerInjection:Stop()
+	timerSpray:Stop()
+	timerNextInjection:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerInjection:Stop()
+	timerSpray:Stop()
+	timerNextInjection:Stop()
+end

@@ -18,16 +18,16 @@ mod:RegisterEvents(
 -----POLARITY SHIFT-----
 local timerShiftCast		= mod:NewCastTimer(4, 2124201)
 local timerNextShift		= mod:NewNextTimer(34, 2124201)
-local warnShiftCasting		= mod:NewCastAnnounce(2124201, 3)
-local specWarnNegative		= mod:NewSpecialWarningMove(2124203)
-local specWarnPositive		= mod:NewSpecialWarningMove(2124203)
-local specWarnMagnetic		= mod:NewSpecialWarningYou(2124245)
+local warnShiftCasting		= mod:NewCastAnnounce(2124201, 2)
+local specWarnNegative		= mod:NewSpecialWarningMove(2124203, 2)
+local specWarnPositive		= mod:NewSpecialWarningMove(2124202, 2)
+local specWarnMagnetic		= mod:NewSpecialWarningYou(2124245, 2)
 local warnMagnetic			= mod:NewAnnounce("Magnetic Reversal", 2, 2124245, nil, "Show warning for Magnetic Reversal")
 local timerMagnetic			= mod:NewTimer(15, "Magnetic Reversal duration", 2124245)
-local warnTankOvercharged	= mod:NewTargetAnnounce(2124222, 3)
+local warnTankOvercharged	= mod:NewTargetAnnounce(2124222, 2)
 -----THROW-----
 local warnThrow				= mod:NewSpellAnnounce(2124244, 2)
-local warnThrowSoon			= mod:NewSoonAnnounce(2124244, 1)
+local warnThrowSoon			= mod:NewSoonAnnounce(2124244, 2)
 local timerThrow			= mod:NewNextTimer(20.6, 2124244)
 -----MISC-----
 
@@ -40,7 +40,7 @@ mod:SetBossHealthInfo(
 )
 local currentCharge
 local phase2
-local i
+local i = 7
 
 -- Polarity shift (2124201)
 -- Overcharged (2124222)
@@ -132,15 +132,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	end
 end
 
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 15928 or cid == 26629 then
-	positivePolarity:Hide()
-	negativePolarity:Hide()
-	self:UnscheduleMethod("ShiftingPolarity")
-	end
-end
-
 function mod:UNIT_AURA(unit)
 	if UnitDebuff("Player","Polarity: Negative") then
 		if currentCharge == 1 or currentCharge == 0 then
@@ -165,6 +156,17 @@ function mod:ShiftingPolarity()
 	timerShiftCast:Start()
 	warnShiftCasting:Show()
 	self:ScheduleMethod(34,"ShiftingPolarity")
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15928 or cid == 26629 then
+	positivePolarity:Hide()
+	negativePolarity:Hide()
+	timerShiftCast:Stop()
+	timerMagnetic:Stop()
+	self:UnscheduleMethod("ShiftingPolarity")
+	end
 end
 
 function mod:OnCombatEnd()

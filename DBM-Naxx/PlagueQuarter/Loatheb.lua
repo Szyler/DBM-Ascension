@@ -6,45 +6,48 @@ mod:SetCreatureID(16011)
 mod:RegisterCombat("combat")
 mod:EnableModel()
 mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"UNIT_HEALTH",
+	"UNIT_DIED",
 	"PLAYER_ALIVE"
 )
 
 -----SPORES-----
-local warnSporeNow					= mod:NewSpellAnnounce(29234, 3)
+local warnSporeNow					= mod:NewSpellAnnounce(29234, 2)
 local warnSporeSoon					= mod:NewSoonAnnounce(29234, 2)
 local timerSpore					= mod:NewNextTimer(30, 29234)
 local specWarnCloudOfBlight			= mod:NewSpecialWarningMove(79008)
 -----IMPENDING DOOM-----
-local warnDoomNow					= mod:NewSpellAnnounce(29204, 3)
-local timerDoom						= mod:NewNextTimer(180, 29204)
+local warnDoomNow					= mod:NewSpellAnnounce(29204, 2)
+local timerNextDoom						= mod:NewNextTimer(180, 29204)
 local timerDoomDamage				= mod:NewTimer(8, "Inevitable Doom expires!", 2122623)
 -----HEALING AURA-----
-local warnHealSoon					= mod:NewAnnounce("WarningHealSoon", 4, 48071)
-local warnHealNow					= mod:NewAnnounce("WarningHealNow", 1, 48071, false)
+local warnHealSoon					= mod:NewAnnounce("Healing possible in 3 seconds", 2, 48071)
+local warnHealNow					= mod:NewAnnounce("Healing available!", 1, 48071)
 local timerNecrotic					= mod:NewBuffActiveTimer(16, 2122601)
 local timerCastHeal					= mod:NewTimer(4, "Heal now!", nil)
 -----SOFT ENRAGE-----
-local warnSoftEnrageSoon			= mod:NewSpellAnnounce(79009, 3)
+local warnSoftEnrageSoon			= mod:NewSpellAnnounce(79009, 2)
 local warnSoftEnrageNow				= mod:NewSoonAnnounce(79009, 2)
 local softEnrage
 -----DEATHBLOOM-----
 local timerNextDeathbloom			= mod:NewNextTimer(30, 2122627)
 local timerDeathblooming			= mod:NewTimer(15, "Deathbloom expires!", 2122627)
-local specWarnDeathblooming			= mod:NewSpecialWarningSpell(2122627, 3)
-local warnDeathbloom				= mod:NewSpellAnnounce(2122631, 3)
+local specWarnDeathblooming			= mod:NewSpecialWarningSpell(2122627, 1)
+local warnDeathbloom				= mod:NewSpellAnnounce(2122631, 2)
+local warnDeathbloomStack			= mod:NewAnnounce("%s on >%s< (%d)", 2, 2122631)
 -----MISC-----
 mod:AddBoolOption("SporeDamageAlert", false)
 local doomCounter	= 0
-local doomSpam
+local doomSpam = 0
+local bloomSpam = 0
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	doomSpam = 0
+	bloomSpam = 0
 	softEnrage = 0
 	doomCounter = 0
 	timerSpore:Start(15-delay)
@@ -68,8 +71,6 @@ function mod:SporeSpawn()
 	self:ScheduleMethod(30, "SporeSpawn")
 end
 
-function mod:SPELL_CAST_SUCCESS()
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2122646) then
@@ -86,12 +87,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			else timer = 12 end
 		end
 		warnDoomNow:Show(doomCounter)
-		timerDoom:Start(timer, doomCounter + 1)
+		timerNextDoom:Start(timer, doomCounter + 1)
 		timerDoomDamage:Start()
 	end
 	if args:IsSpellID(2122601) then
 		timerNecrotic:Start()
-		warnHealSoon:Schedule(15)
+		warnHealSoon:Schedule(13)
 		warnHealNow:Schedule(16)
 		timerCastHeal:Schedule(16)
 	end
@@ -112,8 +113,9 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		end
 	end
 	if args:IsSpellID(2122631) then
-		if args:IsPlayer() and args.amount > 5 then
-		specWarnDeathblooming:Show()
+		if args:IsPlayer() and args.amount > 5 and (GetTime() - bloomSpam) > 8 then
+		bloomSpam = GetTime()
+		warnDeathbloomStack:Show(args.spellName, args.destName, args.amount or 1)
 		end
 	end
 end
@@ -125,8 +127,29 @@ function mod:UNIT_HEALTH(uId)
 	elseif  self:GetUnitCreatureId(uId) == 16011 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.20 and softEnrage == 1 then
 		softEnrage = 2
 		warnSoftEnrageNow:Show()
-		warnSporeSoon:Unschedule()
+		warnSporeSoon:Cancel()
 		timerSpore:Stop()
+		timerNecrotic:Stop()
+		warnHealNow:Cancel()
+		warnHealSoon:Cancel()
+		timerNextDoom:stop()
 		self:UnscheduleMethod("SporeSpawn")
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 16011 or cid == 26619 then
+		timerNecrotic:Stop()
+		timerNextDeathbloom:Stop()
+		timerDeathblooming:Stop()
+		timerNextDoom:stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerNecrotic:Stop()
+	timerNextDeathbloom:Stop()
+	timerDeathblooming:Stop()
+	timerNextDoom:stop()
 end

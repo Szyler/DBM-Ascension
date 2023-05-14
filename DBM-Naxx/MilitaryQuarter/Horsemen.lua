@@ -19,16 +19,16 @@ local warnMarkSoon			= mod:NewAnnounce("WarningMarkSoon", 1, 28835, false)
 local warnMarkNow			= mod:NewAnnounce("WarningMarkNow", 2, 28835)
 local specWarnMarkOnPlayer	= mod:NewSpecialWarning("SpecialWarningMarkOnPlayer", nil, false, true)
 local specWarnHolyWrathYou	= mod:NewSpecialWarningYou(2124141,2)
-local warnHolyWrath			= mod:NewTargetAnnounce(2124141,3)
+local warnHolyWrath			= mod:NewTargetAnnounce(2124141,2)
 local specWarnDeepChillYou	= mod:NewSpecialWarningYou(2124167,2)
-local warnDeepChill			= mod:NewTargetAnnounce(2124167,3)
+local warnDeepChill			= mod:NewTargetAnnounce(2124167,2)
 local specWarnMeteorYou		= mod:NewSpecialWarningYou(2124128,2)
-local warnMeteor			= mod:NewTargetAnnounce(2124128,3)
+local warnMeteor			= mod:NewTargetAnnounce(2124128,2)
 local specWarnFamineYou		= mod:NewSpecialWarningYou(2124166,2)
-local warnFamine			= mod:NewTargetAnnounce(2124166,3)
+local warnFamine			= mod:NewTargetAnnounce(2124166,2)
 
 ----timers----				
-local timerMark				= mod:NewNextTimer(12, 2124103)
+local timerMark				= mod:NewTimer(12, "Mark of the Apocalypse", 2124107)
 local timerHolyWrath		= mod:NewTargetTimer(3.8, 2124141)
 local timerNextHolyWrath	= mod:NewNextTimer(20, 2124141)
 local timerDeepChill		= mod:NewTargetTimer(3.8, 2124167)
@@ -57,15 +57,7 @@ function mod:OnCombatStart(delay)
 	timerNextDeepChill:Start(11-delay)
 	timerNextHolyWrath:Start(25-delay)
 	timerNextFamine:Start(16-delay)
-	self:ScheduleMethod(18,"Mark")
 	markCounter = 0
-end
-
-function mod:Mark()
-self:UnscheduleMethod("Mark")
-timerMark:Stop()
-timerMark:Start()
-self:ScheduleMethod(12,"Mark")
 end
 
 function mod:Meteor()
@@ -144,6 +136,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124128) then
 		self:ScheduleMethod(0.25, "Meteor")
 		meteorTarget = args.destName
+	elseif args:IsSpellID(2124103, 2124104, 2124105, 2124106) or args:IsSpellID(2124107, 2124108, 2124109, 2124110) or args:IsSpellID(2124111, 2124112, 2124113, 2124114) or args:IsSpellID(2124115, 2124116, 2124117, 2124118) then
+		timerMark:Start()
 	end
 end
 
@@ -152,6 +146,8 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args.amount >= 3 then
 			specWarnMarkOnPlayer:Show(args.spellName, args.amount)
 		end
+	elseif args:IsSpellID(2124103, 2124104, 2124105, 2124106) or args:IsSpellID(2124107, 2124108, 2124109, 2124110) or args:IsSpellID(2124111, 2124112, 2124113, 2124114) or args:IsSpellID(2124115, 2124116, 2124117, 2124118) then
+		timerMark:Start()
 	end
 end
 
@@ -169,7 +165,14 @@ function mod:UNIT_DIED(args)
 	if cid == 30549 or 26622 then
 		timerNextDeepChill:Stop()
 	end
+	if cid >= 26622 and cid <= 26625 then
+		timerMark:Stop()
+	end
 end
 function mod:OnCombatEnd()
-	self:UnscheduleMethod("Mark")
+	timerMark:Stop()
+	timerNextDeepChill:Stop()
+	timerNextFamine:Stop()
+	timerNextMeteor:Stop()
+	timerNextHolyWrath:Stop()
 end

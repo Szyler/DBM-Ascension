@@ -9,6 +9,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
+	"UNIT_DIED",
 	"PLAYER_ALIVE"
 )
 
@@ -19,7 +20,7 @@ local MT
 
 -----GASTRIC AFFLICTION-----
 local specWarnGastric		= mod:NewSpecialWarningYou(1003086)
-local warnGastric 			= mod:NewTargetAnnounce(2122517, 4)
+local warnGastric 			= mod:NewTargetAnnounce(2122517, 2)
 local timerGastric			= mod:NewNextTimer(20,2122517)
 local timerGastricSelf		= mod:NewTargetTimer(15,2122517)
 -----MISC-----
@@ -40,7 +41,7 @@ end
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
 	timerAchieve:Start(-delay)
-	timerGastric:start(15-delay)
+	timerGastric:Start(15-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -90,4 +91,17 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerGastricSelf:Cancel(args.destName)--Cancel timer if someone is dumb and dispels it.
 		self:SetIcon(args.destName, 0)
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 16028 or cid == 26626 then
+		timerGastric:Stop()
+		timerGastricSelf:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerGastric:Stop()
+	timerGastricSelf:Stop()
 end

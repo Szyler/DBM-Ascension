@@ -19,7 +19,7 @@ mod:RegisterEvents(
 -----Frenzy-----
 -- local warnFrenzyNow				= mod:NewSpellAnnounce(28798, 4)
 local timerSadism				= mod:NewNextTimer(30, 2123101)
-local timerBloodBath			= mod:NewTimer(45, 2123102)
+local timerBloodBath			= mod:NewBuffActiveTimer(45, 2123102)
 local warnBloodBathSoon			= mod:NewAnnounce("Faerlina is getting hungry for blood!", 2, 2123102)
 local warnSadism				= mod:NewSpellAnnounce(2123101, 3)
 -----EMBRACE-----
@@ -94,7 +94,7 @@ function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2123102) then
 	timerSadism:Stop()
 	timerBloodBath:Start()
-	warnBloodBathSoon:Unschedule()
+	warnBloodBathSoon:Cancel()
 	warnBloodBathSoon:Schedule(40)
 	end
 end
@@ -126,4 +126,15 @@ function mod:SPELL_PERIODIC_DAMAGE(args)
 			specWarnRainOfFire:Show()
 		end
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15956 or cid == 26615 then
+		timerSadism:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerSadism:Stop()
 end

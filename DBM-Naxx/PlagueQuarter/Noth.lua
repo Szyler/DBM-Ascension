@@ -11,12 +11,13 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"PLAYER_ALIVE",
 	"UNIT_HEALTH",
+	"UNIT_DIED",
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
 -----TELEPORT-----
-local warnIntermissionNow	= mod:NewAnnounce("Intermission now", 3, 46573, nil, "Show warning for Noth teleporting to the balcony")
-local warnIntermissionSoon	= mod:NewAnnounce("Intermission soon", 1, 46573, nil, "Show pre-warning for Noth teleporting to the balcony")
+local warnIntermissionNow	= mod:NewAnnounce("Intermission now", 2, 46573, nil, "Show warning for Noth teleporting to the balcony")
+local warnIntermissionSoon	= mod:NewAnnounce("Intermission soon", 2, 46573, nil, "Show pre-warning for Noth teleporting to the balcony")
 local timerTeleportBack		= mod:NewTimer(60, "Noth returns to the battlefield", 46573, nil, "Show timer for Noth teleporting from the balcony")
 local warnNothReturn		= mod:NewAnnounce("Noth has returned to the battlefield", 46573, nil, "Show warning for Noth returning from the balcony")
 -----CURSE-----
@@ -117,6 +118,12 @@ function mod:UNIT_HEALTH(uId)
 	--end
 end
 
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.Teleport or msg:find(L.Teleport) then
+		self:ScheduleMethod(0,"Intermission")
+	end
+end
+
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 15954 or cid == 26617 then
@@ -129,11 +136,4 @@ function mod:OnCombatEnd()
 	self:UnscheduleMethod("WarriorSkeletons")
 	timerCurse:Stop()
 	timerWarriorSkeletons:Stop()
-end
-
-
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
-	if msg == L.Teleport or msg:find(L.Teleport) then
-		self:ScheduleMethod(0,"Intermission")
-	end
 end
