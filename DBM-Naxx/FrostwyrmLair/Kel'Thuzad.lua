@@ -182,7 +182,6 @@ end
 ]]--
 
 function mod:FrostPhase()
-	timerKTteleport:Start()
 	self:UnscheduleMethod(44, "DnD")
 	timerDnD:Cancel(44)
 	self:ScheduleMethod(88, "FrostPhaseFinished")
