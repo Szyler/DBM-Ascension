@@ -93,7 +93,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 		warnTombTarget:Show(args.destName)
 		end
-	elseif args:IsSpellID(2124328) then
+	elseif args:IsSpellID(2124328) and args.IsPlayer() then
 		specWarningBlizzard:Show()
 	elseif args:IsSpellID(2124338) then
 		timerNextCurse:Start()
@@ -151,3 +151,4 @@ function mod:OnCombatEnd()
 	timerNextBreath:Stop()
 	timerNextCurse:Stop()
 end
+

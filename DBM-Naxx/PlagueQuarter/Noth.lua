@@ -33,11 +33,13 @@ local timerArcaneExplo		= mod:NewNextTimer(30, 2123828)
 -- local berserkTimer			= mod:NewBerserkTimer(375)
 local phase = 0
 local prePhase = 0
+local curseSpam = 0
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase = 0
 	prePhase = 0
+	curseSpam = 0
 	self:ScheduleMethod(0-delay,"NothFight")
 end
 
@@ -73,11 +75,10 @@ function mod:SkeletonWaves()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2123805) then
+	if args:IsSpellID(2123805) and DBM:AntiSpam(5,1) then
 		if args:IsPlayer() then
-			specWarnCurse:Show();
+		specWarnCurse:Show()
 		end
-		warnCurse:Show()
 		timerCurse:Start()
 	end
 end
@@ -137,3 +138,5 @@ function mod:OnCombatEnd()
 	timerCurse:Stop()
 	timerWarriorSkeletons:Stop()
 end
+
+

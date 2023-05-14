@@ -65,11 +65,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerWebStunSoon:Start()
 		
 		timerWebSpray:Start()
-	elseif args:IsSpellID(2123211,2123212,2123216,2123217) then -- Web Wrap
+	elseif args:IsSpellID(2123211,2123212,2123216,2123217) and (GetTime() - webSpam) > 5 then -- Web Wrap
+		webSpam = GetTime()
 		warnWebWrap:Show(args.destName)
 		timerWebWrap:Start()
-		if args.destName == UnitName("player") and (GetTime() - webSpam) > 5 then
-			webSpam = GetTime()
+		if args.destName == UnitName("player") then
 			SendChatMessage(L.YellWebWrap, "YELL")
 		end
 	elseif args:IsSpellID(2123210) then

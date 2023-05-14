@@ -98,7 +98,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2124245) then
+	if args:IsSpellID(2124245) and DBM:AntiSpam(2, 6) then
 		if args:IsPlayer() then
 			specWarnMagnetic:Show()
 			SendChatMessage("Magnetic Reversal on "..UnitName("PLAYER").."!", "Say")

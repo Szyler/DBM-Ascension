@@ -77,12 +77,14 @@ local timerPhase3				= mod:NewTimer(10, "Phase Three", 802125, nil, "Show the ti
 local warnFrostSoon				= mod:NewAnnounce("Frost Phase soon", 3, 2124594)
 local warnFrostNow				= mod:NewAnnounce("Frost Phase now!", 2, 2124594)
 local timerKTteleport			= mod:NewTimer(42, "Kel'Thuzad teleports", 46573)
+local timerFrostPhase			= mod:NewTimer(45, "Frost Phase ends", 2124594)
 local warnAddsSoon				= mod:NewAnnounce("Guardians spawn at 36%!, 2, 70965")
 -----PHASE 3 ABILITIES-----
-local specWarnDnD				= mod:NewSpecialWarningMove(2124575)
+local specWarnDnD				= mod:NewSpecialWarningMove(2124575,1)
 local warnDnD					= mod:NewSpellAnnounce(2124575, 2)
 local timerDnD					= mod:NewNextTimer(20, 2124575)
-local specWarnFissure			= mod:NewSpecialWarningMove(2124579)
+local specWarnFissure			= mod:NewSpecialWarningMove(2124579,1)
+local warnFissure				= mod:NewSpellAnnounce(2124579,1)
 local timerFissure				= mod:NewCDTimer(20,2124579)
 local warnFlashFreezeSoon		= mod:NewSoonAnnounce(2124587, 2)
 local timerFlashFreeze			= mod:NewCDTimer(30, 2124587)
@@ -184,7 +186,8 @@ end
 function mod:FrostPhase()
 	self:UnscheduleMethod(44, "DnD")
 	timerDnD:Cancel(44)
-	self:ScheduleMethod(88, "FrostPhaseFinished")
+	timerFrostPhase:Start()
+	self:ScheduleMethod(45, "FrostPhaseFinished")
 end
 
 function mod:FrostPhaseFinished()
@@ -206,10 +209,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124516) then
 		warnChains:Show(args.destName)
 	-----SHADOW FISSURE-----
-	elseif args:IsSpellID(2124579) then
+	elseif args:IsSpellID(2124579) and DBM:AntiSpam(5,5) then
 		if args.destName == UnitName("player") then
-			SendChatMessage("Shadow Fissure on "..UnitName("PLAYER").."!", "Say")
 			specWarnFissure:Show()
+		else
+			warnFissure:Show()
 		end
 		timerFissure:Start()
 	-----DEATH AND DECAY-----

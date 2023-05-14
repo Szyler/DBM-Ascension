@@ -90,16 +90,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextDoom:Start(timer, doomCounter + 1)
 		timerDoomDamage:Start()
 	end
-	if args:IsSpellID(2122601) then
+	if args:IsSpellID(2122601) and DBM:AntiSpam(5,2) then
 		timerNecrotic:Start()
 		warnHealSoon:Schedule(13)
 		warnHealNow:Schedule(16)
 		timerCastHeal:Schedule(16)
 	end
-	if args:IsSpellID(2122631) then
+	if args:IsSpellID(2122631) and DBM:AntiSpam(5,3) then
 		warnDeathbloom:Show()
 	end
-	if args:IsSpellID(2122627) then
+	if args:IsSpellID(2122627) and DBM:AntiSpam(5,4) then
 		specWarnDeathblooming:Show()
 		timerDeathblooming:Start()
 		timerNextDeathbloom:Start()
