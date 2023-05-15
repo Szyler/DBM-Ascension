@@ -9,15 +9,19 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_PERIODIC_DAMAGE",
-	"PLAYER_ALIVE"
+	"PLAYER_ALIVE",
+	"UNIT_DIED",
+	"SPELL_AURA_REFRESH"
 )
 
 -----ENRAGE-----
 -- local warnEnrageSoon			= mod:NewSoonAnnounce(28798, 3)
 -----Frenzy-----
 -- local warnFrenzyNow				= mod:NewSpellAnnounce(28798, 4)
-local timerFrenzy				= mod:NewNextTimer(60, 28798)
-local warnFrenzy				= mod:NewAnnounce(L.FaerlinaFrenzy, 2, 28798)
+local timerSadism				= mod:NewNextTimer(30, 2123101)
+local timerBloodBath			= mod:NewBuffActiveTimer(45, 2123102)
+local warnBloodBathSoon			= mod:NewAnnounce("Faerlina is getting hungry for blood!", 2, 2123102)
+local warnSadism				= mod:NewSpellAnnounce(2123101, 3)
 -----EMBRACE-----
 local warnEmbraceActive			= mod:NewSpellAnnounce(28732, 1)
 local timerEmbrace				= mod:NewBuffActiveTimer(20, 28732)
@@ -36,7 +40,7 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
-	timerFrenzy:Start(-delay)
+	timerSadism:Start(60-delay)
 	-- timer = 60
 	-- timerEnrage:Start(timer - delay)
 	-- warnEnrageSoon:Schedule(timer - 5 - delay)
@@ -62,10 +66,14 @@ end
 -- end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(28798, 54100) then
-		warnFrenzy:Show(args.spellName, args.destName, args.amount or 1)
-		timerFrenzy:Start()
-	elseif args:IsSpellID(1003054) then 
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start(30)
+	elseif args:IsSpellID(2123102) then
+		timerSadism:Stop()
+		timerBloodBath:Start()
+		warnBloodBathSoon:Schedule(40)
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
 		end
@@ -82,15 +90,24 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+function mod:SPELL_AURA_REFRESH(args)
+	if args:IsSpellID(2123102) then
+	timerSadism:Stop()
+	timerBloodBath:Start()
+	warnBloodBathSoon:Cancel()
+	warnBloodBathSoon:Schedule(40)
+	end
+end
+
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(28798, 54100) then
-		warnFrenzy:Show(args.spellName, args.destName, args.amount or 1)
-		timerFrenzy:Start()
-	elseif args:IsSpellID(1003054) then 
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start()
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show();
 		end
-	elseif args:IsSpellID(869762, 350284) then 
+	elseif args:IsSpellID(2123115,2123116,2123117,2123118) then 
 		if args:IsPlayer() then
 			specWarnPoisonPool:Show();
 		end
@@ -104,9 +121,20 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(350286) then
+	if args:IsSpellID(2123107,2123108,2123109,2123110) then
 		if args:IsPlayer() then
 			specWarnRainOfFire:Show()
 		end
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15956 or cid == 26615 then
+		timerSadism:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerSadism:Stop()
 end

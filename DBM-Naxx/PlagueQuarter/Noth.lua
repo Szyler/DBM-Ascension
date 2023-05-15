@@ -6,82 +6,137 @@ mod:SetCreatureID(15954)
 mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"PLAYER_ALIVE"
+	"PLAYER_ALIVE",
+	"UNIT_HEALTH",
+	"UNIT_DIED",
+	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
 -----TELEPORT-----
-local warnTeleportNow		= mod:NewAnnounce("Teleport Now", 3, 46573, nil, "Show warning for Noth teleporting to and from the balcony")
-local warnTeleportSoon		= mod:NewAnnounce("Teleport in 10 seconds", 1, 46573, nil, "Show pre-warning for Noth teleporting to and from the balcony")
-local timerTeleport			= mod:NewTimer(600, "Teleport to Balcony", 46573, nil, "Show timer for Noth teleporting to the balcony")
-local timerTeleportBack		= mod:NewTimer(600, "Teleport to Raid", 46573, nil, "Show timer for Noth teleporting from the balcony")
+local warnIntermissionNow	= mod:NewAnnounce("Intermission now", 2, 46573, nil, "Show warning for Noth teleporting to the balcony")
+local warnIntermissionSoon	= mod:NewAnnounce("Intermission soon", 2, 46573, nil, "Show pre-warning for Noth teleporting to the balcony")
+local timerTeleportBack		= mod:NewTimer(60, "Noth returns to the battlefield", 46573, nil, "Show timer for Noth teleporting from the balcony")
+local warnNothReturn		= mod:NewAnnounce("Noth has returned to the battlefield", 46573, nil, "Show warning for Noth returning from the balcony")
 -----CURSE-----
-local warnCurse				= mod:NewSpellAnnounce(29213, 2)
-local specWarnCurse			= mod:NewSpecialWarningYou(29213)
+local timerCurse			= mod:NewNextTimer(30, 2123805)
+local warnCurse				= mod:NewSpellAnnounce(2123805, 2)
+local specWarnCurse			= mod:NewSpecialWarningYou(2123805)
 -----Adds-----
-local timerSkeletons		= mod:NewNextTimer(30, 52611)
+local timerWarriorSkeletons	= mod:NewTimer(30,"Wave of Warrior Skeletons", 52611)
+local timerSkeletonWave		= mod:NewTimer(26, "Wave of Skeletons", 52611)
+local timerArcaneExplo		= mod:NewNextTimer(30, 2123828)
 --Rise, my soldiers! Rise and fight once more!
 -----MISC-----
 -- local berserkTimer			= mod:NewBerserkTimer(375)
 local phase = 0
+local prePhase = 0
+local curseSpam = 0
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	-- berserkTimer:Start(375-delay)
-	timerSkeletons:Start(15-delay)
-	timerSkeletons:Schedule(15)
 	phase = 0
-	self:BackInRoom()
+	prePhase = 0
+	curseSpam = 0
+	self:ScheduleMethod(0-delay,"NothFight")
 end
 
-function mod:Balcony()
-	local timer
-	if phase == 1 then timer = 60
-	elseif phase == 2 then timer = 60
-	elseif phase == 3 then timer = 60 
-	else return	end
-	timerTeleportBack:Show(timer)
-	warnTeleportSoon:Schedule(timer - 10)
-	warnTeleportNow:Schedule(timer)
-	self:ScheduleMethod(timer, "BackInRoom")
-	timerSkeletons:Start(5)
-	timerSkeletons:Schedule(5)
+function mod:Intermission()
+	warnIntermissionNow:Show()
+	timerCurse:Stop()
+	timerWarriorSkeletons:Stop()
+	timerArcaneExplo:Start(15)
+	timerSkeletonWave:Start(10)
+	self:UnscheduleMethod("WarriorSkeletons")
+	self:ScheduleMethod(15,"SkeletonWaves")
+	timerTeleportBack:Start()
+	self:ScheduleMethod(60, "NothFight")
 end
 
-function mod:BackInRoom()
-	phase = phase + 1
-	local timer
-	if phase == 1 then timer = 75
-	elseif phase == 2 then timer = 75 
-	elseif phase == 3 then timer = 75 
-	else return end
-	timerTeleport:Show(timer)
-	warnTeleportSoon:Schedule(timer - 10)
-	warnTeleportNow:Schedule(timer)
-	self:ScheduleMethod(timer, "Balcony")
-	timerSkeletons:Start(15)
-	timerSkeletons:Schedule(15)
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(29213, 54835, 350288) then	-- Curse of the Plaguebringer
-		warnCurse:Show()
+function mod:NothFight()
+	timerWarriorSkeletons:Start(22)
+	timerCurse:Start()
+	self:ScheduleMethod(22,"WarriorSkeletons")
+	if phase >= 1 then
+	warnNothReturn:Show()
 	end
 end
 
+function mod:WarriorSkeletons()
+	timerWarriorSkeletons:Start()
+	self:ScheduleMethod(30,"WarriorSkeletons")
+end
+
+function mod:SkeletonWaves()
+	timerSkeletonWave:Start()
+	timerArcaneExplo:Start()
+end
+
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(29213, 54835, 350288) then 
+	if args:IsSpellID(2123805) and DBM:AntiSpam(5,1) then
 		if args:IsPlayer() then
-			specWarnCurse:Show();
+		specWarnCurse:Show()
 		end
+		timerCurse:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(29213, 54835, 350288) then 
+	if args:IsSpellID(29213, 54835, 350288) then
 		if args:IsPlayer() then
 			specWarnCurse:Show();
 		end
 	end
 end
+
+
+function mod:UNIT_HEALTH(uId)
+	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.80 and prePhase ==0 then
+		warnIntermissionSoon:Show()
+		prePhase = 1
+		end
+	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.753 and phase ==0 then
+	--self:ScheduleMethod(0,"Intermission")
+	--phase = 1
+	--end
+	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 and prePhase ==1 then
+		warnIntermissionSoon:Show()
+		prePhase = 2
+		end
+	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.503 and phase ==1 then
+	--	self:ScheduleMethod(0,"Intermission")
+	--	phase = 2
+	--end
+	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.30 and prePhase ==2 then
+		warnIntermissionSoon:Show()
+		prePhase = 3
+		end
+	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.253 and phase ==2 then
+	--	self:ScheduleMethod(0,"Intermission")
+	--	phase = 3
+	--end
+end
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.Teleport or msg:find(L.Teleport) then
+		self:ScheduleMethod(0,"Intermission")
+	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15954 or cid == 26617 then
+		timerCurse:Stop()
+		self:UnscheduleMethod("WarriorSkeletons")
+	end
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("WarriorSkeletons")
+	timerCurse:Stop()
+	timerWarriorSkeletons:Stop()
+end
+
+

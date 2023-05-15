@@ -11,28 +11,26 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS",
+	"UNIT_DIED",
 	"PLAYER_ALIVE"
 )
 
 -----MUTATING INJECTION-----
-local warnInjection		= mod:NewTargetAnnounce(28169, 2)
-local specWarnInjection	= mod:NewSpecialWarningYou(28169)
-local timerInjection	= mod:NewTargetTimer(10, 28169)
+local warnInjection			= mod:NewTargetAnnounce(28169, 2)
+local specWarnInjection		= mod:NewSpecialWarningYou(2122807)
+local timerInjection		= mod:NewTargetTimer(10, 2122807)
+local timerNextInjection	= mod:NewNextTimer(15, 2122807)
 -----POISON CLOUD-----
-local timerCloud		= mod:NewNextTimer(15, 28240)
-local warnCloud			= mod:NewSpellAnnounce(28240, 2)
-local prewarnCloud		= mod:NewSoonAnnounce(28240, 3)
-local specWarnPoison1	= mod:NewSpecialWarningMove(28241, true, nil, true)
-local specWarnPoison2	= mod:NewSpecialWarningMove(28158, true, nil, true)
+local timerPoisonCloud		= mod:NewNextTimer(8, 2122812)
+local warnCloud				= mod:NewSpellAnnounce(2122812, 2)
+local specWarnPoison1		= mod:NewSpecialWarningMove(2122812, true, nil, true)
 -----VIVIFYING TOXIN-----
-local timerToxin		= mod:NewNextTimer(45, 79012)
-local warnToxin			= mod:NewSpellAnnounce(79012, 2)
-local prewarnToxin		= mod:NewSoonAnnounce(79012, 3)
+local timerStitchedGiant 	= mod:NewTimer(60, "Stitched Giant", 79012)
 -----SLIME SPRAY-----
-local timerSpray		= mod:NewCDTimer(15, 28157)
-local warnSpray			= mod:NewSpellAnnounce(28157, 2)
+local timerSpray			= mod:NewCDTimer(20, 2122818)
+local warnSpray				= mod:NewSpellAnnounce(2122818, 2)
 -----MISC-----
-local enrageTimer		= mod:NewBerserkTimer(480)
+local enrageTimer			= mod:NewBerserkTimer(480)
 mod:AddBoolOption("SetIconOnInjectionTarget", true)
 local mutateIcons = {}
 
@@ -41,15 +39,15 @@ function mod:OnCombatStart(delay)
 	table.wipe(mutateIcons)
 	enrageTimer:Start(-delay)
 	-----Poison Cloud-----
-	timerCloud:Start(15-delay)
-	warnCloud:Schedule(15-delay)
-	prewarnCloud:Schedule(10-delay)
+	timerPoisonCloud:Start(10-delay)
+	self:ScheduleMethod(10-delay,"PoisonCloud")
 	-----Vivifying Toxin-----
-	timerToxin:Start(10-delay)
-	warnToxin:Schedule(10-delay)
-	prewarnToxin:Schedule(5-delay)
+	timerStitchedGiant:Start(20-delay)
+	self:ScheduleMethod(20-delay, "StitchedGiant")
 	-----Slime Spray-----
-	timerSpray:Start(15-delay)
+	timerSpray:Start(25-delay)
+	----Injection----
+	timerNextInjection:Start(10-delay)
 end
 
 local function addIcon()
@@ -70,41 +68,35 @@ local function removeIcon(target)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(28169) then
-		warnInjection:Show(args.destName)
-		timerInjection:Start(args.destName)
+	if args:IsSpellID(2122807) then
 		if args:IsPlayer() then
 			specWarnInjection:Show()
+		else
+		warnInjection:Show(args.destName)
 		end
+		timerInjection:Start(args.destName)
+		timerNextInjection:Start()
 		if self.Options.SetIconOnInjectionTarget then
 			table.insert(mutateIcons, args.destName)
 			addIcon()
 		end
-	elseif args:IsSpellID(28241) then
+	elseif args:IsSpellID(2122812,2122813,2122814) then
 		if args:IsPlayer() then
 			specWarnPoison1:Show()
 		end
-	elseif args:IsSpellID(28158) then
-		if args:IsPlayer() then
-			specwarnPoison2:Show()
-		end
-	end	
+	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(28241) then
+	if args:IsSpellID(2122812,2122813,2122814) then
 		if args:IsPlayer() then
 			specWarnPoison1:Show()
 		end
-	elseif args:IsSpellID(28158) then
-		if args:IsPlayer() then
-			specwarnPoison2:Show()
-		end
-	end	
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(28169) then
+	if args:IsSpellID(2122807) then
 		timerInjection:Cancel(args.destName)--Cancel timer if someone is dumb and dispels it.
 		if self.Options.SetIconOnInjectionTarget then
 			removeIcon(args.destName)
@@ -113,19 +105,41 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(28240) then
-		timer = 15
-		timerCloud:Start(timer)
-		warnCloud:Schedule(timer)
-		prewarnCloud:Schedule(timer-5)
-	elseif args:IsSpellID(79012) then
-		timer = 42.5
-		timerToxin:Start(timer)
-		warnToxin:Schedule(timer)
-		prewarnToxin:Schedule(timer-5)
-	elseif args:IsSpellID(28157, 196884) then
-		timer = 15
-		timerSpray:Start(timer)
+	if args:IsSpellID(2122818) then
+		timerSpray:Start()
 		warnSpray:Show()
 	end
+end
+
+function mod:PoisonCloud()
+	timerPoisonCloud:Stop()
+	timerPoisonCloud:Start()
+	warnCloud:Show()
+	self:ScheduleMethod(8,"PoisonCloud")
+end
+
+function mod:StitchedGiant()
+	timerStitchedGiant:Stop()
+	timerStitchedGiant:Start()
+	self:ScheduleMethod(60,"StitchedGiant")
+end
+--if args:IsSpellID(28240) then
+--	timer = 15
+--	timerCloud:Start(timer)
+--	warnCloud:Schedule(timer)
+--	prewarnCloud:Schedule(timer-5)
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 15931 or cid == 26627 then
+	timerInjection:Stop()
+	timerSpray:Stop()
+	timerNextInjection:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	timerInjection:Stop()
+	timerSpray:Stop()
+	timerNextInjection:Stop()
 end

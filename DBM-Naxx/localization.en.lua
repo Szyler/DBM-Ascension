@@ -105,6 +105,10 @@ L:SetOptionLocalization({
 	TimerTeleportBack	= "Show timer for Teleport back"
 })
 
+L:SetMiscLocalization({
+	Teleport			= "%s teleports to the balcony above!"
+})
+
 --------------------------
 --  Heigan the Unclean  --
 --------------------------
@@ -167,7 +171,8 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningHateful	= "Post Hateful Strike targets to raid chat\n(requires announce to be enabled and leader/promoted status)"
+	WarningHateful				= "Post Hateful Strike targets to raid chat\n(requires announce to be enabled and leader/promoted status)",
+	SetIconOnGastricTarget		= "Set icons on Gastric Affliction targets"
 })
 
 L:SetMiscLocalization({
@@ -191,7 +196,7 @@ L:SetOptionLocalization({
 })
 
 L:SetWarningLocalization({
-	SpecialWarningInjection	= "Mutating Injection on you"
+	SpecialWarningInjection		= "Mutating Injection on you"
 })
 
 L:SetTimerLocalization({
@@ -205,6 +210,9 @@ L = DBM:GetModLocalization("Gluth")
 L:SetGeneralLocalization({
 	name = "Gluth"
 })
+L:SetWarningLocalization{
+	DBM_GLUTH_VICIOUS_BITE		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+}
 
 ----------------
 --  Thaddius  --
@@ -217,8 +225,8 @@ L:SetGeneralLocalization({
 
 L:SetMiscLocalization({
 	Yell	= "Stalagg crush you!",
-	Emote	= "%s overloads!",
-	Emote2	= "Tesla Coil overloads!",
+	Emote	= "%s overload!",
+	Emote2	= "The Tesla Coils overload!",
 	Boss1	= "Feugen",
 	Boss2	= "Stalagg",
 	Charge1 = "negative",
@@ -334,7 +342,7 @@ L:SetWarningLocalization({
 
 L:SetMiscLocalization({
 	Korthazz	= "Thane Korth'azz",
-	Rivendare	= "Highlord Mograine",
+	Mograine	= "Highlord Mograine",
 	Blaumeux	= "Lady Blaumeux",
 	Zeliek		= "Sir Zeliek"
 })
@@ -360,7 +368,9 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	EmoteBreath			= "%s takes a deep breath.",
+	EmoteBreath			= "Sapphiron takes a deep breath.",
+	EmoteFlying			= "Sapphiron lifts off into the air!",
+	EmoteLanding		= "Sapphiron resumes his attacks!",
 	WarningYellIceblock	= "I'm an Ice Block!"
 })
 

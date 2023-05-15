@@ -2,7 +2,7 @@ local mod	= DBM:NewMod("Kel'Thuzad", "DBM-Naxx", 5)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 2574 $"):sub(12, -3))
-mod:SetCreatureID(15990)
+mod:SetCreatureID(15990,26614,26615,26616,26617,26618,26619,26620,26621,26622,26623,26624,26625,26626,26627,26628,26629,26630)
 mod:SetUsedIcons(8)
 mod:RegisterCombat("yell", L.Yell)
 mod:EnableModel()
@@ -11,530 +11,347 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START", --This should allow the addon to process this Event using the scripting from Anub'Rekhan for Impale.
 	"SPELL_CAST_SUCCESS",
+	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_HEALTH",
+	"UNIT_AURA",
+	"UNIT_DIED",
 	"PLAYER_ALIVE"
 )
 
 ----------PHASE 1----------
------MAJOR ADD WAVE-----
-local warnMajorWave		= mod:NewAnnounce("Major Wave Spawned", 2, 1003064, nil, "Show warning for Major Wave spawn")
-local warnMajorWaveSoon	= mod:NewAnnounce("Major Wave Spawns Soon", 3, 1003064, nil, "Show pre-warning for Major Wave spawn")
-local timerMajorWave	= mod:NewTimer(30, "Next Major Wave", 1003064, nil, "Show timer for Major Wave spawn")
+local warnAbomination   		= mod:NewAnnounce("Abomination spawning", 1, 500335)
+local timerAbomination			= mod:NewTimer(30, "Abomination spawning", 500335)
+local warnBanshee				= mod:NewAnnounce("Soul Weaver spawning", 1, 58359)
+local timerBanshee				= mod:NewTimer(30, "Soul Weaver spawning", 58359)
+local warnPosess				= mod:NewTargetAnnounce(2124512, 2)
+local timerPosess				= mod:NewTargetTimer(10, 2124512)
 -----CONSTRICTING CHAINS-----
-local warnChains		= mod:NewTargetAnnounce(1003114, 2)
+local warnChains				= mod:NewTargetAnnounce(1003114, 2)
 -----WAIL OF SOULS-----
-local warnWailSoul		= mod:NewSpellAnnounce(1003115, 2)
+local warnWailSoul				= mod:NewSpellAnnounce(1003115, 2)
 -----PHASE 1 -> 2 TRANSITION-----
-local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
-local timerPhase2		= mod:NewTimer(180, "Phase Two", 29485, nil, "Show timer for Phase Two")
------PHASE 2 -> 3 TRANSITION-----
-local warnPhase3		= mod:NewPhaseAnnounce(3, 3)
-local timerPhase3		= mod:NewTimer(378, "Phase Three", 29485, nil, "Show timer for Phase Three")
+local warnPhase2				= mod:NewPhaseAnnounce(2, 3)
+local timerPhase2				= mod:NewTimer(178, "Phase Two", 500992, nil, "Show timer for Phase Two")
+local timerPhase2Transition		= mod:NewTimer(15, "Phase Two starting", 500992)
 ----------PHASE 2----------
------SHADE OF NAXXRAMAS-----
-local warnNaxxShade		= mod:NewAnnounce("Shade of Naxx Spawned", 2, 25228, nil, "Show warning for Shade of Naxxramas spawn")
-local warnNaxxShadeSoon	= mod:NewAnnounce("Shade of Naxx Spawns Soon", 3, 25228, nil, "Show pre-warning for Shade of Naxxramas spawn")
-local timerNaxxShade	= mod:NewTimer(60, "Next Shade of Naxx", 25228, nil, "Show timer for Shade of Naxxramas spawn")
------DISRUPTING SHOUT-----
-local warnShout			= mod:NewSpellAnnounce(29107, 2)
-local warnShoutSoon		= mod:NewSoonAnnounce(29107, 3)
-local timerShout		= mod:NewCDTimer(16, 29107)
------SEEING RED-----
-local warnSeeingRed		= mod:NewSpellAnnounce(1003255, 2)
------GASTRIC AFFLICTION-----
-local warnGastric		= mod:NewTargetAnnounce(1003086, 2)
-local specWarnGastric	= mod:NewSpecialWarningYou(1003086)
------VOID ZONE-----
-local specWarnVoid		= mod:NewSpecialWarningYou(28865)
------SAFETY DANCE-----
-local warnDanceSoon		= mod:NewAnnounce("Safety Dance Soon", 2, 46573, nil, "Show pre-warning for the Safetyy Dance")
-local warnDance			= mod:NewAnnounce("Dance Ends Now", 3, 46573, nil, "Show warning for the Safety Dance")
-local timerDance		= mod:NewTimer(22, "Safety Dance Starts", 46573, nil, "Show timer for the Safety Dance")
------HARVEST SOUL-----
-local warnHarvestSoon	= mod:NewSoonAnnounce(28679, 3)
-local warnHarvest		= mod:NewSpellAnnounce(28679, 2)
-local timerHarvest		= mod:NewNextTimer(15, 28679)
------MAEXXNA SPIDERLINGS-----
-local timerSpider		= mod:NewNextTimer(16, 43134)
------NOTH'S SHADE (UNSCRIPTED)-----
-local warnNothShade		= mod:NewAnnounce("Noth's Shade Spawned", 2, 1003072, nil, "Show warning for Noth's Shade spawn")
-local timerNothShade	= mod:NewTimer(60, "Next Noth's Shade", 1003072, nil, "Show timer for Noth's Shade spawn")
------FROST BLAST-----
-local warnBlast			= mod:NewSpellAnnounce(29879, 2)
-local timerBlast		= mod:NewCDTimer(16, 29879)
------DETONATE MANA-----
-local warnMana			= mod:NewSpellAnnounce(27819, 2)
-local timerMana			= mod:NewCDTimer(30, 27819)
------DEATH AND DECAY-----
-local specWarnDnD		= mod:NewSpecialWarningYou(1003113)
------CHAINS OF KEL'THUZAD-----
-local warnChains		= mod:NewSpellAnnounce(28410, 2)
-local timerChains		= mod:NewCDTimer(16, 28410)
+--Shuffle in all timers we want to kill--
+--ANUB--
+local timerLocust				= mod:NewNextTimer(90, 2123004)
+local timerImpale				= mod:NewCDTimer(15, 2123001)
+--Faerlina--	
+local timerSadism				= mod:NewNextTimer(30, 2123101)
+--NOTH--
+local timerCurse				= mod:NewNextTimer(30, 2123805)
+--LOATHEB--
+local timerNextDeathbloom		= mod:NewNextTimer(30, 2122627)
+local timerDeathblooming		= mod:NewTimer(15, "Deathbloom expires!", 2122627)
+local timerNecrotic				= mod:NewBuffActiveTimer(16, 2122601)
+--INSTRUCTOR--
+local timerenrage				= mod:NewTimer(180, "Enrage", 2123914)
+local timerKnife				= mod:NewNextTimer(15, 2123924)
+--HORSEMEN--
+local timerMark					= mod:NewNextTimer(12, 2124103)
+local timerNextHolyWrath		= mod:NewNextTimer(20, 2124141)
+local timerNextDeepChill		= mod:NewNextTimer(20, 2124167)
+local timerNextMeteor			= mod:NewNextTimer(20, 2124128)
+local timerNextFamine			= mod:NewNextTimer(20, 2124166)
+--PATCH--
+local timerGastric				= mod:NewNextTimer(20,2122517)
+local timerGastricSelf			= mod:NewTargetTimer(15,2122517)
+--GROBB--
+local timerSpray				= mod:NewCDTimer(20, 2122818)
+local timerNextInjection		= mod:NewNextTimer(15, 2122807)
+--GLUTH--
+local timerDecimate				= mod:NewNextTimer(120, 2122905)
+--THADD--
+local timerShiftCast			= mod:NewCastTimer(4, 2124201)
+local timerNextShift			= mod:NewNextTimer(34, 2124201)
+local warnShiftCasting			= mod:NewCastAnnounce(2124201, 3)
+--SAPPH--
+local timerNextBellowing		= mod:NewNextTimer(45, 2124332)
+-----PHASE 2 -> 3 TRANSITION-----
+local warnPhase3				= mod:NewPhaseAnnounce(3, 3)
+local timerPhase3				= mod:NewTimer(10, "Phase Three", 802125, nil, "Show the timer for Phase Three")
+----------PHASE 3----------
+local warnFrostSoon				= mod:NewAnnounce("Frost Phase soon", 3, 2124594)
+local warnFrostNow				= mod:NewAnnounce("Frost Phase now!", 2, 2124594)
+local timerKTteleport			= mod:NewTimer(42, "Kel'Thuzad teleports", 46573)
+local timerFrostPhase			= mod:NewTimer(45, "Frost Phase ends", 2124594)
+local warnAddsSoon				= mod:NewAnnounce("Guardians spawn at 36%!, 2, 70965")
+-----PHASE 3 ABILITIES-----
+local specWarnDnD				= mod:NewSpecialWarningMove(2124575,1)
+local warnDnD					= mod:NewSpellAnnounce(2124575, 2)
+local timerDnD					= mod:NewNextTimer(20, 2124575)
+local specWarnFissure			= mod:NewSpecialWarningMove(2124579,1)
+local warnFissure				= mod:NewSpellAnnounce(2124579,1)
+local timerFissure				= mod:NewCDTimer(20,2124579)
+local warnFlashFreezeSoon		= mod:NewSoonAnnounce(2124587, 2)
+local timerFlashFreeze			= mod:NewCDTimer(30, 2124587)
+local specWarnManaBomb			= mod:NewSpecialWarningYou(2124572, 2)
+local warnManaBomb				= mod:NewTargetAnnounce(2124572, 2)
+local timerNextManaBomb			= mod:NewNextTimer(20, 2124572)
+local timerManaBomb				= mod:NewBuffActiveTimer(8, 2124572)
+
 -----RANGE CHECK-----
 mod:AddBoolOption("ShowRange", true)
 ----------BOSS TRACKING----------
-local anub
-local faerlina
-local maexx
-local noth
-local heigan
-local loatheb
-local razuv
-local gothik
-local horse
-local patch
-local grobb
-local gluth
-local thadd
 
-local spiderHealth
-local plagueHealth
-local militaryHealth
-local constructHealth
-
-local spiderBoss
-local plagueBoss
-local militaryBoss
-local constructBoss
-
-local heiganDanceStart
 ----------MISC----------
-local notRealRazuv		= 0
-local hasShoutCast		= 0
 local phase 			= 0
-local shadesSpawned		= 0
-local berserkTimer		= mod:NewBerserkTimer(1140)
+local icy 				= 8
+local mana				= 8
+local necroticSpam		= 0
+local bloomSpam			= 0
+local warnFrost			= 0
+local frostPhase		= 0
+local fissure			= 20
+local shadeCounter		= 0
+
 -----CODE START-----
 function mod:OnCombatStart(delay)
-	mod:phaseOne()
-	berserkTimer:Start(1140)
-	notRealRazuv = 1
-	self.vb.phase = 1
+	icy 				= 8
+	mana 				= 8
+	warnFrost			= 0
+	frostPhase			= 0
+	shadeCounter		= 0
+	fissure 			= 20
+	self.vb.phase 		= 1
+	mod:ScheduleMethod(0-delay,"PhaseOne")
 end
 
-function mod:phaseOne()
-	phase = 1
-	anub = 0
-	faerlina = 0
-	maexx = 0
-	noth = 0
-	heigan = 0
-	loatheb = 0
-	razuv = 0
-	gothik = 0
-	horse = 0
-	patch = 0
-	grobb = 0
-	gluth = 0
-	thadd = 0
-	spiderBoss = 0
-	plagueBoss = 0
-	militaryBoss = 0
-	constructBoss = 0
-	heiganDanceStart = 0
-	shadesSpawned = 0
-	hasShoutCast = 0
-	DBM.RangeCheck:Hide()
-	mod:phase2Transition()
-	mod:timerMajorWaveRepeat()
-	self:ScheduleMethod(30, "timerMajorWaveRepeat")
-	self:ScheduleMethod(60, "timerMajorWaveRepeat")
-	self:ScheduleMethod(90, "timerMajorWaveRepeat")
+function mod:PhaseOne()
+	timerPhase2:Start()
+	timerAbomination:Start(10)
+	timerBanshee:Start(25)
+	self:ScheduleMethod(10, "Abomination")
+	self:ScheduleMethod(25, "Banshee")
+	self:ScheduleMethod(178, "PhaseTwoTransition")
 end
 
-function mod:timerMajorWaveRepeat()
-	timer = 30
-	warnMajorWave:Schedule(timer)
-	warnMajorWaveSoon:Schedule(timer-5)
-	timerMajorWave:Start(timer)
+function mod:Abomination()
+	warnAbomination:Show()
+	timerAbomination:Start()
+	self:ScheduleMethod(30, "Abomination")
 end
 
-function mod:phase2Transition()
-	timer = 180
-	warnPhase2:Schedule(timer)
-	warnPhase2Soon:Schedule(timer-10)
-	timerPhase2:Start(timer)
-	self:ScheduleMethod(timer, "phaseTwo")
+function mod:Banshee()
+	warnBanshee:Show()
+	timerBanshee:Start()
+	self:ScheduleMethod(30, "Banshee")
 end
 
-function mod:phaseTwo()
-	phase = 2	
+function mod:PhaseTwoTransition()
+	self:UnscheduleMethod("Banshee")
+	self:UnscheduleMethod("Abomination")
+	timerAbomination:Stop()
+	timerBanshee:Stop()
+	timerPhase2Transition:Start()
+end
+
+
+function mod:PhaseTwo()
+	phase = 2
 	self.vb.phase = 2
-	if self.Options.ShowRange then
-		mod:RangeTogglePhaseTwo()
-	end
-	-----SHADE SPAWNS-----
-	-- mod:timerNaxxShadeRepeat()
-	mod:phase3Transition()
-	-- timer = 34
-	-- self:ScheduleMethod(timer, "timerNaxxShadeRepeat")
-	-- self:ScheduleMethod(timer+60, "timerNaxxShadeRepeat")
-	-- self:ScheduleMethod(timer+120, "timerNaxxShadeRepeat")
-	-----HEALTH CHECK DEBUGS-----
-	-- local shade1 = UnitGUID("boss1")
-	-- local shade2 = UnitGUID("boss2")
-	-- local shade3 = UnitGUID("boss3")
-	-- local shade4 = UnitGUID("boss4")
-	-- mod:checkHealth()
 end
 
-function mod:phase3Transition()
-	timer = 600
-	warnPhase3:Schedule(timer)
-	warnPhase3Soon:Schedule(timer-10)
-	timerPhase3:Start(timer)
-	self:ScheduleMethod(timer, "phaseThree")
+function mod:PhaseThreeTransition()
+timerDnD:Start(10)
+timerPhase3:Start()
 end
 
-function mod:phaseThree()
+function mod:PhaseThree()
 	phase = 3
 	self.vb.phase = 3
-	if self.Options.ShowRange then
-		mod:RangeTogglePhaseThree()
-	end
-	timerBlast:Start(45)
-	timerMana:Start(30)
-	timerChains:Start(90)
+	timerDnD:Start()
+	timerNextManaBomb:Start(20)
+	timerFissure:Start(10)
+	timerFlashFreeze:Start()
+	self:ScheduleMethod(20, "DnD")
 end
 
-function mod:SPELL_CAST_START()
-	if args:IsSpellID(28478) and phase == 2 then
-		self:Unschedule("warnPhase3")
-		self:Unschedule("warnPhase3Soon")
-		self:UnscheduleMethod("phaseThree")
-		timerPhase3:Stop()
-		mod:phaseThree()
-	end
+--	self:ScheduleMethod(10, "Fissure")
+	-- Flash Freeze (2124587) 
+	-- Death and Decay (2124575) fixed
+	-- Shadow Fissure (2124579) fixed
+	-- Mana Bomb (2124572) fixed
+--[[ CHECK
+function mod:ShadowFissure()
+fissure = fissure + 1
+timerFissure:Start(fissure)
+self:ScheduleMod(fissure, "ShadowFissure")
+end
+]]--
+
+function mod:FrostPhase()
+	self:UnscheduleMethod(44, "DnD")
+	timerDnD:Cancel(44)
+	timerFrostPhase:Start()
+	self:ScheduleMethod(45, "FrostPhaseFinished")
 end
 
--- function mod:timerNaxxShadeRepeat()
--- 	if shadesSpawned == 0 then
--- 		timer = 34
--- 		warnNaxxShade:Schedule(timer)
--- 		warnNaxxShadeSoon:Schedule(timer-10)
--- 		timerNaxxShade:Start(timer)
--- 		shadesSpawned = shadesSpawned+1
--- 		warnShout:Schedule(timer+16)
--- 		warnShoutSoon:Schedule(timer+11)
--- 		timerShout:Start(timer+16)
--- 	else
--- 		timer = 60
--- 		warnNaxxShade:Schedule(timer)
--- 		warnNaxxShadeSoon:Schedule(timer-10)
--- 		timerNaxxShade:Start(timer)
--- 		shadesSpawned = shadesSpawned+1
--- 		if hasShoutCast == 0 then
--- 			warnShout:Schedule(timer+16)
--- 			warnShoutSoon:Schedule(timer+11)
--- 			timerShout:Start(timer+16)
--- 		end
--- 	end
--- end
+function mod:FrostPhaseFinished()
+	timerDnD:Start(25)
+	self:ScheduleMethod(25, "DnD")
+end
+
+function mod:DnD()
+timerDnD:Start()
+warnDnD:Show()
+self:ScheduleMethod(20,"DnD")
+end
+
+function mod:SPELL_CAST_START(args)
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	-----CONSTRICTING CHAINS-----
-	if args:IsSpellID(1003114) then
+	if args:IsSpellID(2124516) then
 		warnChains:Show(args.destName)
+	-----SHADOW FISSURE-----
+	elseif args:IsSpellID(2124579) and DBM:AntiSpam(5,5) then
 		if args.destName == UnitName("player") then
+			specWarnFissure:Show()
+		else
+			warnFissure:Show()
 		end
-	end
-	-----HARVEST SOUL-----
-	if args:IsSpellID(28679) then 
-		if args:IsPlayer() then
-			timer = 15
-			warnHarvestSoon:Schedule(timer-5)
-			warnHarvest:Schedule(timer)
-			timerHarvest:Start(timer)
-		end
-	end
-	-----SEEING RED-----
-	if args:IsSpellID(1003255) then
-		warnSeeingRed:Show()
-	end
-	-----GASTRIC AFFLICTION-----
-	if args:IsSpellID(1003086) then
-		warnGastric:Show(args.destName)
-		if args.destName == UnitName("player") then
-			specWarnGastric:Show()
-		end
-	end
-	-----VOID ZONE-----
-	if args:IsSpellID(28865) then
-		if args.destName == UnitName("player") then
-			specWarnVoid:Show()
-		end
-	end
+		timerFissure:Start()
 	-----DEATH AND DECAY-----
-	if args:IsSpellID(1003113) then
+	elseif args:IsSpellID(2124575, 2124576, 2124577, 2124578) then
 		if args.destName == UnitName("player") then
 			specWarnDnD:Show()
+		end
+	elseif args:IsSpellID(2124512) then
+		warnPosess:Show(args.destName)
+		timerPosess:Start(args.destName)
+	elseif args:IsSpellID(2124506) then
+		self:SetIcon(args.destName, icy)
+		icy = icy - 1
+	elseif args:IsSpellID(2124587,2124588,2124589, 2124590) then
+		timerFlashFreeze:Start()
+		warnFlashFreezeSoon:Schedule(25)
+	elseif args:IsSpellID(2124572) then
+		if args:IsPlayer() then
+			SendChatMessage("Mana Bomb on "..UnitName("PLAYER").."!", "Say")
+			specWarnManaBomb:Show()
+		else
+			warnManaBomb:Show(args.destName)
+			timerNextManaBomb:Start()
+			timerManaBomb:Start()
+			self:SetIcon(args.destName, mana)
+			mana = mana - 1
 		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	-----HARVEST SOUL-----
-	if args:IsSpellID(28679) then 
-		if args:IsPlayer() then
-			timer = 15
-			warnHarvestSoon:Schedule(timer-5)
-			warnHarvest:Schedule(timer)
-			timerHarvest:Start(timer)
-		end
-	end
-	-----GASTRIC AFFLICTION-----
-	if args:IsSpellID(1003086) then
-		warnGastric:Show(args.destName)
-		if args.destName == UnitName("player") then
-			specWarnGastric:Show()
-		end
-	end
-	-----VOID ZONE-----
-	if args:IsSpellID(28865) then
-		if args.destName == UnitName("player") then
-			specWarnVoid:Show()
-		end
-	end
-	-----DEATH AND DECAY-----
-	if args:IsSpellID(1003113) then
-		if args.destName == UnitName("player") then
-			specWarnDnD:Show()
-		end
-	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	----------SPELL TRACKING----------
-	-----DISRUPTING SHOUT-----
-	if args:IsSpellID(29107) then
-		if notRealRazuv == 1 then
-			timer = 16
-			warnShout:Show()
-			warnShoutSoon:Schedule(timer-5)
-			timerShout:Start(timer)
-			hasShoutCast = 1
-		end
-	-----WAIL OF SOULS-----
-	elseif args:IsSpellID(1003115) then
-		warnWailSoul:Show()
-	-----FROST BLAST-----
-	elseif args:IsSpellID(29879) then 
-		warnBlast:Show()
-		timerBlast:Start(45)
-	-----MANA DETONATION-----
-	elseif args:IsSpellID(27819) then
-		warnMana:Show()
-		timerMana:Start(30)
-	-----CHAINS-----
-	elseif args:IsSpellID(28410) then
-		warnChains:Show()
-		timerChains:Start(90)
-	end
-	--[[
-	----------BOSS CHECKING TOOLS----------
-	-----ANUB-----
-	if args:IsSpellID(28783) and args:sourceGUID(shade1) and spiderBoss == 0 then
-		spiderBoss = 1
-		anub = 1
-	elseif args:IsSpellID(28783) and args:sourceGUID(shade2) and spiderBoss == 0 then
-		spiderBoss = 2
-		anub = 2
-	elseif args:IsSpellID(28783) and args:sourceGUID(shade3) and spiderBoss == 0 then
-		spiderBoss = 3
-		anub = 3
-	elseif args:IsSpellID(28783) and args:sourceGUID(shade4) and spiderBoss == 0 then
-		spiderBoss = 4
-		anub = 4
-	end
-	-----NOTH-----
-	if args:IsSpellID(29213) and args:sourceGUID(shade1) and plagueBoss == 0 then
-		plagueBoss = 1
-		noth = 1
-	elseif args:IsSpellID(29213) and args:sourceGUID(shade2) and plagueBoss == 0 then
-		plagueBoss = 2
-		noth = 2
-	elseif args:IsSpellID(29213) and args:sourceGUID(shade3) and plagueBoss == 0 then
-		plagueBoss = 3
-		noth = 3
-	elseif args:IsSpellID(29213) and args:sourceGUID(shade4) and plagueBoss == 0 then
-		plagueBoss = 4
-		noth = 4
-	end
-	-----RAZUVIOUS-----
-	if args:IsSpellID(29107) and args:sourceGUID(shade1) and militaryBoss == 0 then
-		militaryBoss = 1
-		razuv = 1
-	elseif args:IsSpellID(29107) and args:sourceGUID(shade2) and militaryBoss == 0 then
-		militaryBoss = 2
-		razuv = 2
-	elseif args:IsSpellID(29107) and args:sourceGUID(shade3) and militaryBoss == 0 then
-		militaryBoss = 3
-		razuv = 3
-	elseif args:IsSpellID(29107) and args:sourceGUID(shade4) and militaryBoss == 0 then
-		militaryBoss = 4
-		razuv = 4
-	end
-	-----PATCHWERK-----
-	if args:IsSpellID(28308) and args:sourceGUID(shade1) and constructBoss == 0 then
-		constructBoss = 1
-		patch = 1
-	elseif args:IsSpellID(28308) and args:sourceGUID(shade2) and constructBoss == 0 then
-		constructBoss = 2
-		patch = 2
-	elseif args:IsSpellID(28308) and args:sourceGUID(shade3) and constructBoss == 0 then
-		constructBoss = 3
-		patch = 3
-	elseif args:IsSpellID(28308) and args:sourceGUID(shade4) and constructBoss == 0 then
-		constructBoss = 4
-		patch = 4
-	end
-	]]--
 end
 
 function mod:UNIT_HEALTH(uId)
-	--[[
-	if phase == 2 then
-		-----SPIDER WING-----
-		if spiderBoss == 1 then
-			spiderHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-		elseif spiderBoss == 2 then
-			spiderHealth = math.max(0, UnitHealth("boss2")) / math.max(1, UnitHealthMax("boss2")) * 100;
-		elseif spiderBoss == 3 then
-			spiderHealth = math.max(0, UnitHealth("boss3")) / math.max(1, UnitHealthMax("boss3")) * 100;
-		elseif spiderBoss == 4 then
-			spiderHealth = math.max(0, UnitHealth("boss4")) / math.max(1, UnitHealthMax("boss4")) * 100;
-		end
-		-----PLAGUE WING-----
-		if plagueBoss == 1 then
-			plagueHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-		elseif plagueBoss == 2 then
-			plagueHealth = math.max(0, UnitHealth("boss2")) / math.max(1, UnitHealthMax("boss2")) * 100;
-		elseif plagueBoss == 3 then
-			plagueHealth = math.max(0, UnitHealth("boss3")) / math.max(1, UnitHealthMax("boss3")) * 100;
-		elseif plagueBoss == 4 then
-			plagueHealth = math.max(0, UnitHealth("boss4")) / math.max(1, UnitHealthMax("boss4")) * 100;
-		end
-		-----MILITARY WING-----
-		if militaryBoss == 1 then
-			militaryHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-		elseif militaryBoss == 2 then
-			militaryHealth = math.max(0, UnitHealth("boss2")) / math.max(1, UnitHealthMax("boss2")) * 100;
-		elseif militaryBoss == 3 then
-			militaryHealth = math.max(0, UnitHealth("boss3")) / math.max(1, UnitHealthMax("boss3")) * 100;
-		elseif militaryBoss == 4 then
-			militaryHealth = math.max(0, UnitHealth("boss4")) / math.max(1, UnitHealthMax("boss4")) * 100;
-		end
-		-----CONSTRUCT WING-----
-		if constructBoss == 1 then
-			constructHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-		elseif constructBoss == 2 then
-			constructHealth = math.max(0, UnitHealth("boss2")) / math.max(1, UnitHealthMax("boss2")) * 100;
-		elseif constructBoss == 3 then
-			constructHealth = math.max(0, UnitHealth("boss3")) / math.max(1, UnitHealthMax("boss3")) * 100;
-		elseif constructBoss == 4 then
-			constructHealth = math.max(0, UnitHealth("boss4")) / math.max(1, UnitHealthMax("boss4")) * 100;
-		end
-	end
-	]]--
-end
-
-function mod:checkHealth()
-	--[[
-	if phase == 2 then
-		self:ScheduleMethod(1, checkHealth)
-	end
-	-----SPIDER WING-----
-	if spiderHealth < 67 then
-		anub = spiderBoss
-	elseif spiderHealth > 67 and spiderHealth < 34 then
-		anub = 0 
-		faerlina = spiderBoss
-	elseif spiderHealth > 34 and spiderHealth < 1 then
-		faerlina = 0
-		maexx = spiderBoss
-		timer = 8
-		timerSpider:Start(timer)
-		self:ScheduleMethod(timer, "spiderTimerRepeat")
-	elseif spiderHealth == 0 then
-		maexx = 0
-	end
-	-----PLAGUE WING-----
-	if plagueHealth < 67 then
-		noth = plagueBoss
-	elseif plagueHealth > 67 and plagueHealth < 34 then
-		noth = 0 
-		heigan = plagueBoss
-		if heiganDanceStart == 0 then
-			heiganDanceStart = 1
-			timer = 21
-			timerDance:Start(timer)
-			warnDance:Schedule(timer)
-			warnDanceSoon:Schedule(timer-5)
-		end		
-	elseif plagueHealth > 34 and spiderHealth < 1 then
-		heigan = 0
-		loatheb = plagueBoss
-	elseif plagueHealth == 0 then
-		loatheb = 0
-	end
-	-----MILITARY WING-----
-	if militaryHealth < 67 then
-		razuv = militaryBoss
-	elseif militaryHealth > 67 and militaryHealth < 34 then
-		razuv = 0 
-		gothik = militaryBoss
-		timer = 15
-		warnHarvestSoon:Schedule(timer-5)
-		warnHarvest:Schedule(timer)
-		timerHarvest:Start(timer)
-	elseif militaryHealth > 34 and militaryHealth < 1 then
-		gothik = 0
-		horse = militaryBoss
-		warnHarvestSoon:Cancel()
-		warnHarvest:Cancel()
-		timerHarvest:Stop()
-	elseif militaryHealth == 0 then
-		horse = 0
-	end
-	-----CONSTRUCT WING-----
-	if constructHealth < 75 then
-		patch = constructBoss
-	elseif constructHealth > 75 and constructHealth < 50 then
-		patch = 0 
-		grobb = constructBoss
-	elseif constructHealth > 50 and constructHealth < 25 then
-		grobb = 0 
-		gluth = constructBoss
-	elseif constructHealth > 25 and constructHealth < 1 then
-		gluth = 0
-		thadd = constructBoss
-	elseif constructHealth == 0 then
-		thadd = 0
-	end
-	]]--
-end
-
-function mod:spiderTimerRepeat()
-	if maexx == 0 then
-	else
-		timer = 16
-		timerSpider:Start(timer)
-		self:ScheduleMethod(timer, "spiderTimerRepeat")
+	if self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.80 and warnFrost == 0 then
+		warnFrost = 1
+		warnFrostSoon:Show()
+	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 and warnFrost == 1 then
+			warnFrost = 2
+			warnFrostSoon:Show()
+	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.75 and frostPhase == 0 then
+		frostPhase = 1
+		self:ScheduleMethod(43, "FrostPhase")
+		timerKTteleport:Start(43)
+	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.50 and frostPhase == 1 then
+		frostPhase = 2
+		self:ScheduleMethod(43, "FrostPhase")
+		timerKTteleport:Start(43)
+	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.40 and frostPhase == 2 then
+		frostPhase = 3
+		warnAddsSoon:Show()
 	end
 end
 
-function mod:RangeTogglePhaseTwo(show)
-	if show then
-		DBM.RangeCheck:Show(15)
-	else
-		DBM.RangeCheck:Hide()
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
+		self:ScheduleMethod(0, "PhaseThree")
 	end
 end
 
-function mod:RangeTogglePhaseThree(show)
-	if show then
-		DBM.RangeCheck:Show(10)
-	else
-		DBM.RangeCheck:Hide()
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	if msg == L.EmotePhase3 or msg:find(L.EmotePhase3) then
+		self:ScheduleMethod(0, "PhaseThree")
 	end
+end
+
+function mod:UNIT_DIED(args)
+    local cid = self:GetCIDFromGUID(args.destGUID)
+    if cid == 15928 then
+        icy = 8
+    elseif (cid >= 26614 and cid <= 26629) then
+        shadeCounter = shadeCounter + 1
+        if (mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25")) and shadeCounter == 17 then
+            self:ScheduleMethod(0, "phaseThreeTransition")
+        elseif not (mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25")) and shadeCounter == 16 then
+            self:ScheduleMethod(0, "phaseThreeTransition")
+        end
+	end
+    if cid == 26614 then --Anub
+		timerLocust:Stop()
+		timerImpale:Stop()
+	elseif cid == 26615 then -- Faerlina
+		timerSadism:Stop()
+	elseif cid == 26617 then -- Noth
+		timerCurse:Stop()
+	elseif cid == 26619 then -- Loatheb
+		timerNextDeathbloom:Stop()
+		timerDeathblooming:Stop()
+		timerNecrotic:Stop()
+	elseif cid == 26620 then -- Raz
+		timerenrage:Stop()
+		timerKnife:Stop()
+	elseif (cid >= 26622 and cid <= 2665) then -- Horsemen
+		timerMark:Stop()
+		timerNextHolyWrath:Stop()
+		timerNextDeepChill:Stop()
+		timerNextMeteor:Stop()
+		timerNextFamine:Stop()
+	elseif cid == 26626 then -- Patch
+		timerGastric:Stop()
+		timerGastricSelf:Stop()
+	elseif cid == 26627 then -- Grobb
+		timerNextInjection:Stop()
+		timerSpray:Stop()
+	elseif cid == 26628 then -- Gluth
+		timerDecimate:Stop()
+	elseif cid == 26629 then -- Thadd
+		timerNextShift:Stop()
+		self:UnscheduleMethod("ShiftingPolarity")
+	elseif cid == 26630 then -- Sapph
+		timerNextBellowing:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("DnD")
+		timerLocust:Stop()
+		timerImpale:Stop()
+		timerSadism:Stop()
+		timerCurse:Stop()
+		timerNextDeathbloom:Stop()
+		timerDeathblooming:Stop()
+		timerNecrotic:Stop()
+		timerenrage:Stop()
+		timerKnife:Stop()
+		timerMark:Stop()
+		timerNextHolyWrath:Stop()
+		timerNextDeepChill:Stop()
+		timerNextMeteor:Stop()
+		timerNextFamine:Stop()
+		timerGastric:Stop()
+		timerGastricSelf:Stop()
+		timerNextInjection:Stop()
+		timerSpray:Stop()
+		timerDecimate:Stop()
+		timerNextShift:Stop()
+		timerNextBellowing:Stop()
 end

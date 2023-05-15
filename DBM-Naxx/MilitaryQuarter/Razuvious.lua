@@ -10,122 +10,159 @@ mod:SetBossHealthInfo(
 )
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
 	"UNIT_HEALTH",
-	"PLAYER_ALIVE"
+	"UNIT_DIED",
+	"PLAYER_ALIVE",
+	"SPELL_MISSED"
 )
 
 -----DISRUPTING SHOUT-----
-local warnShoutNow			= mod:NewSpellAnnounce(29107, 2)
-local warnShoutSoon			= mod:NewSoonAnnounce(29107, 3)
-local timerShout			= mod:NewCDTimer(10, 29107)
-local warnShoutNowBackup	= mod:NewSpellAnnounce(29107, 2)
-local warnShoutSoonBackup	= mod:NewSoonAnnounce(29107, 3)
-local timerShoutBackup		= mod:NewCDTimer(10, 29107)
------SHADOW BURST-----
-local warnShadowBurstNow	= mod:NewSpellAnnounce(1003108, 2)
-local warnShadowBurstSoon	= mod:NewSoonAnnounce(1003108, 3)
-local timerShadowBurst		= mod:NewNextTimer(25, 1003108)
+local timerShout			= mod:NewCDTimer(8, 2123920)
+-----Break Unholy Blade-----
+local warnUnholyBladeNow	= mod:NewSpellAnnounce(2123928, 2)
+local warnUnholyBladeSoon	= mod:NewSoonAnnounce(2123928, 2)
+local timerUnholyBlade		= mod:NewNextTimer(30, 2123928)
+local timerCastUnholyBlade	= mod:NewCastTimer(3, 2123928)
 -----JAGGED KNIFE-----
-local warnKnifeNow			= mod:NewTargetAnnounce(55550, 2)
-local specWarnKnife			= mod:NewSpecialWarningSpell(55550, nil, nil, nil, 10)
------BRUISING BLOW-----
-local warnBlowNow			= mod:NewSpellAnnounce(26613, 2)
-local warnBlowSoon			= mod:NewSoonAnnounce(26613, 3)
-local timerBlow				= mod:NewNextTimer(15, 26613)
------CURSE OF FEEBLENESS-----
-local warnCurseNow			= mod:NewSpellAnnounce(1003253, 2)
-local warnCurseEndSoon		= mod:NewSoonAnnounce(1003253, 3)
-local timerCurse			= mod:NewBuffActiveTimer(120, 1003253)
+local warnKnifeNow			= mod:NewTargetAnnounce(2123924, 2)
+local specWarnKnife			= mod:NewSpecialWarningSpell(2123924, nil, nil, nil, 3)
+local timerKnife			= mod:NewNextTimer(15, 2123924)
+-----Death Strike-----
+local timerDeathStrike		= mod:NewNextTimer(15,2123919)
+local warnDeathStrike		= mod:NewCastAnnounce(2123919)
+local specwarnDeathStrike	= mod:NewSpecialWarningStack(2123919, 2)
+--------Strikes--------------
+local timerPlagueStrike		= mod:NewTimer(12, "Plague Strike active", 2123905)
+local timerFrostStrike		= mod:NewTimer(12, "Frost Strike active", 2123904)
 -----MISC-----
-local razHealth
+local prewarn
 local phase
-local notKT					= 0
 local warnPhase2			= mod:NewPhaseAnnounce(2)
+local warnPhase2Soon		= mod:NewAnnounce("Prepare to stack for Anti-Magic Zone!", 1, 2123928, nil, "Show pre-warning for Phase 2")
+local timerenrage			= mod:NewTimer(180, "Enrage", 2123914)
+
+-----PROG NOTES-------
+--"Brake Unholy Blade"  (2123928) - vet ikke timer
+-- 2123905,"Plague Strike" || SPELL_CAST_SUCCESS
+--2123919,"Death Strike" || SPELL_CAST_START - vet ikke timer
+-- 2123920 - Disrupting Shout || vet ikke timer
+-- Frost Strike - (finn Spell ID). 12 sec, 20sec CD
+-- finn timer Death Strike
+-- finn timer Jagged Knife
+-- finn timer Break Unholy Blade
+-- fix trigger for p2
+-- 
+
+
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
 	phase = 1
+	prewarn = 1
 	self.vb.phase = 1
-	RealRazuv = 1
-	-----Shout-----
-	warnShoutNow:Schedule(16 - delay)
-	warnShoutSoon:Schedule(11 - delay)
-	timerShout:Start(16 - delay)
-	-----Shadow Burst-----
-	warnShadowBurstNow:Schedule(25-delay)
-	warnShadowBurstSoon:Schedule(20-delay)
-	timerShadowBurst:Start(25-delay)
-	-----Bruising Blow-----
-	warnBlowNow:Schedule(15-delay)
-	warnBlowSoon:Schedule(10-delay)
-	timerBlow:Start(15-delay)
+	-----Break Unholy Blade-----
+	timerUnholyBlade:Start(-delay)
+	if mod:GetBossTarget(16061) ~= nil then
+	timerKnife:Start(-delay)
+	timerDeathStrike:Start(20-delay)
+	end
+end
+
+function mod:BreakUnholyBlade()
+	warnUnholyBladeNow:Show()
+	timerUnholyBlade:Start()
+	timerCastUnholyBlade:Start()
+	warnUnholyBladeSoon:Show(25)
+end
+
+function mod:DeathStrike()
+	warnDeathStrike:Show()
+	timerDeathStrike:Start()
+end
+
+function mod:PhaseTwo()
+	timerDeathStrike:Stop()
+	timerUnholyBlade:Stop()
+	warnPhase2:Show();
+	timerenrage:Start()
+	timerShout:Start(8)
+	timerKnife:Start()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(55550) then 
+	if args:IsSpellID(2123924,2123925,2123926,2123927) then
 		warnKnifeNow:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnKnife:Show(10);
-			SendChatMessage(L.YellKnife, "YELL")
-			notKT = 1
+			SendChatMessage("Jagged Cold Steel Knife on "..UnitName("PLAYER").."!", "Say")
 		end
-	elseif args:IsSpellID(1003253) then 
-		timer = 120
-		warnCurseNow:Schedule(timer)
-		warnCurseEndSoon:Schedule(timer-10)
-		timerCurse:Start(timer)
-		notKT = 1
-	end		
+		timerKnife:Start()
+	end
+	if args:IsSpellID(2123914) then
+		self:ScheduleMethod(0,"PhaseTwo")
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2123919) and args.amount >=1 then
+		if args:IsPlayer() then
+		specwarnDeathStrike:Show(args.amount)
+		end
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if RealRazuv then
-		if args:IsSpellID(26613) then
-			timer = 15
-			warnBlowNow:Schedule(timer)
-			warnBlowSoon:Schedule(timer-5)
-			timerBlow:Start(timer)
-
-		elseif args:IsSpellID(29107) then
-			if notKT == 1 then
-				timer = 10
-
-				self:Unschedule("warnShoutNowBackup")
-				self:Unschedule("warnShoutSoonBackup")
-				timerShoutBackup:Stop()
-
-				warnShoutNow:Schedule(timer)
-				warnShoutSoon:Schedule(timer-3)
-				timerShout:Start(timer)
-				
-				warnShoutNowBackup:Schedule(timer*2)
-				warnShoutSoonBackup:Schedule(timer*2-3)
-				timerShoutBackup:Start(timer*2)
-			end
+		if args:IsSpellID(2123905) then
+			timerPlagueStrike:Start()
 		end
+		if args:IsSpellID(2123904) then
+			timerFrostStrike:Start()
+		end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2123928,2123929,2123930,2123931) then
+		phase = 2
+		self.vb.phase = 2
+		self:ScheduleMethod(0,"PhaseTwo")
+	end
+end
+
+function mod:SPELL_MISSED(args)
+	if args:IsSpellID(2123920) and (args.destName == "Instructor Razuvious" or args.destName == "Shade of Instructor Razuvious") then
+		timerShout:Start()
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(1003108) then
-		timer = 25
-		warnShadowBurstNow:Schedule(timer)
-		warnShadowBurstSoon:Schedule(timer-5)
-		timerShadowBurst:Start(timer)
+	if args:IsSpellID(2123928,2123929,2123930,2123931) then
+		self:ScheduleMethod(0,"BreakUnholyBlade")
+	end
+	if args:IsSpellID(2123919) then
+		self:ScheduleMethod(0, "DeathStrike")
 	end
 end
 
-function mod:UNIT_HEALTH(args)
-    razHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
-	if razHealth < 40 and phase == 1 then
-		phase = 2
-		self.vb.phase = 2
-		warnPhase2:Show();
-		-----Shadow Burst-----
-		warnShadowBurstNow:Cancel();
-		warnShadowBurstSoon:Cancel();
-		timerShadowBurst:Cancel();
+function mod:UNIT_HEALTH(uId)
+	if self:GetUnitCreatureId(uId) == 16061 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 and phase == 1 and prewarn == 1 then
+		warnPhase2Soon:Show()
+		prewarn = 2
 	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 16061 or cid == 26620 then
+		timerenrage:Stop()
+		timerKnife:Stop()
+	end
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("WarriorSkeletons")
+	timerenrage:Stop()
+	timerKnife:Stop()
 end
