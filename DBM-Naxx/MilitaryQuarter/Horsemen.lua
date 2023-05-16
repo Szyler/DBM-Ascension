@@ -169,10 +169,3 @@ function mod:UNIT_DIED(args)
 		timerMark:Stop()
 	end
 end
-function mod:OnCombatEnd()
-	timerMark:Stop()
-	timerNextDeepChill:Stop()
-	timerNextFamine:Stop()
-	timerNextMeteor:Stop()
-	timerNextHolyWrath:Stop()
-end

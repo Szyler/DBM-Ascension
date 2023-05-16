@@ -60,7 +60,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2123201) then
 		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(2123206, 2123207, 2123208, 2123209) then
+	elseif args:IsSpellID(2123206, 2123207, 2123208, 2123209) and DBM:AntiSpam() then
 		warnWebSprayNow:Show()
 		timerWebStunSoon:Start()
 		
