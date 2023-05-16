@@ -28,7 +28,6 @@ local timerUnholyBlade		= mod:NewNextTimer(30, 2123928)
 local timerCastUnholyBlade	= mod:NewCastTimer(3, 2123928)
 -----JAGGED KNIFE-----
 local warnKnifeNow			= mod:NewTargetAnnounce(2123924, 2)
-local specWarnKnife			= mod:NewSpecialWarningSpell(2123924, nil, nil, nil, 3)
 local timerKnife			= mod:NewNextTimer(15, 2123924)
 -----Death Strike-----
 local timerDeathStrike		= mod:NewNextTimer(15,2123919)
@@ -96,7 +95,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2123924,2123925,2123926,2123927) then
 		warnKnifeNow:Show(args.destName)
 		if args:IsPlayer() then
-			specWarnKnife:Show(10);
 			SendChatMessage("Jagged Cold Steel Knife on "..UnitName("PLAYER").."!", "Say")
 		end
 		timerKnife:Start()
@@ -162,7 +160,6 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:OnCombatEnd()
-	self:UnscheduleMethod("WarriorSkeletons")
 	timerenrage:Stop()
 	timerKnife:Stop()
 end
