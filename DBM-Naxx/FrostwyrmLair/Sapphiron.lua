@@ -98,7 +98,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2124338) then
 		timerNextCurse:Start()
 		warnCurse:Show(args.destName)
-	elseif args:IsSpellID(2124332) then
+	elseif args:IsSpellID(2124332) and DBM:AntiSpam(2,7) then
 		timerTerrified:Start()
 	end
 end
