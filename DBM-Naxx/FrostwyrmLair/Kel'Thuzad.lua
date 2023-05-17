@@ -156,8 +156,8 @@ function mod:PhaseTwo()
 end
 
 function mod:PhaseThreeTransition()
-timerDnD:Start(10)
-timerPhase3:Start()
+	timerDnD:Start(10)
+	timerPhase3:Start()
 end
 
 function mod:PhaseThree()
@@ -196,9 +196,9 @@ function mod:FrostPhaseFinished()
 end
 
 function mod:DnD()
-timerDnD:Start()
-warnDnD:Show()
-self:ScheduleMethod(20,"DnD")
+	timerDnD:Start()
+	warnDnD:Show()
+	self:ScheduleMethod(20,"DnD")
 end
 
 function mod:SPELL_CAST_START(args)
@@ -294,64 +294,65 @@ function mod:UNIT_DIED(args)
         elseif not (mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25")) and shadeCounter == 16 then
             self:ScheduleMethod(0, "phaseThreeTransition")
         end
-	end
-    if cid == 26614 then --Anub
-		timerLocust:Stop()
-		timerImpale:Stop()
-	elseif cid == 26615 then -- Faerlina
-		timerSadism:Stop()
-	elseif cid == 26617 then -- Noth
-		timerCurse:Stop()
-	elseif cid == 26619 then -- Loatheb
-		timerNextDeathbloom:Stop()
-		timerDeathblooming:Stop()
-		timerNecrotic:Stop()
-	elseif cid == 26620 then -- Raz
-		timerenrage:Stop()
-		timerKnife:Stop()
-	elseif (cid >= 26622 and cid <= 26625) then -- Horsemen
-		timerMark:Stop()
-		timerNextHolyWrath:Stop()
-		timerNextDeepChill:Stop()
-		timerNextMeteor:Stop()
-		timerNextFamine:Stop()
-	elseif cid == 26626 then -- Patch
-		timerGastric:Stop()
-		timerGastricSelf:Stop()
-	elseif cid == 26627 then -- Grobb
-		timerNextInjection:Stop()
-		timerSpray:Stop()
-	elseif cid == 26628 then -- Gluth
-		timerDecimate:Stop()
-	elseif cid == 26629 then -- Thadd
-		timerNextShift:Stop()
-		self:UnscheduleMethod("ShiftingPolarity")
-	elseif cid == 26630 then -- Sapph
-		timerNextBellowing:Stop()
+		
+		if cid == 26614 then --Anub
+			timerLocust:Stop()
+			timerImpale:Stop()
+		elseif cid == 26615 then -- Faerlina
+			timerSadism:Stop()
+		elseif cid == 26617 then -- Noth
+			timerCurse:Stop()
+		elseif cid == 26619 then -- Loatheb
+			timerNextDeathbloom:Stop()
+			timerDeathblooming:Stop()
+			timerNecrotic:Stop()
+		elseif cid == 26620 then -- Raz
+			timerenrage:Stop()
+			timerKnife:Stop()
+		elseif (cid >= 26622 and cid <= 26625) then -- Horsemen
+			timerMark:Stop()
+			timerNextHolyWrath:Stop()
+			timerNextDeepChill:Stop()
+			timerNextMeteor:Stop()
+			timerNextFamine:Stop()
+		elseif cid == 26626 then -- Patch
+			timerGastric:Stop()
+			timerGastricSelf:Stop()
+		elseif cid == 26627 then -- Grobb
+			timerNextInjection:Stop()
+			timerSpray:Stop()
+		elseif cid == 26628 then -- Gluth
+			timerDecimate:Stop()
+		elseif cid == 26629 then -- Thadd
+			timerNextShift:Stop()
+			self:UnscheduleMethod("ShiftingPolarity")
+		elseif cid == 26630 then -- Sapph
+			timerNextBellowing:Stop()
+		end
 	end
 end
 
 function mod:OnCombatEnd()
 	self:UnscheduleMethod("DnD")
-		timerLocust:Stop()
-		timerImpale:Stop()
-		timerSadism:Stop()
-		timerCurse:Stop()
-		timerNextDeathbloom:Stop()
-		timerDeathblooming:Stop()
-		timerNecrotic:Stop()
-		timerenrage:Stop()
-		timerKnife:Stop()
-		timerMark:Stop()
-		timerNextHolyWrath:Stop()
-		timerNextDeepChill:Stop()
-		timerNextMeteor:Stop()
-		timerNextFamine:Stop()
-		timerGastric:Stop()
-		timerGastricSelf:Stop()
-		timerNextInjection:Stop()
-		timerSpray:Stop()
-		timerDecimate:Stop()
-		timerNextShift:Stop()
-		timerNextBellowing:Stop()
+	timerLocust:Stop()
+	timerImpale:Stop()
+	timerSadism:Stop()
+	timerCurse:Stop()
+	timerNextDeathbloom:Stop()
+	timerDeathblooming:Stop()
+	timerNecrotic:Stop()
+	timerenrage:Stop()
+	timerKnife:Stop()
+	timerMark:Stop()
+	timerNextHolyWrath:Stop()
+	timerNextDeepChill:Stop()
+	timerNextMeteor:Stop()
+	timerNextFamine:Stop()
+	timerGastric:Stop()
+	timerGastricSelf:Stop()
+	timerNextInjection:Stop()
+	timerSpray:Stop()
+	timerDecimate:Stop()
+	timerNextShift:Stop()
+	timerNextBellowing:Stop()
 end

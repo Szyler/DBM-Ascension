@@ -48,6 +48,7 @@ mod:SetBossHealthInfo(
 	16063, L.Zeliek
 )
 local markCounter = 0
+local markSpam = 0
 
 -----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
@@ -101,18 +102,17 @@ end
 
 function mod:Famine()
     local famineTarget = mod:GetBossTarget(16065) or mod:GetBossTarget(26625) --Finds target of boss (if exsists) otherwise, find target of shade (if exists)
-        if famineTarget == UnitName("player") then --if target == player
-            specWarnFamineYou:Show()
-            SendChatMessage("Field of Famine on "..UnitName("PLAYER").."!", "Say")
-        else
-            warnFamine:Show(famineTarget)
-        end
-        timerFamine:Start(famineTarget) --we want timers to start even if player is the target, you had the timers only in the "if not player".
-        timerNextFamine:Start()
-        self:SetIcon(famineTarget, 3, 4)
+	if famineTarget == UnitName("player") then --if target == player
+		specWarnFamineYou:Show()
+		SendChatMessage("Field of Famine on "..UnitName("PLAYER").."!", "Say")
+	else
+		warnFamine:Show(famineTarget)
+	end
+	timerFamine:Start(famineTarget) --we want timers to start even if player is the target, you had the timers only in the "if not player".
+	timerNextFamine:Start()
+	self:SetIcon(famineTarget, 3, 4)
 end
 
-local markSpam = 0
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(2124103,2124107,2124111,2124115) and (GetTime() - markSpam) > 5 then
 		markSpam = GetTime()
@@ -123,11 +123,9 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2124141) then
 		self:ScheduleMethod(0.25, "HolyWrath")
-	end
-	if args:IsSpellID(2124167) then
+	elseif args:IsSpellID(2124167) then
 		self:ScheduleMethod(0.25, "DeepChill")
-	end
-	if args:IsSpellID(2124166) then
+	elseif args:IsSpellID(2124166) then
 		self:ScheduleMethod(0.25, "Famine")
 	end
 end
@@ -155,17 +153,13 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 16063 or 26624 then
 		timerNextHolyWrath:Stop()
-	end
-	if cid == 16064 or 26623 then
+	elseif cid == 16064 or 26623 then
 		timerNextMeteor:Stop()
-	end
-	if cid == 16065 or 26625 then
+	elseif cid == 16065 or 26625 then
 		timerNextFamine:Stop()
-	end
-	if cid == 30549 or 26622 then
+	elseif cid == 30549 or 26622 then
 		timerNextDeepChill:Stop()
-	end
-	if cid >= 26622 and cid <= 26625 then
+	elseif cid >= 26622 and cid <= 26625 then
 		timerMark:Stop()
 	end
 end

@@ -49,23 +49,21 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnGastric:Show();
 		else
-		warnGastric:Show(args.destName)
+			warnGastric:Show(args.destName)
 		end
 		timerGastricSelf:Start(args.destName)
 		self:SetIcon(args.destName, 8, 15)
 		timerGastric:Start()
-	end
-	if args:IsSpellID(2122516) then
+	elseif args:IsSpellID(2122516) then
 		if args:IsPlayer() then
-		specWarnNotFavToy:Show(args.destName)
-		timerNotFavToy:Start(args.destName)
+			specWarnNotFavToy:Show(args.destName)
+			timerNotFavToy:Start(args.destName)
 		end
 		MT = args.destName
-	end
-	if args:IsSpellID(2122515) then
+	elseif args:IsSpellID(2122515) then
 		if args:IsPlayer() then
-		specWarnFavToy:Show(args.destName)
-		timerFavToy:Start(args.destName)
+			specWarnFavToy:Show(args.destName)
+			timerFavToy:Start(args.destName)
 		end
 	end
 end
@@ -73,10 +71,9 @@ end
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(28308, 59192) and self.Options.WarningHateful and DBM:GetRaidRank() >= 1 then
 		announceStrike(args.destName, args.amount or 0)
-	end
-	if args:IsSpellID(2122505) and (args.destName == MT) then
-	timerNotFavToy:Stop()
-	timerNotFavToy:Start(MT)
+	elseif args:IsSpellID(2122505) and (args.destName == MT) then
+		timerNotFavToy:Stop()
+		timerNotFavToy:Start(MT)
 	end
 end
 

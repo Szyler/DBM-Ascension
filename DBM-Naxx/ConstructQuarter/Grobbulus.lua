@@ -72,7 +72,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnInjection:Show()
 		else
-		warnInjection:Show(args.destName)
+			warnInjection:Show(args.destName)
 		end
 		timerInjection:Start(args.destName)
 		timerNextInjection:Start()
@@ -123,6 +123,7 @@ function mod:StitchedGiant()
 	timerStitchedGiant:Start()
 	self:ScheduleMethod(60,"StitchedGiant")
 end
+
 --if args:IsSpellID(28240) then
 --	timer = 15
 --	timerCloud:Start(timer)
@@ -132,9 +133,9 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 15931 or cid == 26627 then
-	timerInjection:Stop()
-	timerSpray:Stop()
-	timerNextInjection:Stop()
+		timerInjection:Stop()
+		timerSpray:Stop()
+		timerNextInjection:Stop()
 	end
 end
 

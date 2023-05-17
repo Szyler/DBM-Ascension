@@ -102,17 +102,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			SendChatMessage("Magnetic Reversal on "..UnitName("PLAYER").."!", "Say")
 		end
-			warnMagnetic:Show(args.destName)
-			timerMagnetic:Start()
-			mod:SetIcon(args.destName, i, 15)
-			i = i-1
-	end
-	if args:IsSpellID(2124222) then
+		warnMagnetic:Show(args.destName)
+		timerMagnetic:Start()
+		mod:SetIcon(args.destName, i, 15)
+		i = i-1
+	elseif args:IsSpellID(2124222) then
 		local tanktarget = args.destName
 		if args:IsPlayer() then
 			specWarnTankOvercharged:Show()
 		else
-		warnTankOvercharged:Show(tanktarget)
+			warnTankOvercharged:Show(tanktarget)
 		end
 		mod:SetIcon(tanktarget, 8, 15)
 	end
@@ -139,17 +138,16 @@ function mod:UNIT_AURA(unit)
 		if currentCharge == 1 or currentCharge == 0 then
 			specWarnNegative:Show()
 		end
-	 	 	currentCharge = 2
-	 	 	negativePolarity:Show()
-	 	 	positivePolarity:Hide()
-	end
-	if UnitDebuff("Player","Polarity: Positive") then
+		currentCharge = 2
+		negativePolarity:Show()
+		positivePolarity:Hide()
+	elseif UnitDebuff("Player","Polarity: Positive") then
 		if currentCharge == 2 or currentCharge == 0 then
 			specWarnPositive:Show()
 		end
-		  	currentCharge = 1
-	 		negativePolarity:Hide()
-	 		positivePolarity:Show()
+		currentCharge = 1
+		negativePolarity:Hide()
+		positivePolarity:Show()
 	end
 end
 

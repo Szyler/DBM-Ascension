@@ -85,16 +85,16 @@ function mod:PositionTwo()
 	if dance == 1 then
 		timerPositionTwo:Start(4)
 		if forward == 1 then
-		self:ScheduleMethod(4, "PositionThree")
+			self:ScheduleMethod(4, "PositionThree")
 		else
-		self:ScheduleMethod(4, "PositionOne")
+			self:ScheduleMethod(4, "PositionOne")
 		end
 	else
 		timerPositionTwo:Start(10)
 		if forward == 1 then
-		self:ScheduleMethod(10, "PositionThree")
+			self:ScheduleMethod(10, "PositionThree")
 		else
-		self:ScheduleMethod(10, "PositionOne")
+			self:ScheduleMethod(10, "PositionOne")
 		end
 	end
 end
@@ -103,19 +103,20 @@ function mod:PositionThree()
 	if dance == 1 then
 		timerPositionThree:Start(4)
 		if forward == 1 then
-		self:ScheduleMethod(4, "PositionFour")
+			self:ScheduleMethod(4, "PositionFour")
 		else
-		self:ScheduleMethod(4, "PositionTwo")
+			self:ScheduleMethod(4, "PositionTwo")
 		end
 	else
 		timerPositionThree:Start(10)
 		if forward == 1 then
 			self:ScheduleMethod(10, "PositionFour")
-			else
+		else
 			self:ScheduleMethod(10, "PositionTwo")
-			end
+		end
 	end
 end
+
 function mod:PositionFour()
 	forward = 0
 	if dance == 1 then
@@ -175,7 +176,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 15936 or cid == 26618 then
-	self:ScheduleMethod(0,"KillPositions")
+		self:ScheduleMethod(0,"KillPositions")
 	end
 end
 

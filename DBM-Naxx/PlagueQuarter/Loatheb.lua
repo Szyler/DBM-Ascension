@@ -75,25 +75,25 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnCloudOfBlight:Show();
 		end
-	end
-	if args:IsSpellID(2122623,2122624,2122625,2122626) and (GetTime() - doomSpam) > 5 then
+	elseif args:IsSpellID(2122623,2122624,2122625,2122626) and (GetTime() - doomSpam) > 5 then
 		doomSpam = GetTime()  -- Inevitable Doom
 		doomCounter = doomCounter + 1
 		local timer = 30
 		if doomCounter >= 7 then
-			if doomCounter % 2 == 0 then timer = 17
-			else timer = 12 end
+			if doomCounter % 2 == 0 then 
+				timer = 17
+			else 
+				timer = 12 
+			end
 		end
 		warnDoomNow:Show(doomCounter)
 		timerNextDoom:Start(timer, doomCounter + 1)
 		timerDoomDamage:Start()
-	end
-	if args:IsSpellID(2122601) and DBM:AntiSpam(5,2) then
+	elseif args:IsSpellID(2122601) and DBM:AntiSpam(5,2) then
 		timerNecrotic:Start()
 		warnHealNow:Schedule(16)
 		timerCastHeal:Schedule(16)
-	end
-	if args:IsSpellID(2122627) and DBM:AntiSpam(5,4) then
+	elseif args:IsSpellID(2122627) and DBM:AntiSpam(5,4) then
 		specWarnDeathblooming:Show()
 		timerDeathblooming:Start()
 		timerNextDeathbloom:Start()
@@ -105,8 +105,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args:IsPlayer() then
 			specWarnCloudOfBlight:Show();
 		end
-	end
-	if args:IsSpellID(2122631) then
+	elseif args:IsSpellID(2122631) then
 		if args:IsPlayer() and (args.amount == 5 or args.amount == 10 or args.amount == 15 or args.amount == 20) and (GetTime() - bloomSpam) > 5 then
 		bloomSpam = GetTime()
 		warnDeathbloomStack:Show(args.spellName, args.destName, args.amount or 1)
