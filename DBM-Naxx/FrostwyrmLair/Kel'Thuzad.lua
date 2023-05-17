@@ -236,11 +236,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnManaBomb:Show()
 		else
 			warnManaBomb:Show(args.destName)
-			timerNextManaBomb:Start()
-			timerManaBomb:Start()
-			self:SetIcon(args.destName, mana)
-			mana = mana - 1
 		end
+		self:SetIcon(args.destName, mana)
+		mana = mana - 1
+		timerNextManaBomb:Start()
+		timerManaBomb:Start()
 	end
 end
 
