@@ -309,7 +309,7 @@ function mod:UNIT_DIED(args)
 	elseif cid == 26620 then -- Raz
 		timerenrage:Stop()
 		timerKnife:Stop()
-	elseif (cid >= 26622 and cid <= 2665) then -- Horsemen
+	elseif (cid >= 26622 and cid <= 26625) then -- Horsemen
 		timerMark:Stop()
 		timerNextHolyWrath:Stop()
 		timerNextDeepChill:Stop()
