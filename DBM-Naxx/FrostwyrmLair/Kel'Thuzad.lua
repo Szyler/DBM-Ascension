@@ -184,8 +184,8 @@ end
 ]]--
 
 function mod:FrostPhase()
-	self:UnscheduleMethod(44, "DnD")
-	timerDnD:Cancel(44)
+	self:UnscheduleMethod(0, "DnD")
+	timerDnD:Cancel()
 	timerFrostPhase:Start()
 	self:ScheduleMethod(45, "FrostPhaseFinished")
 end
