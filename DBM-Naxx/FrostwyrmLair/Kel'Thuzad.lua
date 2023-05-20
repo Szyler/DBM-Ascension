@@ -265,7 +265,7 @@ function mod:UNIT_HEALTH(uId)
 		frostPhase = 2
 		self:ScheduleMethod(43, "FrostPhase")
 		timerKTteleport:Start(43)
-	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.40 and frostPhase == 2 then
+	elseif self:GetUnitCreatureId(uId) == 15990 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 and frostPhase == 2 then
 		frostPhase = 3
 		warnAddsSoon:Show()
 	end
