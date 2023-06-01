@@ -23,7 +23,7 @@ local warnPatch					= mod:NewSpellAnnounce(43429, 3)
 
 local specWarnBolt				= mod:NewSpecialWarningSpell(2136100)
 local specWarnHeal				= mod:NewSpecialWarning("Interrupt Heal!")--#NewInterruptAnnounce(43548)
-local specWarnBlindingLight		= mod:NewSpecialWarning("Look Away!")
+-- local specWarnBlindingLight		= mod:NewSpecialWarning("Look Away!") -- It's a LOS mechanic
 -- local specWarnHeal2				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43451)
 -- local specWarnHeal3				= mod:NewSpecialWarning("Interrupt Heal!")--mod:NewInterruptAnnounce(43431)
 -- local specWarnHeal4				= mod:NewSpecialWarning("Dispel!")--mod:NewSpecialWarningDispel(43421)
@@ -37,7 +37,9 @@ local timerPatch				= mod:NewCastTimer(20, 43429)
 local timerNextDrain			= mod:NewNextTimer(60, 2136100)
 
 local warnDruidSoul				= mod:NewSpecialWarning("Druid Soul Absorbed")
-local timerNextTranquility		= mod:NewNextTimer(5, 2136126) 
+local timerNextUrsol			= mod:NewNextTimer(5, 2136123) 
+local timerNextSolar			= mod:NewNextTimer(15, 2136125) 
+local timerNextTranquility		= mod:NewNextTimer(25, 2136126) 
 local timerCastTranquility		= mod:NewCastTimer(10, 2136126)
 
 local warnHunterSoul			= mod:NewSpecialWarning("Hunter Soul Absorbed")
@@ -55,6 +57,7 @@ local timerRuneOfPowerduration	= mod:NewTimer(10, "Rune of Power duration", 2136
 local timerNextBlizzard			= mod:NewNextTimer(15, 2136137) --2136137, 2136138, 2136139, 2136140
 local timerNextLivingBomb		= mod:NewNextTimer(25, 2136141) --Dot: 2136141, 2136142, 2136143, 2136144,       Explosion damage: 2136145, 2136146, 2136147, 2136148
 local timerLivingBomb			= mod:NewTargetTimer(12, 2136141) --2136141
+local warnYouLivingBomb			= mod:NewSpecialWarningYou(2136141) --2136141
 
 local warnPaladinSoul			= mod:NewSpecialWarning("Paladin Soul Absorbed")
 local timerNextBlindingLight	= mod:NewNextTimer(5, 2136155)
@@ -87,8 +90,8 @@ local timerNextCurseOfDoom		= mod:NewNextTimer(5, 2136177) --2136177, 2136178, 2
 local timerCurseOfDoom			= mod:NewTargetTimer(15, 2136177)
 local timerNextRainofFire		= mod:NewNextTimer(15, 2136186) --2136186, 2136187, 2136188, 2136189
 local timerNextHellfire			= mod:NewNextTimer(25, 2136181) --2136181, 2136182, 2136183, 2136184, 2136185
-local specWarnRainofFire		= mod:NewSpecialWarningRun(2136182)
-local specWarnHellfire			= mod:NewSpecialWarningRun(2136186)
+local specWarnRainofFire		= mod:NewSpecialWarningRun(2136186)
+local specWarnHellfire			= mod:NewSpecialWarningRun(2136182)
 
 local warnWarriorSoul			= mod:NewSpecialWarning("Warrior Soul Absorbed")
 local timerNextSpellReflect		= mod:NewNextTimer(5, 2136190) --2136190
@@ -96,6 +99,22 @@ local timerNextHeroicLeap		= mod:NewNextTimer(15, 2136191) --2136191, 2136192
 local timerNextColossusSmash	= mod:NewNextTimer(25, 2136193) --2136193
 local timerColossusSmash		= mod:NewTargetTimer(6, 2136193) --2136193
 local timerSpellReflect			= mod:NewTargetTimer(6, 2136190) --2136190
+
+local warnDeathKnightSoul		= mod:NewSpecialWarning("Death Knight Soul Absorbed")
+local timerNextArmy				= mod:NewNextTimer(5, 2136284)
+local timerNextDnD				= mod:NewNextTimer(15, 2136297)
+local timerNextAbsolute			= mod:NewNextTimer(25, 2136292)
+local timerCastAbsolute			= mod:NewCastTimer(5, 2136292)
+-- local timerColossusSmash		= mod:NewTargetTimer(6, 2136193) --2136193
+-- local timerSpellReflect			= mod:NewTargetTimer(6, 2136190) --2136190
+
+-- Mythic/Ascended mechanics
+local timerNextBloodScythe		= mod:NewNextTimer(15, 2136280)
+local warnBloodScythe			= mod:NewSpecialWarningStack(2136280)
+
+local timerNextSiphon			= mod:NewNextTimer(85, 2136260) -- 2136260, 2136261, 2136262, 2136263
+local timerNextWill				= mod:NewNextTimer(15, 2107116) -- 2107116, 2107117, 2107118, 2107119
+local timerNextCorrupted		= mod:NewNextTimer(20, 2136242) -- 2136242, 2136243, 2136244, 2136245
 
 function mod:OnCombatStart(delay)
 	timerNextBolt:Start(10)
@@ -109,7 +128,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	-- 	timerSiphon:Show(args.destName)
 	if args:IsSpellID(2136114) then
 		warnDruidSoul:Show()
-		timerNextTranquility:Start()
+		timerNextUrsol:Start() -- 2136123
+		timerNextSolar:Start() -- 2136125
+		timerNextTranquility:Start() -- 2136126
 	elseif args:IsSpellID(2136115) then
 		warnHunterSoul:Show()
 		timerNextMultiShot:Start()
@@ -128,6 +149,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerRuneOfPowerduration:Start()
 	elseif args:IsSpellID(2136141) then
 		timerLivingBomb:Show(args.destName)
+		if args:IsPlayer() then
+			warnYouLivingBomb:Show()
+		end
 	elseif args:IsSpellID(2136137, 2136138, 2136139, 2136140) then
 		specWarnRainofFire:Show()
 	elseif args:IsSpellID(2136117) then
@@ -174,6 +198,19 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerSpellReflect:Show(args.destName)
 	elseif args:IsSpellID(2136193) then
 		timerColossusSmash:Show(args.destName)
+	elseif args:IsSpellID(2136283) then
+		warnDeathKnightSoul:Show()
+		timerNextArmy:Start() -- 2136284
+		timerNextDnD:Start() -- 2136297
+		timerNextAbsolute:Start() -- 2136292
+	elseif args:IsSpellID(2136292, 2136293, 2136294, 2136295) then
+		timerCastAbsolute:Start()
+	elseif args:IsSpellID(2136280) and (args.amount and args.amount >= 5)  then
+		warnBloodScythe:Show()
+	elseif args:IsSpellID(2107116) then
+		timerNextWill:Show()
+	elseif args:IsSpellID(2136242) then
+		timerNextCorrupted:Show()
 	end
 end
 
@@ -192,7 +229,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnHeal:Show()
 	elseif args:IsSpellID(2136155) then
 		timerCastBlindingLight:Start()
-		specWarnBlindingLight:Show()
+		-- specWarnBlindingLight:Show() -- It's a LOS mechanic
 	end
 end
 
@@ -203,6 +240,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerBolt:Start()
 		timerNextBolt:Start()
 		timerNextDrain:Schedule(10)
+	elseif args:IsSpellID(2136280) then
+		timerNextBloodScythe:Start()
+	elseif args:IsSpellID(2136260, 2136261, 2136262, 2136263) then
+		timerNextSiphon:Start() -- 2136260, 2136261, 2136262, 2136263
 	end
 end
 

@@ -37,6 +37,8 @@ local specWarnTurbulentWinds	= mod:NewSpecialWarningYou(2136342)
 local warnTurbulentWindsTarget 	= mod:NewTargetAnnounce(2136342, 4)
 local warnStorm					= mod:NewTargetAnnounce(2135724, 4)
 local specWarnStorm				= mod:NewSpecialWarningSpell(2135724)
+local timerNextBladestorm		= mod:NewNextTimer(45, 2136315)
+local timerBladestorm 			= mod:NewCastTimer(15, 2136315)
 
 local warnPhaseBear				= mod:NewSpecialWarningSpell(2136337) --2136337, Shape of the Eagle, ASC D0 T5
 local timerNextDeafeningRoar	= mod:NewNextTimer(15, 2135829) --2135829, 2135830, 2135831, 2135832
@@ -61,6 +63,10 @@ local specWarnSpiritLink		= mod:NewSpecialWarningRun(2136414) --2136413, 2136414
 local timerNextGrievous			= mod:NewNextTimer(10, 2136300) --2136301, 2136302, 2136303
 local timerNextWhirlwind		= mod:NewNextTimer(45, 2136316) --2136316, Whirlwind
 local timerNextImpale			= mod:NewNextTimer(45, 2136304) --2136304, 2136305, 2136306, 2136307, 2136308, 2136309
+local timerNextScentOfCorruption = mod:NewNextTimer(35, 2136464) -- 2136464, 2136465, Scent of Corruption
+
+local specWarnBloodScythe		= mod:NewSpecialWarningYou(2136461)
+local warnBloodScythe			= mod:NewTargetAnnounce(2136461, 4)
 
 mod.vb.phase = 1
 local eosSpam = 0
@@ -92,10 +98,22 @@ function mod:LightningStrike()
 	self:ScheduleMethod(10,"LightningStrike")
 end
 
+function mod:BloodScythe()
+	local target = nil
+	local myName = UnitName("player")
+	target = mod:GetBossTarget(14982)
+	if target == myName then
+		specWarnBloodScythe:Show()
+		SendChatMessage(L.DBM_BLOOD_SCYTHE, "YELL")
+	else
+		warnBloodScythe:Show(target)
+	end
+end
+
 function mod:TurbulentWinds()
 	local target = nil
 	local myName = UnitName("player")
-	target = mod:GetBossTarget(80468) -- need to confirm ID !
+	target = mod:GetBossTarget(23863) -- need to confirm ID !
 	if target == myName then
 		specWarnTurbulentWinds:Show(target)
 		SendChatMessage(L.DBM_TURBULENT_WINDS,  "YELL")
@@ -149,6 +167,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:PhaseIncrease()
 			warnPhaseLynx:Show()
 		end
+	elseif args:IsSpellID(2136315) then
+		timerBladestorm:Start()
+		timerNextImpale:Start(27)
+		timerNextBladestorm:Start()
 	end
 end
 
@@ -158,30 +180,47 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextTurbulentWinds:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Lightning")
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136337) then --Phase 2-3-4-5
 		warnPhaseBear:Show()
 		timerNextDeafeningRoar:Start(8)
 		timerNextStampede:Start()
 		self:ScheduleMethod(10, "WallMechanic", "Bear")
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136357) then --Phase 2-3-4-5
 		warnPhaseDragonhawk:Show()
 		timerNextScorchingBreath:Start()
 		timerNextArmageddon:Start()
 		timerNextFlameWhirl:Start(1.5)
 		self:PhaseIncrease()
+		timerNextImpale:Cancel()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
 	elseif args:IsSpellID(2136376) then --Phase 2-3-4-5
 		warnPhaseLynx:Show()
 		self:PhaseIncrease()
 		timerNextLynxRush:Start()
-	elseif args:IsSpellID(2136316) then
-		timerNextWhirlwind:Start()
+		timerNextWhirlwind:Cancel()
+		timerNextScentOfCorruption:Cancel()
+	elseif args:IsSpellID(2136315) then
+		timerNextImpale:Cancel()
 	elseif args:IsSpellID(2136402) then
 		timerBombCast:Start()
 		specWarnBomb:Show()
 	elseif args:IsSpellID(2136363) then
 		timerFlameWhirlCast:Start()
 		timerNextFlameWhirl:Start() -- timer is probably wrong
+	elseif args:IsSpellID(2136304,2136305,2136306,2136307) then
+		timerNextImpale:Start(45)
+		timerNextWhirlwind:Start(18)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerNextScentOfCorruption:Start(20)
+		end
 	end
 end
 
@@ -190,6 +229,8 @@ function mod:SPELL_CAST_START(args)
 		timerNextTurbulentWinds:Start()
 		timerCastTurbulentWinds:Start()
 		self:ScheduleMethod(0.2, "TurbulentWinds")
+	elseif args:IsSpellID(2136461) then
+		self:ScheduleMethod(0.2, "BloodScythe")
 	end
 end
 
@@ -234,5 +275,4 @@ function mod:UNIT_DIED(args)
 	else 
 		return
 	end
-	print("Should only appear if phase = 10, otherwise contact DBM developers.")
 end
