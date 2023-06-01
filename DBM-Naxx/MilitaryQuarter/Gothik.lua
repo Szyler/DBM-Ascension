@@ -76,9 +76,9 @@ end
 
 function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 16060 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.11 and phase ==1 then
-	self:UnscheduleMethod("HarvestSoul")
-	timerHarvest:Stop()
-	phase = 2
+		self:UnscheduleMethod("HarvestSoul")
+		timerHarvest:Stop()
+		phase = 2
 	end
 end
 

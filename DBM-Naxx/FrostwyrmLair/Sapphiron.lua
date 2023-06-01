@@ -88,17 +88,17 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124344) then
 		if args:IsPlayer() then
-		specWarnTombTarget:Show()
-		SendChatMessage("Ice Tomb incoming on "..UnitName("PLAYER").."!", "Say")
+			specWarnTombTarget:Show()
+			SendChatMessage("Ice Tomb incoming on "..UnitName("PLAYER").."!", "Say")
 		else
-		warnTombTarget:Show(args.destName)
+			warnTombTarget:Show(args.destName)
 		end
 	elseif args:IsSpellID(2124328) and args.IsPlayer() then
 		specWarningBlizzard:Show()
 	elseif args:IsSpellID(2124338) then
 		timerNextCurse:Start()
 		warnCurse:Show(args.destName)
-	elseif args:IsSpellID(2124332) then
+	elseif args:IsSpellID(2124332) and DBM:AntiSpam(2,7) then
 		timerTerrified:Start()
 	end
 end
@@ -106,12 +106,11 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2124332) then
-	specWarnBellowing:Show()
-	timerBellowing:Start()
-	timerNextBellowing:Start()
-	timerTerrified:Schedule(4.5)
-	end
-	if args:IsSpellID(2124322) then
+		specWarnBellowing:Show()
+		timerBellowing:Start()
+		timerNextBellowing:Start()
+		timerTerrified:Schedule(4.5)
+	elseif args:IsSpellID(2124322) then
 		timerNextBreath:Start()
 		timerBreath:Start()
 	end

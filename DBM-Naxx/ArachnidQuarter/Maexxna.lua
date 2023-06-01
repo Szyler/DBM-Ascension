@@ -60,10 +60,9 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2123201) then
 		warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(2123206, 2123207, 2123208, 2123209) then
+	elseif args:IsSpellID(2123206, 2123207, 2123208, 2123209) and DBM:AntiSpam() then
 		warnWebSprayNow:Show()
 		timerWebStunSoon:Start()
-		
 		timerWebSpray:Start()
 	elseif args:IsSpellID(2123211,2123212,2123216,2123217) and (GetTime() - webSpam) > 5 then -- Web Wrap
 		webSpam = GetTime()
@@ -86,12 +85,11 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 			necroticSpam = GetTime()
 			warnNecrotic:Show(args.spellName, args.destName, args.amount or 1)
 		end
-	end
-	if args:IsSpellID(2123202) then
+	elseif args:IsSpellID(2123202) then
 		if args:IsPlayer() and args.amount >= 1 then
-		specWarnDigestive:Show(args.amount)
+			specWarnDigestive:Show(args.amount)
 		elseif args:IsPlayer() == false and args.amount >= 4 and args.amount <=10 then
-		warnDigestive:Show(args.spellName, args.destName, args.amount or 1)
+			warnDigestive:Show(args.spellName, args.destName, args.amount or 1)
 		end
 	end
 end

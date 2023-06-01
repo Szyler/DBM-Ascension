@@ -92,10 +92,10 @@ end
 
 function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2123102) then
-	timerSadism:Stop()
-	timerBloodBath:Start()
-	warnBloodBathSoon:Cancel()
-	warnBloodBathSoon:Schedule(40)
+		timerSadism:Stop()
+		timerBloodBath:Start()
+		warnBloodBathSoon:Cancel()
+		warnBloodBathSoon:Schedule(40)
 	end
 end
 

@@ -48,10 +48,9 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args:IsPlayer() then
 			SpecWarnVicStacks:Show(args.amount)
 		else
-		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
+			warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
 		end
-	end
-	if args:IsSpellID(2122904) then
+	elseif args:IsSpellID(2122904) then
 		if args.amount >=1 then
 			specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
 		end
@@ -63,16 +62,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			SpecWarnVicStacks:Show(args.amount or 1)
 		else
-		warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
+			warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
 		end
-	end
-	if args:IsSpellID(2122904) then
+	elseif args:IsSpellID(2122904) then
 		specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
-	end
-	if args:IsSpellID(2122903) then
+	elseif args:IsSpellID(2122903) then
 		warnHungry:Show()
-	end
-	if args:IsSpellID(2122923) and (args.destName == "Gluth") then
+	elseif args:IsSpellID(2122923) and (args.destName == "Gluth") then
 		timerFeedFrenzy:Start()
 	end
 end
@@ -80,7 +76,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 15932 or cid == 26628 then
-	timerDecimate:Stop()
+		timerDecimate:Stop()
 	end
 end
 

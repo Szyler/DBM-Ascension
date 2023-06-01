@@ -16,19 +16,19 @@ mod:RegisterEvents(
 	"UNIT_DIED"
 )
 -----POLARITY SHIFT-----
-local timerShiftCast		= mod:NewCastTimer(4, 2124201)
-local timerNextShift		= mod:NewNextTimer(34, 2124201)
-local warnShiftCasting		= mod:NewCastAnnounce(2124201, 2)
-local specWarnNegative		= mod:NewSpecialWarningMove(2124203, 2)
-local specWarnPositive		= mod:NewSpecialWarningMove(2124202, 2)
-local specWarnMagnetic		= mod:NewSpecialWarningYou(2124245, 2)
-local warnMagnetic			= mod:NewAnnounce("Magnetic Reversal", 2, 2124245, nil, "Show warning for Magnetic Reversal")
-local timerMagnetic			= mod:NewTimer(15, "Magnetic Reversal duration", 2124245)
-local warnTankOvercharged	= mod:NewTargetAnnounce(2124222, 2)
+local timerShiftCast			= mod:NewCastTimer(4, 2124201)
+local timerNextShift			= mod:NewNextTimer(34, 2124201)
+local warnShiftCasting			= mod:NewCastAnnounce(2124201, 2)
+local specWarnNegative			= mod:NewSpecialWarningMove(2124203, 2)
+local specWarnPositive			= mod:NewSpecialWarningMove(2124202, 2)
+local warnMagnetic				= mod:NewAnnounce("Magnetic Reversal", 2, 2124245, nil, "Show warning for Magnetic Reversal")
+local timerMagnetic				= mod:NewTimer(16, "Magnetic Reversal duration", 2124245)
+local warnTankOvercharged		= mod:NewTargetAnnounce(2124222, 2)
+local specWarnTankOvercharged	= mod:NewSpecialWarningYou(2124222, 2)
 -----THROW-----
-local warnThrow				= mod:NewSpellAnnounce(2124244, 2)
-local warnThrowSoon			= mod:NewSoonAnnounce(2124244, 2)
-local timerThrow			= mod:NewNextTimer(20.6, 2124244)
+local warnThrow					= mod:NewSpellAnnounce(2124244, 2)
+local warnThrowSoon				= mod:NewSoonAnnounce(2124244, 2)
+local timerThrow				= mod:NewNextTimer(20.6, 2124244)
 -----MISC-----
 
 local enrageTimer			= mod:NewBerserkTimer(365)
@@ -100,18 +100,19 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2124245) and DBM:AntiSpam(2, 6) then
 		if args:IsPlayer() then
-			specWarnMagnetic:Show()
 			SendChatMessage("Magnetic Reversal on "..UnitName("PLAYER").."!", "Say")
-		else
-			warnMagnetic:Show(args.destName);
 		end
-			timerMagnetic:Start()
-			mod:SetIcon(args.destName, i, 15)
-			i = i-1
-	end
-	if args:IsSpellID(2124222) then
+		warnMagnetic:Show(args.destName)
+		timerMagnetic:Start()
+		mod:SetIcon(args.destName, i, 15)
+		i = i-1
+	elseif args:IsSpellID(2124222) then
 		local tanktarget = args.destName
-		warnTankOvercharged:Show(tanktarget)
+		if args:IsPlayer() then
+			specWarnTankOvercharged:Show()
+		else
+			warnTankOvercharged:Show(tanktarget)
+		end
 		mod:SetIcon(tanktarget, 8, 15)
 	end
 end
@@ -137,17 +138,16 @@ function mod:UNIT_AURA(unit)
 		if currentCharge == 1 or currentCharge == 0 then
 			specWarnNegative:Show()
 		end
-	 	 	currentCharge = 2
-	 	 	negativePolarity:Show()
-	 	 	positivePolarity:Hide()
-	end
-	if UnitDebuff("Player","Polarity: Positive") then
+		currentCharge = 2
+		negativePolarity:Show()
+		positivePolarity:Hide()
+	elseif UnitDebuff("Player","Polarity: Positive") then
 		if currentCharge == 2 or currentCharge == 0 then
 			specWarnPositive:Show()
 		end
-		  	currentCharge = 1
-	 		negativePolarity:Hide()
-	 		positivePolarity:Show()
+		currentCharge = 1
+		negativePolarity:Hide()
+		positivePolarity:Show()
 	end
 end
 

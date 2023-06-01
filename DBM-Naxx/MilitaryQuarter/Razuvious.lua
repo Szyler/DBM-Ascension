@@ -28,7 +28,6 @@ local timerUnholyBlade		= mod:NewNextTimer(30, 2123928)
 local timerCastUnholyBlade	= mod:NewCastTimer(3, 2123928)
 -----JAGGED KNIFE-----
 local warnKnifeNow			= mod:NewTargetAnnounce(2123924, 2)
-local specWarnKnife			= mod:NewSpecialWarningSpell(2123924, nil, nil, nil, 3)
 local timerKnife			= mod:NewNextTimer(15, 2123924)
 -----Death Strike-----
 local timerDeathStrike		= mod:NewNextTimer(15,2123919)
@@ -96,12 +95,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2123924,2123925,2123926,2123927) then
 		warnKnifeNow:Show(args.destName)
 		if args:IsPlayer() then
-			specWarnKnife:Show(10);
 			SendChatMessage("Jagged Cold Steel Knife on "..UnitName("PLAYER").."!", "Say")
 		end
 		timerKnife:Start()
-	end
-	if args:IsSpellID(2123914) then
+	elseif args:IsSpellID(2123914) then
 		self:ScheduleMethod(0,"PhaseTwo")
 	end
 end
@@ -109,18 +106,17 @@ end
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(2123919) and args.amount >=1 then
 		if args:IsPlayer() then
-		specwarnDeathStrike:Show(args.amount)
+			specwarnDeathStrike:Show(args.amount)
 		end
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-		if args:IsSpellID(2123905) then
-			timerPlagueStrike:Start()
-		end
-		if args:IsSpellID(2123904) then
-			timerFrostStrike:Start()
-		end
+	if args:IsSpellID(2123905) then
+		timerPlagueStrike:Start()
+	elseif args:IsSpellID(2123904) then
+		timerFrostStrike:Start()
+	end
 end
 
 function mod:SPELL_DAMAGE(args)
@@ -140,8 +136,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2123928,2123929,2123930,2123931) then
 		self:ScheduleMethod(0,"BreakUnholyBlade")
-	end
-	if args:IsSpellID(2123919) then
+	elseif args:IsSpellID(2123919) then
 		self:ScheduleMethod(0, "DeathStrike")
 	end
 end
@@ -162,7 +157,6 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:OnCombatEnd()
-	self:UnscheduleMethod("WarriorSkeletons")
 	timerenrage:Stop()
 	timerKnife:Stop()
 end

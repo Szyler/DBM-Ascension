@@ -21,10 +21,9 @@ local timerSpore					= mod:NewNextTimer(30, 29234)
 local specWarnCloudOfBlight			= mod:NewSpecialWarningMove(79008)
 -----IMPENDING DOOM-----
 local warnDoomNow					= mod:NewSpellAnnounce(29204, 2)
-local timerNextDoom						= mod:NewNextTimer(180, 29204)
+local timerNextDoom					= mod:NewNextTimer(180, 29204)
 local timerDoomDamage				= mod:NewTimer(8, "Inevitable Doom expires!", 2122623)
 -----HEALING AURA-----
-local warnHealSoon					= mod:NewAnnounce("Healing possible in 3 seconds", 2, 48071)
 local warnHealNow					= mod:NewAnnounce("Healing available!", 1, 48071)
 local timerNecrotic					= mod:NewBuffActiveTimer(16, 2122601)
 local timerCastHeal					= mod:NewTimer(4, "Heal now!", nil)
@@ -35,8 +34,7 @@ local softEnrage
 -----DEATHBLOOM-----
 local timerNextDeathbloom			= mod:NewNextTimer(30, 2122627)
 local timerDeathblooming			= mod:NewTimer(15, "Deathbloom expires!", 2122627)
-local specWarnDeathblooming			= mod:NewSpecialWarningSpell(2122627, 1)
-local warnDeathbloom				= mod:NewSpellAnnounce(2122631, 2)
+local specWarnDeathblooming			= mod:NewAnnounce("Deathbloom will expire soon!", 1,2122627)
 local warnDeathbloomStack			= mod:NewAnnounce("%s on >%s< (%d)", 2, 2122631)
 -----MISC-----
 mod:AddBoolOption("SporeDamageAlert", false)
@@ -52,7 +50,7 @@ function mod:OnCombatStart(delay)
 	doomCounter = 0
 	timerSpore:Start(15-delay)
 	timerNecrotic:Start(10-delay)
-	timerDoom:Start(30-delay)
+	timerNextDoom:Start(30-delay)
 	timerNextDeathbloom:Start(10-delay)
 	self:ScheduleMethod(15-delay, "SporeSpawn")
 end
@@ -77,29 +75,25 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnCloudOfBlight:Show();
 		end
-	end
-	if args:IsSpellID(2122623,2122624,2122625,2122626) and (GetTime() - doomSpam) > 5 then
+	elseif args:IsSpellID(2122623,2122624,2122625,2122626) and (GetTime() - doomSpam) > 5 then
 		doomSpam = GetTime()  -- Inevitable Doom
 		doomCounter = doomCounter + 1
 		local timer = 30
 		if doomCounter >= 7 then
-			if doomCounter % 2 == 0 then timer = 17
-			else timer = 12 end
+			if doomCounter % 2 == 0 then 
+				timer = 17
+			else 
+				timer = 12 
+			end
 		end
 		warnDoomNow:Show(doomCounter)
 		timerNextDoom:Start(timer, doomCounter + 1)
 		timerDoomDamage:Start()
-	end
-	if args:IsSpellID(2122601) and DBM:AntiSpam(5,2) then
+	elseif args:IsSpellID(2122601) and DBM:AntiSpam(5,2) then
 		timerNecrotic:Start()
-		warnHealSoon:Schedule(13)
 		warnHealNow:Schedule(16)
 		timerCastHeal:Schedule(16)
-	end
-	if args:IsSpellID(2122631) and DBM:AntiSpam(5,3) then
-		warnDeathbloom:Show()
-	end
-	if args:IsSpellID(2122627) and DBM:AntiSpam(5,4) then
+	elseif args:IsSpellID(2122627) and DBM:AntiSpam(5,4) then
 		specWarnDeathblooming:Show()
 		timerDeathblooming:Start()
 		timerNextDeathbloom:Start()
@@ -111,9 +105,8 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		if args:IsPlayer() then
 			specWarnCloudOfBlight:Show();
 		end
-	end
-	if args:IsSpellID(2122631) then
-		if args:IsPlayer() and args.amount > 5 and (GetTime() - bloomSpam) > 8 then
+	elseif args:IsSpellID(2122631) then
+		if args:IsPlayer() and (args.amount == 5 or args.amount == 10 or args.amount == 15 or args.amount == 20) and (GetTime() - bloomSpam) > 5 then
 		bloomSpam = GetTime()
 		warnDeathbloomStack:Show(args.spellName, args.destName, args.amount or 1)
 		end
@@ -131,8 +124,7 @@ function mod:UNIT_HEALTH(uId)
 		timerSpore:Stop()
 		timerNecrotic:Stop()
 		warnHealNow:Cancel()
-		warnHealSoon:Cancel()
-		timerNextDoom:stop()
+		timerNextDoom:Stop()
 		self:UnscheduleMethod("SporeSpawn")
 	end
 end

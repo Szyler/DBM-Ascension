@@ -96,27 +96,28 @@ function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.80 and prePhase ==0 then
 		warnIntermissionSoon:Show()
 		prePhase = 1
-		end
+		-- end
 	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.753 and phase ==0 then
 	--self:ScheduleMethod(0,"Intermission")
 	--phase = 1
 	--end
-	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 and prePhase ==1 then
+	elseif self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 and prePhase ==1 then
 		warnIntermissionSoon:Show()
 		prePhase = 2
-		end
+		-- end
 	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.503 and phase ==1 then
 	--	self:ScheduleMethod(0,"Intermission")
 	--	phase = 2
 	--end
-	if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.30 and prePhase ==2 then
+	elseif self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.30 and prePhase ==2 then
 		warnIntermissionSoon:Show()
 		prePhase = 3
-		end
+		-- end
 	--if self:GetUnitCreatureId(uId) == 15954 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.253 and phase ==2 then
 	--	self:ScheduleMethod(0,"Intermission")
 	--	phase = 3
 	--end
+	end
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
