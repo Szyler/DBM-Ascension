@@ -232,3 +232,13 @@ v5.17 15/05/2023
 - Rewrote most of the Naxx fights, updating Spell IDs
 - Added UNIT_DIED triggers to all
 - Added AntiSpam
+----------------------------------------------------------------------------------------------------
+v5.18 15/05/2023
+- Fixed druid spells on Malacrass
+- Fixed warlock spell Ids on Warlock Malacrass being swapped
+- Removed warning to look away on Malacrass (its a LOS mechanic)
+- Added Deathknight spells to Malacrass
+- Added some Ascended mechanics on Zuljin
+- Fixed new spellIDs on Onyxia
+- Fixed Blast Nova timers on Onyxia
+- Added yell for Fireball on Onyxia
