@@ -13,6 +13,13 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS"
 )
 
+-- Unknown Entity spawn
+-- Unknown Effigy warning (2 stacks++)
+-- Teleport active (plus body notification?)
+-- Carrion Swarm CD
+-- Infernal timers?
+
+
 local warnSwarm			= mod:NewSpellAnnounce(31306, 3)
 local warnSleep			= mod:NewTargetNoFilterAnnounce(31298, 2)
 local warnInferno		= mod:NewTargetNoFilterAnnounce(31299, 4)
