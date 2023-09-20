@@ -1,68 +1,71 @@
-local mod	= DBM:NewMod("Azgalor", "DBM-Hyjal")
-local L		= mod:GetLocalizedStrings()
+local mod	= DBM:NewMod("Azgalor", "DBM-Hyjal", 1)
 
-mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
-mod:SetCreatureID(17842)
-mod:SetUsedIcons(8)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
+mod:SetCreatureID(17842, 117842, 217842, 317842)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS"
 )
 
-local warnSilence		= mod:NewSpellAnnounce(31344, 3)
-local warnDoom			= mod:NewTargetNoFilterAnnounce(31347, 4)
+local warnRainOfFire		= mod:NewSpecialWarningYou(2141200)
+local nextRainOfFire		= mod:NewNextTimer(25, 2141200)
+local nextLegionPortal		= mod:NewTimer(45, "Legion Portal", 35717)
+local nextHowlOfAzgalor		= mod:NewNextTimer(30, 2141209)
+local spamYell = 0
 
-local specWarnFire		= mod:NewSpecialWarningMove(31340)
-local specWarnDoom		= mod:NewSpecialWarningYou(31347)
-local yellDoom			= mod:NewShortFadesYell(31347)
-
-local timerDoom			= mod:NewTargetTimer(20, 31347)
-local timerSilence		= mod:NewBuffFadesTimer(5, 31344)
-local timerSilenceCD	= mod:NewCDTimer(18, 31344)
-
-local berserkTimer		= mod:NewBerserkTimer(600)
-
-mod:AddBoolOption("DoomIcon", false)
+function mod:LegionPortal()
+	self:UnscheduleMethod("LegionPortal")
+	nextLegionPortal:Start()
+	self:ScheduleMethod(45, "LegionPortal")
+end
 
 function mod:OnCombatStart(delay)
-	berserkTimer:Start(-delay)
+	nextRainOfFire:Start(-delay)
+	nextLegionPortal:Start(-delay - 15)
+	nextHowlOfAzgalor:Start(-delay + 5)
+	self:ScheduleMethod(30 - delay, "LegionPortal")
+end
+
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("LegionPortal")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 31340 and args:IsPlayer() and self:AntiSpam() then
-		specWarnFire:Show()
-	elseif args.spellId == 31347 then
-		timerDoom:Start(args.destName)
-		if args:IsPlayer() then
-			specWarnDoom:Show()
-			yellDoom:Countdown(args.spellId)
-		else
-			warnDoom:Show(args.destName)
-		end
-		if self.Options.DoomIcon then
-			self:SetIcon(args.destName, 8)
-		end
+	if (
+		args:IsSpellID(2141200, 2141201, 2141202, 2141203, 2141204, 2141205, 2141206, 2141207) and
+		args:IsPlayer() and
+		GetTime() - spamYell >= 5
+	) then
+		spamYell = GetTime()
+		warnRainOfFire:Show()
+		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 31347 then
-		if args:IsPlayer() then
-			yellDoom:Cancel()
-		end
-		if self.Options.DoomIcon then
-			self:SetIcon(args.destName, 0)
-		end
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if (
+		args:IsSpellID(2141200, 2141201, 2141202, 2141203, 2141204, 2141205, 2141206, 2141207) and
+		args:IsPlayer() and
+		GetTime() - spamYell >= 5
+	) then
+		spamYell = GetTime()
+		warnRainOfFire:Show()
+		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31344 then
-		warnSilence:Show()
-		timerSilence:Start()
-		timerSilenceCD:Start()
+	if args:IsSpellID(2141200, 2141201, 2141202, 2141203, 2141204, 2141205, 2141206, 2141207) then
+		nextRainOfFire:Start()
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2141209) then
+		nextHowlOfAzgalor:Start()
 	end
 end

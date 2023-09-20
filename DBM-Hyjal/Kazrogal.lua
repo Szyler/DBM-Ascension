@@ -1,44 +1,32 @@
-local mod	= DBM:NewMod("Kazrogal", "DBM-Hyjal")
-local L		= mod:GetLocalizedStrings()
+local mod	= DBM:NewMod("Kazrogal", "DBM-Hyjal", 1)
 
-mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
-mod:SetCreatureID(17888)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
+mod:SetCreatureID(17888, 117888, 217888, 317888)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS"
-)
+local nextPillar		= mod:NewNextTimer(55, 92177)
+local nextWarstomp		= mod:NewNextTimer(55, 2141009)
 
-local warnMark		= mod:NewCountAnnounce(31447, 3)
-local warnStomp		= mod:NewSpellAnnounce(31480, 2)
+function mod:Pillar()
+	self:UnscheduleMethod("Pillar")
+	nextPillar:Start()
+	self:ScheduleMethod(55, "Pillar")
+end
 
-local timerMark		= mod:NewBuffFadesTimer(6.2, 31447, nil, nil, nil, 2)
-local timerMarkCD	= mod:NewNextCountTimer(45, 31447, nil, nil, nil, 2)
-
-mod.vb.count = 0
-mod.vb.time = 45
+function mod:Warstomp()
+	self:UnscheduleMethod("Warstomp")
+	nextWarstomp:Start()
+	self:ScheduleMethod(55, "Warstomp")
+end
 
 function mod:OnCombatStart(delay)
-	self.vb.time = 45
-	self.vb.count = 0
-	timerMark:Start(45-delay)
+	nextPillar:Start(-delay - 45)
+	nextWarstomp:Start(-delay)
+	self:ScheduleMethod(10 - delay, "Pillar")
+	self:ScheduleMethod(55 - delay, "Warstomp")
 end
 
-function mod:SPELL_CAST_START(args)
-	if args.spellId == 31447 then
-		self.vb.count = self.vb.count + 1
-		if self.vb.time > 10 then
-			self.vb.time = self.vb.time - 5
-		end
-		warnMark:Show(self.vb.count)
-		timerMark:Start()
-		timerMarkCD:Start(nil, self.vb.time)
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31480 then
-		warnStomp:Show()
-	end
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("Pillar")
+	self:UnscheduleMethod("Warstomp")
 end

@@ -1,77 +1,90 @@
-local mod	= DBM:NewMod("Anetheron", "DBM-Hyjal")
-local L		= mod:GetLocalizedStrings()
+local mod	= DBM:NewMod("Anetheron", "DBM-Hyjal", 1)
 
-mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
-mod:SetCreatureID(17808)
+mod:SetRevision(("$Revision: 5015 $"):sub(12, -3))
+mod:SetCreatureID(17808, 117808, 217808, 317808)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REFRESH",
-	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS"
 )
 
--- Unknown Entity spawn
--- Unknown Effigy warning (2 stacks++)
--- Teleport active (plus body notification?)
--- Carrion Swarm CD
--- Infernal timers?
+local warnNightmare			= mod:NewSpecialWarningTarget(2140830)
+local warnInfernalRain		= mod:NewSpecialWarningYou(2140810)
 
+local nextCarrion			= mod:NewNextTimer(30, 2140800)
+local nextInfernalRain		= mod:NewNextTimer(45, 2140810)
+local nextNightmare			= mod:NewNextTimer(45, 2140830)
 
-local warnSwarm			= mod:NewSpellAnnounce(31306, 3)
-local warnSleep			= mod:NewTargetNoFilterAnnounce(31298, 2)
-local warnInferno		= mod:NewTargetNoFilterAnnounce(31299, 4)
+function mod:Nightmare()
+	self:UnscheduleMethod("Nightmare")
+	nextNightmare:Start()
+	self:ScheduleMethod(45, "Nightmare")
+end
 
-local specWarnInferno	= mod:NewSpecialWarningYou(31299)
-local yellInferno		= mod:NewYell(31299)
+function mod:OnCombatStart(delay)
+	nextCarrion:Start(-20 - delay)
+	nextInfernalRain:Start(-25 - delay)
+	nextNightmare:Start(-10 - delay)
+	self:ScheduleMethod(35 - delay, "Nightmare")
+end
 
-local timerSwarm		= mod:NewBuffFadesTimer(20, 31306)
-local timerSleep		= mod:NewBuffFadesTimer(10, 31298)
-local timerSleepCD		= mod:NewCDTimer(19, 31298)
-local timerInferno		= mod:NewCDTimer(51, 31299)
-
-function mod:InfernoTarget(targetname, uId)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		specWarnInferno:Show()
-		yellInferno:Yell()
-	else
-		warnInferno:Show(targetname)
-	end
+function mod:OnCombatEnd()
+	self:UnscheduleMethod("Nightmare")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 31306 and args:IsPlayer() then
-		timerSwarm:Start()
-	elseif args.spellId == 31298 and args:IsPlayer() then
-		timerSleep:Start()
+	if args:IsSpellID(
+		2140468,
+		2140469,
+		2140470,
+		2140471,
+		2140810,
+		2140811,
+		2140812,
+		2140813,
+		2140818,
+		2140819,
+		2140820,
+		2140821
+	) and args:IsPlayer() then
+		warnInfernalRain:Show()
+		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
+	elseif args:IsSpellID(2140830, 2140831) and args:IsPlayer() then
+		warnNightmare:Show(args.destName)
 	end
 end
-mod.SPELL_AURA_REFRESH = mod.SPELL_AURA_APPLIED
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 31306 and args:IsPlayer() then
-		timerSwarm:Stop()
-	elseif args.spellId == 31298 and args:IsPlayer() then
-		timerSleep:Stop()
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(
+		2140468,
+		2140469,
+		2140470,
+		2140471,
+		2140810,
+		2140811,
+		2140812,
+		2140813,
+		2140818,
+		2140819,
+		2140820,
+		2140821
+	) and args:IsPlayer() then
+		warnInfernalRain:Show()
+		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 31299 then
-		timerInferno:Start()
-		-- self:BossTargetScanner(17808, "InfernoTarget", 0.05, 10)
-		-- Needs our "target = mod:GetBossTarget(21875)" thing
+	if args:IsSpellID(2140800) then
+		nextCarrion:Start()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31306 then
-		warnSwarm:Show()
-	elseif args.spellId == 31298 then
-		timerSleepCD:Start()
+	if args:IsSpellID(2140814) then
+		nextInfernalRain:Start()
 	end
 end
-
