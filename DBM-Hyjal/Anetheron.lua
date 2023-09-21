@@ -7,84 +7,60 @@ mod:RegisterCombat("combat")
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_START"
 )
 
-local warnNightmare			= mod:NewSpecialWarningTarget(2140830)
-local warnInfernalRain		= mod:NewSpecialWarningYou(2140810)
+local warnNightmare				= mod:NewSpecialWarningTarget(2140830)
+local warnInfernalRain			= mod:NewSpecialWarningYou(2140810)
 
-local nextCarrion			= mod:NewNextTimer(30, 2140800)
-local nextInfernalRain		= mod:NewNextTimer(45, 2140810)
-local nextNightmare			= mod:NewNextTimer(45, 2140830)
+local timerNextCarrion			= mod:NewNextTimer(30, 2140800)
+local timerNextInfernalRain		= mod:NewNextTimer(45, 2140810)
+local timerNextNightmare		= mod:NewNextTimer(45, 2140830)
 
 function mod:Nightmare()
 	self:UnscheduleMethod("Nightmare")
-	nextNightmare:Start()
+	timerNextNightmare:Start()
 	self:ScheduleMethod(45, "Nightmare")
 end
 
+function mod:InfernalRain()
+	self:UnscheduleMethod("InfernalRain")
+	timerNextInfernalRain:Start()
+	self:ScheduleMethod(45, "InfernalRain")
+end
+
 function mod:OnCombatStart(delay)
-	nextCarrion:Start(-20 - delay)
-	nextInfernalRain:Start(-25 - delay)
-	nextNightmare:Start(-10 - delay)
+	timerNextCarrion:Start(10 - delay)
+	timerNextInfernalRain:Start(20 - delay)
+	timerNextNightmare:Start(35 - delay)
+	self:ScheduleMethod(20 - delay, "InfernalRain")
 	self:ScheduleMethod(35 - delay, "Nightmare")
 end
 
-function mod:OnCombatEnd()
-	self:UnscheduleMethod("Nightmare")
-end
-
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(
-		2140468,
-		2140469,
-		2140470,
-		2140471,
-		2140810,
-		2140811,
-		2140812,
-		2140813,
-		2140818,
-		2140819,
-		2140820,
-		2140821
+	if (
+		args:IsSpellID(2140468, 2140469, 2140470, 2140471) or
+		args:IsSpellID(2140810,	2140811, 2140812, 2140813) or
+		args:IsSpellID(2140818, 2140819, 2140820, 2140821)
 	) and args:IsPlayer() then
 		warnInfernalRain:Show()
-		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
-	elseif args:IsSpellID(2140830, 2140831) and args:IsPlayer() then
+	elseif args:IsSpellID(2140830, 2140831) then
 		warnNightmare:Show(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(
-		2140468,
-		2140469,
-		2140470,
-		2140471,
-		2140810,
-		2140811,
-		2140812,
-		2140813,
-		2140818,
-		2140819,
-		2140820,
-		2140821
+	if (
+		args:IsSpellID(2140468, 2140469, 2140470, 2140471) or
+		args:IsSpellID(2140810,	2140811, 2140812, 2140813) or
+		args:IsSpellID(2140818, 2140819, 2140820, 2140821)
 	) and args:IsPlayer() then
 		warnInfernalRain:Show()
-		SendChatMessage("I'M BAD, I STAND IN FIRE", "YELL")
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2140800) then
-		nextCarrion:Start()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2140814) then
-		nextInfernalRain:Start()
+		timerNextCarrion:Start()
 	end
 end

@@ -13,22 +13,19 @@ mod:RegisterEvents(
 	"UNIT_HEALTH"
 )
 
-local warnShatter5			= mod:NewSoonAnnounce(2140630, 3)
-local warnShatter1			= mod:NewSoonAnnounce(2140630, 4)
+local warnShatter5				= mod:NewSoonAnnounce(2140630, 3)
+local warnShatter2				= mod:NewSoonAnnounce(2140630, 4)
 
-local warnDeathAndDecay		= mod:NewSpecialWarningYou(2140600)
-local warnFrostbite			= mod:NewSpecialWarningYou(2140613)
+local warnDeathAndDecay			= mod:NewSpecialWarningYou(2140600)
+local warnFrostbite				= mod:NewSpecialWarningYou(2140613)
+local warnIceBarrage			= mod:NewSpecialWarningSpell(2140624)
 
-local nextChains			= mod:NewNextTimer(15, 2140654)
-local nextWintersTouch		= mod:NewNextTimer(15, 2140606)
-local nextDeathAndDecay		= mod:NewNextTimer(30, 2140600)
-local nextIceBarrage		= mod:NewNextTimer(45, 2140624)
-local nextLichSlap			= mod:NewNextTimer(10, 2140645)
--- local nextThreatDrop 		= mod:NewNextTimer(-1, 1)
-
-local castIceBarrage		= mod:NewSpecialWarningSpell(2140624)
-
-local spamDnD = 0
+local timerNextChains			= mod:NewNextTimer(15, 2140654)
+local timerNextWintersTouch		= mod:NewNextTimer(15, 2140606)
+local timerNextDeathAndDecay	= mod:NewNextTimer(30, 2140600)
+local timerNextIceBarrage		= mod:NewNextTimer(45, 2140624)
+local timerNextLichSlap			= mod:NewNextTimer(10, 2140645)
+-- local timerNextThreatDrop 	= mod:NewNextTimer(-1, 1)
 local nwarns = 0
 
 mod:AddBoolOption("TrackWintersTouch", false)
@@ -36,7 +33,7 @@ mod:AddBoolOption("TrackLichSlap", false)
 
 function mod:DeathAndDecay()
 	self:UnscheduleMethod("DeathAndDecay")
-	nextDeathAndDecay:Start()
+	timerNextDeathAndDecay:Start()
 	self:ScheduleMethod(30, "DeathAndDecay")
 end
 
@@ -47,43 +44,41 @@ end
 -- end
 
 function mod:OnCombatStart(delay)
-	nwarns = 0
-	nextChains:Start(-delay)
-	nextDeathAndDecay:Start(-delay)
-	nextIceBarrage:Start(-delay)
+	timerNextChains:Start(-delay)
+	timerNextDeathAndDecay:Start(-delay)
+	timerNextIceBarrage:Start(-delay)
 	self:ScheduleMethod(30, "DeathAndDecay")
 end
 
-function mod:OnCombatEnd()
-	self:UnscheduleMethod("DeathAndDecay")
-end
-
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2140600, 2140601, 2140602, 2140603) and GetTime() - spamDnD >= 5 then
-		spamDnD = GetTime()
+	if args:IsSpellID(2140600, 2140601, 2140602, 2140603) and DBM:AntiSpam(nil, 2140600) then
 		warnDeathAndDecay:Show()
 	elseif args:IsSpellID(2140613, 2140614, 2140615, 2140616) then
 		warnFrostbite:Show()
 	elseif args:IsSpellID(2140654) then
-		SendChatMessage(string.format("Connected to %s!", args.sourceName), "YELL") -- args.destName?
+		if args:IsPlayer() then
+			SendChatMessage(string.format("Connected to %s!", args.sourceName), "YELL")
+		elseif args.sourceName == UnitName("Player") then
+			SendChatMessage(string.format("Connected to %s!", args.destName), "YELL")
+		end
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2140624, 2140625, 2140626, 2140627) then
-		castIceBarrage:Show()
-		nextIceBarrage:Start()
+		warnIceBarrage:Show()
+		timerNextIceBarrage:Start()
 	elseif (
 		self.Options.TrackWintersTouch and
 		args:IsSpellID(2140605, 2140606, 2140607, 2140608)
 	) then
-		nextWintersTouch:Start()
+		timerNextWintersTouch:Start()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if self.Options.TrackLichSlap and args:IsSpellID(2140645) then
-		nextLichSlap:Start()
+		timerNextLichSlap:Start()
 	end
 end
 
@@ -102,13 +97,13 @@ function mod:UNIT_HEALTH(unit)
 
 	if hp <= 35 and nwarns < 1 then
 		nwarns = 1
-		warnShatter1:Show()
+		warnShatter2:Show()
 	elseif hp <= 38 and nwarns < 2 then
 		nwarns = 2
 		warnShatter5:Show()
 	elseif hp <= 68 and nwarns < 3 then
 		nwarns = 3
-		warnShatter1:Show()
+		warnShatter2:Show()
 	elseif hp <= 71 and nwarns < 4 then
 		nwarns = 4
 		warnShatter5:Show()
@@ -117,17 +112,18 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == "It will be much colder in your grave." then -- Acolyte phase starts.
-		nextWintersTouch:Stop()
-		nextDeathAndDecay:Stop()
-		nextIceBarrage:Stop()
-		nextLichSlap:Stop()
+		timerNextWintersTouch:Stop()
+		timerNextDeathAndDecay:Stop()
+		timerNextIceBarrage:Stop()
+		timerNextLichSlap:Stop()
+		self:UnscheduleMethod("DeathAndDecay")
 	end
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == "Rage Winterchill shatters his Ice Bullwark, continuing his assault!" then -- Acolyte phase ends.
-		nextDeathAndDecay:Start(-20)
-		nextIceBarrage:Start(-20)
+		timerNextDeathAndDecay:Start(10)
+		timerNextIceBarrage:Start(25)
 		self:ScheduleMethod(10, "DeathAndDecay")
 	end
 end
