@@ -11,6 +11,13 @@
 ## X-DBM-Tab-Sort: 306
 ## X-DBM-Tab-Text: Hyjal Summit
 ## X-DBM-Tab-LoadZone: Hyjal Summit
+localization.en.lua
+localization.de.lua
+localization.cn.lua
+localization.tw.lua
+localization.ru.lua
+localization.es.lua
+localization.kr.lua
 RageWinterchill.lua
 Anetheron.lua
 Kazrogal.lua
