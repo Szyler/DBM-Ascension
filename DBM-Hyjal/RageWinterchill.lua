@@ -84,29 +84,21 @@ end
 
 function mod:UNIT_HEALTH(unit)
 	local unit_id = mod:GetUnitCreatureId(unit)
-	if not (
-		unit_id == 17767 or
-		unit_id == 117767 or
-		unit_id == 217767 or
-		unit_id == 317767
-	) then
-		return
-	end
-
-	local hp = math.max(0, UnitHealth(unit)) / math.max(1, UnitHealthMax(unit)) * 100
-
-	if hp <= 35 and nwarns < 1 then
-		nwarns = 1
-		warnShatter2:Show()
-	elseif hp <= 38 and nwarns < 2 then
-		nwarns = 2
-		warnShatter5:Show()
-	elseif hp <= 68 and nwarns < 3 then
-		nwarns = 3
-		warnShatter2:Show()
-	elseif hp <= 71 and nwarns < 4 then
-		nwarns = 4
-		warnShatter5:Show()
+	if unit_id == 17767 or unit_id == 117767 or unit_id == 217767 or unit_id == 317767 then
+		local hp = math.max(0, UnitHealth(unit)) / math.max(1, UnitHealthMax(unit)) * 100
+		if hp <= 35 and nwarns < 1 then
+			nwarns = 1
+			warnShatter2:Show()
+		elseif hp <= 38 and nwarns < 2 then
+			nwarns = 2
+			warnShatter5:Show()
+		elseif hp <= 68 and nwarns < 3 then
+			nwarns = 3
+			warnShatter2:Show()
+		elseif hp <= 71 and nwarns < 4 then
+			nwarns = 4
+			warnShatter5:Show()
+		end
 	end
 end
 

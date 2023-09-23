@@ -30,20 +30,18 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if (
-		(args:IsSpellID(2141200, 2141201, 2141202, 2141203) or args:IsSpellID(2141204, 2141205, 2141206, 2141207)) and
-		args:IsPlayer() and DBM:AntiSpam()
-	) then
-		warnRainOfFire:Show()
+	if args:IsSpellID(2141200, 2141201, 2141202, 2141203) or args:IsSpellID(2141204, 2141205, 2141206, 2141207) then
+		if args:IsPlayer() and DBM:AntiSpam() then
+			warnRainOfFire:Show()
+		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if (
-		(args:IsSpellID(2141200, 2141201, 2141202, 2141203) or args:IsSpellID(2141204, 2141205, 2141206, 2141207)) and
-		args:IsPlayer() and DBM:AntiSpam()
-	) then
-		warnRainOfFire:Show()
+	if args:IsSpellID(2141200, 2141201, 2141202, 2141203) or args:IsSpellID(2141204, 2141205, 2141206, 2141207) then
+		if args:IsPlayer() and DBM:AntiSpam() then
+			warnRainOfFire:Show()
+		end
 	end
 end
 

@@ -38,24 +38,20 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if (
-		args:IsSpellID(2140468, 2140469, 2140470, 2140471) or
-		args:IsSpellID(2140810,	2140811, 2140812, 2140813) or
-		args:IsSpellID(2140818, 2140819, 2140820, 2140821)
-	) and args:IsPlayer() then
-		warnInfernalRain:Show()
+	if args:IsSpellID(2140468, 2140469, 2140470, 2140471) or args:IsSpellID(2140810, 2140811, 2140812, 2140813) or args:IsSpellID(2140818, 2140819, 2140820, 2140821) then
+		if args:IsPlayer() then
+			warnInfernalRain:Show()
+		end
 	elseif args:IsSpellID(2140830, 2140831) then
 		warnNightmare:Show(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if (
-		args:IsSpellID(2140468, 2140469, 2140470, 2140471) or
-		args:IsSpellID(2140810,	2140811, 2140812, 2140813) or
-		args:IsSpellID(2140818, 2140819, 2140820, 2140821)
-	) and args:IsPlayer() then
-		warnInfernalRain:Show()
+	if args:IsSpellID(2140468, 2140469, 2140470, 2140471) or args:IsSpellID(2140810, 2140811, 2140812, 2140813) or args:IsSpellID(2140818, 2140819, 2140820, 2140821) then
+		if args:IsPlayer() then
+			warnInfernalRain:Show()
+		end
 	end
 end
 

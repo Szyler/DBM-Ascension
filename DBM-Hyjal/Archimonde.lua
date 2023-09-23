@@ -67,10 +67,8 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == "Your resistance is insignificant." then
         self.vb.phase = 1
-
         timerNextBerserkerLeap:Stop()
         timerNextFelFireCharge:Stop()
-
         timerNextForceOfWill:Start(30)
         timerNextDoomfireMeteor:Start(10)
 	end
