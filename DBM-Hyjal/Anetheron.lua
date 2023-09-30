@@ -3,75 +3,175 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(17808)
-mod:RegisterCombat("combat")
+mod:SetUsedIcons(1,2,3,4,5,6,7,8)
+mod:RegisterCombat("combat", 17808)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REFRESH",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_CAST_SUCCESS",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"CHAT_MSG_MONSTER_YELL",
+	"UNIT_DIED"
 )
 
 -- Unknown Entity spawn
 -- Unknown Effigy warning (2 stacks++)
 -- Teleport active (plus body notification?)
--- Carrion Swarm CD
--- Infernal timers?
 
+--Carrion Swarm
+local warnSwarm				= mod:NewSpellAnnounce(2140800, 3)
+local timerSwarm			= mod:NewNextTimer(30, 2140800)
 
-local warnSwarm			= mod:NewSpellAnnounce(31306, 3)
-local warnSleep			= mod:NewTargetNoFilterAnnounce(31298, 2)
-local warnInferno		= mod:NewTargetNoFilterAnnounce(31299, 4)
+--Nightmare
+local timerNextNightmare	= mod:NewNextTimer(45, 2140830)
+local warnNightmareSoon		= mod:NewAnnounce("Nightmare soon!", 2140830)
+local warnNightmare			= mod:NewAnnounce("%s is sent into the Nightmare!", 2140830)
+-- Ring of Frost
+local timerNextRingofFrost	= mod:NewNextTimer(45, 2140153)
+local timerRingofFrost		= mod:NewTimer(15, "Ring of Frost duration", 2140153)
+-- Infernal Rain
+local timerNextInfernal		= mod:NewNextTimer(45, 2140810)
+local timerInfernal			= mod:NewTimer(10, "Infernal spawning", 2140810)
+local timerInfernalRain		= mod:NewTimer(19, "Infernal Rain duration", 2140818)
+-- Fight
+local target1
+local target2
+local target3
 
-local specWarnInferno	= mod:NewSpecialWarningYou(31299)
-local yellInferno		= mod:NewYell(31299)
+function mod:OnCombatStart(delay)
+	timerSwarm:Start(10-delay)
+	timerNextNightmare:Start(35-delay)
+	timerNextInfernal:Start(20-delay)
+	self:ScheduleMethod(35-delay,"Nightmare")
+	target1 = nil
+	target2 = nil
+	target3 = nil
+	DBM.BossHealth:AddBoss(17772, L.Jaina)
+end
 
-local timerSwarm		= mod:NewBuffFadesTimer(20, 31306)
-local timerSleep		= mod:NewBuffFadesTimer(10, 31298)
-local timerSleepCD		= mod:NewCDTimer(19, 31298)
-local timerInferno		= mod:NewCDTimer(51, 31299)
-
-function mod:InfernoTarget(targetname, uId)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		specWarnInferno:Show()
-		yellInferno:Yell()
-	else
-		warnInferno:Show(targetname)
-	end
+function mod:Nightmare()
+	self:UnscheduleMethod("Nightmare")
+	timerNextNightmare:Start()
+	warnNightmareSoon:Schedule(40)
+	self:ScheduleMethod(45,"Nightmare")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 31306 and args:IsPlayer() then
-		timerSwarm:Start()
-	elseif args.spellId == 31298 and args:IsPlayer() then
-		timerSleep:Start()
+	if args:IsSpellID(2140825) then
+		if 	target3 == nil and target2 ~= nil and target1 ~= nil then
+				target3 = args.DestName
+				self:setIcon(target3, 2)
+				DBM.BossHealth:AddBoss(92171,target3)
+				warnNightmare:Show(target3)
+		elseif target2 == nil and target1 ~= nil then
+				target2 = args.DestName
+				self:setIcon(target2, 2)
+				DBM.BossHealth:AddBoss(92171,target2)
+				warnNightmare:Show(target2)
+		elseif  target1 == nil then
+				target1 = args.DestName
+				self:setIcon(target1, 1)
+				DBM.BossHealth:AddBoss(92171,target1)
+				warnNightmare:Show(target1)
+		end
+	end
+	if args:IsSpellID(2140825) and args.destName == target1 then
+		DBM.BossHealth:RemoveBoss(92171,target1)
+		self:setIcon(target1, 0)
+		target1 = nil
+	elseif args:IsSpellID(2140825) and args.destName == target2 then
+		DBM.BossHealth:RemoveBoss(92171,target2)
+		self:setIcon(target2, 0)
+		target2 = nil
+	elseif args:IsSpellID(2140825) and args.destName == target3 then
+		DBM.BossHealth:RemoveBoss(92171,target3)
+		self:setIcon(target3, 0)
+		target3 = nil
 	end
 end
-mod.SPELL_AURA_REFRESH = mod.SPELL_AURA_APPLIED
+
+function mod:SPELL_AURA_REFRESH(args)
+	if args:IsSpellID(2140825) and args.destName == target1 then
+		DBM.BossHealth:RemoveBoss(92171,target1)
+		self:setIcon(target1, 0)
+		target1 = nil
+	elseif args:IsSpellID(2140825) and args.destName == target2 then
+		DBM.BossHealth:RemoveBoss(92171,target2)
+		self:setIcon(target2, 0)
+		target2 = nil
+	elseif args:IsSpellID(2140825) and args.destName == target3 then
+		DBM.BossHealth:RemoveBoss(92171,target3)
+		self:setIcon(target3, 0)
+		target3 = nil
+	end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 31306 and args:IsPlayer() then
-		timerSwarm:Stop()
-	elseif args.spellId == 31298 and args:IsPlayer() then
-		timerSleep:Stop()
-	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 31299 then
-		timerInferno:Start()
-		-- self:BossTargetScanner(17808, "InfernoTarget", 0.05, 10)
-		-- Needs our "target = mod:GetBossTarget(21875)" thing
+	if args:IsSpellID(2140800) then
+		warnSwarm:Show()
+		timerSwarm:Start()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31306 then
-		warnSwarm:Show()
-	elseif args.spellId == 31298 then
-		timerSleepCD:Start()
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.Infernal1 or msg == L.Infernal2	or msg:find(L.Infernal1) or msg:find(L.Infernal2) then
+		timerNextInfernal:Start(45)
+		timerInfernal:Start(10)
+		timerInfernalRain:Start(19)
+	end
+	if msg == L.RingofFrost or msg:find(L.RingofFrost) then
+		timerNextRingofFrost:Start()
+		timerRingofFrost:Schedule(2)
 	end
 end
 
+function mod:UNIT_DIED(args)
+	if args.destName == target1 then
+		DBM.BossHealth:RemoveBoss(92171,target1)
+		target1 = nil
+	elseif args.destName == target2 then
+		DBM.BossHealth:RemoveBoss(92171,target2)
+		target2 = nil
+	elseif	args.destName ==target3 then
+		DBM.BossHealth:RemoveBoss(92171,target3)
+		target3 = nil
+	end
+end
+
+function mod:OnCombatEnd()
+	DBM.BossHealth:RemoveBoss(92171,target1)
+	DBM.BossHealth:RemoveBoss(92171,target2)
+	DBM.BossHealth:RemoveBoss(92171,target3)
+	DBM.BossHealth:RemoveBoss(17772)
+	target1 = nil
+	target2 = nil
+	target3 = nil
+end
+
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == " Anetheron sends %s into a nightmare!" or msg:find(L.Nightmare) then
+		if target3 == nil and target2 ~= nil and target1 ~= nil then
+				target3 = msg:find(L.Nightmare)
+				self:SetIcon(target3, 3)
+				DBM.BossHealth:AddBoss(92171,target3)
+		elseif target2 == nil and target1 ~= nil then
+				target2 = msg:find(L.Nightmare)
+				self:SetIcon(target2, 2)
+				DBM.BossHealth:AddBoss(92171,target2)
+		elseif 	target1 == nil then
+				target1 = msg:find(L.Nightmare)
+				self:SetIcon(target1, 1)
+				DBM.BossHealth:AddBoss(92171,target1)
+		end
+	end
+end
