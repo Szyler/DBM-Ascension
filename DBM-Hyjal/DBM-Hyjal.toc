@@ -19,4 +19,5 @@ RageWinterchill.lua
 Anetheron.lua
 Kazrogal.lua
 Azgalor.lua
+Chromius.lua
 Archimonde.lua

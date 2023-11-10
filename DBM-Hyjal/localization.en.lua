@@ -119,7 +119,7 @@ L:SetMiscLocalization({
 	JainaPhaseYell			="All this fighting. All this talking. But my words only fall on deaf ears. Maybe a certain mage might be willing to listen...",
 	JainaPhaseEnd			="Oh Jaina, you would have been happier this way. For a time...",
 	GromPhaseYell			="Don't listen to her! You must ensure Thrall survives, and Grom must meet his fate",
-	MannorothYell			="His bloos is mine! As is your whole miss misbegotten race!",
+	MannorothYell			="His blood is mine! As is your whole miss misbegotten race!",
 	GromPhaseEnd			="You should have saved the other one...",
 	TyrandePhaseYell		="What? She can see the future? I'll take a guess and say save Tyrande, whatever it takes",
 	TyrandePhaseEnd			="That's sad. They didn't make it. Neither will you if you keep standing in my way! "

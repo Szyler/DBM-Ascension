@@ -10,8 +10,9 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_MISSED"
 )
 
@@ -24,9 +25,11 @@ mod:RegisterEvents(
 -- Mark of Kaz
 local warnMark					= mod:NewSpellAnnounce(2141001, 3)
 local timerMark					= mod:NewNextTimer(55, 2141000)
+
 -- Warstomp
 local warnStomp					= mod:NewSpellAnnounce(2141009, 2)
 local timerStomp				= mod:NewNextTimer(55, 2141009)
+
 -- Pillars
 local timerPillar1				= mod:NewTimer(10, "First Pillar", 10408)
 local timerPSuffering			= mod:NewTimer(40, "Pillar of Suffering duration", 2141030)
@@ -36,17 +39,19 @@ local timerPCataclysm			= mod:NewTimer(40, "Pillar of Cataclysm duration", 21410
 local warnPCataclysm			= mod:NewAnnounce("The Pillar of Cataclysm has hit the ground", 2, 2141026)
 local timerNextPCataclysm		= mod:NewNextTimer(10, 2141026)
 local pillar
+
 -- Physical attacks
-local timerNextMalevolent		= mod:NewNextTimer(55, 2141008)
+local timerNextMalevolent		= mod:NewNextTimer(51, 2141008)
 local timerMalevolentSwing		= mod:NewCastTimer(4, 2141008)
 local warnMalevolent			= mod:NewSpellAnnounce(2141008)
 
---Cataclysmic Scar ?? 
+-- Scars & Debuffs  
 local warnCataclysmic			= mod:NewAnnounce("You have %s stacks of Cataclysmic Scar", 2141040)
 local warnTormenting			= mod:NewAnnounce("You have %s stacks of Tormenting Scar", 2141041)
 
 -- fight
 local warnChallenged			= mod:NewAnnounce("Kaz'rogal fixates on %s!",2141039)
+local warnManaTotem				= mod:NewAnnounce("Thrall is summoning a Mana Stream Totem! Click it to replenish your mana!", 2140261)
 
 
 function mod:OnCombatStart(delay)
@@ -67,10 +72,10 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellId(2141040) and args:IsPlayer() and args.amount >= 4 and DBM:AntiSpam(4,2) then
+	if args:IsSpellID(2141040) and args:IsPlayer() and args.amount >= 4 and DBM:AntiSpam(3,2) then
 		warnCataclysmic:Show(args.amount)
 	end
-	if args:IsSpellID(2141041) and args:IsPlayer() and args.amount >= 4 and DBM:AntiSpam(4,3) then
+	if args:IsSpellID(2141041) and args:IsPlayer() and args.amount >= 4 and DBM:AntiSpam(3,3) then
 		warnTormenting:Show(args.amount)
 	end
 end
@@ -107,4 +112,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerMalevolentSwing:Start()
 		warnMalevolent:Show()
 	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+if msg == "I am summoning a Mana Stream Totem near us. Use it to replenish!" then
+	warnManaTotem:Show()
+end
 end
