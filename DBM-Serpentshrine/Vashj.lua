@@ -61,7 +61,8 @@ local timerParasite		= mod:NewNextTimer(45, 2138027)
 local timerSiren		= mod:NewNextTimer(17, 2138025)
 local timerPhoenix		= mod:NewNextTimer(16, 2138015) 
 
-local warnParasite		= mod:NewTargetAnnounce(2138027, 3)        
+local warnParasite		= mod:NewTargetAnnounce(2138027, 3)   
+local yellParasite		= mod:NewFadesYell(2138027)     
 local warnSong			= mod:NewTargetAnnounce(2138026, 3) 
 
 local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
@@ -208,6 +209,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2138027, 2138028, 2138029, 2138030) then
 		warnParasite:Show(args.destName)
 		timerParasite:Start()
+		yellParasite:Countdown(8,5)
+	elseif args:IsSpellID(2138031, 2138032, 2138033, 2138034) then
+		warnParasite:Show(args.destName)
+		yellParasite:Countdown(16,5)
 	elseif args.spellId == 2138026 then
 		warnSong:Show(args.destName)
 		specWarnSiren:Show()
