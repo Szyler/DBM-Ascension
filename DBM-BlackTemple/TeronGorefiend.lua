@@ -9,6 +9,21 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
+function mod:OnCombatStart(delay)
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
 --Gorefiend:AddOption("WarnIncinerate", false, DBM_GOREFIEND_OPTION_INCINERATE)
 
 --Gorefiend:AddBarOption("Vengeful Spirit: (.*)")

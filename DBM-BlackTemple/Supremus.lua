@@ -16,6 +16,18 @@ end
 function mod:OnCombatEnd()
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
 
 -- Supremus.MinRevision = 828
 

@@ -10,16 +10,25 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
-function mod:OnCombatStart(delay)	
-	
+function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
-		DBM_Gui_DistanceFrame_Show()
+		DBM.RangeCheck:Show(15)
 	end
 end
 
 function mod:OnCombatEnd()
-	if self.Options.RangeCheck then
-		DBM_Gui_DistanceFrame_Hide()
+	DBM.RangeCheck:Hide()
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
 	end
 end
 

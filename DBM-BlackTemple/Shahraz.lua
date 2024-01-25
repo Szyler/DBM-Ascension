@@ -14,6 +14,18 @@ function mod:OnCombatStart(delay)
 end
 
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
 
 --Shahraz:AddOption("WarnBeam", false, DBM_SHAHRAZ_OPTION_BEAM)
 --Shahraz:AddOption("WarnBeamSoon", false, DBM_SHAHRAZ_OPTION_BEAM_SOON)

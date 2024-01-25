@@ -14,6 +14,18 @@ mod:RegisterEvents(
 function mod:OnCombatStart(delay)
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
 -- local boilCounter = 0
 
 --Bloodboil:AddOption("WarnSmash", false, DBM_BLOODBOIL_OPTION_SMASH)

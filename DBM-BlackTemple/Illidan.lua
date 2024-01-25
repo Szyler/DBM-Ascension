@@ -18,11 +18,26 @@ mod:RegisterEvents(
 
 
 function mod:OnCombatStart(delay)
+	if self.Options.RangeCheck then
+		DBM.RangeCheck:Show(15)
+	end
 end
 
 function mod:OnCombatEnd()
+	DBM.RangeCheck:Hide()
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(123123) then
+		warningCurse:Show()
+	end
+end
 
 
 -- if self.Options.RangeCheck then
