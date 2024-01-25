@@ -1,0 +1,24 @@
+﻿## Interface: 30300
+## Title:|cffffffff<|r|cffa335eeDBM-TBC|r|cffffffff>|r |cffffffffBlack Temple|r
+## Author: Sky / Szyler
+## RequiredDeps: DBM-Core, DBM-TBC-Core
+## SavedVariablesPerCharacter: DBMTBCBlackTemple_SavedVars, DBMTBCBlackTemple_SavedStatsv2
+## DefaultState: Enabled
+## LoadOnDemand: 1
+
+## X-DBM-Mod: 1
+## X-DBM-Mod-Category: BC
+## X-DBM-Mod-Name: Black Temple
+## X-DBM-Mod-Sort: 208
+## X-DBM-Mod-LoadZone: Black Temple
+
+localization.en.lua
+Naj'entus.lua
+Supremus.lua
+ShadeOfAkama.lua
+TeronGorefiend.lua
+Bloodboil.lua
+EssenceOfSouls.lua
+Shahraz.lua
+IllidariCouncil.lua
+Illidan.lua
