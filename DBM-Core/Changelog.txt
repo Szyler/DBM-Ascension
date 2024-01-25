@@ -242,3 +242,6 @@ v5.18 15/05/2023
 - Fixed new spellIDs on Onyxia
 - Fixed Blast Nova timers on Onyxia
 - Added yell for Fireball on Onyxia
+----------------------------------------------------------------------------------------------------
+v5.19 25/01/2024
+- Added all bosses from Black Temple
