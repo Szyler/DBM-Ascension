@@ -29,28 +29,29 @@ function mod:OnCombatStart(delay)
 	table.wipe(HandofRagTargets)
 end
 
-function mod:warnHandofRagTargets()
-		warnHandRagnaros:Show(table.concat(HandofRagTargets, "<, >"))
-		timerHandRagnaros:Start()
-		table.wipe(HandofRagTargets)
-end
+-- function mod:warnHandofRagTargets() -- too spammy
+-- 		warnHandRagnaros:Show(table.concat(HandofRagTargets, "<, >"))
+-- 		timerHandRagnaros:Start()
+-- 		table.wipe(HandofRagTargets)
+-- end
 
 function mod:SPELL_AURA_APPLIED(args)
 	-- if args:IsSpellID(19779) then
 	-- 	warnInspire:Show(args.destName)
 	-- 	timerInspire:Start(args.destName)
 	-- else
-	if args:IsSpellID(19780) and args:IsDestTypePlayer() then
-		self:UnscheduleMethod("warnHandofRagTargets")
-		HandofRagTargets[#HandofRagTargets + 1] = args.destName
-		self:ScheduleMethod(0.3, "warnHandofRagTargets")
+	-- if args:IsSpellID(19780) and args:IsDestTypePlayer() then
+	-- 	self:UnscheduleMethod("warnHandofRagTargets")
+	-- 	HandofRagTargets[#HandofRagTargets + 1] = args.destName
+	-- 	self:ScheduleMethod(0.3, "warnHandofRagTargets")
+
 	-- elseif args:IsSpellID(19776) then
 	-- 	warnShadowPain:Show(args.destName)
 	-- 	timerShadowPain:Start(args.destName)
 	-- elseif args:IsSpellID(20294) then
 	-- 	warnImmolate:Show(args.destName)
 	-- 	timerImmolate:Start(args.destName)
-	end
+	-- end
 end
 
 -- function mod:SPELL_AURA_REMOVED(args)

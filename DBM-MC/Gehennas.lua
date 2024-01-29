@@ -29,11 +29,11 @@ function mod:OnCombatStart(delay)
 	timerNextCurse:Start()
 end
 
-function mod:warnFistTargets()
-	warnFist:Show(table.concat(FistTargets, "<, >"))
-	timerFist:Start(7-delay)
-	table.wipe(FistTargets)
-end
+-- function mod:warnFistTargets() -- too spammy
+-- 	warnFist:Show(table.concat(FistTargets, "<, >"))
+-- 	timerFist:Start(7-delay)
+-- 	table.wipe(FistTargets)
+-- end
 
 -- function mod:SPELL_CAST_SUCCESS(args)
 -- 	if args:IsSpellID(19716) then
@@ -45,11 +45,12 @@ end
 -- end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(20277) and args:IsDestTypePlayer() then
-		self:UnscheduleMethod("warnFistTargets")
-		FistTargets[#FistTargets + 1] = args.destName
-		self:ScheduleMethod(0.3, "warnFistTargets")
-	elseif args:IsSpellID(20277) then
+	-- if args:IsSpellID(20277) and args:IsDestTypePlayer() then
+	-- 	self:UnscheduleMethod("warnFistTargets")
+	-- 	FistTargets[#FistTargets + 1] = args.destName
+	-- 	self:ScheduleMethod(0.3, "warnFistTargets")
+	-- else
+	if args:IsSpellID(20277) then
 		if args:IsPlayer() then
 			specWarnRain:Show()
 		end

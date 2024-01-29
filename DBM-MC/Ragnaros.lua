@@ -46,10 +46,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:Emerged()
-	timerNextHand:Start(-delay)
-	warnSubmergeSoon:Schedule(85-delay)
-	timerSubmerge:Start(-delay)
-	timerEmerge:Schedule(90-delay)
+	timerNextHand:Start()
+	warnSubmergeSoon:Schedule(85)
+	timerSubmerge:Start()
+	timerEmerge:Schedule(90)
 	self:ScheduleMethod(150, "Emerged")
 end
 
