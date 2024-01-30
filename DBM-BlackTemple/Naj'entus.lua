@@ -7,13 +7,25 @@ mod:RegisterCombat("yell", DBM_NAJENTUS_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_REMOVED"
 )
 
+local warningShield			= mod:NewSpellAnnounce(2142521, 3)
+local warningDischarge		= mod:NewSpellAnnounce(2142505, 3)
+local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
+
+local warnPhase2			= mod:NewPhaseAnnounce(2)
+
+local timerShield			= mod:NewNextTimer(30, 2142521)
+local timerDischarge		= mod:NewNextTimer(20, 2142505)
+local timerTargetSpine		= mod:NewTargetTimer(20, 2142516)
+
+
+
 function mod:OnCombatStart(delay)
-	if self.Options.RangeCheck then
-		DBM.RangeCheck:Show(15)
-	end
+	warningShield:Show()
+	timerShield:Start(-delay)
 end
 
 function mod:OnCombatEnd()
@@ -21,8 +33,23 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+	if args:IsSpellID(2142521) then
+		warningShield:Show()
+		timerShield:Start()
+	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
+		warningDischarge:Show()
+		timerDischarge:Start()
+	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+		warnSpine:Show()
+		timerTargetSpine:Start()
+	elseif args:IsSpellID(2142526) then
+		warnPhase2:Show()
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+		timerTargetSpine:Stop()
 	end
 end
 
