@@ -13,19 +13,52 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
+--Lady Malande
+local warnPaintoPleasure			= mod:NewTargetAnnounce(2144463, 3)
+local timerNextPaintoPleasure		= mod:NewNextTimer(30, 2144463)
+
+--Veras Darkshadow
+local warnSmokeBomb					= mod:NewTargetAnnounce(2144560, 3)
+local timerNextSmokeBomb			= mod:NewNextTimer(60, 2144560)
+
+--Gathios the Shatterer
+local timerNextDeathSentence		= mod:NewNextTimer(60, 2144260)
+local timerDeathSentence			= mod:NewBuffActiveTimer(10, 2144260)
+local timerNextConsecrate			= mod:NewNextTimer(10, 2144256)
+
+--High Nethermancer Zerevor
+local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
+
+
 function mod:OnCombatStart(delay)
+	timerNextPaintoPleasure:Start(25-delay)
+	timerNextSmokeBomb:Start(30-delay)
+	timerNextDeathSentence:Start(15-delay)
+	timerNextConsecrate:Start(10-delay)
+	timerNextRuneofPower:Start(45-delay)
 end
 
-
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+	if args:IsSpellID(2144458) then
+		warnAmplify:Show(args.destName)
+	elseif args:IsSpellID(2144560) then
+		warnSmokeBomb:Show()
+		timerNextSmokeBomb:Start()
+	elseif args:IsSpellID(2144560) then
+		timerNextDeathSentence:Start()
+		timerDeathSentence:Start()
+	elseif args:IsSpellID(2144256) then
+		timerNextConsecrate:Start()
+	elseif args:IsSpellID(2144368) and DBM:AntiSpam(20, 1) then
+		timerNextRuneofPower:Start()
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2144463) then
+		warnPaintoPleasure:Show()
+		timerNextPaintoPleasure:Start()
+		--when rogue splits, 22951 is fake 22952 is real.
 	end
 end
 
