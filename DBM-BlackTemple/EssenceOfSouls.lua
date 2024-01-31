@@ -24,12 +24,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
-end
-
 -- Souls.MinVersionToSync = 3.00
 
 

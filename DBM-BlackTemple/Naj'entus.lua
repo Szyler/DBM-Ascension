@@ -7,7 +7,6 @@ mod:RegisterCombat("yell", DBM_NAJENTUS_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_REMOVED"
 )
 
@@ -55,13 +54,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerTargetSpine:Stop()
 	end
 end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
-end
-
 
 --Najentus:AddOption("RangeCheck", true, DBM_NAJENTUS_OPTION_RANGECHECK)
 --Najentus:AddOption("Icon", false, DBM_NAJENTUS_OPTION_ICON)
