@@ -24,7 +24,7 @@ local timerNextSmokeBomb			= mod:NewNextTimer(60, 2144560)
 --Gathios the Shatterer
 local timerNextDeathSentence		= mod:NewNextTimer(60, 2144260)
 local timerDeathSentence			= mod:NewBuffActiveTimer(10, 2144260)
-local timerNextConsecrate			= mod:NewNextTimer(10, 2144256)
+local timerNextConsecrate			= mod:NewNextTimer(15, 2144256)
 
 --High Nethermancer Zerevor
 local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
