@@ -10,19 +10,31 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
+local warningBoilingBlood		= mod:NewSpellAnnounce(2143509, 3)
+local warningSeismicSmash		= mod:NewSpellAnnounce(2143531, 3)
+local warnMakgora				= mod:NewSpellAnnounce(2143523, 2)
+
+local timerNextBoilingBlood		= mod:NewNextTimer(20, 2143509)
+local timerNextSeismicSmash		= mod:NewNextTimer(20, 2143531)
+local timerNextMakgora			= mod:NewNextTimer(70, 2143523)
+
 
 function mod:OnCombatStart(delay)
+	timerNextBoilingBlood:Start(10-delay)
+	timerNextSeismicSmash:Start(20-delay)
+	timerNextMakgora:Start(70-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+	if args:IsSpellID(2143509) then
+		warningBoilingBlood:Show()
+		timerNextBoilingBlood:Start()
+	elseif args:IsSpellID(2143531) then
+		warningSeismicSmash:Show()
+		timerNextSeismicSmash:Start()
+	elseif args:IsSpellID(2143523) then
+		warnMakgora:Show()
+		timerNextMakgora:Start()
 	end
 end
 
