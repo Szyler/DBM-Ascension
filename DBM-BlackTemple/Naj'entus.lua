@@ -17,8 +17,8 @@ local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
-local timerShield			= mod:NewNextTimer(80, 2142521)
-local timerDischarge		= mod:NewNextTimer(20, 2142505)
+local timerNextShield			= mod:NewNextTimer(80, 2142521)
+local timerNextDischarge		= mod:NewNextTimer(20, 2142505)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
@@ -27,7 +27,7 @@ local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 function mod:OnCombatStart(delay)
 	-- warningShield:Show()
 	timerNextSpine:Start(50-delay)
-	timerShield:Start(40-delay)
+	timerNextShield:Start(40-delay)
 end
 
 function mod:OnCombatEnd()
@@ -37,10 +37,10 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
 		warningShield:Show()
-		timerShield:Start()
+		timerNextShield:Start()
 	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
 		warningDischarge:Show()
-		timerDischarge:Start()
+		timerNextDischarge:Start()
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		warnSpine:Show()
 		timerNextSpine:Start()
