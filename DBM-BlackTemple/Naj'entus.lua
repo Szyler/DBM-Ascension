@@ -16,15 +16,14 @@ local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
-local timerNextShield			= mod:NewNextTimer(80, 2142521)
-local timerNextDischarge		= mod:NewNextTimer(20, 2142505)
+local timerNextShield		= mod:NewNextTimer(80, 2142521)
+local timerNextDischarge	= mod:NewNextTimer(20, 2142505)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
 
 
 function mod:OnCombatStart(delay)
-	-- warningShield:Show()
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(40-delay)
 end
