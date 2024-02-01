@@ -1,15 +1,15 @@
 ﻿## Interface: 30300
-## Title:|cffffffff<|r|cffa335eeDBM-TBC|r|cffffffff>|r |cffffffffBlack Temple|r
-## Author: Sky / Szyler
-## RequiredDeps: DBM-Core, DBM-TBC-Core
-## SavedVariablesPerCharacter: DBMTBCBlackTemple_SavedVars, DBMTBCBlackTemple_SavedStatsv2
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Black Temple|r
+## Author: Tandanu and Nitram, updated by Junior and Szyler.
+## RequiredDeps: DBM-Core, DBM-BurningCrusade
+## SavedVariablesPerCharacter: DBMBlackTemple_SavedVars, DBMBlackTemple_SavedStats
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC
-## X-DBM-Mod-Name: Black Temple
-## X-DBM-Mod-Sort: 208
+## X-DBM-Name: Black Temple
+## X-DBM-Mod-Sort: 307
 ## X-DBM-Mod-LoadZone: Black Temple
 
 localization.en.lua
@@ -22,3 +22,4 @@ EssenceOfSouls.lua
 Shahraz.lua
 IllidariCouncil.lua
 Illidan.lua
+Trash.lua
