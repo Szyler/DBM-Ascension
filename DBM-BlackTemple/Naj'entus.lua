@@ -46,11 +46,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
-		if target == UnitName("player") then
+		if args.destName == UnitName("player") then
 			warningPuddle:Show()
 		end
 	elseif args:IsSpellID() then
-		if target == UnitName("player") then
+		if args.destName == UnitName("player") then
 			warningPuddle:Show()
 		end
 	end
@@ -63,7 +63,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if self.Options.SpineYellOpt then
+	if self.Options.SpineYellOpt and args.destName == UnitName("player") then
 		if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 			SendChatMessage(L.SpineYell, "YELL")
 		end
