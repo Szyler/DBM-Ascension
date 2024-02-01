@@ -36,11 +36,14 @@ local warningVileBeam			= mod:NewSpellAnnounce(2144012, 3)
 local warningWickedBeam			= mod:NewSpellAnnounce(2144012, 3)
 
 --local
-local isMother		=	false;
-local below20		=	false;
-local below10		=	false;
+local isMother		=	false
+local below20		=	false
+local below10		=	false
 
 function mod:OnCombatStart(delay)
+	isMother	=	false
+	below20		=	false
+	below10		=	false
 end
 
 
@@ -54,7 +57,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:UNIT_HEALTH(unit)
-	if isMother and (not below20, below10) and (mod:GetUnitCreatureId(unit) == 22947) then
+	if isMother and (not below20 and not below10) and (mod:GetUnitCreatureId(unit) == 22947) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 20) then
 			warning20:Show()
