@@ -16,6 +16,8 @@ mod:RegisterEvents(
 --Lady Malande
 local warnPaintoPleasure			= mod:NewTargetAnnounce(2144463, 3)
 local timerNextPaintoPleasure		= mod:NewNextTimer(30, 2144463)
+local warnSadism					= mod:NewSpellAnnounce(2144464, 3)
+local timerNextSadism				= mod:NewNextTimer(60, 2144464)
 
 --Veras Darkshadow
 local warnSmokeBomb					= mod:NewTargetAnnounce(2144560, 3)
@@ -28,6 +30,9 @@ local timerNextConsecrate			= mod:NewNextTimer(15, 2144256)
 
 --High Nethermancer Zerevor
 local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
+local warnNetherprotection			= mod:NewSpellAnnounce(2144351, 3)
+local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
+--Netherprotection is cast again 30 seconds after it gets SPELLSTOLEN, not after it's cast.  Not sure how to do this
 
 
 function mod:OnCombatStart(delay)
@@ -36,6 +41,7 @@ function mod:OnCombatStart(delay)
 	timerNextDeathSentence:Start(15-delay)
 	timerNextConsecrate:Start(10-delay)
 	timerNextRuneofPower:Start(45-delay)
+	timerNextSadism:Start(60-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -51,6 +57,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextConsecrate:Start()
 	elseif args:IsSpellID(2144368) and DBM:AntiSpam(20, 1) then
 		timerNextRuneofPower:Start()
+	elseif args:IsSpellID(21421443514256) then
+		timerNextConsecrate:Start()
 	end
 end
 
@@ -59,6 +67,9 @@ function mod:SPELL_CAST_START(args)
 		warnPaintoPleasure:Show()
 		timerNextPaintoPleasure:Start()
 		--when rogue splits, 22951 is fake 22952 is real.
+	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467) then
+		warnNetherprotection:Show()
+		timerNextNetherProtection:Start()
 	end
 end
 
