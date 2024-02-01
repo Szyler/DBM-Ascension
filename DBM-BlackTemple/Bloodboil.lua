@@ -26,10 +26,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143509) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
-	elseif args:IsSpellID(2143531) then
+	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
 	elseif args:IsSpellID(2143523) then
