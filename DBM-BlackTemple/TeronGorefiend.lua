@@ -9,14 +9,43 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
+local warningWitherAndRot		= mod:NewSpellAnnounce(2143287, 3)
+local warningGraspingDeath		= mod:NewSpellAnnounce(2142505, 3)
+local warnShadowOfDeath			= mod:NewSpellAnnounce(2143264, 2)
+local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
+
+local timerNextWitherAndRot		= mod:NewNextTimer(30, 2143287)
+local timerNextGraspingDeath	= mod:NewNextTimer(30, 2142505)
+local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
+local timerSoulReaper			= mod:NewNextTimer(20, 2143272)
+
+--Double check spell id of shadow of death.  There's 2 abilities with the same name.
+--Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss
+
 function mod:OnCombatStart(delay)
+	timerNextWitherAndRot:Start(14-delay)
+	timerNextGraspingDeath:Start(29-delay)
+	timerNextShadowofDeath:Start(10-delay)
+	timerSoulReaper:Start(20-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
+		warningWitherAndRot:Show()
+		timerNextWitherAndRot:Start()
+	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
+		warningGraspingDeath:Show()
+		timerNextGraspingDeath:Start()
+	elseif args:IsSpellID(2143264) then
+		warnShadowOfDeath:Show()
+		timerNextShadowofDeath:Start()
+	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
+		warnSoulReaper:Show()
+		timerSoulReaper:Start()
 	end
 end
+
+
 
 --Gorefiend:AddOption("WarnIncinerate", false, DBM_GOREFIEND_OPTION_INCINERATE)
 
