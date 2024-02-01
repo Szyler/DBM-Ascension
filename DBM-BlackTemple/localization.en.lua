@@ -49,10 +49,12 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+    SupremusCracked			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
-    }
+    SupremusCracked			= "Show $spell:2142751 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+}
 
 L:SetMiscLocalization{
 }

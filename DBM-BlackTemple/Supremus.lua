@@ -7,18 +7,53 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_CAST_START",
+	"SPELL_DAMAGE"
 )
+
+local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
+local warningSupreme				= mod:NewSpellAnnounce(2142764, 3)
+local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
+
+local timerTitanic					= mod:NewCastTimer(6, 2142758)
+local timerSupreme					= mod:NewCastTimer(2, 2142764)
+
+local timerEruption					= mod:NewCastTimer(4, 2142774)
+
+local warnPhase2					= mod:NewPhaseAnnounce(2)
 
 function mod:OnCombatStart(delay)
 end
 
-function mod:OnCombatEnd()
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2142772) then
+		warnPhase2:Show()
+	elseif args:IsSpellID(2142751) then
+		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
+	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2142751) then
+		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2142758) then
+		warningTitanic:Show()
+		timerTitanic:Start()
+	elseif args:IsSpellID(2142758) then
+		warningSupreme:Show()
+		timerSupreme:Start()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2142774) and DBM:AntiSpam(3) then
+		timerEruption:Start()
 	end
 end
 
