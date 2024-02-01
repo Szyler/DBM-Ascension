@@ -7,25 +7,64 @@ mod:RegisterCombat("yell", DBM_SHAHRAZ_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_DAMAGE"
+	"UNIT_HEALTH"
 )
+
+local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
+local warningThoughts			= mod:NewSpellAnnounce(ID, 3)
+local warning20					= mod:NewSpellAnnounce(ID, 3)
+local warning10					= mod:NewSpellAnnounce(ID, 3)
+
+local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
+local timerNextThoughts			= mod:NewNextTimer(30, ID)
+local timerNextBeam				= mod:NewNextTimer(30, ID)
+
+--Sinful
+-- local warningSinfulThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningSinfulBeam			= mod:NewSpellAnnounce(2144012, 3)
+
+--Sinister
+-- local warningSinisterThoughts	= mod:NewSpellAnnounce(2144033, 3)
+local warningSinisterBeam		= mod:NewSpellAnnounce(2144012, 3)
+
+--Vile
+-- local warningVileThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningVileBeam			= mod:NewSpellAnnounce(2144012, 3)
+
+--Wicked
+-- local warningWickedThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningWickedBeam			= mod:NewSpellAnnounce(2144012, 3)
+
+--local
+local isMother		=	false;
+local below20		=	false;
+local below10		=	false;
 
 function mod:OnCombatStart(delay)
 end
 
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
+	if args:IsSpellID(2144012) then
+		warningFatalAttraction:Show()
+		timerNextFatalAttraction:Start()
+	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+		warningThoughts:Show()
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
+function mod:UNIT_HEALTH(unit)
+	if isMother and (not below20, below10) and (mod:GetUnitCreatureId(unit) == 22947) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 20) then
+			warning20:Show()
+			below20 = true;
+		elseif (hp <= 10) then
+			warning10:Show()
+			below10 = true;
+        end
+    end
 end
-
 
 --Shahraz:AddOption("WarnBeam", false, DBM_SHAHRAZ_OPTION_BEAM)
 --Shahraz:AddOption("WarnBeamSoon", false, DBM_SHAHRAZ_OPTION_BEAM_SOON)
