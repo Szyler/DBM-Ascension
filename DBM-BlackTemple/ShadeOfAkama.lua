@@ -8,15 +8,56 @@ mod:RegisterCombat("combat", 22841)
 
 mod:RegisterEvents(
 	"UNIT_DIED"
+	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_REMOVED"
 )
 
+local timerNextAdds		= mod:NewNextTimer(35, 2142516)
+
 function mod:OnCombatStart()
+	timerNextAdds:Start(5-delay)
+	self:ScheduleMethod(5-delay, "NewAdds")
 end
 
+function mod:OnCombatEnd()
+	DBM.RangeCheck:Hide()
+end
+
+function mod:NewAdds()
+	self:UnscheduleMethod("NewAdds")
+	timerNextAdds:Start()
+	self:ScheduleMethod(35, "NewAdds")
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(123123) then
 		warningCurse:Show()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
+		warningWitherAndRot:Show()
+		timerNextWitherAndRot:Start()
+	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
+		warningGraspingDeath:Show()
+		timerNextGraspingDeath:Start()
+	elseif args:IsSpellID(2143264) then
+		warnShadowOfDeath:Show()
+		timerNextShadowofDeath:Start()
+	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
+		warnSoulReaper:Show()
+		timerSoulReaper:Start()
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
+		warningWitherAndRot:Show()
+		timerNextWitherAndRot:Start()
+	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
+		warningGraspingDeath:Show()
+		timerNextGraspingDeath:Start()
 	end
 end
 
