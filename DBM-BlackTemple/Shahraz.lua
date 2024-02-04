@@ -16,24 +16,32 @@ local warning20					= mod:NewSpellAnnounce(ID, 3)
 local warning10					= mod:NewSpellAnnounce(ID, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
-local timerNextThoughts			= mod:NewNextTimer(30, ID)
+local timerNextForcedThoughts	= mod:NewNextTimer(40, ID)
 local timerNextBeam				= mod:NewNextTimer(30, ID)
 
 --Sinful
--- local warningSinfulThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningSinfulThoughts		= mod:NewSpellAnnounce(2144033, 3)
 local warningSinfulBeam			= mod:NewSpellAnnounce(2144012, 3)
+local timerNextSinfulBeam		= mod:NewCastTimer(3, 2144012)
+local timerSinfulThoughts		= mod:NewBuffActiveTimer(300, 2144033)
 
 --Sinister
--- local warningSinisterThoughts	= mod:NewSpellAnnounce(2144033, 3)
+local warningSinisterThoughts	= mod:NewSpellAnnounce(2144033, 3)
 local warningSinisterBeam		= mod:NewSpellAnnounce(2144012, 3)
+local timerNextSinisterBeam		= mod:NewCastTimer(3, 2144012)
+local timerSinisterThoughts		= mod:NewBuffActiveTimer(300, 2144033)
 
 --Vile
--- local warningVileThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningVileThoughts		= mod:NewSpellAnnounce(2144033, 3)
 local warningVileBeam			= mod:NewSpellAnnounce(2144012, 3)
+local timerNextVileBeam			= mod:NewCastTimer(3, 2144012)
+local timerVileThoughts			= mod:NewBuffActiveTimer(300, 2144033)
 
 --Wicked
--- local warningWickedThoughts		= mod:NewSpellAnnounce(2144033, 3)
+local warningWickedThoughts		= mod:NewSpellAnnounce(2144033, 3)
 local warningWickedBeam			= mod:NewSpellAnnounce(2144012, 3)
+local timerNextWickedBeam		= mod:NewCastTimer(3, 2144012)
+local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144033)
 
 --local
 local isMother		=	false
@@ -41,18 +49,65 @@ local below20		=	false
 local below10		=	false
 
 function mod:OnCombatStart(delay)
-	isMother	=	false
-	below20		=	false
-	below10		=	false
+	timerNextForcedThoughts:Start(15-delay)
+	self:ScheduleMethod(15-delay, "NewThoughts")
+	-- isMother	=	false
+	-- below20		=	false
+	-- below10		=	false
 end
 
+function mod:OnCombatEnd()
+	DBM.RangeCheck:Hide()
+	self:UnscheduleMethod("NewThoughts")
+end
 
+function mod:NewThoughts()
+	self:UnscheduleMethod("NewThoughts")
+	timerNextForcedThoughts:Start()
+	self:ScheduleMethod(40, "NewThoughts")
+end
+
+--Szyler add debuff stack warning for tank debuffs (Mater, Filia, Avia, Virgo)
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
+	--sinful
 	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
-		warningThoughts:Show()
+		if args.destName == UnitName("player") then
+			warningSinfulThoughts:Show()
+			timerSinfulThoughts:Start()
+			timerSinisterThoughts:Stop()
+			timerVileThoughts:Stop()
+			timerWickedThoughts:Stop()
+		end
+	--sinister
+	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+		if args.destName == UnitName("player") then
+			warningSinfulThoughts:Show()
+			timerSinfulThoughts:Start()
+			timerSinisterThoughts:Stop()
+			timerVileThoughts:Stop()
+			timerWickedThoughts:Stop()
+		end
+	--vile
+	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+		if args.destName == UnitName("player") then
+			warningSinfulThoughts:Show()
+			timerSinfulThoughts:Start()
+			timerSinisterThoughts:Stop()
+			timerVileThoughts:Stop()
+			timerWickedThoughts:Stop()
+		end
+	--wicked
+	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+		if args.destName == UnitName("player") then
+			warningSinfulThoughts:Show()
+			timerSinfulThoughts:Start()
+			timerSinisterThoughts:Stop()
+			timerVileThoughts:Stop()
+			timerWickedThoughts:Stop()
+		end
 	end
 end
 
