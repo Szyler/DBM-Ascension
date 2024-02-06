@@ -9,10 +9,22 @@ mod:RegisterCombat("combat", 22841)
 mod:RegisterEvents(
 	"UNIT_DIED",
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
+	"SPELL_HEAL"
 )
 
-local timerNextAdds		= mod:NewNextTimer(35, 2142516)
+local timerNextAdds					= mod:NewNextTimer(35, 2142603)
+local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
+local timerSoulDomination       	= mod:NewCastTimer(300, 2142603)
+
+local warnDeadlyPoison				= mod:NewTargetAnnounce(2142657, 2)
+local warnPoisonedShiv				= mod:NewTargetAnnounce(2142653, 2)
+
+local warnHealingStream				= mod:NewSpellAnnounce(2142677, 2)
+local warnRiptide					= mod:NewSpellAnnounce(2142680, 2) --Might be useful to warn if this is cast on shade of akama
+local warnVigilance					= mod:NewSpellAnnounce(2142686, 2) --Might be useful to warn if this is cast on shade of akama
+
 
 function mod:OnCombatStart(delay)
 	timerNextAdds:Start(5-delay)
@@ -30,28 +42,32 @@ function mod:NewAdds()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
-		warningWitherAndRot:Show()
-		timerNextWitherAndRot:Start()
-	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
-		warningGraspingDeath:Show()
-		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264) then
-		warnShadowOfDeath:Show()
-		timerNextShadowofDeath:Start()
-	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
-		warnSoulReaper:Show()
-		timerSoulReaper:Start()
+	if args:IsSpellID(2142603) then
+		warnSoulDomination:Show()
+		timerSoulDomination:Start()
+	elseif args:IsSpellID(2142657) and args.amount and args.amount >= 2 and args.amount % 2 == 0 then
+		warnDeadlyPoison:Show()
+	elseif args:IsSpellID(2142653) and args.amount and args.amount >= 2 and args.amount % 2 == 0 then
+		warnPoisonedShiv:Show()
+	elseif args:IsSpellID(2142686) and self:GetCIDFromGUID(args.destGUID) == 22841 then
+		warnVigilance:Show()
+	elseif args:IsSpellID(2142680) and args:GetDestCreatureID() == 22841 then --not sure if this check works
+		warnRiptide:Show()
 	end
 end
 
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED -- Hack to include applied_dose as well without more code
+
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
-		warningWitherAndRot:Show()
-		timerNextWitherAndRot:Start()
-	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
-		warningGraspingDeath:Show()
-		timerNextGraspingDeath:Start()
+	if args:IsSpellID(2142603) then
+		warnSoulDomination:Hide()
+		timerSoulDomination:Stop()
+	end
+end
+
+function mod:SPELL_HEAL(args)
+	if args:IsSpellID(2142677) and DBM:AntiSpam(5) then
+		warnHealingStream:Show()
 	end
 end
 
