@@ -30,12 +30,6 @@ function mod:NewAdds()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
-end
-
-function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2143282, 2143283, 2143284, 2143285) then
 		warningWitherAndRot:Show()
 		timerNextWitherAndRot:Start()

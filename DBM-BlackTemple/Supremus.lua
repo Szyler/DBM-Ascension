@@ -28,7 +28,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2142772) then
+	if args:IsSpellID(2142772) then --Enrages at 30% hp need hp check
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
