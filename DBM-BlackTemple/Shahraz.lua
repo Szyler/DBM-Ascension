@@ -12,8 +12,7 @@ mod:RegisterEvents(
 
 local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
 local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
-local warning20					= mod:NewSpellAnnounce(ID, 3)
-local warning10					= mod:NewSpellAnnounce(ID, 3)
+local warningBossRunning		= mod:NewSpellAnnounce(ID, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
 local timerNextForcedThoughts	= mod:NewNextTimer(40, 2144035)
@@ -45,15 +44,18 @@ local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144036)
 
 --local
 local isMother		=	false
-local below20		=	false
-local below10		=	false
+local below20		=   false
+local below10		=   false
 
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
-	-- isMother	=	false
-	-- below20		=	false
-	-- below10		=	false
+	isMother	=	false
+	below20		=   false
+	below10		=   false
+	if (mod:GetUnitCreatureId(unit) == 22947) then
+		isMother = true
+	end
 end
 
 function mod:OnCombatEnd()
@@ -85,8 +87,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2144021, 2144022, 2144023, 2144024) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
-			timerSinfulThoughts:Start()
-			timerSinisterThoughts:Stop()
+			timerSinfulThoughts:Stop()
+			timerSinisterThoughts:Start()
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
@@ -94,19 +96,19 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2144025, 2144026, 2144027, 2144028) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
-			timerSinfulThoughts:Start()
+			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Stop()
-			timerVileThoughts:Stop()
+			timerVileThoughts:Start()
 			timerWickedThoughts:Stop()
 		end
 	--wicked beam
 	elseif args:IsSpellID(2144029, 2144030, 2144031, 2144032) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
-			timerSinfulThoughts:Start()
+			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Stop()
 			timerVileThoughts:Stop()
-			timerWickedThoughts:Stop()
+			timerWickedThoughts:Start()
 		end
 	end
 end
@@ -114,12 +116,12 @@ end
 function mod:UNIT_HEALTH(unit)
 	if isMother and (not below20 and not below10) and (mod:GetUnitCreatureId(unit) == 22947) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 20) then
-			warning20:Show()
-			below20 = true;
-		elseif (hp <= 10) then
-			warning10:Show()
-			below10 = true;
+		if (hp <= 20) and (below20 == false) then
+			warningBossRunning:Show()
+			below20 = true
+		elseif (hp <= 10) and (below10 == false) then
+			warningBossRunning:Show()
+			below10 = true
         end
     end
 end
