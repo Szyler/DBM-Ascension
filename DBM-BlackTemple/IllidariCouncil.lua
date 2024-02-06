@@ -32,7 +32,6 @@ local timerNextConsecrate			= mod:NewNextTimer(15, 2144256)
 local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
 local warnNetherprotection			= mod:NewSpellAnnounce(2144351, 3)
 local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
---Netherprotection is cast again 30 seconds after it gets SPELLSTOLEN, not after it's cast.  Not sure how to do this
 
 
 function mod:OnCombatStart(delay)
@@ -45,9 +44,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2144458) then
-		warnAmplify:Show(args.destName)
-	elseif args:IsSpellID(2144560) then
+	if args:IsSpellID(2144560) and DBM:AntiSpam(20, 1) then
 		warnSmokeBomb:Show()
 		timerNextSmokeBomb:Start()
 	elseif args:IsSpellID(2144560) then
@@ -57,8 +54,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextConsecrate:Start()
 	elseif args:IsSpellID(2144368) and DBM:AntiSpam(20, 1) then
 		timerNextRuneofPower:Start()
-	elseif args:IsSpellID(21421443514256) then
-		timerNextConsecrate:Start()
+	elseif args:IsSpellID(2144351) then
+		warnNetherprotection:Show()
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2144351) then
+		timerNextNetherProtection:Start()
 	end
 end
 
