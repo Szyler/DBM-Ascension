@@ -45,7 +45,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	-- 	DBM:AddMsg("Fishing applied - Pull inc")
 	-- else
 	if args:IsSpellID(2137622) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warnFocusedYou:Show()
 		else
 			warnFocusedFire:Show(args.destName)

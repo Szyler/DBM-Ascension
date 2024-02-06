@@ -68,7 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		webSpam = GetTime()
 		warnWebWrap:Show(args.destName)
 		timerWebWrap:Start()
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			SendChatMessage(L.YellWebWrap, "YELL")
 		end
 	elseif args:IsSpellID(2123210) then

@@ -62,7 +62,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(340040) and args:GetSrcCreatureID(14965) then
 		warnConcoc:Show(args.destName)
 		TimerConcoc:Show(args.destName)
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			SendChatMessage("Unstable Concoction on me!", "YELL")
 		end
 	end

@@ -210,7 +210,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnChains:Show(args.destName)
 	-----SHADOW FISSURE-----
 	elseif args:IsSpellID(2124579) and DBM:AntiSpam(5,5) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			specWarnFissure:Show()
 		else
 			warnFissure:Show()
@@ -218,7 +218,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFissure:Start()
 	-----DEATH AND DECAY-----
 	elseif args:IsSpellID(2124575, 2124576, 2124577, 2124578) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			specWarnDnD:Show()
 		end
 	elseif args:IsSpellID(2124512) then

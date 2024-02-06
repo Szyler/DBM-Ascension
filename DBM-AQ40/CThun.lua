@@ -571,7 +571,7 @@ function mod:SPELL_AURA_APPLIED(args) -- Weakened phase (C'Thun and tentacles)
 		end
 	end
 	if args:IsSpellID(2117117) then -- (From beneath it devours you)
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			SpecwarnStomach:Show()
 			SendChatMessage(""..UnitName("PLAYER").."is being sent to the stomach", "Say")
 			else

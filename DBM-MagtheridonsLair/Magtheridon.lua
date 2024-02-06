@@ -121,7 +121,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30168) then
 		warnInterrupt:Show()
 	elseif args:IsSpellID(85405) then
-		 if args.destName == UnitName("player") then
+		 if args:IsPlayer() then
 			-- SendChatMessage("Fel Shock on "..UnitName("PLAYER")..", STACK ON ME!", "YELL")
 			specWarnYouFelShock:Show()
 		end
@@ -129,7 +129,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(30619) then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(351085) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			specWarnConflag:Show()
 		end
 	end
@@ -139,7 +139,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(30619) and args.amount >= 4 then
 		warnMortalCleave:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(351085) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			specWarnConflag:Show()
 		end
 	end
