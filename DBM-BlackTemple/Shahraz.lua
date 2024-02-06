@@ -12,7 +12,7 @@ mod:RegisterEvents(
 
 local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
 local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
-local warningBossRunning		= mod:NewSpellAnnounce(ID, 3)
+local warningBossRunning		= mod:NewSpellAnnounce(2144050, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
 local timerNextForcedThoughts	= mod:NewNextTimer(40, 2144035)
@@ -50,12 +50,9 @@ local below10		=   false
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
-	isMother	=	false
 	below20		=   false
 	below10		=   false
-	if (mod:GetUnitCreatureId(unit) == 22947) then
-		isMother = true
-	end
+	isMother = true
 end
 
 function mod:OnCombatEnd()
@@ -86,7 +83,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	--sinister beam
 	elseif args:IsSpellID(2144021, 2144022, 2144023, 2144024) then
 		if args:IsPlayer() then
-			warningSinfulThoughts:Show()
+			warningSinisterThoughts:Show()
 			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Start()
 			timerVileThoughts:Stop()
@@ -97,14 +94,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
-			timerSinisterThoughts:Stop()
+			warningVileThoughts:Stop()
 			timerVileThoughts:Start()
 			timerWickedThoughts:Stop()
 		end
 	--wicked beam
 	elseif args:IsSpellID(2144029, 2144030, 2144031, 2144032) then
 		if args:IsPlayer() then
-			warningSinfulThoughts:Show()
+			warningWickedThoughts:Show()
 			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Stop()
 			timerVileThoughts:Stop()
