@@ -46,11 +46,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningPuddle:Show()
 		end
 	elseif args:IsSpellID() then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningPuddle:Show()
 		end
 	end

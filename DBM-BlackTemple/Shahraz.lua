@@ -76,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFatalAttraction:Start()
 	--sinful beam
 	elseif args:IsSpellID(2144017, 2144018, 2144019, 2144020) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
 			timerSinisterThoughts:Stop()
@@ -85,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	--sinister beam
 	elseif args:IsSpellID(2144021, 2144022, 2144023, 2144024) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Start()
@@ -94,7 +94,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	--vile beam
 	elseif args:IsSpellID(2144025, 2144026, 2144027, 2144028) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Stop()
@@ -103,7 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	--wicked beam
 	elseif args:IsSpellID(2144029, 2144030, 2144031, 2144032) then
-		if args.destName == UnitName("player") then
+		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
 			timerSinisterThoughts:Stop()
