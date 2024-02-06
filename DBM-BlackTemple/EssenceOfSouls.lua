@@ -10,24 +10,102 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"UNIT_HEALTH"
 )
 
-local Intermission					= mod:NewNextTimer(35, ID)
+
+local intermissionSummonEssenceOfSuffering = mod:NewCastTimer(35, 2143867)
+local intermissionSummonEssenceOfDesire = mod:NewCastTimer(35, 2143868)
+local intermissionSummonEssenceOfAnger = mod:NewCastTimer(35, 2143869)
+
+local warnSpiritShock = mod:NewSpellAnnounce(2143804, 2)
+local timerTargetSpiritShock = mod:NewTargetTimer(5, 2143804)
+
+local warnSoulBlast = mod:NewSpellAnnounce(2143961, 2)
+local warnSoulDrain = mod:NewSpellAnnounce(2143760, 2)
+local timerNextSoulDrain = mod:NewNextTimer(20, 2143760)
+
+local warnRuneShield = mod:NewSpellAnnounce(2143808, 2)
+local timerRuneShield = mod:NewTargetTimer(15, 2143808)
+local timerNextRuneShield = mod:NewNextTimer(16, 2143808)
+
+local warnTease = mod:NewSpellAnnounce(2143808, 2)
+local timerTease = mod:NewBuffActiveTimer(15, 2143808)
+local timerNextTease = mod:NewNextTimer(30, 2143808)
+
+local warnSeethe = mod:NewSpellAnnounce(2143861, 2)
+local timerSeethe = mod:NewBuffActiveTimer(15, 2143861)
+local timerNextSeethe = mod:NewNextTimer(15, 2143861)
+
+local warnSoulScream = mod:NewSpellAnnounce(2143853, 2)
+local timerSoulScream = mod:NewCastTimer(2, 2143853)
+local timerNextSoulScream = mod:NewNextTimer(30, 2143853)
+
+
+local warnAuraOfSuffering = mod:NewSpellAnnounce(2143751, 2)
+local warnAuraOfDesire = mod:NewSpellAnnounce(2143800, 2)
+local warnAuraOfAnger = mod:NewSpellAnnounce(2143850, 2)
 
 --local
 local isSuffer		=	false
 
 function mod:OnCombatStart(delay)
-	isSuffer = false
-	if (mod:GetUnitCreatureId(unit) == 23418) then
-		isSuffer = true
-	end
+	self.vb.phase = 1
+	isSuffer = true
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2143804) then
+		warnSpiritShock:Show()
+		timerTargetSpiritShock:Start(args.destName)
+	elseif args:IsSpellID(2143961) and args.amount and args.amount >= 20 and args.amount % 5 == 0 then
+		warnSoulBlast:Show()
+	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) then
+		warnSoulDrain:Show()
+	elseif args:IsSpellID(2143808) then
+		warnRuneShield:Show()
+		timerRuneShield:Start()
+	elseif args:IsSpellID(2143808) then
+		warnTease:Show()
+		timerTease:Start()
+		timerNextTease:Start()
+	elseif args:IsSpellID(2143861) then
+		warnSeethe:Show()
+		timerSeethe:Start()
+		timerNextSeethe:Start()
+	elseif args:IsSpellID(2143751) and DBM:AntiSpam(60) and self.vb.phase == 1 then
+		warnAuraOfSuffering:Show()
+		timerNextSoulDrain:Start(20)
+	elseif args:IsSpellID(2143800) and DBM:AntiSpam(60) and self.vb.phase == 1 then
+		self.vb.phase = 2
+		warnAuraOfDesire:Show()
+		timerNextRuneShield:Start(16)
+		timerNextTease:Start(20)
+	elseif args:IsSpellID(2143850) and DBM:AntiSpam(60) and self.vb.phase == 2 then
+		self.vb.phase = 3
+		warnAuraOfAnger:Show()
+		timerNextSoulScream:Start(20)
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2143808) then
+		warnRuneShield:Hide()
+		timerRuneShield:Stop()
+	end
+end
+
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2143853) then
+		warnSoulScream:Show()
+		timerSoulScream:Start()
+		timerNextSoulScream:Start()
+
+	end
 end
 
 function mod:UNIT_HEALTH(unit)
@@ -35,19 +113,19 @@ function mod:UNIT_HEALTH(unit)
 	if isSuffer and (mod:GetUnitCreatureId(unit) == 23418) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 1) then
-			Intermission:Start()
+			intermissionSummonEssenceOfSuffering:Start()
         end
 	--Essence of Desire
 	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23419) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 1) then
-			Intermission:Start()
+			intermissionSummonEssenceOfDesire:Start()
 		end
 	--Essence of Anger
 	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23420) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 1) then
-			Intermission:Start()
+			intermissionSummonEssenceOfAnger:Start()
 		end
     end
 end
