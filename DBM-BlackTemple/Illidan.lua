@@ -18,26 +18,26 @@ mod:RegisterEvents(
 	"UNIT_SPELLCAST_START"
 )
 
-local warnChaosBlast           = mod:NewSpellAnnounce(2144804, 2)
-local warnFlameCrash           = mod:NewSpellAnnounce(2144720, 2)
-local warnFlameCrashDot        = mod:NewSpellAnnounce(2144720, 3)
-local warnForceNova            = mod:NewSpellAnnounce(2144724, 2)
-local warnShear                = mod:NewSpellAnnounce(2144718, 2)
-local warnDrawSoul             = mod:NewSpellAnnounce(2144737, 2)
-local warnFelFireBlast         = mod:NewSpellAnnounce(2144829, 2)
-local warnUnharnessedBlade     = mod:NewSpellAnnounce(2144742, 2)
+local warnChaosBlast           		= mod:NewSpellAnnounce(2144804, 2)
+local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
+local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
+local warnForceNova            		= mod:NewSpellAnnounce(2144724, 2)
+local warnShear                		= mod:NewSpellAnnounce(2144718, 2)
+local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
+local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
+local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
 
-local timerChaosBlast          = mod:NewCastTimer(2, 2144804)
-local timerChaosBlastDebuff    = mod:NewBuffActiveTimer(6, 2144804)
-local timerNextFlameCrash      = mod:NewNextTimer(25, 2144720)
-local timerFlameCrash          = mod:NewCastTimer(2, 2144720)
-local timerNextForceNova       = mod:NewNextTimer(25, 2144724)
-local timerNextShear           = mod:NewNextTimer(25, 2144718)
-local timerNextDrawSoul        = mod:NewNextTimer(30, 2144737)
-local timerFelFireBlast        = mod:NewCastTimer(2, 2144804)
-local timerNextFelFireBlast    = mod:NewNextTimer(20, 2144829)
-local timerFelFireBlast2       = mod:NewCastTimer(2, 2144804)
-local timerNextFelFireBlast2   = mod:NewNextTimer(20, 2144829)
+local timerChaosBlast          		= mod:NewCastTimer(2, 2144804)
+local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144804)
+local timerNextFlameCrash      		= mod:NewNextTimer(25, 2144720)
+local timerFlameCrash          		= mod:NewCastTimer(2, 2144720)
+local timerNextForceNova       		= mod:NewNextTimer(25, 2144724)
+local timerNextShear           		= mod:NewNextTimer(25, 2144718)
+local timerNextDrawSoul        		= mod:NewNextTimer(30, 2144737)
+local timerFelFireBlast        		= mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
+local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
 
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -45,8 +45,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
 	elseif args:IsSpellID(2144718) then
-		warnShear:Show() -- Show the warning for Shear
-		timerNextShear:Start() -- Start the timer for Shear
+		warnShear:Show()
+		timerNextShear:Start()
 	elseif args:IsSpellID(2144840) then
 		warnFelFireBlast:Show()
 		if timerFelFireBlast:IsStarted() or timerNextFelFireBlast:IsStarted() then
