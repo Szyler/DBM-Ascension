@@ -11,37 +11,37 @@ mod:RegisterEvents(
 )
 
 local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
-local warningThoughts			= mod:NewSpellAnnounce(ID, 3)
+local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
 local warning20					= mod:NewSpellAnnounce(ID, 3)
 local warning10					= mod:NewSpellAnnounce(ID, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
-local timerNextForcedThoughts	= mod:NewNextTimer(40, ID)
-local timerNextBeam				= mod:NewNextTimer(30, ID)
+local timerNextForcedThoughts	= mod:NewNextTimer(40, 2144035)
+local timerNextBeam				= mod:NewNextTimer(30, 2144017)
 
 --Sinful
+local warningSinfulBeam			= mod:NewSpellAnnounce(2144017, 3)
 local warningSinfulThoughts		= mod:NewSpellAnnounce(2144033, 3)
-local warningSinfulBeam			= mod:NewSpellAnnounce(2144012, 3)
-local timerNextSinfulBeam		= mod:NewCastTimer(3, 2144012)
+local timerNextSinfulBeam		= mod:NewCastTimer(3, 2144017)
 local timerSinfulThoughts		= mod:NewBuffActiveTimer(300, 2144033)
 
 --Sinister
-local warningSinisterThoughts	= mod:NewSpellAnnounce(2144033, 3)
-local warningSinisterBeam		= mod:NewSpellAnnounce(2144012, 3)
-local timerNextSinisterBeam		= mod:NewCastTimer(3, 2144012)
-local timerSinisterThoughts		= mod:NewBuffActiveTimer(300, 2144033)
+local warningSinisterBeam		= mod:NewSpellAnnounce(2144021, 3)
+local warningSinisterThoughts	= mod:NewSpellAnnounce(2144034, 3)
+local timerNextSinisterBeam		= mod:NewCastTimer(3, 2144021)
+local timerSinisterThoughts		= mod:NewBuffActiveTimer(300, 2144034)
 
 --Vile
-local warningVileThoughts		= mod:NewSpellAnnounce(2144033, 3)
-local warningVileBeam			= mod:NewSpellAnnounce(2144012, 3)
-local timerNextVileBeam			= mod:NewCastTimer(3, 2144012)
-local timerVileThoughts			= mod:NewBuffActiveTimer(300, 2144033)
+local warningVileBeam			= mod:NewSpellAnnounce(2144025, 3)
+local warningVileThoughts		= mod:NewSpellAnnounce(2144035, 3)
+local timerNextVileBeam			= mod:NewCastTimer(3, 2144025)
+local timerVileThoughts			= mod:NewBuffActiveTimer(300, 2144035)
 
 --Wicked
-local warningWickedThoughts		= mod:NewSpellAnnounce(2144033, 3)
-local warningWickedBeam			= mod:NewSpellAnnounce(2144012, 3)
-local timerNextWickedBeam		= mod:NewCastTimer(3, 2144012)
-local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144033)
+local warningWickedBeam			= mod:NewSpellAnnounce(2144029, 3)
+local warningWickedThoughts		= mod:NewSpellAnnounce(2144036, 3)
+local timerNextWickedBeam		= mod:NewCastTimer(3, 2144029)
+local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144036)
 
 --local
 local isMother		=	false
@@ -72,8 +72,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
-	--sinful
-	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+	--sinful beam
+	elseif args:IsSpellID(2144017, 2144018, 2144019, 2144020) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
@@ -81,8 +81,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	--sinister
-	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+	--sinister beam
+	elseif args:IsSpellID(2144021, 2144022, 2144023, 2144024) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
@@ -90,8 +90,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	--vile
-	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+	--vile beam
+	elseif args:IsSpellID(2144025, 2144026, 2144027, 2144028) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
@@ -99,8 +99,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	--wicked
-	elseif args:IsSpellID(2144033, 2144034, 2144035, 2144036) then
+	--wicked beam
+	elseif args:IsSpellID(2144029, 2144030, 2144031, 2144032) then
 		if args.destName == UnitName("player") then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
