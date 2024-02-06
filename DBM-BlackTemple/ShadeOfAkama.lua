@@ -14,7 +14,7 @@ mod:RegisterEvents(
 
 local timerNextAdds		= mod:NewNextTimer(35, 2142516)
 
-function mod:OnCombatStart()
+function mod:OnCombatStart(delay)
 	timerNextAdds:Start(5-delay)
 	self:ScheduleMethod(5-delay, "NewAdds")
 end
