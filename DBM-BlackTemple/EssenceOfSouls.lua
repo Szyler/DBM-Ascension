@@ -11,17 +11,45 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_START",
-	"SPELL_DAMAGE"
+	"SPELL_DAMAGE",
+	"UNIT_HEALTH"
 )
 
+local Intermission					= mod:NewNextTimer(35, ID)
+
+--local
+local isSuffer		=	false
 
 function mod:OnCombatStart(delay)
+	isSuffer = false
+	if (mod:GetUnitCreatureId(unit) == 23418) then
+		isSuffer = true
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(123123) then
-		warningCurse:Show()
-	end
+end
+
+function mod:UNIT_HEALTH(unit)
+	--Essence of Suffering
+	if isSuffer and (mod:GetUnitCreatureId(unit) == 23418) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 1) then
+			Intermission:Start()
+        end
+	--Essence of Desire
+	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23419) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 1) then
+			Intermission:Start()
+		end
+	--Essence of Anger
+	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23420) then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 1) then
+			Intermission:Start()
+		end
+    end
 end
 
 -- Souls.MinVersionToSync = 3.00
