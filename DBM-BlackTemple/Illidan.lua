@@ -8,41 +8,36 @@ mod:RegisterCombat("yell", DBM_ILLIDAN_YELL_PULL)
 
 
 mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_CAST_SUCCESS",
-	"CHAT_MSG_MONSTER_YELL",
-	"UNIT_DIED",
 	"SPELL_DAMAGE",
+	"UNIT_DIED",
+	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_SPELLCAST_START"
 )
 
+local warnChaosBlast           = mod:NewSpellAnnounce(2144804, 2)
+local warnFlameCrash           = mod:NewSpellAnnounce(2144720, 2)
+local warnFlameCrashDot        = mod:NewSpellAnnounce(2144720, 3)
+local warnForceNova            = mod:NewSpellAnnounce(2144724, 2)
+local warnShear                = mod:NewSpellAnnounce(2144718, 2)
+local warnDrawSoul             = mod:NewSpellAnnounce(2144737, 2)
+local warnFelFireBlast         = mod:NewSpellAnnounce(2144829, 2)
+local warnUnharnessedBlade     = mod:NewSpellAnnounce(2144742, 2)
 
-local warnChaosBlast			= mod:NewSpellAnnounce(2144804, 2)
-local warnFlameCrash			= mod:NewSpellAnnounce(2144720, 2)
-local warnFlameCrashDot			= mod:NewSpellAnnounce(2144720, 3)
-local warnForceNova				= mod:NewSpellAnnounce(2144720, 2) -- New warning for Force Nova
-local warnShear 				= mod:NewSpellAnnounce(2144718, 2) -- Added warning for Shear
-
-local timerNextFlameCrash		= mod:NewNextTimer(25, 2144720)
-local timerFlameCrash			= mod:NewCastTimer(2, 2144720) -- Added timer for Flame Crash
-local timerNextForceNova		= mod:NewNextTimer(25, 2144724) -- New timer for Force Nova
-local timerNextShear 			= mod:NewNextTimer(25, 2144718) -- Added timer for Shear
-local timerChaosBlast			= mod:NewCastTimer(2, 2144804) -- Added timer for Chaos Blast
-local timerChaosBlastDebuff		= mod:NewBuffActiveTimer(6, 2144804) -- Added timer for Chaos Blast
-
-local warnDrawSoul 				= mod:NewSpellAnnounce(2144737, 2)
-local timerNextDrawSoul 		= mod:NewNextTimer(30, 2144737)
-
-
-
-local warnFelFireBlast				= mod:NewSpellAnnounce(2144829, 2)
-local timerFelFireBlast 			= mod:NewCastTimer(2, 2144804) 
-local timerNextFelFireBlast			= mod:NewNextTimer(20, 2144829)
-
-local timerFelFireBlast2 			= mod:NewCastTimer(2, 2144804) 
-local timerNextFelFireBlast2		= mod:NewNextTimer(20, 2144829)
-
-local warnUnharnessedBlade 			= mod:NewSpellAnnounce(2144742, 2)
+local timerChaosBlast          = mod:NewCastTimer(2, 2144804)
+local timerChaosBlastDebuff    = mod:NewBuffActiveTimer(6, 2144804)
+local timerNextFlameCrash      = mod:NewNextTimer(25, 2144720)
+local timerFlameCrash          = mod:NewCastTimer(2, 2144720)
+local timerNextForceNova       = mod:NewNextTimer(25, 2144724)
+local timerNextShear           = mod:NewNextTimer(25, 2144718)
+local timerNextDrawSoul        = mod:NewNextTimer(30, 2144737)
+local timerFelFireBlast        = mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast    = mod:NewNextTimer(20, 2144829)
+local timerFelFireBlast2       = mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast2   = mod:NewNextTimer(20, 2144829)
 
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -68,10 +63,9 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
 	end
-	
 	timerNextForceNova:Start(15-delay)
-	timerNextShear:Start(25-delay) -- Added timer for Shear
-	timerNextDrawSoul:Start(30-delay) -- Added timer for Draw Soul
+	timerNextShear:Start(25-delay)
+	timerNextDrawSoul:Start(30-delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -81,7 +75,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2144720) then
 		timerNextFlameCrash:Start()
 		warnFlameCrash:Show()
-		timerFlameCrash:Start() -- Added timer for Flame Crash
+		timerFlameCrash:Start()
 	elseif args:IsSpellID(2144804) then
 		timerChaosBlast:Start()
 		warnChaosBlast:Show()
@@ -102,7 +96,6 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144804) then
 		timerChaosBlastDebuff:Start()
-
 	elseif args:IsSpellID(2144720) then
 		if args:IsPlayer() then
 			warnFlameCrashDot:Show()
@@ -115,16 +108,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
 	elseif args:IsSpellID(2144718) then
-		warnShear:Show() -- Show the warning for Shear
-		timerNextShear:Start() -- Start the timer for Shear
-
+		warnShear:Show()
+		timerNextShear:Start()
 	end
 end
 
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2144724) then
-		warnForceNova:Show() -- Show the warning for Force Nova
-		timerNextForceNova:Start() -- Start the timer for Force Nova
+		warnForceNova:Show()
+		timerNextForceNova:Start()
 	end
 end
 
