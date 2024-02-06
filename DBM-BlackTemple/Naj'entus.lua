@@ -21,15 +21,25 @@ local timerNextDischarge	= mod:NewNextTimer(20, 2142505)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
+local timerNextAdds			= mod:NewNextTimer(15, 2142516)
+
 mod:AddBoolOption(L.SpineYellOpt)
 
+
 function mod:OnCombatStart(delay)
+	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(40-delay)
 end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
+end
+
+function mod:NewAdds()
+	self:UnscheduleMethod("NewAdds")
+	timerNextAdds:Start()
+	self:ScheduleMethod(15, "NewAdds")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
