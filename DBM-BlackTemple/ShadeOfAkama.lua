@@ -7,8 +7,8 @@ mod:RegisterCombat("combat", 22841)
 -- Akama:SetMinCombatTime(60)
 
 mod:RegisterEvents(
-	"UNIT_DIED"
-	"SPELL_AURA_APPLIED"
+	"UNIT_DIED",
+	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED"
 )
 
