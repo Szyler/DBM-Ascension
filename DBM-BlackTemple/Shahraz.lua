@@ -14,6 +14,8 @@ mod:RegisterEvents(
 local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
 -- local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
 local warningBossRunning		= mod:NewSpellAnnounce(2144050, 3)
+local warningBossRunning1		= mod:NewSoonAnnounce(2144050, 3)
+local warningBossRunning2		= mod:NewSoonAnnounce(2144050, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
 local timerNextForcedThoughts	= mod:NewNextTimer(40, 2144035)
@@ -80,6 +82,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
+	elseif args:IsSpellID(2144050) then
+		warningBossRunning:Show()
 	elseif args:IsSpellID(2144001) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warningShahrazMater:Show()
 	elseif args:IsSpellID(2144003) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
@@ -142,11 +146,11 @@ end
 function mod:UNIT_HEALTH(unit)
 	if isMother and (not below20 and not below10) and (mod:GetUnitCreatureId(unit) == 22947) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 20) and (below20 == false) then
-			warningBossRunning:Show()
+		if (hp <= 23) and (below20 == false) then
+			warningBossRunning1:Show()
 			below20 = true
-		elseif (hp <= 10) and (below10 == false) then
-			warningBossRunning:Show()
+		elseif (hp <= 13) and (below10 == false) then
+			warningBossRunning2:Show()
 			below10 = true
         end
     end
