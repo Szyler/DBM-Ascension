@@ -10,13 +10,50 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
+
+local warnChaosBlast           		= mod:NewSpellAnnounce(2144804, 2)
+local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
+local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
+local warnForceNova            		= mod:NewSpellAnnounce(2144724, 2)
+local warnShear                		= mod:NewSpellAnnounce(2144718, 2)
+local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
+local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
+local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
+
+local timerChaosBlast          		= mod:NewCastTimer(2, 2144804)
+local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144804)
+local timerNextFlameCrash      		= mod:NewNextTimer(25, 2144720)
+local timerFlameCrash          		= mod:NewCastTimer(2, 2144720)
+local timerNextForceNova       		= mod:NewNextTimer(25, 2144724)
+local timerNextShear           		= mod:NewNextTimer(25, 2144718)
+local timerNextDrawSoul        		= mod:NewNextTimer(30, 2144737)
+local timerFelFireBlast        		= mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
+local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144804)
+local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
+local timerParalyze	= mod:NewTargetTimer(30, 25725)
+
 local warningBoilingBlood		= mod:NewSpellAnnounce(2143509, 3)
 local warningSeismicSmash		= mod:NewSpellAnnounce(2143531, 3)
-local warnMakgora				= mod:NewSpellAnnounce(2143523, 2)
+local warnMakgora				= mod:NewSpellAnnounce(2143520, 2)
 
 local timerNextBoilingBlood		= mod:NewNextTimer(20, 2143509)
 local timerNextSeismicSmash		= mod:NewNextTimer(20, 2143531)
-local timerNextMakgora			= mod:NewNextTimer(70, 2143523)
+local timerSeismicSmash			= mod:NewCastTimer(5, 2143531)
+local timerNextMakgora			= mod:NewNextTimer(70, 2143520)
+
+
+local warningFatalstrike		= mod:NewSpellAnnounce(21435227, 3)
+local timerNextFatalstrike		= mod:NewNextTimer(20, 21435227)
+
+local timerMakgora 				= mod:NewTargetTimer(20, 2143523)
+
+
+local timerNextMalevolentCleave = mod:NewNextTimer(5, 2143525)
+
+local warningBoilBlood 			= mod:NewSpellAnnounce(2143517, 3) --Burst damage from boiling the pools
+local timerNextBoilBlood 		= mod:NewNextTimer(20, 2143517)
+
 
 
 function mod:OnCombatStart(delay)
@@ -26,15 +63,24 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and timerMakgora:GetTime() >= 25 then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
-	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) then
+	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and timerMakgora:GetTime() >= 10 then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
+		timerSeismicSmash:Start()
 	elseif args:IsSpellID(2143523) then
 		warnMakgora:Show()
 		timerNextMakgora:Start()
+		timerMakgora:Start(args.destName)
+		timerNextMalevolentCleave:Start()
+	elseif args:IsSpellID(21435227) and timerMakgora:GetTime() >= 20 then
+		warningFatalstrike:Show()
+		timerNextFatalstrike:Start()
+	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and timerMakgora:GetTime() >= 25 then
+		warningBoilBlood:Show()
+		timerNextBoilBlood:Start()
 	end
 end
 
