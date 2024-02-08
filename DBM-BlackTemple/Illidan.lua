@@ -84,7 +84,7 @@ function mod:SPELL_CAST_START(args)
 		timerNextFelFireBlast:Start()
 	elseif args:IsSpellID(2144742) then
 		warnUnharnessedBlade:Show()
-		timerNextFelFireBlast2:start(20)
+		timerNextFelFireBlast2:Start(20)
 	end
 end
 
