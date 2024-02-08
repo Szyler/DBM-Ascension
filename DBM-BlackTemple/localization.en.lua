@@ -231,13 +231,22 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+    AttSunderAvian			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    AttSunderFila			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    AttSunderMater			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    AttSunderVirgo			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
-    }
+    ShahrazAvian			= "Show $spell:2144004 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+    ShahrazFila			    = "Show $spell:2144003 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+    ShahrazMater			= "Show $spell:2144001 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+    ShahrazVirgo			= "Show $spell:2144096 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)    
+}
 
 L:SetMiscLocalization{
 }
+
 
 -- DBM_SHAHRAZ_NAME					= "Mother Shahraz"
 -- DBM_SHAHRAZ_DESCRIPTION				= "Announces Fatal Attraction, sets an icons and sends whispers. Announces and shows a timer for Beams."

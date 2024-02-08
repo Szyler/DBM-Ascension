@@ -7,40 +7,50 @@ mod:RegisterCombat("yell", DBM_SHAHRAZ_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_DAMAGE",
 	"UNIT_HEALTH"
 )
 
 local warningFatalAttraction	= mod:NewSpellAnnounce(2144012, 3)
-local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
+-- local warningThoughts			= mod:NewSpellAnnounce(2144033, 3)
 local warningBossRunning		= mod:NewSpellAnnounce(2144050, 3)
 
 local timerNextFatalAttraction	= mod:NewNextTimer(30, 2144012)
 local timerNextForcedThoughts	= mod:NewNextTimer(40, 2144035)
-local timerNextBeam				= mod:NewNextTimer(30, 2144017)
+-- local timerNextBeam				= mod:NewNextTimer(30, 2144017)
 
 --Sinful
 local warningSinfulBeam			= mod:NewSpellAnnounce(2144017, 3)
 local warningSinfulThoughts		= mod:NewSpellAnnounce(2144033, 3)
-local timerNextSinfulBeam		= mod:NewCastTimer(3, 2144017)
+local timerNextSinfulBeam		= mod:NewNextTimer(50, 2144017)
+local timerCastSinfulBeam		= mod:NewCastTimer(3, 2144017)
 local timerSinfulThoughts		= mod:NewBuffActiveTimer(300, 2144033)
 
 --Sinister
 local warningSinisterBeam		= mod:NewSpellAnnounce(2144021, 3)
 local warningSinisterThoughts	= mod:NewSpellAnnounce(2144034, 3)
-local timerNextSinisterBeam		= mod:NewCastTimer(3, 2144021)
+local timerNextSinisterBeam		= mod:NewNextTimer(50, 2144021)
 local timerSinisterThoughts		= mod:NewBuffActiveTimer(300, 2144034)
 
 --Vile
 local warningVileBeam			= mod:NewSpellAnnounce(2144025, 3)
 local warningVileThoughts		= mod:NewSpellAnnounce(2144035, 3)
-local timerNextVileBeam			= mod:NewCastTimer(3, 2144025)
+local timerNextVileBeam			= mod:NewNextTimer(50, 2144025)
 local timerVileThoughts			= mod:NewBuffActiveTimer(300, 2144035)
 
 --Wicked
 local warningWickedBeam			= mod:NewSpellAnnounce(2144029, 3)
 local warningWickedThoughts		= mod:NewSpellAnnounce(2144036, 3)
-local timerNextWickedBeam		= mod:NewCastTimer(3, 2144029)
+local timerNextWickedBeam		= mod:NewNextTimer(50, 2144029)
 local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144036)
+
+
+
+local warningShahrazAvian		= mod:NewAnnounce(L.ShahrazAvian, 2, 2144004)
+local warningShahrazFila		= mod:NewAnnounce(L.ShahrazFila, 2, 2144003)
+local warningShahrazMater		= mod:NewAnnounce(L.ShahrazMater, 2, 2144001)
+local warningWiShahrazVirgo		= mod:NewAnnounce(L.ShahrazVirgo, 2, 2144096)
+
 
 --local
 local isMother		=	false
@@ -66,13 +76,26 @@ function mod:NewThoughts()
 	self:ScheduleMethod(40, "NewThoughts")
 end
 
---Szyler add debuff stack warning for tank debuffs (Mater, Filia, Avia, Virgo)
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
-	--sinful beam
-	elseif args:IsSpellID(2144017, 2144018, 2144019, 2144020) then
+	elseif args:IsSpellID(2144001) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warningShahrazMater:Show()
+	elseif args:IsSpellID(2144003) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warningShahrazFila:Show()
+	elseif args:IsSpellID(2144004) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warningShahrazAvian:Show()
+	elseif args:IsSpellID(2144096) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warningWiShahrazVirgo:Show()
+	end
+end
+
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2144017) or args:IsSpellID(2144018) or args:IsSpellID(2144019) or args:IsSpellID(2144020) then
+		warningSinfulBeam:Show()
+		timerCastSinfulBeam:Start()
+		timerNextSinfulBeam:Start()
 		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Start()
@@ -80,8 +103,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	--sinister beam
-	elseif args:IsSpellID(2144021, 2144022, 2144023, 2144024) then
+	elseif args:IsSpellID(2144021) or args:IsSpellID(2144022) or args:IsSpellID(2144023) or args:IsSpellID(2144024) then
+		warningSinisterBeam:Show()
+		timerCastSinisterBeam:Start()
+		timerNextSinisterBeam:Start()
 		if args:IsPlayer() then
 			warningSinisterThoughts:Show()
 			timerSinfulThoughts:Stop()
@@ -89,8 +114,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	--vile beam
-	elseif args:IsSpellID(2144025, 2144026, 2144027, 2144028) then
+	elseif args:IsSpellID(2144025) or args:IsSpellID(2144026) or args:IsSpellID(2144027) or args:IsSpellID(2144028) then
+		warningVileBeam:Show()
+		timerCastVileBeam:Start()
+		timerNextVileBeam:Start()
 		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
@@ -98,8 +125,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerVileThoughts:Start()
 			timerWickedThoughts:Stop()
 		end
-	--wicked beam
-	elseif args:IsSpellID(2144029, 2144030, 2144031, 2144032) then
+	elseif args:IsSpellID(2144029) or args:IsSpellID(2144030) or args:IsSpellID(2144031) or args:IsSpellID(2144032) then
+		warningWickedBeam:Show()
+		timerCastWickedBeam:Start()
+		timerNextWickedBeam:Start()
 		if args:IsPlayer() then
 			warningWickedThoughts:Show()
 			timerSinfulThoughts:Stop()
