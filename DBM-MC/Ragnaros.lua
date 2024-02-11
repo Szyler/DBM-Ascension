@@ -13,7 +13,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local timerCombatStart	= mod:NewTimer(78, "TimerCombatStart", 2457)
+local timerCombatStart	= mod:NewTimer(68, "TimerCombatStart", 2457)
 
 local warnSunder		= mod:NewAnnounce(L.RagFire, 2, 2105107)
 local warnHand			= mod:NewSpellAnnounce(2105119)
