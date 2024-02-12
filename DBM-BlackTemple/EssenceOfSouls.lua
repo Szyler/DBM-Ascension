@@ -42,7 +42,7 @@ local timerNextSeethe = mod:NewNextTimer(15, 2143861)
 
 local warnSoulScream = mod:NewSpellAnnounce(2143853, 2)
 local timerSoulScream = mod:NewCastTimer(2, 2143853)
-local timerNextSoulScream = mod:NewNextTimer(30, 2143853)
+local timerNextSoulScream = mod:NewNextTimer(12, 2143853)
 
 
 local warnAuraOfSuffering = mod:NewSpellAnnounce(2143751, 2)
@@ -87,7 +87,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143850) and DBM:AntiSpam(60) and self.vb.phase == 2 then
 		self.vb.phase = 3
 		warnAuraOfAnger:Show()
-		timerNextSoulScream:Start(20)
+		timerNextSoulScream:Start(10)
 	end
 end
 

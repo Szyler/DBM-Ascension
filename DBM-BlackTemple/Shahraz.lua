@@ -61,10 +61,11 @@ local below10		=   false
 
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
+	timerNextFatalAttraction:Start(35-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
 	below20		=   false
 	below10		=   false
-	isMother = true
+	isMother	=	true
 end
 
 function mod:OnCombatEnd()
@@ -109,7 +110,6 @@ function mod:SPELL_DAMAGE(args)
 		end
 	elseif args:IsSpellID(2144021) or args:IsSpellID(2144022) or args:IsSpellID(2144023) or args:IsSpellID(2144024) then
 		warningSinisterBeam:Show()
-		timerCastSinisterBeam:Start()
 		timerNextSinisterBeam:Start()
 		if args:IsPlayer() then
 			warningSinisterThoughts:Show()
@@ -120,7 +120,6 @@ function mod:SPELL_DAMAGE(args)
 		end
 	elseif args:IsSpellID(2144025) or args:IsSpellID(2144026) or args:IsSpellID(2144027) or args:IsSpellID(2144028) then
 		warningVileBeam:Show()
-		timerCastVileBeam:Start()
 		timerNextVileBeam:Start()
 		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
@@ -130,8 +129,7 @@ function mod:SPELL_DAMAGE(args)
 			timerWickedThoughts:Stop()
 		end
 	elseif args:IsSpellID(2144029) or args:IsSpellID(2144030) or args:IsSpellID(2144031) or args:IsSpellID(2144032) then
-		warningWickedBeam:Show()
-		timerCastWickedBeam:Start()
+		warningWickedBeam:Show()	
 		timerNextWickedBeam:Start()
 		if args:IsPlayer() then
 			warningWickedThoughts:Show()
@@ -149,6 +147,11 @@ function mod:UNIT_HEALTH(unit)
 		if (hp <= 23) and (below20 == false) then
 			warningBossRunning1:Show()
 			below20 = true
+			timerNextFatalAttraction:Stop()
+			timerSinfulThoughts:Stop()
+			timerSinisterThoughts:Stop()
+			timerVileThoughts:Stop()
+			timerWickedThoughts:Stop()
 		elseif (hp <= 13) and (below10 == false) then
 			warningBossRunning2:Show()
 			below10 = true

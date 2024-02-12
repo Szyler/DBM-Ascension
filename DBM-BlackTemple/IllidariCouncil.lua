@@ -36,7 +36,7 @@ local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
 
 function mod:OnCombatStart(delay)
 	timerNextPaintoPleasure:Start(25-delay)
-	timerNextSmokeBomb:Start(30-delay)
+	timerNextSmokeBomb:Start(33-delay)
 	timerNextDeathSentence:Start(15-delay)
 	timerNextConsecrate:Start(10-delay)
 	timerNextRuneofPower:Start(45-delay)
