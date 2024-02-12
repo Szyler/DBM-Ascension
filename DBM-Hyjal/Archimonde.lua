@@ -106,8 +106,8 @@ function mod:OnCombatStart(delay)
 prewarn 		= 0
 phase 			= 0
 terror 			= 0
-lastDoomfire 	= nil
-lastForce 		= nil
+lastDoomfire 	= 0
+lastForce 		= 0
 drawFlames		= 0
 end
 
