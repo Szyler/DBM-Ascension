@@ -27,20 +27,21 @@ mod:AddBoolOption(L.SpineYellOpt)
 
 
 function mod:OnCombatStart(delay)
-	self:ScheduleMethod(0-delay, "NewAdds")
+--	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
-	timerNextShield:Start(40-delay)
+	timerNextShield:Start(35-delay)
 end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
 
-function mod:NewAdds()
-	self:UnscheduleMethod("NewAdds")
-	timerNextAdds:Start()
-	self:ScheduleMethod(15, "NewAdds")
-end
+--showing on timer as Impaling spine because of ID used above.  Adds extra spine timers through fight which are confusing.
+-- function mod:NewAdds()
+-- 	self:UnscheduleMethod("NewAdds")
+-- 	timerNextAdds:Start()
+-- 	self:ScheduleMethod(15, "NewAdds")
+-- end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
