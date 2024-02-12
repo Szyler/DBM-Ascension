@@ -17,9 +17,9 @@ mod:RegisterEvents(
 )
 
 
-local intermissionSummonEssenceOfSuffering = mod:NewCastTimer(35, 2143867)
-local intermissionSummonEssenceOfDesire = mod:NewCastTimer(35, 2143868)
-local intermissionSummonEssenceOfAnger = mod:NewCastTimer(35, 2143869)
+local intermissionSummonEssenceOfSuffering = mod:NewCastTimer(35, 2143967)
+local intermissionSummonEssenceOfDesire = mod:NewCastTimer(35, 2143968)
+local intermissionSummonEssenceOfAnger = mod:NewCastTimer(35, 2143969)
 
 local warnSpiritShock = mod:NewSpellAnnounce(2143804, 2)
 local timerTargetSpiritShock = mod:NewTargetTimer(5, 2143804)
