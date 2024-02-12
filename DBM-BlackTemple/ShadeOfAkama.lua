@@ -60,7 +60,7 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED -- Hack to include applied_
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2142603) then
-		warnSoulDomination:Hide()
+		-- warnSoulDomination:Hide()
 		timerSoulDomination:Stop()
 	end
 end

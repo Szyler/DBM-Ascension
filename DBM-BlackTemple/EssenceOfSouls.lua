@@ -93,7 +93,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2143808) then
-		warnRuneShield:Hide()
+		-- warnRuneShield:Hide()
 		timerRuneShield:Stop()
 	end
 end
