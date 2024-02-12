@@ -21,13 +21,13 @@ local timerNextDischarge	= mod:NewNextTimer(20, 2142505)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
-local timerNextAdds			= mod:NewNextTimer(15, 2142516)
+local timerNextAdds			= mod:NewNextTimer(15, 2142574)
 
 mod:AddBoolOption(L.SpineYellOpt)
 
 
 function mod:OnCombatStart(delay)
---	self:ScheduleMethod(0-delay, "NewAdds")
+	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(35-delay)
 end
@@ -36,12 +36,11 @@ function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
 
---showing on timer as Impaling spine because of ID used above.  Adds extra spine timers through fight which are confusing.
--- function mod:NewAdds()
--- 	self:UnscheduleMethod("NewAdds")
--- 	timerNextAdds:Start()
--- 	self:ScheduleMethod(15, "NewAdds")
--- end
+function mod:NewAdds()
+	self:UnscheduleMethod("NewAdds")
+	timerNextAdds:Start()
+	self:ScheduleMethod(15, "NewAdds")
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
