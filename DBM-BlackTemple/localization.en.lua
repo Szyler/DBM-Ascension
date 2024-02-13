@@ -336,6 +336,7 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
+    DBM_ILLIDAN_YELL_PULL				= "The time has come! The moment is at hand!"
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"
@@ -355,7 +356,7 @@ L:SetMiscLocalization{
 -- DBM_ILLIDAN_OPTION_SHADOWDEMONS		= "Announce Shadow Demons"
 -- DBM_ILLIDAN_OPTION_EYEBEAMSOON		= "Show \"Eye Blast soon\" warning"
 
--- DBM_ILLIDAN_YELL_PULL				= "The time has come! The moment is at hand!"
+
 -- DBM_ILLIDAN_YELL_EYEBEAM			= "Stare into the eyes of the Betrayer!"
 -- DBM_ILLIDAN_YELL_DEMONFORM			= "Behold the power... of the demon within!"
 -- DBM_ILLIDAN_YELL_PHASE4				= "Is this it, mortals? Is this all the fury you can muster?"
