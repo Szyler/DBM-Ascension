@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22917)
-mod:RegisterCombat("yell", DBM_ILLIDAN_YELL_PULL)
+mod:RegisterCombat("yell", L.DBM_ILLIDAN_YELL_PULL)
 -- Illidan:SetMinCombatTime(20)
 
 
@@ -18,7 +18,9 @@ mod:RegisterEvents(
 	"UNIT_SPELLCAST_START"
 )
 
-local warnChaosBlast           		= mod:NewSpellAnnounce(2144804, 2)
+local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
+
+local warnChaosBlast           		= mod:NewSpellAnnounce(2144802, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
 local warnForceNova            		= mod:NewSpellAnnounce(2144724, 2)
@@ -27,27 +29,31 @@ local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
 local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
 local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
 
-local timerChaosBlast          		= mod:NewCastTimer(2, 2144804)
-local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144804)
+local timerChaosBlast          		= mod:NewCastTimer(2, 2144802)
+local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144802)
 local timerNextFlameCrash      		= mod:NewNextTimer(25, 2144720)
 local timerFlameCrash          		= mod:NewCastTimer(2, 2144720)
 local timerNextForceNova       		= mod:NewNextTimer(25, 2144724)
 local timerNextShear           		= mod:NewNextTimer(25, 2144718)
 local timerNextDrawSoul        		= mod:NewNextTimer(30, 2144737)
-local timerFelFireBlast        		= mod:NewCastTimer(2, 2144804)
+local timerFelFireBlast        		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
-local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144804)
+local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
 
 
+function mod:OnCombatStart(delay)
+	if self.Options.RangeCheck then
+		DBM.RangeCheck:Show(15)
+	end
+	timerCombatStart:Start(3)
+	timerNextForceNova:Start(15-delay)
+	timerNextShear:Start(25-delay)
+	timerNextDrawSoul:Start(30-delay)
+end
+
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2144804) then
-		warnChaosBlast:Show()
-		timerChaosBlast:Start()
-	elseif args:IsSpellID(2144718) then
-		warnShear:Show()
-		timerNextShear:Start()
-	elseif args:IsSpellID(2144840) then
+	if args:IsSpellID(2144840) then
 		warnFelFireBlast:Show()
 		if timerFelFireBlast:IsStarted() or timerNextFelFireBlast:IsStarted() then
 			timerFelFireBlast2:Start()
@@ -59,32 +65,27 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:OnCombatStart(delay)
-	if self.Options.RangeCheck then
-		DBM.RangeCheck:Show(15)
-	end
-	timerNextForceNova:Start(15-delay)
-	timerNextShear:Start(25-delay)
-	timerNextDrawSoul:Start(30-delay)
-end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2144737) then
+	if args:IsSpellID(2144737,2144738,2144739,2144740) then
 		warnDrawSoul:Show()
 		timerNextDrawSoul:Start()
-	elseif args:IsSpellID(2144720) then
+	elseif args:IsSpellID(2144720,2144721,2144722,2144723) then
 		timerNextFlameCrash:Start()
 		warnFlameCrash:Show()
 		timerFlameCrash:Start()
-	elseif args:IsSpellID(2144804) then
-		timerChaosBlast:Start()
-		warnChaosBlast:Show()
-	elseif args:IsSpellID(2144829) then
+	elseif args:IsSpellID(2144829,2144830,2144831,2144832) then
 		warnFelFireBlast:Show()
 		timerNextFelFireBlast:Start()
 	elseif args:IsSpellID(2144742) then
 		warnUnharnessedBlade:Show()
 		timerNextFelFireBlast2:Start(20)
+	elseif args:IsSpellID(2144715,2144716,2144717,2144718) then
+		warnShear:Show()
+		timerNextShear:Start()
+	elseif args:IsSpellID(2144802,2144803,2144804,2144805) then
+		warnChaosBlast:Show()
+		timerChaosBlast:Start()
 	end
 end
 
@@ -94,9 +95,9 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2144804) then
+	if args:IsSpellID(2144802,2144803,2144804,2144805) then
 		timerChaosBlastDebuff:Start()
-	elseif args:IsSpellID(2144720) then
+	elseif args:IsSpellID(2144720,2144721,2144722,2144723) then
 		if args:IsPlayer() then
 			warnFlameCrashDot:Show()
 		end
@@ -104,17 +105,17 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2144804) then
+	if args:IsSpellID(2144802,2144803,2144804,2144805) then
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
-	elseif args:IsSpellID(2144718) then
+	elseif args:IsSpellID(2144715,2144716,2144717,2144718) then
 		warnShear:Show()
 		timerNextShear:Start()
 	end
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2144724) then
+	if args:IsSpellID(2144724,2144725,2144726,2144727) and DBM:AntiSpam(15)  then
 		warnForceNova:Show()
 		timerNextForceNova:Start()
 	end

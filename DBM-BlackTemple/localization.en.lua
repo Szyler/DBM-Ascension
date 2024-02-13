@@ -16,6 +16,7 @@ L:SetOptionLocalization{
 
 L:SetMiscLocalization{
     SpineYell			    = "Spine on me!",
+    DBM_NAJENTUS_YELL_PULL	= "You will die in the name of Lady Vashj!";
 }
 
 
@@ -27,7 +28,7 @@ L:SetMiscLocalization{
 -- DBM_NAJENTUS_OPTION_RANGECHECK		= "Show range check frame";
 -- DBM_NAJENTUS_OPTION_FRAME			= "Show players with less than 8500 health";
 
--- DBM_NAJENTUS_YELL_PULL				= "You will die in the name of Lady Vashj!";
+
 
 -- DBM_NAJENTUS_WARN_SPINE				= "*** Impaling Spine on >%s< ***";
 -- DBM_NAJENTUS_WARN_ENRAGE			= "*** Enrage in %s %s ***";
@@ -336,7 +337,7 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
-    DBM_ILLIDAN_YELL_PULL				= "The time has come! The moment is at hand!"
+    DBM_ILLIDAN_YELL_PULL				= "You are not prepared!"
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"
