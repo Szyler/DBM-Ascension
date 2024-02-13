@@ -334,10 +334,11 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    }
+}
 
 L:SetMiscLocalization{
-    DBM_ILLIDAN_YELL_PULL				= "You are not prepared!"
+    DBM_ILLIDAN_YELL_PULL				= "You are not prepared!",
+    UnharnessedBlade			        = "Blade on me!",
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"

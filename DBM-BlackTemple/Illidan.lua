@@ -29,6 +29,8 @@ local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
 local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
 local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
 
+local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
+
 local timerChaosBlast          		= mod:NewCastTimer(2, 2144802)
 local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144802)
 local timerNextFlameCrash      		= mod:NewNextTimer(25, 2144720)
@@ -40,21 +42,29 @@ local timerFelFireBlast        		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
 local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
-
+local timerNextUnharnessedBlade   	= mod:NewNextTimer(40, 2144742)
 
 function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
 	end
 	timerCombatStart:Start(3)
-	timerNextForceNova:Start(15-delay)
-	timerNextShear:Start(25-delay)
-	timerNextDrawSoul:Start(30-delay)
+	timerNextForceNova:Start(18-delay)
+	timerNextShear:Start(28-delay)
+	timerNextDrawSoul:Start(33-delay)
+	timerNextUnharnessedBlade:Start(38)
+end
+
+function mod:UnharnessedBlade()
+	local target = nil
+	target = mod:GetBossTarget(22917)
+	if target == UnitName("player") then
+		yellUnharnessedBlade:Countdown(3,3)
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(2144840) then
-		warnFelFireBlast:Show()
 		if timerFelFireBlast:IsStarted() or timerNextFelFireBlast:IsStarted() then
 			timerFelFireBlast2:Start()
 			timerNextFelFireBlast2:Start(20)
@@ -62,9 +72,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerFelFireBlast:Start()
 			timerNextFelFireBlast:Start(20)
 		end
+		warnFelFireBlast:Show()
+	elseif args:IsSpellID(2144802,2144803,2144804,2144805) then
+		warnChaosBlast:Show()
+		timerChaosBlast:Start()
+	elseif args:IsSpellID(2144715,2144716,2144717,2144718) then
+		warnShear:Show()
+		timerNextShear:Start()
 	end
 end
-
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2144737,2144738,2144739,2144740) then
@@ -78,8 +94,9 @@ function mod:SPELL_CAST_START(args)
 		warnFelFireBlast:Show()
 		timerNextFelFireBlast:Start()
 	elseif args:IsSpellID(2144742) then
+		self:ScheduleMethod(0.2, "alertAdds")
 		warnUnharnessedBlade:Show()
-		timerNextFelFireBlast2:Start(20)
+		timerNextUnharnessedBlade:Start()
 	elseif args:IsSpellID(2144715,2144716,2144717,2144718) then
 		warnShear:Show()
 		timerNextShear:Start()
@@ -87,11 +104,6 @@ function mod:SPELL_CAST_START(args)
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
 	end
-end
-
-
-function mod:OnCombatEnd()
-	DBM.RangeCheck:Hide()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -104,16 +116,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2144802,2144803,2144804,2144805) then
-		warnChaosBlast:Show()
-		timerChaosBlast:Start()
-	elseif args:IsSpellID(2144715,2144716,2144717,2144718) then
-		warnShear:Show()
-		timerNextShear:Start()
-	end
-end
-
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2144724,2144725,2144726,2144727) and DBM:AntiSpam(15)  then
 		warnForceNova:Show()
@@ -121,6 +123,9 @@ function mod:SPELL_DAMAGE(args)
 	end
 end
 
+function mod:OnCombatEnd()
+	DBM.RangeCheck:Hide()
+end
 
 -- if self.Options.RangeCheck then
 -- 	DBM_Gui_DistanceFrame_Hide()
