@@ -3,11 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22887)
-mod:RegisterCombat("yell", DBM_NAJENTUS_YELL_PULL)
+mod:RegisterCombat("yell", L.DBM_NAJENTUS_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_AURA_REMOVED",
+	"SPELL_PERIODIC_DAMAGE"
 )
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
