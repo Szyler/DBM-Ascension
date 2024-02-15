@@ -67,6 +67,8 @@ local lastSlap
 local remainingSlap
 local berserkTimer		= mod:NewBerserkTimer(600)
 
+mod:AddBoolOption("ChainWhisper", false)
+
 function mod:OnCombatStart(delay)
 	prewarn 			= 1
 	phylDeath 			= 0
@@ -164,8 +166,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFrozen:Start()
 	end
 	if args:IsSpellID(2140654) and args:IsPlayer() then
-		warnChains:show(args.sourceName, args.destName)
---		SendChatMessage("sourceName is "..args.sourceName.."", "SAY")
+		warnChains:Show(args.sourceName, args.destName)
+		if self.Options.ChainWhisper then
+			SendChatMessage("I'm linked with you", "WHISPER")
+		end
 --		SendChatMessage("destName is "..args.destName.."", "SAY")
 --		if args.destName == UnitName("Player") then
 --			specWarnChains:Show(args.destName)

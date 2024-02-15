@@ -16,6 +16,7 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
+	ChainWhisper 		= "Enable this if you want to whisper your partner when you get linked by $spell:2140654."
 })
 
 L:SetMiscLocalization({
