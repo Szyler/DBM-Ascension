@@ -70,9 +70,9 @@ function mod:SPELL_CAST_START(args)
 		warnPaintoPleasure:Show()
 		timerNextPaintoPleasure:Start()
 		--when rogue splits, 22951 is fake 22952 is real.
-	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467) then
-		warnNetherprotection:Show()
-		timerNextNetherProtection:Start()
+	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467, 2144514, 2144515, 2144516, 2144517) then
+		warnSadism:Show()
+		timerNextSadism:Start()
 	end
 end
 
