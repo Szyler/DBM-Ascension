@@ -20,7 +20,7 @@ local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
 local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
---Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss
+--Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss.  Spell id 2143255
 
 function mod:OnCombatStart(delay)
 	timerNextWitherAndRot:Start(15-delay)
