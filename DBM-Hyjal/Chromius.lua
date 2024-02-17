@@ -19,7 +19,7 @@ mod:RegisterEvents(
 -- Final Countdown
 local specWarnFinalCountdown			= mod:NewSpecialWarning("Final Countdown! The Hourglass will vibrate %s times!", 2141735)
 local warnCountdown						= mod:NewAnnounce("There are %s vibrations left!", 2141735)
-local timerNextFinalCountdown			= mod:NewTimer(60,"Next Final Countdown: (%s)", 2141735)
+local timerNextFinalCountdown			= mod:NewTimer(62,"Next Final Countdown: (%s)", 2141735)
 local timerFinalDuration				= mod:NewTimer(2,"Final Countdown (%s ticks)", 2141735)
 local warnFinalCDSoon					= mod:NewAnnounce("Final Countdown soon!", 2141735)
 local timerFinalDelay					= mod:NewTimer(3, "Vibration travel time", 2141735)
@@ -101,23 +101,23 @@ function mod:FinalCountdown()
 	self:UnscheduleMethod("FinalCountdown")
 	countdown = count - 1
 	specWarnFinalCountdown:Show(count)
-	--if phase == 0 then
+	if phase == 0 then
 		timerFinalDuration:Start(duration, count)
 		count = count + 1
 		duration = duration + 2.5
-		timerNextFinalCountdown:Start(60,count)
-		warnFinalCDSoon:Schedule(55)
-		self:ScheduleMethod(60,"FinalCountdown")
---	elseif phase == 1 then
---		timerFinalDelay:Start(3)
---		self:ScheduleMethod(3,"FinalDuration")
---	elseif phase == 2 then
---		timerFinalDelay:Start(3)
---		self:ScheduleMethod(3,"FinalDuration")
---	elseif phase == 3 then
---		timerFinalDelay:Start(3)
---		self:ScheduleMethod(3,"FinalDuration")
---	end
+		timerNextFinalCountdown:Start(62,count)
+		warnFinalCDSoon:Schedule(57)
+		self:ScheduleMethod(62,"FinalCountdown")
+	elseif phase == 1 then
+		timerFinalDelay:Start(3)
+		self:ScheduleMethod(3,"FinalDuration")
+	elseif phase == 2 then
+		timerFinalDelay:Start(3)
+		self:ScheduleMethod(3,"FinalDuration")
+	elseif phase == 3 then
+		timerFinalDelay:Start(3)
+		self:ScheduleMethod(3,"FinalDuration")
+	end
 end
 
 function mod:FinalDuration()
