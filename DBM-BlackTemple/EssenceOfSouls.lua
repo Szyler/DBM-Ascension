@@ -76,10 +76,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSeethe:Show()
 		timerSeethe:Start()
 		timerNextSeethe:Start()
-	elseif args:IsSpellID(2143751) and DBM:AntiSpam(60) and self.vb.phase == 1 then
+	elseif args:IsSpellID(2143750, 2143751, 2143752, 2143753) and DBM:AntiSpam(60) and self.vb.phase == 1 then
 		warnAuraOfSuffering:Show()
 		timerNextSoulDrain:Start(20)
-	elseif args:IsSpellID(2143800) and DBM:AntiSpam(60) and self.vb.phase == 1 then
+	elseif args:IsSpellID(2143800, 2143803) and DBM:AntiSpam(60) and self.vb.phase == 1 then
 		self.vb.phase = 2
 		warnAuraOfDesire:Show()
 		timerNextRuneShield:Start(16)
@@ -100,7 +100,7 @@ end
 
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2143853) then
+	if args:IsSpellID(2143853, 2143854, 2143855, 2143856, 2143857) then
 		warnSoulScream:Show()
 		timerSoulScream:Start()
 		timerNextSoulScream:Start()

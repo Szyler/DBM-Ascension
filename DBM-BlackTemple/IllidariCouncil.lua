@@ -44,35 +44,35 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2144560) and DBM:AntiSpam(20, 1) then
+	if args:IsSpellID(2144560, 2144610) and DBM:AntiSpam(20, 1) then
 		warnSmokeBomb:Show()
 		timerNextSmokeBomb:Start()
-	elseif args:IsSpellID(2144560) then
+	elseif args:IsSpellID(2144560, 2144261, 2144262, 2144263, 2144264, 2144265, 2144266, 2144267, 2144268, 2144310, 2144311, 2144313, 2144315, 2144316, 2144317, 2144318) then
 		timerNextDeathSentence:Start()
 		timerDeathSentence:Start()
 	elseif args:IsSpellID(2144256) then
 		timerNextConsecrate:Start()
-	elseif args:IsSpellID(2144368) and DBM:AntiSpam(20, 1) then
+	elseif args:IsSpellID(2144368, 2144418) and DBM:AntiSpam(20, 1) then
 		timerNextRuneofPower:Start()
-	elseif args:IsSpellID(2144351) then
+	elseif args:IsSpellID(2144351, 2144401) then
 		warnNetherprotection:Show()
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2144351) then
+	if args:IsSpellID(2144351, 2144401) then
 		timerNextNetherProtection:Start()
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2144463) then
+	if args:IsSpellID(2144462, 2144463, 2144512, 2144513) then
 		warnPaintoPleasure:Show()
 		timerNextPaintoPleasure:Start()
 		--when rogue splits, 22951 is fake 22952 is real.
-	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467) then
-		warnNetherprotection:Show()
-		timerNextNetherProtection:Start()
+	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467, 2144514, 2144515, 2144516, 2144517) then
+		warnSadism:Show()
+		timerNextSadism:Start()
 	end
 end
 
