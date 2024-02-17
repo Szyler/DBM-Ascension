@@ -42,7 +42,7 @@ local timerFelFireBlast        		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
 local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
-local timerNextUnharnessedBlade   	= mod:NewNextTimer(40, 2144742)
+local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
 
 function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
