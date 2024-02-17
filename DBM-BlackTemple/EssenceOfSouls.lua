@@ -100,11 +100,10 @@ end
 
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2143853, 2143854, 2143855, 2143856, 2143857) then
+	if args:IsSpellID(2143853, 2143854, 2143855, 2143856) or args:IsSpellID(2143857) then
 		warnSoulScream:Show()
 		timerSoulScream:Start()
 		timerNextSoulScream:Start()
-
 	end
 end
 
