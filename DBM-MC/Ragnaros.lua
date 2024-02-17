@@ -13,7 +13,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local timerCombatStart	= mod:NewTimer(78, "TimerCombatStart", 2457)
+local timerCombatStart	= mod:NewTimer(68, "TimerCombatStart", 2457)
 
 local warnSunder		= mod:NewAnnounce(L.RagFire, 2, 2105107)
 local warnHand			= mod:NewSpellAnnounce(2105119)
@@ -46,10 +46,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:Emerged()
-	timerNextHand:Start(-delay)
-	warnSubmergeSoon:Schedule(85-delay)
-	timerSubmerge:Start(-delay)
-	timerEmerge:Schedule(90-delay)
+	timerNextHand:Start()
+	warnSubmergeSoon:Schedule(85)
+	timerSubmerge:Start()
+	timerEmerge:Schedule(90)
 	self:ScheduleMethod(150, "Emerged")
 end
 

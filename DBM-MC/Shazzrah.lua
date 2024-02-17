@@ -60,7 +60,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2105085, 2105086) or args:IsSpellID(2105087, 2105088) then
 		timerNextExplo:Start()
-		warnCastExplo:Start()
+		warnCastExplo:Show()
 		timerExplo:Start()
 	end
 end
