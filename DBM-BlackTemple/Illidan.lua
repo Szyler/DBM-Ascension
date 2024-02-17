@@ -33,7 +33,7 @@ local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
 
 local timerChaosBlast          		= mod:NewCastTimer(2, 2144802)
 local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144802)
-local timerNextFlameCrash      		= mod:NewNextTimer(25, 2144720)
+local timerNextFlameCrash      		= mod:NewNextTimer(30, 2144720)
 local timerFlameCrash          		= mod:NewCastTimer(2, 2144720)
 local timerNextForceNova       		= mod:NewNextTimer(25, 2144724)
 local timerNextShear           		= mod:NewNextTimer(25, 2144718)
