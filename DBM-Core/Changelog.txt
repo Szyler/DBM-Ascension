@@ -243,5 +243,10 @@ v5.18 15/05/2023
 - Fixed Blast Nova timers on Onyxia
 - Added yell for Fireball on Onyxia
 ----------------------------------------------------------------------------------------------------
-v5.19 25/01/2024
+v5.19 17/02/2024
 - Added all bosses from Black Temple
+- Fixed repeating timers on Chromius for FinalCountdown due to server delay
+- Fixed pull timer on Ragnaros
+- Fixed Lua errors in MC
+- Added a antispam to rockfall on Golemagg, defaulted to off. (go to settings to turn on manually)
+- Removed spammy warnHandofRagTargets.
