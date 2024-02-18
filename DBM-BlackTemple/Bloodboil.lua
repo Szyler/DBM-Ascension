@@ -13,11 +13,14 @@ mod:RegisterEvents(
 local warningBoilingBlood		= mod:NewSpellAnnounce(2143508, 3)
 local warningSeismicSmash		= mod:NewSpellAnnounce(2143531, 3)
 local warnMakgora				= mod:NewSpellAnnounce(2143520, 2)
+local warningFatalstrike		= mod:NewSpellAnnounce(2143527, 2)
 
 local timerNextBoilingBlood		= mod:NewNextTimer(20, 2143508)
 local timerNextSeismicSmash		= mod:NewNextTimer(20, 2143531)
 local timerSeismicSmash			= mod:NewCastTimer(5, 2143531)
 local timerNextMakgora			= mod:NewNextTimer(70, 2143520)
+local timerNextFatalstrike		= mod:NewNextTimer(20, 2143527)
+local timerNextMalevolentCleave	= mod:NewNextTimer(5, 2143526)
 
 local timerMakgora 				= mod:NewTargetTimer(35, 2143523)
 
