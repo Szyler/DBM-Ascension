@@ -13,6 +13,7 @@ mod:RegisterEvents(
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142505, 3)
+local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
