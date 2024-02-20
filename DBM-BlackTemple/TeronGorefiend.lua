@@ -17,6 +17,7 @@ local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
 local timerNextWitherAndRot		= mod:NewNextTimer(30, 2143286)
 local timerNextGraspingDeath	= mod:NewNextTimer(30, 2143282)
 local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
+local timerTargetShadowofDeath	= mod:NewTargetTimer(10, 2143264)
 local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
@@ -39,13 +40,15 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143264) then
 		warnShadowOfDeath:Show()
 		timerNextShadowofDeath:Start()
+		timerTargetShadowofDeath:Start(args.destName)
+		if timerTargetShadowofDeath:GetTime() > 100 then
+			timerTargetShadowofDeath:Stop()
+		end
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
 		warnSoulReaper:Show()
 		timerSoulReaper:Start()
 	end
 end
-
-
 
 --Gorefiend:AddOption("WarnIncinerate", false, DBM_GOREFIEND_OPTION_INCINERATE)
 
