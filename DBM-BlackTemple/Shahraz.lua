@@ -83,8 +83,20 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
-	elseif args:IsSpellID(2144050) then
+	elseif args:IsSpellID(2144050, 2144051) then
 		warningBossRunning:Show()
+		timerSinfulThoughts:Stop()
+		timerSinisterThoughts:Stop()
+		timerVileThoughts:Stop()
+		timerWickedThoughts:Stop()
+		timerNextForcedThoughtsStop()
+		
+		timerNextFatalAttraction:Stop()
+
+		timerNextSinfulBeamStop()
+		timerNextSinisterBeamStop()
+		timerNextVileBeamStop()
+		timerNextWickedBeamStop()
 	elseif args:IsSpellID(2144001) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warningShahrazMater:Show()
 	elseif args:IsSpellID(2144003) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
