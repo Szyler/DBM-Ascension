@@ -11,7 +11,8 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    SpineYellOpt           = "Yell when you are affected by $spell:2142516"
+    SpineYellOpt           = "Yell when you are affected by $spell:2142516",
+    DischargeYellOpt           = "Yell when you are affected by $spell:2142504"
 }
 
 L:SetMiscLocalization{

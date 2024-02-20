@@ -12,20 +12,23 @@ mod:RegisterEvents(
 )
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
-local warningDischarge		= mod:NewSpellAnnounce(2142505, 3)
+local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
 local timerNextShield		= mod:NewNextTimer(80, 2142521)
-local timerNextDischarge	= mod:NewNextTimer(20, 2142505)
+local timerNextDischarge	= mod:NewNextTimer(20, 2142504)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
 local timerNextAdds			= mod:NewNextTimer(15, 2142574)
 
+local yellDischarge			= mod:NewFadesYell(2142504)
+
 mod:AddBoolOption(L.SpineYellOpt)
+mod:AddBoolOption(L.DischargeYellOpt)
 
 
 function mod:OnCombatStart(delay)
@@ -48,9 +51,12 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
 		warningShield:Show()
 		timerNextShield:Start()
-	elseif args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
+	elseif args:IsSpellID(2142504) then-- This is the damage proc, not the aura. args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
 		warningDischarge:Show()
 		timerNextDischarge:Start()
+		if args:IsPlayer() and self.Options.DischargeYellOpt then
+			yellDischarge:Schedule(8, 5)
+		end
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		warnSpine:Show()
 		timerNextSpine:Start()
