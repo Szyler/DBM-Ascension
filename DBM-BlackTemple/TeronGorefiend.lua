@@ -23,6 +23,19 @@ local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
 --Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss.  Spell id 2143255
 
+
+function mod:shadowofDeath()
+    -- make a for loop to go through all 25 raid members to find their duration of "Shadow of Death"
+    for i = 1, 25 do
+        local uId = "raid" .. i
+        local spellName = "Shadow of Death"
+        local _, _, _, _, duration = UnitAura(uId, spellName)
+        if duration and duration < 100 then
+			timerTargetShadowofDeath:Start(UnitName(uId))
+        end
+    end
+end
+
 function mod:OnCombatStart(delay)
 	timerNextWitherAndRot:Start(15-delay)
 	timerNextGraspingDeath:Start(30-delay)
@@ -37,13 +50,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(10) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264) then
+	elseif args:IsSpellID(2143264) and DBM:Antispam() then
 		warnShadowOfDeath:Show()
 		timerNextShadowofDeath:Start()
-		timerTargetShadowofDeath:Start(args.destName)
-		if timerTargetShadowofDeath:GetTime() > 100 then
-			timerTargetShadowofDeath:Stop()
-		end
+		self:ScheduleMethod(0.2, "ShadowofDeath")
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
 		warnSoulReaper:Show()
 		timerSoulReaper:Start()
