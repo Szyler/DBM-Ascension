@@ -230,6 +230,7 @@ L:SetOptionLocalization{
 	AimedYellOpt        	= "Yell when you are affected by $spell:351310",
 	LootIcon				= "Set icon on the target carrying Tainted Core",
 	LootYellOpt        		= "Yell when you are carrying Tainted Core",
+	ParasiteYellOpt        	= "Coundown yell when you are infected by $spell:2138027",
 	AutoChangeLootToFFA		= "Switch loot mode to Free for All in Phase 2",
 	SpecWarnSiren			= "Show special warning for when Coilfang Siren spawns",
 	Discharge				= "Show timer for when Shield Generator will deal its damage",

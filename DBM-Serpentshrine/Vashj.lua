@@ -75,6 +75,7 @@ mod:AddBoolOption(L.AimedIcon)
 mod:AddBoolOption(L.ChargeYellOpt)
 mod:AddBoolOption(L.AimedYellOpt)
 mod:AddBoolOption(L.LootYellOpt)
+mod:AddBoolOption(L.ParasiteYellOpt)
 mod:AddBoolOption("AutoChangeLootToFFA", false)
 
 mod.vb.phase = 1
@@ -209,10 +210,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2138027, 2138028, 2138029, 2138030) then
 		warnParasite:Show(args.destName)
 		timerParasite:Start()
-		yellParasite:Countdown(8,5)
+		if args:IsPlayer() and self.Options.ParasiteYellOpt then
+			yellParasite:Countdown(8,5)
+		end
 	elseif args:IsSpellID(2138031, 2138032, 2138033, 2138034) then
 		warnParasite:Show(args.destName)
-		yellParasite:Countdown(16,5)
+		if args:IsPlayer() and self.Options.ParasiteYellOpt then
+			yellParasite:Countdown(16,5)
+		end
 	elseif args.spellId == 2138026 then
 		warnSong:Show(args.destName)
 		specWarnSiren:Show()
