@@ -20,7 +20,10 @@ mod:RegisterEvents(
 
 local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
 
-local warnChaosBlast           		= mod:NewSpellAnnounce(2144802, 2)
+local warnPhase						= mod:NewPhaseAnnounce(2)
+local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
+
+local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
 local warnForceNova            		= mod:NewSpellAnnounce(2144724, 2)
@@ -28,11 +31,13 @@ local warnShear                		= mod:NewSpellAnnounce(2144718, 2)
 local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
 local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
 local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
+local warnShadowBreach     			= mod:NewSpellAnnounce(2144868, 2)
 
 local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
 
-local timerChaosBlast          		= mod:NewCastTimer(2, 2144802)
-local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144802)
+local timerChaosBlast          		= mod:NewCastTimer(2, 2144805)
+local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144805)
+local timerNextChaosBlast       	= mod:NewNextTimer(12, 2144805)
 local timerNextFlameCrash      		= mod:NewNextTimer(30, 2144720)
 local timerFlameCrash          		= mod:NewCastTimer(2, 2144720)
 local timerNextForceNova       		= mod:NewNextTimer(25, 2144724)
@@ -43,8 +48,24 @@ local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
 local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144802)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
 local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
+local timerNextEyeBeam   			= mod:NewNextTimer(20, 2144816)
+local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
+local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
+
+local azzinothKilled = 0
+
+function mod:phase5()
+	self.vb.phase = 5
+	warnPhase:Show(5)
+	timerNextForceNova:Start(15)
+	timerNextShear:Start(25)
+	timerNextDrawSoul:Start(30)
+	timerNextUnharnessedBlade:Start(35)
+end
 
 function mod:OnCombatStart(delay)
+	self.vb.phase = 1
+	azzinothKilled = 0
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
 	end
@@ -103,6 +124,14 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2144802,2144803,2144804,2144805) then
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
+	elseif args:IsSpellID(2144868, 2144869) then
+		warnShadowBreach:Show()
+	elseif args:IsSpellID(2144871, 2144872) then
+		timerParalyzingStare:Start(args.destName)
+	elseif (args:IsSpellID(2144863) or args:IsSpellID(2144864,2144865,2144866,2144867)) and not timerCombatStart:IsStarted() and DBM:Antispam() then
+		timerCombatStart:Start(60)
+		self:ScheduleMethod(60, "phase5")
+		timerNextShadowBreach:Start(20)
 	end
 end
 
@@ -125,6 +154,63 @@ end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 22997 and self.vb.phase == 2 then
+		if azzinothKilled == 2 then
+			self.vb.phase = 3
+			timerCombatStart:Start(8)
+			timerNextUnharnessedBlade:Start(5)
+			timerNextForceNova:Start(15)
+			timerNextShear:Start(25)
+			timerNextDrawSoul:Start(30)
+		else
+			azzinothKilled = azzinothKilled + 1
+		end
+
+	end
+end
+
+function mod:UNIT_HEALTH(unit)
+	if mod:GetUnitCreatureId(unit) == 22917 and DBM:Antispam() then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 75) then
+			warnPhaseSoon:Show()
+		elseif (hp <= 70) then
+			self.vb.phase = 2
+			warnPhase:Show(2)
+			timerNextForceNova:Stop()
+			timerNextShear:Stop()
+			timerNextDrawSoul:Stop()
+			timerNextUnharnessedBlade:Stop()
+			timerNextChaosBlast:Start(12)
+			timerNextEyeBeam:Start(20)
+		elseif (hp <= 55) then
+			warnPhaseSoon:Show()
+		elseif (hp <= 50) then
+			self.vb.phase = 4
+			warnPhase:Show(4)
+			timerCombatStart:Start(75)
+			self:ScheduleMethod(75, "phase5")
+			timerNextForceNova:Stop()
+			timerNextShear:Stop()
+			timerNextDrawSoul:Stop()
+			timerNextUnharnessedBlade:Stop()
+			timerNextShadowBreach:Start()
+		elseif (hp <= 35) then
+			warnPhaseSoon:Show()
+		elseif (hp <= 30) then
+			self.vb.phase = 6
+			warnPhase:Show(6)
+			timerCombatStart:Start(34)
+			timerNextUnharnessedBlade:Start(5)
+			timerNextForceNova:Start(15)
+			timerNextShear:Start(25)
+			timerNextDrawSoul:Start(30)
+        end
+    end
 end
 
 -- if self.Options.RangeCheck then
