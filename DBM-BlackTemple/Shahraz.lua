@@ -89,14 +89,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerSinisterThoughts:Stop()
 		timerVileThoughts:Stop()
 		timerWickedThoughts:Stop()
-		timerNextForcedThoughtsStop()
+		timerNextForcedThoughts:Stop()
 
 		timerNextFatalAttraction:Stop()
 
-		timerNextSinfulBeamStop()
-		timerNextSinisterBeamStop()
-		timerNextVileBeamStop()
-		timerNextWickedBeamStop()
+		timerNextSinfulBeam:Stop()
+		timerNextSinisterBeam:Stop()
+		timerNextVileBeam:Stop()
+		timerNextWickedBeam:Stop()
 	elseif args:IsSpellID(2144001) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warningShahrazMater:Show()
 	elseif args:IsSpellID(2144003) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
@@ -136,7 +136,7 @@ function mod:SPELL_DAMAGE(args)
 		if args:IsPlayer() then
 			warningSinfulThoughts:Show()
 			timerSinfulThoughts:Stop()
-			warningVileThoughts:Stop()
+			timerSinisterThoughts:Stop()
 			timerVileThoughts:Start()
 			timerWickedThoughts:Stop()
 		end
