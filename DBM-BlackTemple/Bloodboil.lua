@@ -59,8 +59,8 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2143523) then
-		timerNextBoilingBlood:Start()
-		timerNextSeismicSmash:Start()
+		timerNextBoilingBlood:Start(9)
+		timerNextSeismicSmash:Start(14)
 		timerNextMakgora:Start()
 	end
 end
