@@ -9,6 +9,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE"
 )
@@ -25,6 +26,8 @@ local timerEruption					= mod:NewCastTimer(4, 2142774)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
 
+mod:AddBoolOption(L.threatIconsOpt)
+
 function mod:OnCombatStart(delay)
 end
 
@@ -36,6 +39,17 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142765) then
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
+		if self.Options.threatIconsOpt then
+			self:SetIcon(args.destName, 8, 60)
+		end
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2122807) then
+		if self.Options.threatIconsOpt then
+			removeIcon(args.destName)
+		end
 	end
 end
 
