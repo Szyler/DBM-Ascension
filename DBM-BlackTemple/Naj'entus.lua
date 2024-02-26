@@ -91,8 +91,8 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if self.Options.SpineYellOpt and args:IsPlayer() then
-		if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+		if self.Options.SpineYellOpt and args:IsPlayer() then
 			SendChatMessage(L.SpineYell, "YELL")
 		end
 	end
