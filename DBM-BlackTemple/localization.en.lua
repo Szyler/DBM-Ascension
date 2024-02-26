@@ -11,8 +11,9 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    SpineYellOpt           = "Yell when you are affected by $spell:2142516",
-    DischargeYellOpt           = "Yell when you are affected by $spell:2142504"
+    SpineYellOpt                = "Yell when you are affected by $spell:2142516",
+    DischargeYellOpt            = "Yell when you are affected by $spell:2142504",
+    SpineIconsOpt				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(2142516)
 }
 
 L:SetMiscLocalization{
@@ -55,7 +56,8 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    SupremusCracked			= "Show $spell:2142751 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
+    SupremusCracked			= "Show $spell:2142751 targets and stack number warning", --(args.spellName, args.destName, args.amount or 1)
+    threatIconsOpt			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(2142765)
 }
 
 L:SetMiscLocalization{

@@ -29,12 +29,15 @@ local yellDischarge			= mod:NewFadesYell(2142504)
 
 mod:AddBoolOption(L.SpineYellOpt)
 mod:AddBoolOption(L.DischargeYellOpt)
+mod:AddBoolOption(L.SpineIconsOpt)
 
+local spineWreathIcon = 8
 
 function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(35-delay)
+	local spineWreathIcon = 8
 end
 
 function mod:OnCombatEnd()
@@ -51,6 +54,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
 		warningShield:Show()
 		timerNextShield:Start()
+		timerNextSpine:Start(10)
 	elseif args:IsSpellID(2142504) then-- This is the damage proc, not the aura. args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
 		warningDischarge:Show()
 		timerNextDischarge:Start()
@@ -61,6 +65,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSpine:Show()
 		timerNextSpine:Start()
 		timerTargetSpine:Start(args.destName)
+		if self.Options.SpineIconsOpt then
+			self:SetIcon(args.destName, spineWreathIcon, 20)
+			spineWreathIcon = spineWreathIcon - 1
+		end
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
@@ -77,12 +85,15 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		timerTargetSpine:Stop()
+		if self.Options.SpineIconsOpt then
+			spineWreathIcon = spineWreathIcon + 1
+		end
 	end
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
-	if self.Options.SpineYellOpt and args:IsPlayer() then
-		if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+		if self.Options.SpineYellOpt and args:IsPlayer() then
 			SendChatMessage(L.SpineYell, "YELL")
 		end
 	end

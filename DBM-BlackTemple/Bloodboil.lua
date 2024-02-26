@@ -36,10 +36,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (25 >= timerMakgora:GetTime() or timerMakgora:GetTime() <= 3) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (25 >= timerNextMakgora:GetTime() or timerNextMakgora:GetTime() <= 3) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
-	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (10 >= timerMakgora:GetTime() or timerMakgora:GetTime() <= 3) then
+	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (10 >= timerNextMakgora:GetTime() or timerNextMakgora:GetTime() <= 3) then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
 		timerSeismicSmash:Start()
@@ -48,10 +48,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextMakgora:Start()
 		timerMakgora:Start(args.destName)
 		timerNextMalevolentCleave:Start()
-	elseif args:IsSpellID(2143527) and (20 >= timerMakgora:GetTime() or timerMakgora:GetTime() <= 3) then
+	elseif args:IsSpellID(2143527) and (20 >= timerNextMakgora:GetTime() or timerNextMakgora:GetTime() <= 3) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
-	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (25 >= timerMakgora:GetTime() or timerMakgora:GetTime() <= 3) then
+	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (25 >= timerNextMakgora:GetTime() or timerNextMakgora:GetTime() <= 3) then
 		warningBoilBlood:Show()
 		timerNextBoilBlood:Start()
 	end
@@ -59,8 +59,8 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2143523) then
-		timerNextBoilingBlood:Start()
-		timerNextSeismicSmash:Start()
+		timerNextBoilingBlood:Start(9)
+		timerNextSeismicSmash:Start(14)
 		timerNextMakgora:Start()
 	end
 end
