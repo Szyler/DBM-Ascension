@@ -11,8 +11,9 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-    SpineYellOpt           = "Yell when you are affected by $spell:2142516",
-    DischargeYellOpt           = "Yell when you are affected by $spell:2142504"
+    SpineYellOpt                = "Yell when you are affected by $spell:2142516",
+    DischargeYellOpt            = "Yell when you are affected by $spell:2142504",
+    SpineIconsOpt				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(2142516),
 }
 
 L:SetMiscLocalization{

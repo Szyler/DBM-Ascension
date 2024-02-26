@@ -29,12 +29,15 @@ local yellDischarge			= mod:NewFadesYell(2142504)
 
 mod:AddBoolOption(L.SpineYellOpt)
 mod:AddBoolOption(L.DischargeYellOpt)
+mod:AddBoolOption(L.SpineIconsOpt)
 
+local spineWreathIcon = 8
 
 function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(35-delay)
+	local spineWreathIcon = 8
 end
 
 function mod:OnCombatEnd()
@@ -61,6 +64,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSpine:Show()
 		timerNextSpine:Start()
 		timerTargetSpine:Start(args.destName)
+		if self.Options.SpineIconsOpt then
+			self:SetIcon(args.destName, spineWreathIcon, 20)
+			spineWreathIcon = spineWreathIcon - 1
+		end
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
@@ -77,6 +84,9 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		timerTargetSpine:Stop()
+		if self.Options.SpineIconsOpt then
+			spineWreathIcon = spineWreathIcon + 1
+		end
 	end
 end
 
