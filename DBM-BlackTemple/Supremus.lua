@@ -19,6 +19,7 @@ local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
 
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
 local timerSupreme					= mod:NewCastTimer(2, 2142764)
+local timerThreatDetected			= mod:NewTargetTimer(60, 2142765)
 
 local timerEruption					= mod:NewCastTimer(4, 2142774)
 
@@ -32,6 +33,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(2142765) then
+		timerThreatDetected:Stop()
+		timerThreatDetected:Start(args.destName)
 	end
 end
 
