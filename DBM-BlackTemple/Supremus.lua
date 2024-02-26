@@ -16,6 +16,7 @@ mod:RegisterEvents(
 local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
 local warningSupreme				= mod:NewSpellAnnounce(2142764, 3)
 local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
+local warnThreatDetected			= mod:NewAnnounce(2, 2142765)
 
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
 local timerSupreme					= mod:NewCastTimer(2, 2142764)
@@ -32,6 +33,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnPhase2:Show()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
+	end
+	elseif args:IsSpellID(2142765) then
+		--Shows target fixate
+		warnThreatDetected:Show()
 	end
 end
 

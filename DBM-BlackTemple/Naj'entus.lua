@@ -15,6 +15,7 @@ local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
+local specWarnDampFeet		= mod:NewSpecialWarning("Move out of the water!", 2142550)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
@@ -70,6 +71,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID() then
 		if args:IsPlayer() then
 			warningPuddle:Show()
+		end
+	elseif args:IsSpellID(2142550, 2142551) then
+		if args:IsPlayer() then
+			specWarnDampFeet:Show()
 		end
 	end
 end
