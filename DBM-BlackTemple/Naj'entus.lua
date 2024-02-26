@@ -54,6 +54,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142521) then
 		warningShield:Show()
 		timerNextShield:Start()
+		timerNextSpine:Start(10)
 	elseif args:IsSpellID(2142504) then-- This is the damage proc, not the aura. args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
 		warningDischarge:Show()
 		timerNextDischarge:Start()
