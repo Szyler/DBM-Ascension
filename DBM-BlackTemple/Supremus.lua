@@ -34,6 +34,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142772) then --Enrages at 30% hp need hp check
 		warnPhase2:Show()
+		timerThreatDetected:Stop()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2142765) then
