@@ -15,6 +15,7 @@ local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
+local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
@@ -37,7 +38,7 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(35-delay)
-	local spineWreathIcon = 8
+	spineWreathIcon = 8
 end
 
 function mod:OnCombatEnd()
@@ -55,14 +56,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningShield:Show()
 		timerNextShield:Start()
 		timerNextSpine:Start(10)
-	elseif args:IsSpellID(2142504) then-- This is the damage proc, not the aura. args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
-		warningDischarge:Show()
-		timerNextDischarge:Start()
+	elseif args:IsSpellID(2142504) then
 		if args:IsPlayer() and self.Options.DischargeYellOpt then
-			yellDischarge:Schedule(8, 5)
+			yellDischarge:Countdown(8, 5)
+		end
+		if DBM:AntiSpam() then
+			warningDischarge:Show()
+			timerNextDischarge:Start()
 		end
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
-		warnSpine:Show()
+		warnSpine:Show(args.destName)
 		timerNextSpine:Start()
 		timerTargetSpine:Start(args.destName)
 		if self.Options.SpineIconsOpt then
@@ -71,13 +74,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
+		timerNextShield:Stop()
+		timerNextSpine:Stop()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
 		if args:IsPlayer() then
 			warningPuddle:Show()
 		end
-	elseif args:IsSpellID() then
+	elseif args:IsSpellID(2142564, 2142565, 2142566, 2142567) then
 		if args:IsPlayer() then
-			warningPuddle:Show()
+			warnOozeDot:Show()
 		end
 	end
 end
