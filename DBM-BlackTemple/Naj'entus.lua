@@ -55,14 +55,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningShield:Show()
 		timerNextShield:Start()
 		timerNextSpine:Start(10)
-	elseif args:IsSpellID(2142504) then-- This is the damage proc, not the aura. args:IsSpellID(2142505, 2142506, 2142507, 2142508) then
-		warningDischarge:Show()
-		timerNextDischarge:Start()
+	elseif args:IsSpellID(2142504) then
 		if args:IsPlayer() and self.Options.DischargeYellOpt then
 			yellDischarge:Countdown(8, 5)
 		end
+		if DBM:AntiSpam() then
+			warningDischarge:Show()
+			timerNextDischarge:Start()
+		end
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
-		warnSpine:Show()
+		warnSpine:Show(args.destName)
 		timerNextSpine:Start()
 		timerTargetSpine:Start(args.destName)
 		if self.Options.SpineIconsOpt then
