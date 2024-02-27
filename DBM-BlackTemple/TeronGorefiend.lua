@@ -24,7 +24,7 @@ local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 --Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss.  Spell id 2143255
 
 
-function mod:shadowofDeath()
+function mod:ShadowofDeath()
     -- make a for loop to go through all 25 raid members to find their duration of "Shadow of Death"
     for i = 1, 25 do
         local uId = "raid" .. i
@@ -50,7 +50,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(10) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264) and DBM:Antispam() then
+	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:Antispam() then
 		warnShadowOfDeath:Show()
 		timerNextShadowofDeath:Start()
 		self:ScheduleMethod(0.2, "ShadowofDeath")
