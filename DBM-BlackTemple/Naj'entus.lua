@@ -15,6 +15,7 @@ local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
+local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
@@ -79,9 +80,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warningPuddle:Show()
 		end
-	elseif args:IsSpellID() then
+	elseif args:IsSpellID(2142564, 2142565, 2142566, 2142567) then
 		if args:IsPlayer() then
-			warningPuddle:Show()
+			warnOozeDot:Show()
 		end
 	end
 end
