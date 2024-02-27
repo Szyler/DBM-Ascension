@@ -37,7 +37,7 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
 	timerNextSpine:Start(50-delay)
 	timerNextShield:Start(35-delay)
-	local spineWreathIcon = 8
+	spineWreathIcon = 8
 end
 
 function mod:OnCombatEnd()
@@ -59,7 +59,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningDischarge:Show()
 		timerNextDischarge:Start()
 		if args:IsPlayer() and self.Options.DischargeYellOpt then
-			yellDischarge:Schedule(8, 5)
+			yellDischarge:Countdown(8, 5)
 		end
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		warnSpine:Show()
@@ -71,6 +71,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2142526) then
 		warnPhase2:Show()
+		timerNextShield:Stop()
+		timerNextSpine:Stop()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
 		if args:IsPlayer() then
 			warningPuddle:Show()
