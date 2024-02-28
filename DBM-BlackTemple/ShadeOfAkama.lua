@@ -45,9 +45,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142603) then
 		warnSoulDomination:Show()
 		timerSoulDomination:Start()
-	elseif args:IsSpellID(2142657) and args.amount and args.amount >= 2 and args.amount % 2 == 0 then
+	elseif args:IsSpellID(2142657) and args.amount and args.amount >= 2 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warnDeadlyPoison:Show(args.destName)
-	elseif args:IsSpellID(2142653) and args.amount and args.amount >= 2 and args.amount % 2 == 0 then
+	elseif args:IsSpellID(2142653) and args.amount and args.amount >= 2 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warnPoisonedShiv:Show(args.destName)
 	elseif args:IsSpellID(2142686) and self:GetCIDFromGUID(args.destGUID) == 22841 then
 		warnVigilance:Show()

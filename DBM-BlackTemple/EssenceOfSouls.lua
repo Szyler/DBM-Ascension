@@ -67,7 +67,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSoulDrain:Show()
 	elseif args:IsSpellID(2143808) then
 		warnRuneShield:Show()
-		timerRuneShield:Start()
+		timerRuneShield:Start(args.destName)
 	elseif args:IsSpellID(2143808) then
 		warnTease:Show()
 		timerTease:Start()

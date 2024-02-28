@@ -153,6 +153,7 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
+    DBM_BLOODBOIL_YELL_PULL				= "Horde will... crush you.";
 }
 
 -- DBM_BLOODBOIL_NAME					= "Gurtogg Bloodboil";
