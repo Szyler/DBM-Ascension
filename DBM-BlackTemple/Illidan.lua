@@ -128,7 +128,7 @@ function mod:SPELL_CAST_START(args)
 		warnShadowBreach:Show()
 	elseif args:IsSpellID(2144871, 2144872) then
 		timerParalyzingStare:Start(args.destName)
-	elseif (args:IsSpellID(2144863) or args:IsSpellID(2144864,2144865,2144866,2144867)) and not timerCombatStart:IsStarted() and DBM:Antispam() then
+	elseif (args:IsSpellID(2144863) or args:IsSpellID(2144864,2144865,2144866,2144867)) and not timerCombatStart:IsStarted() and DBM:AntiSpam() then
 		timerCombatStart:Start(60)
 		self:ScheduleMethod(60, "phase5")
 		timerNextShadowBreach:Start(20)
@@ -174,7 +174,7 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:UNIT_HEALTH(unit)
-	if mod:GetUnitCreatureId(unit) == 22917 and DBM:Antispam() then
+	if mod:GetUnitCreatureId(unit) == 22917 and DBM:AntiSpam() then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 75) then
 			warnPhaseSoon:Show()

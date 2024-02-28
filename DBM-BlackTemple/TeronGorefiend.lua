@@ -27,6 +27,7 @@ local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 function mod:ShadowofDeath()
     -- make a for loop to go through all 25 raid members to find their duration of "Shadow of Death"
     for i = 1, 25 do
+		print("test"..i)
         local uId = "raid" .. i
         local spellName = "Shadow of Death"
         local _, _, _, _, duration = UnitAura(uId, spellName)
@@ -50,10 +51,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(10) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:Antispam() then
+	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:AntiSpam() then
 		warnShadowOfDeath:Show()
 		timerNextShadowofDeath:Start()
 		self:ScheduleMethod(0.2, "ShadowofDeath")
+		print("testTrigger")
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
 		warnSoulReaper:Show()
 		timerSoulReaper:Start()
