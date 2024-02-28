@@ -109,7 +109,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2144017) or args:IsSpellID(2144018) or args:IsSpellID(2144019) or args:IsSpellID(2144020) and DBM:Antispam() then
+	if args:IsSpellID(2144017) or args:IsSpellID(2144018) or args:IsSpellID(2144019) or args:IsSpellID(2144020) and DBM:AntiSpam() then
 		warningSinfulBeam:Show()
 		timerCastSinfulBeam:Start()
 		timerNextSinfulBeam:Start()
@@ -120,7 +120,7 @@ function mod:SPELL_DAMAGE(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	elseif args:IsSpellID(2144021) or args:IsSpellID(2144022) or args:IsSpellID(2144023) or args:IsSpellID(2144024) and DBM:Antispam() then
+	elseif args:IsSpellID(2144021) or args:IsSpellID(2144022) or args:IsSpellID(2144023) or args:IsSpellID(2144024) and DBM:AntiSpam() then
 		warningSinisterBeam:Show()
 		timerNextSinisterBeam:Start()
 		if args:IsPlayer() then
@@ -130,7 +130,7 @@ function mod:SPELL_DAMAGE(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Stop()
 		end
-	elseif args:IsSpellID(2144025) or args:IsSpellID(2144026) or args:IsSpellID(2144027) or args:IsSpellID(2144028) and DBM:Antispam() then
+	elseif args:IsSpellID(2144025) or args:IsSpellID(2144026) or args:IsSpellID(2144027) or args:IsSpellID(2144028) and DBM:AntiSpam() then
 		warningVileBeam:Show()
 		timerNextVileBeam:Start()
 		if args:IsPlayer() then
@@ -140,7 +140,7 @@ function mod:SPELL_DAMAGE(args)
 			timerVileThoughts:Start()
 			timerWickedThoughts:Stop()
 		end
-	elseif args:IsSpellID(2144029) or args:IsSpellID(2144030) or args:IsSpellID(2144031) or args:IsSpellID(2144032) and DBM:Antispam() then
+	elseif args:IsSpellID(2144029) or args:IsSpellID(2144030) or args:IsSpellID(2144031) or args:IsSpellID(2144032) and DBM:AntiSpam() then
 		warningWickedBeam:Show()	
 		timerNextWickedBeam:Start()
 		if args:IsPlayer() then
