@@ -125,6 +125,7 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
+    DBM_GOREFIEND_YELL_PULL				= "Vengeance is mine!"
 }
 
 -- DBM_GOREFIEND_NAME					= "Teron Gorefiend";
