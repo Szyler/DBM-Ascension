@@ -15,7 +15,8 @@ mod:RegisterEvents(
 	"SPELL_DAMAGE",
 	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL",
-	"UNIT_SPELLCAST_START"
+	"UNIT_SPELLCAST_START",
+	"UNIT_HEALTH"
 )
 
 local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
@@ -23,6 +24,7 @@ local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
 
+local timerAddsSpawn				= mod:NewTimer(9, "TimerAddsSpawn", 19879)
 local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
@@ -51,6 +53,7 @@ local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
 local timerNextEyeBeam   			= mod:NewNextTimer(20, 2144816)
 local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
+local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 
 local azzinothKilled = 0
 
@@ -69,11 +72,12 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
 	end
-	timerCombatStart:Start(3)
-	timerNextForceNova:Start(18-delay)
-	timerNextShear:Start(28-delay)
-	timerNextDrawSoul:Start(33-delay)
-	timerNextUnharnessedBlade:Start(38)
+	timerCombatStart:Start(4)
+	timerAddsSpawn:Start(9-delay)
+	timerNextForceNova:Start(19-delay)
+	timerNextShear:Start(29-delay)
+	timerNextDrawSoul:Start(34-delay)
+	timerNextUnharnessedBlade:Start(39-delay)
 end
 
 function mod:UnharnessedBlade()
@@ -142,6 +146,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnFlameCrashDot:Show()
 		end
+	elseif args:IsSpellID(2144960, 2144961) and self.vb.phase == 5 then
+		self.vb.phase = 6
+		warnPhase:Show(6)
+		timerCombatStart:Start(34)
+		timerNextUnharnessedBlade:Start(5)
+		timerNextForceNova:Start(15)
+		timerNextShear:Start(25)
+		timerNextDrawSoul:Start(30)
+		timerShadowPrison:Start(60)
 	end
 end
 
@@ -169,16 +182,15 @@ function mod:UNIT_DIED(args)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
-
 	end
 end
 
 function mod:UNIT_HEALTH(unit)
-	if mod:GetUnitCreatureId(unit) == 22917 and DBM:AntiSpam() then
+	if mod:GetUnitCreatureId(unit) == 22917 then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 75) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 70) then
+		elseif (hp <= 71) then
 			self.vb.phase = 2
 			warnPhase:Show(2)
 			timerNextForceNova:Stop()
@@ -189,7 +201,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextEyeBeam:Start(20)
 		elseif (hp <= 55) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 50) then
+		elseif (hp <= 51) then
 			self.vb.phase = 4
 			warnPhase:Show(4)
 			timerCombatStart:Start(75)
@@ -201,7 +213,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextShadowBreach:Start()
 		elseif (hp <= 35) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 30) then
+		elseif (hp <= 31) and self.vb.phase == 5  then
 			self.vb.phase = 6
 			warnPhase:Show(6)
 			timerCombatStart:Start(34)
