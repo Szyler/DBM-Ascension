@@ -181,12 +181,11 @@ function mod:UNIT_DIED(args)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
-
 	end
 end
 
 function mod:UNIT_HEALTH(unit)
-	if mod:GetUnitCreatureId(unit) == 22917 and DBM:AntiSpam(0.5) then
+	if mod:GetUnitCreatureId(unit) == 22917 then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 75) then
 			warnPhaseSoon:Show()
