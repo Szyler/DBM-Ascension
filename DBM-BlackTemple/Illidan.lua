@@ -51,6 +51,7 @@ local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
 local timerNextEyeBeam   			= mod:NewNextTimer(20, 2144816)
 local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
+local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 
 local azzinothKilled = 0
 
@@ -142,6 +143,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnFlameCrashDot:Show()
 		end
+	elseif args:IsSpellID(2144960, 2144961) and self.vb.phase == 5 then
+		self.vb.phase = 6
+		warnPhase:Show(6)
+		timerCombatStart:Start(34)
+		timerNextUnharnessedBlade:Start(5)
+		timerNextForceNova:Start(15)
+		timerNextShear:Start(25)
+		timerNextDrawSoul:Start(30)
+		timerShadowPrison:Start(60)
 	end
 end
 
@@ -174,11 +184,11 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:UNIT_HEALTH(unit)
-	if mod:GetUnitCreatureId(unit) == 22917 and DBM:AntiSpam() then
+	if mod:GetUnitCreatureId(unit) == 22917 and DBM:AntiSpam(0.5) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 75) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 70) then
+		elseif (hp <= 71) then
 			self.vb.phase = 2
 			warnPhase:Show(2)
 			timerNextForceNova:Stop()
@@ -189,7 +199,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextEyeBeam:Start(20)
 		elseif (hp <= 55) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 50) then
+		elseif (hp <= 51) then
 			self.vb.phase = 4
 			warnPhase:Show(4)
 			timerCombatStart:Start(75)
@@ -201,7 +211,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextShadowBreach:Start()
 		elseif (hp <= 35) then
 			warnPhaseSoon:Show()
-		elseif (hp <= 30) then
+		elseif (hp <= 31) and self.vb.phase == 5  then
 			self.vb.phase = 6
 			warnPhase:Show(6)
 			timerCombatStart:Start(34)
