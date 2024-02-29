@@ -15,9 +15,9 @@ mod:RegisterEvents(
 
 --Lady Malande
 local warnPaintoPleasure			= mod:NewTargetAnnounce(2144463, 3)
-local timerNextPaintoPleasure		= mod:NewNextTimer(30, 2144463)
+local timerNextPaintoPleasure		= mod:NewNextTimer(15, 2144463)
 local warnSadism					= mod:NewSpellAnnounce(2144464, 3)
-local timerNextSadism				= mod:NewNextTimer(60, 2144464)
+local timerNextSadism				= mod:NewNextTimer(45, 2144464)
 
 --Veras Darkshadow
 local warnSmokeBomb					= mod:NewTargetAnnounce(2144560, 3)
