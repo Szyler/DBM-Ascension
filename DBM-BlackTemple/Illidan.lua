@@ -23,6 +23,7 @@ local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
 
+local timerAddsSpawn				= mod:NewTimer(9, "TimerAddsSpawn", 19879)
 local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
@@ -70,11 +71,12 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
 	end
-	timerCombatStart:Start(3)
-	timerNextForceNova:Start(18-delay)
-	timerNextShear:Start(28-delay)
-	timerNextDrawSoul:Start(33-delay)
-	timerNextUnharnessedBlade:Start(38)
+	timerCombatStart:Start(4)
+	timerAddsSpawn:Start(9-delay)
+	timerNextForceNova:Start(19-delay)
+	timerNextShear:Start(29-delay)
+	timerNextDrawSoul:Start(34-delay)
+	timerNextUnharnessedBlade:Start(39-delay)
 end
 
 function mod:UnharnessedBlade()
