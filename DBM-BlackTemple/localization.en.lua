@@ -186,6 +186,7 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
+    DBM_SOULS_YELL_PULL					= "Pain and suffering are all that await you!" -- Essence of Suffering
 }
 
 -- DBM_SOULS_NAME						= "Essence of Souls"
@@ -285,6 +286,10 @@ L:SetOptionLocalization{
     }
 
 L:SetMiscLocalization{
+    DBM_COUNCIL_YELL_PULL1				= "Common... such a crude language. Bandal!",
+    DBM_COUNCIL_YELL_PULL2				= "You wish to test me?",
+    DBM_COUNCIL_YELL_PULL3				= "I have better things to do...",
+    DBM_COUNCIL_YELL_PULL4				= "Flee or die!"
 }
 
 -- DBM_COUNCIL_NAME					= "Illidari Council"
