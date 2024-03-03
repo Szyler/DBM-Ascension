@@ -14,7 +14,7 @@ mod:RegisterEvents(
 	"SPELL_HEAL"
 )
 
-local timerNextAdds					= mod:NewNextTimer(35, 2142603)
+local timerNextGroup				= mod:NewNextTimer(35, 2142603)
 local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
 local timerSoulDomination       	= mod:NewCastTimer(300, 2142603)
 
@@ -27,18 +27,26 @@ local warnVigilance					= mod:NewSpellAnnounce(2142686, 2) --Might be useful to 
 
 
 function mod:OnCombatStart(delay)
-	timerNextAdds:Start(5-delay)
-	self:ScheduleMethod(5-delay, "NewAdds")
+	timerNextGroup:Start(5-delay)
+	self:ScheduleMethod(5-delay, "NewGroup")
+	timerNextSorcerer:Start(60-delay)
+	self:ScheduleMethod(60-delay, "NewSorcerer")
 end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
 
-function mod:NewAdds()
-	self:UnscheduleMethod("NewAdds")
-	timerNextAdds:Start()
-	self:ScheduleMethod(35, "NewAdds")
+function mod:NewGroup()
+	self:UnscheduleMethod("NewGroup")
+	timerNextGroup:Start()
+	self:ScheduleMethod(35, "NewGroup")
+end
+
+function mod:NewSorcerer()
+	self:UnscheduleMethod("NewSorcerer")
+	timerNextSorcerer:Start()
+	self:ScheduleMethod(30, "NewSorcerer")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
