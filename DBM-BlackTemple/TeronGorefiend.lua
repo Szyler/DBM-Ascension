@@ -45,10 +45,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(10) then
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(29) then
 		warningWitherAndRot:Show()
 		timerNextWitherAndRot:Start()
-	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(10) then
+	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(29) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
 	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:AntiSpam() then

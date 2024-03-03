@@ -17,6 +17,7 @@ mod:RegisterEvents(
 local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
 local warningSupreme				= mod:NewSpellAnnounce(2142764, 3)
 local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
+local warnThreatDetected			= mod:NewAnnounce(2, 2142765)
 
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
 local timerSupreme					= mod:NewCastTimer(2, 2142764)
@@ -51,6 +52,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.threatIconsOpt then
 			removeIcon(args.destName)
 		end
+	end
+	elseif args:IsSpellID(2142765) then
+		--Shows target fixate
+		warnThreatDetected:Show()
 	end
 end
 
