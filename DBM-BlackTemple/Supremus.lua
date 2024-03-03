@@ -52,7 +52,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.threatIconsOpt then
 			removeIcon(args.destName)
 		end
-	end
 	elseif args:IsSpellID(2142765) then
 		--Shows target fixate
 		warnThreatDetected:Show()

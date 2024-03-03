@@ -15,11 +15,8 @@ local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
-<<<<<<< HEAD
 local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
-=======
 local specWarnDampFeet		= mod:NewSpecialWarning("Move out of the water!", 2142550)
->>>>>>> 90b673a43c5acfd788f3cfaa9d8fe85af7852c30
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
