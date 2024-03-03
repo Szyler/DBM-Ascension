@@ -37,8 +37,7 @@ local spineWreathIcon = 8
 
 function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
-	timerNextSpine:Start(50-delay)
-	timerNextShield:Start(35-delay)
+	timerNextDischarge:Start(10-delay)
 	spineWreathIcon = 8
 end
 
