@@ -24,12 +24,20 @@ local timerSupreme					= mod:NewCastTimer(2, 2142764)
 local timerThreatDetected			= mod:NewTargetTimer(60, 2142765)
 
 local timerEruption					= mod:NewCastTimer(4, 2142774)
+local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
 
 mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
+	self:ScheduleMethod(0-delay, "NewPillar")
+end
+
+function mod:NewPillar()
+	self:UnscheduleMethod("NewPillar")
+	timerNextPillar:Start()
+	self:ScheduleMethod(15, "NewPillar")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
