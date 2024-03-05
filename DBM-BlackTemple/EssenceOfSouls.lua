@@ -63,7 +63,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTargetSpiritShock:Start(args.destName)
 	elseif args:IsSpellID(2143961) and args.amount and args.amount >= 20 and args.amount % 5 == 0 then
 		warnSoulBlast:Show()
-	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) then
+	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) and DBM:AntiSpam() then
 		warnSoulDrain:Show()
 	elseif args:IsSpellID(2143808) then
 		warnRuneShield:Show()
@@ -73,9 +73,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTease:Start()
 		timerNextTease:Start()
 	elseif args:IsSpellID(2143861) then
-		warnSeethe:Show()
-		timerSeethe:Start()
-		timerNextSeethe:Start()
+		if DBM:AntiSpam() then
+			warnSeethe:Show()
+			timerNextSeethe:Start()
+		end
+		timerSeethe:Start(args.destName)
 	elseif args:IsSpellID(2143750, 2143751, 2143752, 2143753) and DBM:AntiSpam(60) and self.vb.phase == 1 then
 		warnAuraOfSuffering:Show()
 		timerNextSoulDrain:Start(20)
