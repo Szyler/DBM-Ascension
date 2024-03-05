@@ -27,7 +27,7 @@ local timerMakgora 				= mod:NewTargetTimer(35, 2143523)
 local warningBoilBlood 			= mod:NewSpellAnnounce(2143517, 3) --Burst damage from boiling the pools
 local timerNextBoilBlood 		= mod:NewNextTimer(20, 2143517)
 
-
+local elapsed, total, remainingTimerNextMakgora
 
 function mod:OnCombatStart(delay)
 	timerNextBoilingBlood:Start(10-delay)
@@ -36,8 +36,10 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	local elapsed, total = timerNextMakgora:GetTime()
-	local remainingTimerNextMakgora = total - elapsed
+	if DBM:AntiSpam(1) then
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
+	end
 	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (25 >= remainingTimerNextMakgora) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
