@@ -14,7 +14,8 @@ mod:RegisterEvents(
 	"SPELL_HEAL"
 )
 
-local timerNextGroup				= mod:NewNextTimer(35, 2142603)
+local timerNextGroup				= mod:NewNextTimer(35, 2142687)
+local timerNextSorcerer				= mod:NewNextTimer(30, 2142602)
 local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
 local timerSoulDomination       	= mod:NewCastTimer(300, 2142603)
 
