@@ -17,7 +17,7 @@ local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
 local timerNextWitherAndRot		= mod:NewNextTimer(30, 2143286)
 local timerNextGraspingDeath	= mod:NewNextTimer(30, 2143282)
 local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
-local timerTargetShadowofDeath	= mod:NewTargetTimer(10, 2143264)
+local timerTargetShadowofDeath	= mod:NewTargetTimer(30, 2143264)
 local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
@@ -30,7 +30,7 @@ function mod:ShadowofDeath()
 		print("test"..i)
         local uId = "raid" .. i
         local spellName = "Shadow of Death"
-        local _, _, _, _, duration = UnitAura(uId, spellName)
+        local _, _, _, _, _, duration = UnitAura(uId, spellName)
         if duration and duration < 100 then
 			timerTargetShadowofDeath:Start(UnitName(uId))
         end
