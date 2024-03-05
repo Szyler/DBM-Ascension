@@ -32,6 +32,7 @@ function mod:ShadowofDeath()
         local spellName = "Shadow of Death"
         local _, _, _, _, _, duration = UnitAura(uId, spellName)
         if duration and duration < 100 then
+			print("Duration is "..duration)
 			timerTargetShadowofDeath:Start(UnitName(uId))
         end
     end
