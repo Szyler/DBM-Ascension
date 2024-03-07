@@ -57,6 +57,8 @@ local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 
 local azzinothKilled = 0
 
+mod:AddBoolOption("RangeCheck", true)
+
 function mod:phase5()
 	self.vb.phase = 5
 	warnPhase:Show(5)
@@ -188,9 +190,9 @@ end
 function mod:UNIT_HEALTH(unit)
 	if mod:GetUnitCreatureId(unit) == 22917 then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 75) then
+		if (hp <= 75) and DBM:AntiSpam(5) and self.vb.phase == 1 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 71) then
+		elseif (hp <= 71) and DBM:AntiSpam(5) and self.vb.phase == 1 then
 			self.vb.phase = 2
 			warnPhase:Show(2)
 			timerNextForceNova:Stop()
@@ -199,9 +201,9 @@ function mod:UNIT_HEALTH(unit)
 			timerNextUnharnessedBlade:Stop()
 			timerNextChaosBlast:Start(12)
 			timerNextEyeBeam:Start(20)
-		elseif (hp <= 55) then
+		elseif (hp <= 55) and DBM:AntiSpam(5) and self.vb.phase == 3 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 51) then
+		elseif (hp <= 51)  and DBM:AntiSpam(5) and self.vb.phase == 3 then
 			self.vb.phase = 4
 			warnPhase:Show(4)
 			timerCombatStart:Start(75)
@@ -211,7 +213,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextDrawSoul:Stop()
 			timerNextUnharnessedBlade:Stop()
 			timerNextShadowBreach:Start()
-		elseif (hp <= 35) then
+		elseif (hp <= 35) and DBM:AntiSpam(5) and self.vb.phase == 4 then
 			warnPhaseSoon:Show()
 		elseif (hp <= 31) and self.vb.phase == 5  then
 			self.vb.phase = 6
