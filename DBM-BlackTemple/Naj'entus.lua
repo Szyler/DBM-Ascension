@@ -13,6 +13,7 @@ mod:RegisterEvents(
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
+local specWarnYouDischarge	= mod:NewSpecialWarningYou(2142504)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
@@ -59,6 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142504) then
 		if args:IsPlayer() and self.Options.DischargeYellOpt then
 			yellDischarge:Countdown(8, 5)
+			specWarnYouDischarge:Show()
 		end
 		if DBM:AntiSpam() then
 			warningDischarge:Show()
