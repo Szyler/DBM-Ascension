@@ -174,7 +174,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 22997 and self.vb.phase == 2 then
-		if azzinothKilled == 2 then
+		if azzinothKilled == 1 then
 			self.vb.phase = 3
 			timerCombatStart:Start(8)
 			timerNextUnharnessedBlade:Start(5)
