@@ -203,7 +203,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextEyeBeam:Start(20)
 		elseif (hp <= 55) and DBM:AntiSpam(5) and self.vb.phase == 3 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 51)  and DBM:AntiSpam(5) and self.vb.phase == 3 then
+		elseif (hp <= 51) and DBM:AntiSpam(5) and self.vb.phase == 3 then
 			self.vb.phase = 4
 			warnPhase:Show(4)
 			timerCombatStart:Start(75)
@@ -215,7 +215,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextShadowBreach:Start()
 		elseif (hp <= 35) and DBM:AntiSpam(5) and self.vb.phase == 4 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 31) and self.vb.phase == 5  then
+		elseif (hp <= 31) and DBM:AntiSpam(5) and self.vb.phase == 5 then
 			self.vb.phase = 6
 			warnPhase:Show(6)
 			timerCombatStart:Start(34)
