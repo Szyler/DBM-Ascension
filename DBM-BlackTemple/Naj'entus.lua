@@ -33,6 +33,7 @@ local yellDischarge			= mod:NewFadesYell(2142504)
 mod:AddBoolOption(L.SpineYellOpt)
 mod:AddBoolOption(L.DischargeYellOpt)
 mod:AddBoolOption(L.SpineIconsOpt)
+mod:AddBoolOption(L.RangeCheck)
 
 local spineWreathIcon = 8
 
@@ -58,9 +59,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextShield:Start()
 		timerNextSpine:Start(10)
 	elseif args:IsSpellID(2142504) then
-		if args:IsPlayer() and self.Options.DischargeYellOpt then
-			yellDischarge:Countdown(8, 5)
+		if args:IsPlayer() then
+			if self.Options.DischargeYellOpt then
+				SendChatMessage(L.SayFrozenFade, "SAY")
+				yellDischarge:Countdown(8, 5)
+			end
 			specWarnYouDischarge:Show()
+			if self.Options.RangeCheck then
+				DBM.RangeCheck:Show(15)
+			end
 		end
 		if DBM:AntiSpam() then
 			warningDischarge:Show()
@@ -98,6 +105,12 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerTargetSpine:Stop()
 		if self.Options.SpineIconsOpt then
 			spineWreathIcon = spineWreathIcon + 1
+		end
+	elseif args:IsSpellID(2142504) then
+		if args:IsPlayer() then
+			if self.Options.RangeCheck then
+				DBM.RangeCheck:Hide()
+			end
 		end
 	end
 end
