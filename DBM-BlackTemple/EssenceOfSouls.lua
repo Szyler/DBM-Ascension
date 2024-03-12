@@ -50,11 +50,15 @@ local warnAuraOfDesire = mod:NewSpellAnnounce(2143800, 2)
 local warnAuraOfAnger = mod:NewSpellAnnounce(2143850, 2)
 
 --local
-local isSuffer		=	false
+local isSuffer
+local isDesire
+local isAnger
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	isSuffer = true
+	isDesire = false
+	isAnger = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -83,11 +87,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextSoulDrain:Start(20)
 	elseif args:IsSpellID(2143800, 2143803) and DBM:AntiSpam(60) and self.vb.phase == 1 then
 		self.vb.phase = 2
+		isDesire = true
 		warnAuraOfDesire:Show()
 		timerNextRuneShield:Start(16)
 		timerNextTease:Start(20)
 	elseif args:IsSpellID(2143850) and DBM:AntiSpam(60) and self.vb.phase == 2 then
 		self.vb.phase = 3
+		isAnger = true
 		warnAuraOfAnger:Show()
 		timerNextSoulScream:Start(10)
 	end
@@ -117,13 +123,13 @@ function mod:UNIT_HEALTH(unit)
 			intermissionSummonEssenceOfSuffering:Start()
         end
 	--Essence of Desire
-	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23419) then
+	elseif isDesire and (mod:GetUnitCreatureId(unit) == 23419) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 1) then
 			intermissionSummonEssenceOfDesire:Start()
 		end
 	--Essence of Anger
-	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23420) then
+	elseif isAnger and (mod:GetUnitCreatureId(unit) == 23420) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 1) then
 			intermissionSummonEssenceOfAnger:Start()
