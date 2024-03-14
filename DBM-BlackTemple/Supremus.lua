@@ -27,11 +27,13 @@ local timerEruption					= mod:NewCastTimer(4, 2142774)
 local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
+local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 
 mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewPillar")
+	timerEnrage:Start()
 end
 
 function mod:NewPillar()
