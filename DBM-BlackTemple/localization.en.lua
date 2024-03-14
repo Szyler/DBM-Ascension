@@ -62,6 +62,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
+    NewPillar                = "New vulcano"
 }
 
 -- DBM_SUPREMUS_NAME					= "Supremus";
