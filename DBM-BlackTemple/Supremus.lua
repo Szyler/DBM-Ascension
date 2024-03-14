@@ -70,7 +70,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		warnThreatDetected:Show()
 	elseif args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
-			self:SetIcon(args.destName, oldMarkThreat)
+			self:SetIcon(args.destName, oldMarkThreat or 0)
 		end
 	end
 end
