@@ -19,7 +19,8 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
     SpineYell			    = "Spine on me!",
     DBM_NAJENTUS_YELL_PULL	= "You will die in the name of Lady Vashj!",
-    SayDischarge		    = "Static Charge on "..UnitName("PLAYER")
+    SayDischarge		    = "Static Charge on "..UnitName("PLAYER"),
+    SayDischargeFade        = "Discharge on "..UnitName("PLAYER")
 }
 
 

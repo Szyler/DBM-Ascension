@@ -61,7 +61,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142504) then
 		if args:IsPlayer() then
 			if self.Options.DischargeYellOpt then
-				SendChatMessage(L.SayFrozenFade, "SAY")
+				SendChatMessage(L.SayDischargeFade, "SAY")
 				yellDischarge:Countdown(8, 5)
 			end
 			specWarnYouDischarge:Show()
