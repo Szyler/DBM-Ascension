@@ -28,10 +28,12 @@ local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
 local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
+local oldMarkThreat
 
 mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
+	oldMarkThreat = 0
 	self:ScheduleMethod(0-delay, "NewPillar")
 	timerEnrage:Start()
 end
@@ -52,6 +54,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
 		if self.Options.threatIconsOpt then
+			oldMarkThreat = self:GetIcon(args.destName)
 			self:SetIcon(args.destName, 8, 60)
 		end
 	end
@@ -65,6 +68,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif args:IsSpellID(2142765) then
 		--Shows target fixate
 		warnThreatDetected:Show()
+	elseif args:IsSpellID(2142765) then
+		if self.Options.threatIconsOpt then
+			self:SetIcon(args.destName, oldMarkThreat)
+		end
 	end
 end
 
