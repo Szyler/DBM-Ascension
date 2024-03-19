@@ -187,6 +187,12 @@ function mod:UNIT_DIED(args)
 	end
 end
 
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.DBM_ILLIDAN_YELL_PULL_RP then
+		timerCombatStart:Start(40)
+	end
+end
+
 function mod:UNIT_HEALTH(unit)
 	if mod:GetUnitCreatureId(unit) == 22917 then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
