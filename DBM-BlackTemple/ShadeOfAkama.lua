@@ -16,9 +16,10 @@ mod:RegisterEvents(
 
 local timerNextGroup				= mod:NewNextTimer(35, 2142687)
 local timerNextSorcerer				= mod:NewNextTimer(30, 2142602)
-local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
 local timerSoulDomination       	= mod:NewCastTimer(300, 2142603)
 
+local warnSorcerer					= mod:NewSpellAnnounce(2142602, 2)
+local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
 local warnDeadlyPoison				= mod:NewTargetAnnounce(2142657, 2)
 local warnPoisonedShiv				= mod:NewTargetAnnounce(2142653, 2)
 
@@ -26,12 +27,14 @@ local warnHealingStream				= mod:NewSpellAnnounce(2142677, 2)
 local warnRiptide					= mod:NewSpellAnnounce(2142680, 2) --Might be useful to warn if this is cast on shade of akama
 local warnVigilance					= mod:NewSpellAnnounce(2142686, 2) --Might be useful to warn if this is cast on shade of akama
 
+local fightStarted = false
 
 function mod:OnCombatStart(delay)
 	timerNextGroup:Start(5-delay)
 	self:ScheduleMethod(5-delay, "NewGroup")
 	timerNextSorcerer:Start(60-delay)
 	self:ScheduleMethod(60-delay, "NewSorcerer")
+	fightStarted = true
 end
 
 function mod:OnCombatEnd()
@@ -46,12 +49,13 @@ end
 
 function mod:NewSorcerer()
 	self:UnscheduleMethod("NewSorcerer")
+	warnSorcerer:Show()
 	timerNextSorcerer:Start()
 	self:ScheduleMethod(30, "NewSorcerer")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2142603) then
+	if args:IsSpellID(2142603) and fightStarted == true then
 		warnSoulDomination:Show()
 		timerSoulDomination:Start()
 	elseif args:IsSpellID(2142657) and args.amount and args.amount >= 2 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
