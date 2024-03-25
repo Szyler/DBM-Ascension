@@ -55,6 +55,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2142765) then
+		-- warnThreatDetected:Show(args.destName) --Game does this
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
 		if self.Options.threatIconsOpt then
@@ -65,14 +66,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2122807) then
-		if self.Options.threatIconsOpt then
-			removeIcon(args.destName)
-		end
-	elseif args:IsSpellID(2142765) then
-		--Shows target fixate
-		warnThreatDetected:Show()
-	elseif args:IsSpellID(2142765) then
+	if args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
 			self:SetIcon(oldMarkTarget, oldMarkThreat or 0)
 		end
