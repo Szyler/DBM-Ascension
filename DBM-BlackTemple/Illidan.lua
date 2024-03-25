@@ -55,6 +55,30 @@ local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
 local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 
+----------- 
+-- Ascended 
+
+local warnPhase5            = mod:NewAnnounce("Stage Five: Avatar of Hatred", 3, 2145004)
+local warnSoulShear            = mod:NewSpellAnnounce(2145040)
+local warnHateCrash            = mod:NewSpellAnnounce(2145025)
+local warnMadness            = mod:NewSpellAnnounce(2145051)
+local warnUnleash            = mod:NewSpellAnnounce(2145061)
+local warnStruggle            = mod:NewSpellAnnounce(2145081)
+local warnHateBeam            = mod:NewSpellAnnounce(2145074)
+
+local specWarnHatred         = mod:NewSpecialWarning("Unleash Hatred!", 2145065)
+
+local timerMotes            = mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
+local timerP5RP                = mod:NewTimer(49, "Illidan tranformation RP", 2145004)
+local timerSoulShear        = mod:NewNextTimer(35, 2145040)
+local timerHateCrash        = mod:NewNextTimer(35, 2145025)
+local timerMadness            = mod:NewNextTimer(110, 2145051)
+local timerUnleash            = mod:NewNextTimer(110, 2145061)
+local timerNextHateBeam        = mod:NewNextTimer(110, 2145074)
+local timerHateBeam            = mod:NewTimer(12,"Eye Beam", 2145074)
+local timerStruggle            = mod:NewNextTimer(110, 2145081)
+local timerStruggling        = mod:NewTimer(10, "Illidan is struggling", 2145081)
+
 local azzinothKilled = 0
 
 mod:AddBoolOption("RangeCheck", true)
@@ -66,6 +90,26 @@ function mod:phase5()
 	timerNextShear:Start(25)
 	timerNextDrawSoul:Start(30)
 	timerNextUnharnessedBlade:Start(35)
+end
+
+function mod:CancelP5timers()
+    timerBladeCD:Cancel()
+    timerFlameCrash:Cancel()
+    timerParasite:Cancel()
+    timerDrawSoul:Cancel()
+    timerShearCD:Cancel()
+    timerNextDemon:Cancel()
+    bladeCount = 0
+end
+
+function mod:StartP5timers()
+    timerBladeCD:Start(16)
+    timerMadness:Start(30)
+    timerSoulShear:Start(37)
+    timerHateCrash:Start(44)
+    timerUnleash:Start(70)
+    timerNextHateBeam:Start(77)
+    timerStruggle:Start(93)
 end
 
 function mod:OnCombatStart(delay)
@@ -138,6 +182,53 @@ function mod:SPELL_CAST_START(args)
 		timerCombatStart:Start(60)
 		self:ScheduleMethod(60, "phase5")
 		timerNextShadowBreach:Start(20)
+	elseif args:IsSpellID(2144742, 2145015) then
+        if bladeCount >= 1 and phase == 3 then
+        timerBladeCD:Start()
+        warnBlade:Show()
+        bladeCount = bladeCount + 1
+        elseif bladeCount >= 1 and phase == 5 then
+        timerBladeCD:Start()
+        warnBlade:Show()
+        bladeCount = bladeCount + 1
+        elseif bladeCount >= 1 and phase == 6 then
+        warnBlade:Show()
+        timerBladeCD:Start(75)
+        bladeCount = 0
+        elseif bladeCount == 0 and phase == 6 then
+        timerBladeCD:Start(35)
+        warnBlade:Show()
+        bladeCount = bladeCount + 1
+        else
+        timerBladeCD:Start(30)
+        warnBlade:Show()
+        bladeCount = bladeCount + 1
+        end
+    elseif args:IsSpellID(2145040) then
+        warnSoulShear:Show()
+        if shearCount == 0 then
+        timerSoulShear:Start()
+        shearCount = shearCount + 1
+        elseif shearCount == 1 then
+        shearCount = 0
+        timerSoulShear:Start(75)
+        end
+    elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
+        warnHateCrash:Show()
+        if phase == 6 and crashCount == 0 then
+        timerHateCrash:Start()
+        crashCount = crashCount + 1
+        elseif phase == 6 and crashCount == 1 then
+            timerHateCrash:Start(74)
+        crashCount = 0
+        end
+    elseif args:IsSpellID(2145051,2145052) then
+        warnMadness:Show()
+        timerMadness:Start(110)
+    elseif args:IsSpellID(2145074) then
+        warnHateBeam:Show()
+        timerHateBeam:Start()
+        timerNextHateBeam:Start()
 	end
 end
 
@@ -167,6 +258,27 @@ function mod:SPELL_DAMAGE(args)
 	end
 end
 
+function mod:UNIT_AURA(unit)
+    Name = UnitName(unit)
+    if (UnitDebuff(unit, "Betrayer's Gaze")) and eyebeamTarget == 0 and DBM:AntiSpam(2,4) then
+        eyebeamTarget = 1
+        if Name == UnitName("player") then
+        specWarnEyebeam:Show()
+        SendChatMessage("Eye Beam on "..UnitName("PLAYER").."!", "SAY")
+        else
+        warnEyebeamTarget:Show(Name)
+         end
+         self:SetIcon(Name, 8, 10)
+         self:ScheduleMethod(10,"EyeBeamReset")
+    end
+    if (UnitDebuff("Boss1", "Struggle for Control"))and DBM:AntiSpam(105, 3) then
+        warnStruggle:Show()
+        timerStruggling:Start()
+        timerStruggle:Start()
+        Struggled = true
+    end
+end
+
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
@@ -190,6 +302,12 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_ILLIDAN_YELL_PULL_RP then
 		timerCombatStart:Start(40)
+	elseif msg == L.Phase5 or msg:find(L.Phase5) then
+        phase = 6
+        warnPhase5:Schedule(46)
+        timerP5RP:Start()
+        self:ScheduleMethod(0,"CancelP5timers")
+        self:ScheduleMethod(49, "StartP5timers")
 	end
 end
 
