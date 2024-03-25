@@ -346,6 +346,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+    TimerAddsSpawn	                    = "Adds spawning"
 }
 
 L:SetOptionLocalization{
@@ -355,6 +356,7 @@ L:SetMiscLocalization{
     DBM_ILLIDAN_YELL_PULL				= "You are not prepared!",
     DBM_ILLIDAN_YELL_PULL_RP			= "Akama. Your duplicity is hardly surprising. I should have slaughtered you and your malformed brethren long ago.",
     UnharnessedBlade			        = "Blade on me!",
+    Phase5                              = "It is finished. You are beaten."
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"

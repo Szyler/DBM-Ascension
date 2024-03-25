@@ -25,7 +25,7 @@ local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
 
-local timerAddsSpawn				= mod:NewTimer(9, "TimerAddsSpawn", 19879)
+local timerAddsSpawn				= mod:NewTimer(9, L.TimerAddsSpawn, 19879)
 local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
@@ -59,28 +59,29 @@ local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 ----------- 
 -- Ascended 
 
-local warnPhase5            = mod:NewAnnounce("Stage Five: Avatar of Hatred", 3, 2145004)
-local warnSoulShear            = mod:NewSpellAnnounce(2145040)
-local warnHateCrash            = mod:NewSpellAnnounce(2145025)
-local warnMadness            = mod:NewSpellAnnounce(2145051)
-local warnUnleash            = mod:NewSpellAnnounce(2145061)
-local warnStruggle            = mod:NewSpellAnnounce(2145081)
-local warnHateBeam            = mod:NewSpellAnnounce(2145074)
+local warnPhase5			= mod:NewAnnounce("Stage Five: Avatar of Hatred", 3, 2145004)
+local warnSoulShear			= mod:NewSpellAnnounce(2145040)
+local warnHateCrash			= mod:NewSpellAnnounce(2145025)
+local warnMadness			= mod:NewSpellAnnounce(2145051)
+local warnUnleash			= mod:NewSpellAnnounce(2145061)
+local warnStruggle			= mod:NewSpellAnnounce(2145081)
+local warnHateBeam			= mod:NewSpellAnnounce(2145074)
 
-local specWarnHatred         = mod:NewSpecialWarning("Unleash Hatred!", 2145065)
+local specWarnHatred		= mod:NewSpecialWarning("Unleash Hatred!", 2145065)
 
-local timerMotes            = mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
-local timerP5RP                = mod:NewTimer(49, "Illidan tranformation RP", 2145004)
-local timerSoulShear        = mod:NewNextTimer(35, 2145040)
-local timerHateCrash        = mod:NewNextTimer(35, 2145025)
-local timerMadness            = mod:NewNextTimer(110, 2145051)
-local timerUnleash            = mod:NewNextTimer(110, 2145061)
-local timerNextHateBeam        = mod:NewNextTimer(110, 2145074)
-local timerHateBeam            = mod:NewTimer(12,"Eye Beam", 2145074)
-local timerStruggle            = mod:NewNextTimer(110, 2145081)
-local timerStruggling        = mod:NewTimer(10, "Illidan is struggling", 2145081)
+local timerMotes			= mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
+local timerP5RP				= mod:NewTimer(49, "Illidan tranformation RP", 2145004)
+local timerSoulShear		= mod:NewNextTimer(35, 2145040)
+local timerHateCrash		= mod:NewNextTimer(35, 2145025)
+local timerMadness			= mod:NewNextTimer(110, 2145051)
+local timerUnleash			= mod:NewNextTimer(110, 2145061)
+local timerNextHateBeam		= mod:NewNextTimer(110, 2145074)
+local timerHateBeam			= mod:NewTimer(12,"Eye Beam", 2145074)
+local timerStruggle			= mod:NewNextTimer(110, 2145081)
+local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 
 local azzinothKilled = 0
+local bladeCount = 0
 
 mod:AddBoolOption("RangeCheck", true)
 
