@@ -16,7 +16,8 @@ mod:RegisterEvents(
 	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_SPELLCAST_START",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"UNIT_AURA"
 )
 
 local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
