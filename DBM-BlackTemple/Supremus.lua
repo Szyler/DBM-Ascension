@@ -96,6 +96,7 @@ function mod:SPELL_DAMAGE(args)
 		timerEruption:Start()
 	end
 end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE -- Hack to include SPELL_MISSED as well without more code
 
 -- Supremus.MinRevision = 828
 
