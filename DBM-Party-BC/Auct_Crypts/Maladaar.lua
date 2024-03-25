@@ -35,10 +35,10 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(32424) then
 		warningAvatar:Show()
-	elseif args.spellId == 32422 then
-		warnRibbon:Show()
-		timerRibbonCast:Start()
-		timerNextRibbon:Start()
+	-- elseif args.spellId == 32422 then
+	-- 	warnRibbon:Show()
+	-- 	timerRibbonCast:Start()
+	-- 	timerNextRibbon:Start()
 	elseif args.spellId == 32346 then
 		-- warnSoul:Show()
 		timerSoulCast:Start()
