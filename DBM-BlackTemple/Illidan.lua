@@ -296,11 +296,11 @@ function mod:UNIT_DIED(args)
 	if cid == 22997 and self.vb.phase == 2 then
 		if azzinothKilled == 1 then
 			self.vb.phase = 3
-			timerCombatStart:Start(8)
-			timerNextUnharnessedBlade:Start(5)
-			timerNextForceNova:Start(15)
-			timerNextShear:Start(25)
-			timerNextDrawSoul:Start(30)
+			timerCombatStart:Start(11)
+			timerNextUnharnessedBlade:Start(16)
+			timerNextForceNova:Start(26)
+			timerNextShear:Start(37)
+			timerNextDrawSoul:Start(41)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
