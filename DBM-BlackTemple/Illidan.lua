@@ -21,7 +21,8 @@ mod:RegisterEvents(
 )
 
 local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
-local timerHumanForm				= mod:NewTimer(75, "TimerHumanForm", 2457)
+local timerHumanForm				= mod:NewTimer(85, "TimerHumanForm", 2457)
+local timerDemonForm				= mod:NewTimer(60, "TimerDemonForm", 2457)
 
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
@@ -102,6 +103,8 @@ function mod:phase5()
 	timerNextShear:Start(25)
 	timerNextDrawSoul:Start(30)
 	timerNextUnharnessedBlade:Start(35)
+	timerDemonForm:Start()
+	timerHumanForm:Stop()
 end
 
 function mod:CancelP5timers()
@@ -319,6 +322,7 @@ function mod:UNIT_DIED(args)
 			timerNextForceNova:Start(22+bonusTime)
 			timerNextShear:Start(33+bonusTime)
 			timerNextDrawSoul:Start(37+bonusTime)
+			timerDemonForm:Start(60+bonusTime)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
@@ -331,8 +335,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.DBM_ILLIDAN_YELL_DEMON then
 		self.vb.phase = 4
 		warnPhase:Show(4)
+		timerDemonForm:Stop()
 		timerHumanForm:Start()
-		self:ScheduleMethod(75, "phase5")
+		self:ScheduleMethod(85, "phase5")
 		timerNextForceNova:Stop()
 		timerNextShear:Stop()
 		timerNextDrawSoul:Stop()
@@ -355,11 +360,11 @@ function mod:UNIT_HEALTH(unit)
 		elseif (hp <= 71) and DBM:AntiSpam(5) and self.vb.phase == 1 then
 			self.vb.phase = 2
 			warnPhase:Show(2)
-			timerCombatStart:Start(4)
 			timerNextForceNova:Stop()
 			timerNextShear:Stop()
 			timerNextDrawSoul:Stop()
 			timerNextUnharnessedBlade:Stop()
+			timerCombatStart:Start(4)
 			timerNextChaosBlast:Start(12)
 			timerNextEyeBeam:Start(25)
 		elseif (hp <= 35) and DBM:AntiSpam(5) and self.vb.phase == 4 then
