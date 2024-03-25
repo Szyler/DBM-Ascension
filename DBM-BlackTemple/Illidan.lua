@@ -314,11 +314,11 @@ function mod:UNIT_DIED(args)
 				local bonusTime = (total - elapsed) or 0
 			end
 			self.vb.phase = 3
-			timerCombatStart:Start(11+bonusTime)
-			timerNextUnharnessedBlade:Start(16+bonusTime)
-			timerNextForceNova:Start(26+bonusTime)
-			timerNextShear:Start(37+bonusTime)
-			timerNextDrawSoul:Start(41+bonusTime)
+			timerCombatStart:Start(7+bonusTime)
+			timerNextUnharnessedBlade:Start(12+bonusTime)
+			timerNextForceNova:Start(22+bonusTime)
+			timerNextShear:Start(33+bonusTime)
+			timerNextDrawSoul:Start(37+bonusTime)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
