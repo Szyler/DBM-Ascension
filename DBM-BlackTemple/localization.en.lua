@@ -55,7 +55,8 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-    SupremusCracked			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+    SupremusCracked			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    WarnPhaseSoon		    = "Phase %s soon",
 }
 
 L:SetOptionLocalization{

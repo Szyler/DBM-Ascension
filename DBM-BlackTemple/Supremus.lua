@@ -11,7 +11,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
-	"SPELL_DAMAGE"
+	"SPELL_DAMAGE",
+	"UNIT_HEALTH"
 )
 
 local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
@@ -27,6 +28,7 @@ local timerEruption					= mod:NewCastTimer(4, 2142774)
 local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
+local warnPhase2Soon				= mod:NewAnnounce(L.WarnPhase2Soon, 1)
 local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 local oldMarkThreat
 local oldMarkTarget
@@ -99,6 +101,15 @@ function mod:SPELL_DAMAGE(args)
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE -- Hack to include SPELL_MISSED as well without more code
+
+function mod:UNIT_HEALTH(unit)
+	if mod:GetUnitCreatureId(unit) == 22898 then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 40) and DBM:AntiSpam(600) then
+			warnPhase2Soon:Show()
+        end
+    end
+end
 
 -- Supremus.MinRevision = 828
 
