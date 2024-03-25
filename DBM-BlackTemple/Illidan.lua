@@ -37,6 +37,7 @@ local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
 local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
 local warnShadowBreach     			= mod:NewSpellAnnounce(2144868, 2)
 local warnEyeBeam 					= mod:NewSpellAnnounce(2144816, 2)
+local warnDarkBarrage 				= mod:NewSpellAnnounce(2144812, 2)
 
 local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
 
@@ -53,8 +54,13 @@ local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
 local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144829)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
 local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
+
 local timerEyeBeam   				= mod:NewTargetTimer(20, 2144816)
 local timerNextEyeBeam   			= mod:NewNextTimer(25, 2144816)
+local timerTargetDarkBarrage   		= mod:NewTargetTimer(10, 2144812)
+local timertDarkBarrage   			= mod:NewCastTimer(3, 2144812)
+local timerNextDarkBarrage   		= mod:NewNextTimer(25, 2144812)
+
 local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
 local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
@@ -183,14 +189,17 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2144816) then
 		warnEyeBeam:Show()
 		timerEyeBeam:Start()
+	elseif args:IsSpellID(2144810) then
+		warnDarkBarrage:Show()
+		timertDarkBarrage:Start()
 	elseif args:IsSpellID(2144868, 2144869) then
 		warnShadowBreach:Show()
 	elseif args:IsSpellID(2144871, 2144872) then
 		timerParalyzingStare:Start(args.destName)
-	elseif (args:IsSpellID(2144863) or args:IsSpellID(2144864,2144865,2144866,2144867)) and not timerCombatStart:IsStarted() and DBM:AntiSpam() then
-		timerCombatStart:Start(60)
-		self:ScheduleMethod(60, "phase5")
-		timerNextShadowBreach:Start(20)
+	-- elseif (args:IsSpellID(2144863) or args:IsSpellID(2144864,2144865,2144866,2144867)) and not timerCombatStart:IsStarted() and DBM:AntiSpam() then
+	-- 	timerCombatStart:Start(60)
+	-- 	self:ScheduleMethod(60, "phase5")
+	-- 	timerNextShadowBreach:Start(20)
 	elseif args:IsSpellID(2144742, 2145015) then
         if bladeCount >= 1 and phase == 3 then
         timerBladeCD:Start()
@@ -248,6 +257,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnFlameCrashDot:Show()
 		end
+	elseif args:IsSpellID(2144810) then
+		timerTargetDarkBarrage:Start(args.destName)
 	elseif args:IsSpellID(2144960, 2144961) and self.vb.phase == 5 then
 		self.vb.phase = 6
 		warnPhase:Show(6)
@@ -296,12 +307,18 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 22997 and self.vb.phase == 2 then
 		if azzinothKilled == 1 then
+			local elapsed1, total1 = timerTargetDarkBarrage:GetTime()
+			local elapsed2, total2 = timerEyeBeam:GetTime()
+			local elapsed, total = math.max(elapsed1, elapsed2, 0), math.max(total1, total2, 0)
+			if (total or 0) > 0 then
+				local bonusTime = (total - elapsed) or 0
+			end
 			self.vb.phase = 3
-			timerCombatStart:Start(11)
-			timerNextUnharnessedBlade:Start(16)
-			timerNextForceNova:Start(26)
-			timerNextShear:Start(37)
-			timerNextDrawSoul:Start(41)
+			timerCombatStart:Start(11+bonusTime)
+			timerNextUnharnessedBlade:Start(16+bonusTime)
+			timerNextForceNova:Start(26+bonusTime)
+			timerNextShear:Start(37+bonusTime)
+			timerNextDrawSoul:Start(41+bonusTime)
 		else
 			azzinothKilled = azzinothKilled + 1
 		end
