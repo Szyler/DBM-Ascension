@@ -356,6 +356,7 @@ L:SetMiscLocalization{
     DBM_ILLIDAN_YELL_PULL				= "You are not prepared!",
     DBM_ILLIDAN_YELL_PULL_RP			= "Akama. Your duplicity is hardly surprising. I should have slaughtered you and your malformed brethren long ago.",
     UnharnessedBlade			        = "Blade on me!",
+    DBM_ILLIDAN_YELL_DEMON              = "You know nothing of power!",
     Phase5                              = "It is finished. You are beaten."
 }
 

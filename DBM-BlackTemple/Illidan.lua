@@ -21,6 +21,7 @@ mod:RegisterEvents(
 )
 
 local timerCombatStart				= mod:NewTimer(3, "TimerCombatStart", 2457)
+local timerHumanForm				= mod:NewTimer(75, "TimerHumanForm", 2457)
 
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
@@ -310,6 +311,16 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_ILLIDAN_YELL_PULL_RP then
 		timerCombatStart:Start(40)
+	elseif msg == L.DBM_ILLIDAN_YELL_DEMON then
+		self.vb.phase = 4
+		warnPhase:Show(4)
+		timerHumanForm:Start()
+		self:ScheduleMethod(75, "phase5")
+		timerNextForceNova:Stop()
+		timerNextShear:Stop()
+		timerNextDrawSoul:Stop()
+		timerNextUnharnessedBlade:Stop()
+		timerNextShadowBreach:Start(42)
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
         self.vb.phase = 7
         warnPhase5:Schedule(46)
@@ -334,18 +345,6 @@ function mod:UNIT_HEALTH(unit)
 			timerNextUnharnessedBlade:Stop()
 			timerNextChaosBlast:Start(12)
 			timerNextEyeBeam:Start(25)
-		elseif (hp <= 55) and DBM:AntiSpam(5) and self.vb.phase == 3 then
-			warnPhaseSoon:Show()
-		elseif (hp <= 51) and DBM:AntiSpam(5) and self.vb.phase == 3 then
-			self.vb.phase = 4
-			warnPhase:Show(4)
-			timerCombatStart:Start(75)
-			self:ScheduleMethod(75, "phase5")
-			timerNextForceNova:Stop()
-			timerNextShear:Stop()
-			timerNextDrawSoul:Stop()
-			timerNextUnharnessedBlade:Stop()
-			timerNextShadowBreach:Start()
 		elseif (hp <= 35) and DBM:AntiSpam(5) and self.vb.phase == 4 then
 			warnPhaseSoon:Show()
 		elseif (hp <= 31) and DBM:AntiSpam(5) and self.vb.phase == 5 then
