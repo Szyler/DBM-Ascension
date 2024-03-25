@@ -35,6 +35,7 @@ local warnDrawSoul             		= mod:NewSpellAnnounce(2144737, 2)
 local warnFelFireBlast         		= mod:NewSpellAnnounce(2144829, 2)
 local warnUnharnessedBlade     		= mod:NewSpellAnnounce(2144742, 2)
 local warnShadowBreach     			= mod:NewSpellAnnounce(2144868, 2)
+local warnEyeBeam 					= mod:NewSpellAnnounce(2144816, 2)
 
 local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
 
@@ -51,7 +52,8 @@ local timerNextFelFireBlast    		= mod:NewNextTimer(20, 2144829)
 local timerFelFireBlast2       		= mod:NewCastTimer(2, 2144829)
 local timerNextFelFireBlast2   		= mod:NewNextTimer(20, 2144829)
 local timerNextUnharnessedBlade   	= mod:NewNextTimer(30, 2144742)
-local timerNextEyeBeam   			= mod:NewNextTimer(20, 2144816)
+local timerEyeBeam   				= mod:NewTargetTimer(20, 2144816)
+local timerNextEyeBeam   			= mod:NewNextTimer(25, 2144816)
 local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
 local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
@@ -82,6 +84,7 @@ local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 
 local azzinothKilled = 0
 local bladeCount = 0
+local shearCount = 0
 
 mod:AddBoolOption("RangeCheck", true)
 
@@ -176,6 +179,9 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2144803,2144804,2144805,2144806) then
 		warnChaosBlast:Show()
 		timerChaosBlast:Start()
+	elseif args:IsSpellID(2144816) then
+		warnEyeBeam:Show()
+		timerEyeBeam:Start()
 	elseif args:IsSpellID(2144868, 2144869) then
 		warnShadowBreach:Show()
 	elseif args:IsSpellID(2144871, 2144872) then
@@ -305,7 +311,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_ILLIDAN_YELL_PULL_RP then
 		timerCombatStart:Start(40)
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
-        phase = 6
+        self.vb.phase = 7
         warnPhase5:Schedule(46)
         timerP5RP:Start()
         self:ScheduleMethod(0,"CancelP5timers")
@@ -321,12 +327,13 @@ function mod:UNIT_HEALTH(unit)
 		elseif (hp <= 71) and DBM:AntiSpam(5) and self.vb.phase == 1 then
 			self.vb.phase = 2
 			warnPhase:Show(2)
+			timerCombatStart:Start(4)
 			timerNextForceNova:Stop()
 			timerNextShear:Stop()
 			timerNextDrawSoul:Stop()
 			timerNextUnharnessedBlade:Stop()
 			timerNextChaosBlast:Start(12)
-			timerNextEyeBeam:Start(20)
+			timerNextEyeBeam:Start(25)
 		elseif (hp <= 55) and DBM:AntiSpam(5) and self.vb.phase == 3 then
 			warnPhaseSoon:Show()
 		elseif (hp <= 51) and DBM:AntiSpam(5) and self.vb.phase == 3 then
