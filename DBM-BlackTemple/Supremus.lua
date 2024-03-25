@@ -29,6 +29,7 @@ local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 local warnPhase2					= mod:NewPhaseAnnounce(2)
 local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 local oldMarkThreat
+local oldMarkTarget
 
 mod:AddBoolOption(L.threatIconsOpt)
 
@@ -48,13 +49,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142772) then --Enrages at 30% hp need hp check
 		warnPhase2:Show()
 		timerThreatDetected:Stop()
+		timerEnrage:Stop()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2142765) then
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
 		if self.Options.threatIconsOpt then
-			oldMarkThreat = self:GetIcon(args.destName)
+			oldMarkThreat, oldMarkTarget = self:GetIcon(args.destName), args.destName
 			self:SetIcon(args.destName, 8, 60)
 		end
 	end
@@ -70,7 +72,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		warnThreatDetected:Show()
 	elseif args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
-			self:SetIcon(args.destName, oldMarkThreat or 0)
+			self:SetIcon(oldMarkTarget, oldMarkThreat or 0)
 		end
 	end
 end
