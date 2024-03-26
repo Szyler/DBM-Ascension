@@ -130,7 +130,9 @@ function mod:StartP5timers()
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	if DBM:AntiSpam(600) then
+		self.vb.phase = 1
+	end
 	azzinothKilled = 0
 	if self.Options.RangeCheck then
 		DBM.RangeCheck:Show(15)
