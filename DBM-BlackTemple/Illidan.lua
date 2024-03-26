@@ -94,6 +94,7 @@ local azzinothKilled = 0
 local bladeCount = 0
 local shearCount = 0
 local crashCount = 0
+local bonusTime = 0
 
 mod:AddBoolOption("RangeCheck", true)
 
@@ -315,7 +316,7 @@ function mod:UNIT_DIED(args)
 			local elapsed2, total2 = timerEyeBeam:GetTime()
 			local elapsed, total = math.max(elapsed1, elapsed2, 0), math.max(total1, total2, 0)
 			if (total or 0) > 0 then
-				local bonusTime = (total - elapsed) or 0
+				bonusTime = (total - elapsed) or 0
 			end
 			self.vb.phase = 3
 			timerCombatStart:Start(7+bonusTime)
