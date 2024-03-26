@@ -36,7 +36,7 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 local eosSpam = 0
 
 mod:SetUsedIcons(1)
-mod:AddBoolOption(L.RodYellOpt)
+mod:AddBoolOption("RodYellOpt")
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption("StormIcon")
 local platform1, platform2, platform3, platform4 = true , true , true , true
