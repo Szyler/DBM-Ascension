@@ -33,7 +33,7 @@ local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 local oldMarkThreat
 local oldMarkTarget
 
-mod:AddBoolOption(L.threatIconsOpt)
+mod:AddBoolOption("threatIconsOpt")
 
 function mod:OnCombatStart(delay)
 	oldMarkThreat = 0
