@@ -93,7 +93,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnDeathSentence:Show();
 		else
-		warnDeathSentence:Show(args.destName)
+			warnDeathSentence:Show(args.destName)
 		end
 		timerDeathSentence:Start(args.destName)
 		self:SetIcon(args.destName, 8, 15)

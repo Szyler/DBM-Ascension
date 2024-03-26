@@ -93,6 +93,7 @@ local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 local azzinothKilled = 0
 local bladeCount = 0
 local shearCount = 0
+local crashCount = 0
 
 mod:AddBoolOption("RangeCheck", true)
 
@@ -205,43 +206,43 @@ function mod:SPELL_CAST_START(args)
 	-- 	timerNextShadowBreach:Start(20)
 	elseif args:IsSpellID(2144742, 2145015) then
         if bladeCount >= 1 and phase == 3 then
-        timerBladeCD:Start()
-        warnBlade:Show()
-        bladeCount = bladeCount + 1
+        	timerBladeCD:Start()
+        	warnBlade:Show()
+        	bladeCount = bladeCount + 1
         elseif bladeCount >= 1 and phase == 5 then
-        timerBladeCD:Start()
-        warnBlade:Show()
-        bladeCount = bladeCount + 1
+        	timerBladeCD:Start()
+        	warnBlade:Show()
+        	bladeCount = bladeCount + 1
         elseif bladeCount >= 1 and phase == 6 then
-        warnBlade:Show()
-        timerBladeCD:Start(75)
-        bladeCount = 0
+        	warnBlade:Show()
+        	timerBladeCD:Start(75)
+        	bladeCount = 0
         elseif bladeCount == 0 and phase == 6 then
-        timerBladeCD:Start(35)
-        warnBlade:Show()
-        bladeCount = bladeCount + 1
+        	timerBladeCD:Start(35)
+        	warnBlade:Show()
+        	bladeCount = bladeCount + 1
         else
-        timerBladeCD:Start(30)
-        warnBlade:Show()
-        bladeCount = bladeCount + 1
+        	timerBladeCD:Start(30)
+        	warnBlade:Show()
+        	bladeCount = bladeCount + 1
         end
     elseif args:IsSpellID(2145040) then
         warnSoulShear:Show()
         if shearCount == 0 then
-        timerSoulShear:Start()
-        shearCount = shearCount + 1
+        	timerSoulShear:Start()
+        	shearCount = shearCount + 1
         elseif shearCount == 1 then
-        shearCount = 0
-        timerSoulShear:Start(75)
+        	shearCount = 0
+        	timerSoulShear:Start(75)
         end
     elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
         warnHateCrash:Show()
         if phase == 6 and crashCount == 0 then
-        timerHateCrash:Start()
-        crashCount = crashCount + 1
+        	timerHateCrash:Start()
+        	crashCount = crashCount + 1
         elseif phase == 6 and crashCount == 1 then
             timerHateCrash:Start(74)
-        crashCount = 0
+        	crashCount = 0
         end
     elseif args:IsSpellID(2145051,2145052) then
         warnMadness:Show()
