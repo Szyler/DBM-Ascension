@@ -17,7 +17,7 @@ mod:RegisterEvents(
 
 local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
 local warningSupreme				= mod:NewSpellAnnounce(2142764, 3)
-local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
+local warnCracked					= mod:NewAnnounce("SupremusCracked", 2, 2142751)
 local warnThreatDetected			= mod:NewTargetAnnounce(2142765, 3)
 
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
@@ -28,7 +28,7 @@ local timerEruption					= mod:NewCastTimer(4, 2142774)
 local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
-local warnPhase2Soon				= mod:NewAnnounce(L.WarnPhase2Soon, 1)
+local warnPhase2Soon				= mod:NewAnnounce("WarnPhase2Soon", 1)
 local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 local oldMarkThreat
 local oldMarkTarget

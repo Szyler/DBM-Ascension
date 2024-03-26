@@ -30,10 +30,10 @@ local timerNextAdds			= mod:NewNextTimer(15, 2142574)
 
 local yellDischarge			= mod:NewFadesYell(2142504)
 
-mod:AddBoolOption(L.SpineYellOpt)
-mod:AddBoolOption(L.DischargeYellOpt)
-mod:AddBoolOption(L.SpineIconsOpt)
-mod:AddBoolOption(L.RangeCheck)
+mod:AddBoolOption("SpineYellOpt")
+mod:AddBoolOption("DischargeYellOpt")
+mod:AddBoolOption("SpineIconsOpt")
+mod:AddBoolOption("RangeCheck")
 
 local spineWreathIcon = 8
 
