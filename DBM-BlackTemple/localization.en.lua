@@ -359,6 +359,8 @@ L:SetMiscLocalization{
     DBM_ILLIDAN_YELL_DEMON              = "You know nothing of power!",
     Phase5                              = "It is finished. You are beaten.",
     TimerCombatStart                    = "Combat starts",
+    TimerHumanForm                      = "Human Form",
+    TimerDemonForm                      = "Demon Form",
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"
