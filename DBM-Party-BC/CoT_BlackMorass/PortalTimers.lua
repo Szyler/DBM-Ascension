@@ -65,9 +65,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-function mod:OnSync(msg, arg)
-	if msg == "Wipe" then
-		self:UnscheduleMethod("PortalSoon")
-		timerNextPortal:Cancel()
-	end
+function mod:OnCombatEnd()
+	warnWavePortalSoon:Cancel()
+	timerNextPortal:Cancel()
 end

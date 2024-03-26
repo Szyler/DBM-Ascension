@@ -18,8 +18,8 @@ local warnBite					= mod:NewAnnounce(L.ShirrakBite, 2, 85178)
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 32265 then
-		timerAcid:Start()
-		wardAcid:Show(args.destName)
+		timerNextAttract:Start()
+		warnAttract:Show(args.destName)
 	end
 end
 

@@ -32,10 +32,6 @@ function mod:OnCombatStart(delay)
 	shardNumber = 1
 end
 
-function mod:alarmSound()
-	soundShards:Play()
-end
-
 function mod:preShard()
 	prewarnShard:Show()
 end

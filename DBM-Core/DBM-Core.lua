@@ -87,10 +87,10 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = ("$Revision: 7003 $"):sub(12, -3),
-	Version = "7.03",
-	DisplayVersion = "7.03 Fuck Russians Fix by Molly - Warmane 3.3.5", -- the string that is shown as version
-	ReleaseRevision = 7003 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 5007 $"):sub(12, -3),
+	Version = "5.07",
+	DisplayVersion = "5.07", -- the string that is shown as version
+	ReleaseRevision = 5007 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -1538,56 +1538,60 @@ end
 ----------------------
 --  Slash Commands  --
 ----------------------
-do
-	local function Pull(timer)
+SLASH_DEADLYBOSSMODS1 = "/dbm"
+SLASH_PULL1 = "/pull"
+SlashCmdList["DEADLYBOSSMODS"] = function(msg)
+	local cmd = msg:lower()
+	if cmd == "ver" or cmd == "version" then
+		DBM:ShowVersions(false)
+	elseif cmd == "ver2" or cmd == "version2" then
+		DBM:ShowVersions(true)
+	elseif cmd == "unlock" or cmd == "move" then
+		for id,barGroup in pairs(DBM.BarGroups) do
+			barGroup:ShowMovableBar()
+		end
+	elseif cmd == "help" then
+		for i, v in ipairs(DBM_CORE_SLASHCMD_HELP) do DBM:AddMsg(v) end
+	elseif cmd:sub(1, 5) == "timer" then
+		local time, text = msg:match("^%w+ ([%d:]+) (.+)$")
+		if not (time and text) then
+			DBM:AddMsg(DBM_PIZZA_ERROR_USAGE)
+			return
+		end
+		local min, sec = string.split(":", time)
+		min = tonumber(min or "") or 0
+		sec = tonumber(sec or "")
+		if min and not sec then
+			sec = min
+			min = 0
+		end
+		time = min * 60 + sec
+		DBM:CreatePizzaTimer(time, text)
+	elseif cmd:sub(1, 15) == "broadcast timer" then
+		local time, text = msg:match("^%w+ %w+ ([%d:]+) (.+)$")
 		if DBM:GetRaidRank() == 0 then
-			local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "EMOTE"
-			DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, false)
-			SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
-			if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
-			if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
-			if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
-			if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
-			if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
-			if timer >= 5 and DBM.Options.AudioPull then
-				DBM:Schedule(timer - 5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\5.mp3", "Master")
-				DBM:Schedule(timer - 4, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\4.mp3", "Master")
-				DBM:Schedule(timer - 3, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\3.mp3", "Master")
-				DBM:Schedule(timer - 2, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\2.mp3", "Master")
-				DBM:Schedule(timer - 1, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\1.mp3", "Master")
-				DBM:Schedule(timer - 0.01, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\Alarm.ogg", "Master")
-			end
-			DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
-			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
+			DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
-		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
-		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
-		SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
-		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
-		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
-		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
-		if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
-		if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
-		if timer >= 5 and DBM.Options.AudioPull then
-			DBM:Schedule(timer - 5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\5.mp3", "Master")
-			DBM:Schedule(timer - 4, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\4.mp3", "Master")
-			DBM:Schedule(timer - 3, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\3.mp3", "Master")
-			DBM:Schedule(timer - 2, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\2.mp3", "Master")
-			DBM:Schedule(timer - 1, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\1.mp3", "Master")
-			DBM:Schedule(timer - 0.01, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\Alarm.ogg", "Master")
+		if not (time and text) then
+			DBM:AddMsg(DBM_PIZZA_ERROR_USAGE)
+			return
 		end
-		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
-	end
-	local function Break(timer)
-		if GetNumRaidMembers() == 0 and DBM:GetRaidRank(playerName) == 0 or select(2, IsInInstance()) == "pvp" then--No break timers if not assistant or if it's dungeon/BG
+		local min, sec = string.split(":", time)
+		min = tonumber(min or "") or 0
+		sec = tonumber(sec or "")
+		if min and not sec then
+			sec = min
+			min = 0
+		end
+		time = min * 60 + sec
+		DBM:CreatePizzaTimer(time, text, true)
+	elseif cmd:sub(0,5) == "break" then
+		if DBM:GetRaidRank() == 0 then
 			DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 			return
 		end
-		if timer > 60 then
-			DBM:AddMsg(DBM_CORE_BREAK_USAGE)
-			return
-		end
-		timer = timer * 60
+		local timer = tonumber(cmd:sub(6)) or 5
+		local timer = timer * 60
 		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_BREAK, true)
 		DBM:Unschedule(SendChatMessage)
@@ -1597,266 +1601,88 @@ do
 		if timer/60 > 1 then DBM:Schedule(timer - 1*60, SendChatMessage, DBM_CORE_BREAK_MIN:format(1), channel) end
 		if timer > 30 then DBM:Schedule(timer - 30, SendChatMessage, DBM_CORE_BREAK_SEC:format(30), channel) end
 		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_BREAK_OVER, channel)
-	end
-
-	SLASH_DEADLYBOSSMODS1 = "/dbm"
-	SLASH_DEADLYBOSSMODSRPULL1 = "/rpull"
-	SLASH_DEADLYBOSSMODSDWAY1 = "/dway"--/way not used because DBM would load before TomTom and can't check
-	SlashCmdList["DEADLYBOSSMODSDWAY"] = function(msg)
-		if DBM:HasMapRestrictions() then
-			DBM:AddMsg(DBM_CORE_NO_ARROW)
-			return
+	elseif cmd:sub(1, 4) == "pull" then
+		if DBM:GetRaidRank() == 0 then
+			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
-		local x, y = string.split(" ", msg:sub(1):trim())
-		local xNum, yNum = tonumber(x or ""), tonumber(y or "")
+		DBM:Unschedule(SendChatMessage)
+		fireEvent("DBM_TimerStop", "DBMPizzaTimer")
+		if DBM:GetRaidRank() >= 1 then
+			sendSync("DBMv4-Pizza-Cancel")
+		end
+		local timer = tonumber(cmd:sub(5)) or 10
+		local pullMessage = string.lower(cmd:sub(6) or "")
+		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
+		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
+		if timer > 1 then SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel) end
+		if timer > 10 then DBM:Schedule(timer - 10, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(10), channel) end
+		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
+		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
+		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
+		if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
+		if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
+		if timer > 1 then DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel) end
+		if timer < 1 or pullMessage == "cancel" then 
+			DBM:Unschedule(SendChatMessage)
+			fireEvent("DBM_TimerStop", "DBMPizzaTimer")
+			if DBM:GetRaidRank() >= 1 then
+				sendSync("DBMv4-Pizza-Cancel")
+			end
+			SendChatMessage(DBM_CORE_ANNOUNCE_PULL_CANCEL..pullMessage, channel)
+		end
+		if timer == 0 then  end
+	elseif cmd:sub(1, 5) == "arrow" then
+		if not DBM:IsInRaid() then
+			DBM:AddMsg(DBM_ARROW_NO_RAIDGROUP)
+			return false
+		end
+		local x, y = string.split(" ", cmd:sub(6):trim())
+		xNum, yNum = tonumber(x or ""), tonumber(y or "")
 		local success
 		if xNum and yNum then
-			DBM.Arrow:ShowRunTo(xNum, yNum, 1, nil, true)
+			DBM.Arrow:ShowRunTo(xNum / 100, yNum / 100, 0)
 			success = true
-		else--Check if they used , instead of space.
-			x, y = string.split(",", msg:sub(1):trim())
-			xNum, yNum = tonumber(x or ""), tonumber(y or "")
-			if xNum and yNum then
-				DBM.Arrow:ShowRunTo(xNum, yNum, 1, nil, true)
+		elseif type(x) == "string" and x:trim() ~= "" then
+			local subCmd = x:trim()
+			if subCmd:upper() == "HIDE" then
+				DBM.Arrow:Hide()
+				success = true
+			elseif subCmd:upper() == "MOVE" then
+				DBM.Arrow:Move()
+				success = true
+			elseif subCmd:upper() == "TARGET" then
+				DBM.Arrow:ShowRunTo("target")
+				success = true
+			elseif subCmd:upper() == "FOCUS" then
+				DBM.Arrow:ShowRunTo("focus")
+				success = true
+			elseif DBM:GetRaidUnitId(DBM:Capitalize(subCmd)) ~= "none" then
+				DBM.Arrow:ShowRunTo(DBM:Capitalize(subCmd))
 				success = true
 			end
 		end
 		if not success then
-			if DBM.Arrow:IsShown() then
-				DBM.Arrow:Hide()--Hide
-			else--error
-				DBM:AddMsg(DBM_ARROW_WAY_USAGE)
+			for i, v in ipairs(DBM_ARROW_ERROR_USAGE) do
+				DBM:AddMsg(v)
 			end
 		end
-	end
-	SLASH_DEADLYBOSSMODSPULL1 = "/pull"
-	SLASH_DEADLYBOSSMODSBREAK1 = "/break"
-	SlashCmdList["DEADLYBOSSMODSPULL"] = function(msg)
-		Pull(tonumber(msg) or 15)
-	end
-	SlashCmdList["DEADLYBOSSMODSBREAK"] = function(msg)
-		Break(tonumber(msg) or 5)
-	end
-	SlashCmdList["DEADLYBOSSMODSRPULL"] = function(msg)
-		Pull(30)
-	end
-	SlashCmdList["DEADLYBOSSMODS"] = function(msg)
-		local cmd = msg:lower()
-		if cmd == "ver" or cmd == "version" then
-			DBM:ShowVersions(false)
-		elseif cmd == "ver2" or cmd == "version2" then
-			DBM:ShowVersions(true)
-		elseif cmd == "unlock" or cmd == "move" then
-			DBM.Bars:ShowMovableBar()
-		elseif cmd == "help2" then
-			for i, v in ipairs(DBM_CORE_SLASHCMD_HELP2) do DBM:AddMsg(v) end
-		elseif cmd == "help" then
-			for i, v in ipairs(DBM_CORE_SLASHCMD_HELP) do DBM:AddMsg(v) end
-		elseif cmd:sub(1, 13) == "timer endloop" then
-			DBM:CreatePizzaTimer(time, "", nil, nil, nil, true)
-		elseif cmd:sub(1, 5) == "timer" then
-			local time, text = msg:match("^%w+ ([%d:]+) (.+)$")
-			if not (time and text) then
-				for i, v in ipairs(DBM_CORE_TIMER_USAGE) do DBM:AddMsg(v) end
-				return
-			end
-			local min, sec = string.split(":", time)
-			min = tonumber(min or "") or 0
-			sec = tonumber(sec or "")
-			if min and not sec then
-				sec = min
-				min = 0
-			end
-			time = min * 60 + sec
-			DBM:CreatePizzaTimer(time, text)
-		elseif cmd:sub(1, 6) == "ltimer" then
-			local time, text = msg:match("^%w+ ([%d:]+) (.+)$")
-			if not (time and text) then
-				DBM:AddMsg(DBM_PIZZA_ERROR_USAGE)
-				return
-			end
-			local min, sec = string.split(":", time)
-			min = tonumber(min or "") or 0
-			sec = tonumber(sec or "")
-			if min and not sec then
-				sec = min
-				min = 0
-			end
-			time = min * 60 + sec
-			DBM:CreatePizzaTimer(time, text, nil, nil, true)
-		elseif cmd:sub(1, 15) == "broadcast timer" then--Standard Timer
-			local permission = true
-			if DBM:GetRaidRank(playerName) == 0 then
-				DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
-				permission = false
-			end
-			local time, text = msg:match("^%w+ %w+ ([%d:]+) (.+)$")
-			if not (time and text) then
-				DBM:AddMsg(DBM_PIZZA_ERROR_USAGE)
-				return
-			end
-			local min, sec = string.split(":", time)
-			min = tonumber(min or "") or 0
-			sec = tonumber(sec or "")
-			if min and not sec then
-				sec = min
-				min = 0
-			end
-			time = min * 60 + sec
-			DBM:CreatePizzaTimer(time, text, permission)
-		elseif cmd:sub(1, 16) == "broadcast ltimer" then
-			local permission = true
-			if DBM:GetRaidRank(playerName) == 0 then
-				DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
-				permission = false
-			end
-			local time, text = msg:match("^%w+ %w+ ([%d:]+) (.+)$")
-			if not (time and text) then
-				DBM:AddMsg(DBM_PIZZA_ERROR_USAGE)
-				return
-			end
-			local min, sec = string.split(":", time)
-			min = tonumber(min or "") or 0
-			sec = tonumber(sec or "")
-			if min and not sec then
-				sec = min
-				min = 0
-			end
-			time = min * 60 + sec
-			DBM:CreatePizzaTimer(time, text, permission, nil, true)
-		elseif cmd:sub(0,5) == "break" then
-			local timer = tonumber(cmd:sub(6)) or 5
-			Break(timer)
-		elseif cmd:sub(1, 4) == "pull" then
-			local timer = tonumber(cmd:sub(5)) or 10
-			Pull(timer)
-		elseif cmd:sub(1, 5) == "rpull" then
-			Pull(30)
-		elseif cmd:sub(1, 3) == "lag" then
-			if not LL then
-				DBM:AddMsg(DBM_CORE_UPDATE_REQUIRES_RELAUNCH)
-				return
-			end
-			LL:RequestLatency()
-			DBM:AddMsg(DBM_CORE_LAG_CHECKING)
-			C_Timer.After(5, function() DBM:ShowLag() end)
-		elseif cmd:sub(1, 10) == "durability" then
-			if not LD then
-				DBM:AddMsg(DBM_CORE_UPDATE_REQUIRES_RELAUNCH)
-				return
-			end
-			LD:RequestDurability()
-			DBM:AddMsg(DBM_CORE_DUR_CHECKING)
-			C_Timer.After(5, function() DBM:ShowDurability() end)
-		elseif cmd:sub(1, 5) == "arrow" then
-			if not DBM:IsInRaid() then
-				DBM:AddMsg(DBM_ARROW_NO_RAIDGROUP)
-				return false
-			end
-			local x, y = string.split(" ", cmd:sub(6):trim())
-			local xNum, yNum = tonumber(x or ""), tonumber(y or "")
-			local success
-			if xNum and yNum then
-				DBM.Arrow:ShowRunTo(xNum / 100, yNum / 100, 0)
-				success = true
-			elseif type(x) == "string" and x:trim() ~= "" then
-				local subCmd = x:trim()
-				if subCmd:upper() == "HIDE" then
-					DBM.Arrow:Hide()
-					success = true
-				elseif subCmd:upper() == "MOVE" then
-					DBM.Arrow:Move()
-					success = true
-				elseif subCmd:upper() == "TARGET" then
-					DBM.Arrow:ShowRunTo("target")
-					success = true
-				elseif subCmd:upper() == "FOCUS" then
-					DBM.Arrow:ShowRunTo("focus")
-					success = true
-				elseif DBM:GetRaidUnitId(DBM:Capitalize(subCmd)) then
-					DBM.Arrow:ShowRunTo(DBM:Capitalize(subCmd))
-					success = true
-				end
-			end
-			if not success then
-				for i, v in ipairs(DBM_ARROW_ERROR_USAGE) do
-					DBM:AddMsg(v)
-				end
-			end
-		elseif cmd:sub(1, 7) == "lockout" or cmd:sub(1, 3) == "ids" then
-			if DBM:GetRaidRank(playerName) == 0 then
-				return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
-			end
-			if GetNumRaidMembers() == 0 then
-				return DBM:AddMsg(DBM_ERROR_NO_RAID)
-			end
-			DBM:RequestInstanceInfo()
-		elseif cmd:sub(1, 10) == "debuglevel" then
-			local level = tonumber(cmd:sub(11)) or 1
-			if level < 1 or level > 3 then
-				DBM:AddMsg("Invalid Value. Debug Level must be between 1 and 3.")
-				return
-			end
-			DBM.Options.DebugLevel = level
-			DBM:AddMsg("Debug Level is " .. level)
-		elseif cmd:sub(1, 5) == "debug" then
-			DBM.Options.DebugMode = DBM.Options.DebugMode == false and true or false
-			DBM:AddMsg("Debug Message is " .. (DBM.Options.DebugMode and "ON" or "OFF"))
-		elseif cmd:sub(1, 7) == "request" then
-			DBM:Unschedule(DBM.RequestTimers)
-			DBM:RequestTimers(1)
-			DBM:RequestTimers(2)
-			DBM:RequestTimers(3)
-		elseif cmd:sub(1, 6) == "silent" then
-			DBM.Options.SilentMode = DBM.Options.SilentMode == false and true or false
-			DBM:AddMsg("SilentMode is " .. (DBM.Options.SilentMode and "ON" or "OFF"))
-		elseif cmd:sub(1, 9) == "infoframe" then
-			if DBM.InfoFrame:IsShown() then
-				DBM.InfoFrame:Hide()
-			else
-				DBM.InfoFrame:Show(5, "test")
-			end
-		elseif cmd:sub(1, 10) == "aggroframe" then
-			if DBM.InfoFrame:IsShown() then
-				DBM.InfoFrame:Hide()
-			else
-				DBM.InfoFrame:SetHeader(DBM_CORE_L.INFOFRAME_AGGRO)
-				DBM.InfoFrame:Show(7, "playeraggro", 1)
-			end
-		else
-			DBM:LoadGUI()
-		end
+	else
+		DBM:LoadGUI()
 	end
 end
-
-do
-	local function updateRangeFrame(r, reverse)
-		if DBM.RangeCheck:IsShown() then
-			DBM.RangeCheck:Hide(true)
+SlashCmdList["PULL"] = function(msg) SlashCmdList["DEADLYBOSSMODS"]("pull "..msg) end
+SLASH_DBMRANGE1 = "/range"
+SLASH_DBMRANGE2 = "/distance"
+SlashCmdList["DBMRANGE"] = function(msg)
+	if DBM.RangeCheck:IsShown() then
+		DBM.RangeCheck:Hide()
+	else
+		local r = tonumber(msg)
+		if r and (r == 10 or r == 11 or r == 15 or r == 28 or r == 12 or r == 6 or r == 8 or r == 20) then
+			DBM.RangeCheck:Show(r)
 		else
-			if r and (r < 201) then
-				DBM.RangeCheck:Show(r, nil, true, nil, reverse)
-			else
-				DBM.RangeCheck:Show(10, nil, true, nil, reverse)
-			end
+			DBM.RangeCheck:Show(10)
 		end
-	end
-	SLASH_DBMRANGE1 = "/range"
-	SLASH_DBMRANGE2 = "/distance"
-	SLASH_DBMHUDAR1 = "/hudar"
-	SLASH_DBMRRANGE1 = "/rrange"
-	SLASH_DBMRRANGE2 = "/rdistance"
-	SlashCmdList["DBMRANGE"] = function(msg)
-		local r = tonumber(msg) or 10
-		updateRangeFrame(r, false)
-	end
-	SlashCmdList["DBMHUDAR"] = function(msg)
-		local r = tonumber(msg) or 10
-		DBMHudMap:ToggleHudar(r)
-	end
-	SlashCmdList["DBMRRANGE"] = function(msg)
-		local r = tonumber(msg) or 10
-		updateRangeFrame(r, true)
 	end
 end
 
@@ -5582,8 +5408,8 @@ end
 do
 	local testMod
 	local testWarning1, testWarning2, testWarning3
-	local testTimer1, testTimer2, testTimer3, testTimer4, testTimer5, testTimer6, testTimer7, testTimer8
-	local testSpecialWarning1, testSpecialWarning2, testSpecialWarning3
+	local testTimer
+	local testSpecialWarning
 	function DBM:DemoMode()
 		if not testMod then
 			testMod = self:NewMod("TestMod", "DBM-PvP")
@@ -5591,26 +5417,17 @@ do
 			testWarning1 = testMod:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
 			testWarning2 = testMod:NewAnnounce("%s", 2, "Interface\\Icons\\Spell_Shadow_Shadesofdarkness")
 			testWarning3 = testMod:NewAnnounce("%s", 3, "Interface\\Icons\\Spell_Fire_SelfDestruct")
-			testTimer1 = testMod:NewTimer(20, "%s", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil)
-			testTimer2 = testMod:NewTimer(20, "%s ", "Interface\\Icons\\INV_Misc_Head_Orc_01", nil, nil, 1)
-			testTimer3 = testMod:NewTimer(20, "%s  ", "Interface\\Icons\\Spell_Shadow_Shadesofdarkness", nil, nil, 3, DBM_CORE_MAGIC_ICON, nil, 1, 4)--inlineIcon, keep, countdown, countdownMax
-			testTimer4 = testMod:NewTimer(20, "%s   ", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 4, DBM_CORE_INTERRUPT_ICON)
-			testTimer5 = testMod:NewTimer(20, "%s    ", "Interface\\Icons\\Spell_Fire_SelfDestruct", nil, nil, 2, DBM_CORE_HEALER_ICON, nil, 3, 4)--inlineIcon, keep, countdown, countdownMax
-			testTimer6 = testMod:NewTimer(20, "%s     ", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 5, DBM_CORE_TANK_ICON, nil, 2, 4)--inlineIcon, keep, countdown, countdownMax
-			testTimer7 = testMod:NewTimer(20, "%s      ", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6)
-			testTimer8 = testMod:NewTimer(20, "%s       ", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 7)
-			testSpecialWarning1 = testMod:NewSpecialWarning("%s", nil, nil, nil, 1, 2)
-			testSpecialWarning2 = testMod:NewSpecialWarning(" %s ", nil, nil, nil, 2, 2)
-			testSpecialWarning3 = testMod:NewSpecialWarning("  %s  ", nil, nil, nil, 3, 2) -- hack: non auto-generated special warnings need distinct names (we could go ahead and give them proper names with proper localization entries, but this is much easier)
+			testTimer = testMod:NewTimer(20, "%s")			
+			testSpecialWarning = testMod:NewSpecialWarning("%s")
 		end
-		testTimer1:Start(10, "Test Bar")
-		testTimer2:Start(30, "Adds")
-		testTimer3:Start(43, "Evil Debuff")
-		testTimer4:Start(20, "Important Interrupt")
-		testTimer5:Start(60, "Boom!")
-		testTimer6:Start(35, "Handle your Role")
-		testTimer7:Start(50, "Next Stage")
-		testTimer8:Start(55, "Custom User Bar")
+		testTimer:Start(20, "Pew Pew Pew...")
+		testTimer:UpdateIcon("Interface\\Icons\\Spell_Nature_Starfall", "Pew Pew Pew...")
+		testTimer:Start(10, "Test Bar")
+		testTimer:UpdateIcon("Interface\\Icons\\Spell_Nature_WispSplode", "Test Bar")
+		testTimer:Start(43, "Evil Spell")
+		testTimer:UpdateIcon("Interface\\Icons\\Spell_Shadow_ShadesOfDarkness", "Evil Spell")
+		testTimer:Start(60, "Boom!")
+		testTimer:UpdateIcon("Interface\\Icons\\Spell_Fire_SelfDestruct", "Boom!")
 		testWarning1:Cancel()
 		testWarning2:Cancel()
 		testWarning3:Cancel()
@@ -5621,18 +5438,12 @@ do
 		testSpecialWarning3:Cancel()
 		testSpecialWarning3:CancelVoice()
 		testWarning1:Show("Test-mode started...")
-		testWarning1:Schedule(62, "Test-mode finished!")
-		testWarning3:Schedule(50, "Boom in 10 sec!")
+		testWarning1:Schedule(10, "Test bar expired!")
 		testWarning3:Schedule(20, "Pew Pew Laser Owl!")
 		testWarning2:Schedule(38, "Evil Spell in 5 sec!")
 		testWarning2:Schedule(43, "Evil Spell!")
 		testWarning1:Schedule(10, "Test bar expired!")
-		testSpecialWarning1:Schedule(20, "Pew Pew Laser Owl")
-		testSpecialWarning1:ScheduleVoice(20, "runaway")
-		testSpecialWarning2:Schedule(43, "Fear!")
-		testSpecialWarning2:ScheduleVoice(43, "fearsoon")
-		testSpecialWarning3:Schedule(60, "Boom!")
-		testSpecialWarning3:ScheduleVoice(60, "defensive")
+		testSpecialWarning:Schedule(60, "Boom!")
 	end
 end
 
@@ -5659,43 +5470,6 @@ function DBM:Capitalize(str)
 		numBytes = 2
 	end
 	return str:sub(1, numBytes):upper()..str:sub(numBytes + 1):lower()
-end
-
--- An anti spam function to throttle spammy events (e.g. SPELL_AURA_APPLIED on all group members)
--- @param time the time to wait between two events (optional, default 2.5 seconds)
--- @param id the id to distinguish different events (optional, only necessary if your mod keeps track of two different spam events at the same time)
-function DBM:AntiSpam(time, id)
-	if GetTime() - (id and (self["lastAntiSpam" .. tostring(id)] or 0) or self.lastAntiSpam or 0) > (time or 2.5) then
-		if id then
-			self["lastAntiSpam" .. tostring(id)] = GetTime()
-		else
-			self.lastAntiSpam = GetTime()
-		end
-		return true
-	else
-		return false
-	end
-end
-
-function DBM:GetTOC()
-	return wowTOC, wowVersionString, wowBuild
-end
-
-function DBM:InCombat()
-	if #inCombat > 0 then
-		return true
-	end
-	return false
-end
-
-do
-	local iconStrings = {[1] = RAID_TARGET_1, [2] = RAID_TARGET_2, [3] = RAID_TARGET_3, [4] = RAID_TARGET_4, [5] = RAID_TARGET_5, [6] = RAID_TARGET_6, [7] = RAID_TARGET_7, [8] = RAID_TARGET_8,}
-	function DBM:IconNumToString(number)
-		return iconStrings[number] or number
-	end
-	function DBM:IconNumToTexture(number)
-		return "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..number..".blp:12:12|t" or number
-	end
 end
 
 -----------------
@@ -7288,6 +7062,10 @@ do
 	function bossModPrototype:NewMoveToAnnounce(spellId, color, ...)
 		return newAnnounce(self, "moveto", spellId, color or 3, ...)
 	end
+	
+	function bossModPrototype:NewInterruptAnnounce(spellId, color, ...)
+		return newAnnounce(self, "interrupt", spellId, color or 3, ...)
+	end
 end
 
 --------------------
@@ -7326,7 +7104,7 @@ do
 
 	function soundPrototype:Cancel(...)
 		return unschedule(self.Play, self.mod, self, ...)
-	end
+	end	
 end
 
 do
@@ -9806,6 +9584,7 @@ end
 function bossModPrototype:DisableModel()
 	self.modelEnabled = nil
 end
+
 
 --------------------
 --  Localization  --

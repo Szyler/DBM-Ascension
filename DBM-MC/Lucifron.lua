@@ -10,25 +10,33 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warnDoom		= mod:NewSpellAnnounce(19702)
-local warnCurse		= mod:NewSpellAnnounce(19703)
-local warnMC		= mod:NewTargetAnnounce(20604)
+local warnDoom			= mod:NewSpellAnnounce(19702)
+local warnCurse			= mod:NewSpellAnnounce(19703)
+local warnMC			= mod:NewTargetAnnounce(20604)
+local warnTouch			= mod:NewTargetAnnounce(350073)
+local warnTouchYou		= mod:NewSpecialWarningYou(350073)
 
-local timerCurseCD	= mod:NewNextTimer(20, 19703)
-local timerDoomCD	= mod:NewNextTimer(20, 19702)
-local timerDoom		= mod:NewCastTimer(10, 19702)
-local timerMC		= mod:NewTargetTimer(5, 20604)
+local timerNextTouch	= mod:NewNextTimer(18, 350073)
+local timerNextCurse	= mod:NewNextTimer(20, 19703)
+local timerNextDoom		= mod:NewNextTimer(15, 19702)
+local timerDoom			= mod:NewCastTimer(10, 19702)
+local timerMC			= mod:NewTargetTimer(5, 20604)
+
+local enrageTimer		= mod:NewBerserkTimer(300)
 
 function mod:OnCombatStart(delay)
+	timerNextDoom:Start(10-delay)
+	timerNextCurse:Start(20-delay)
+	enrageTimer:Start(-delay)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(19702) then
+	if args:IsSpellID(19702, 350072) then
 		warnDoom:Show()
 		timerDoom:Start()
-		timerDoomCD:Start()
+		timerNextDoom:Start()
 	elseif args:IsSpellID(19703) then
-		timerCurseCD:Start()
+		timerNextCurse:Start()
 		warnCurse:Show()
 	end
 end
@@ -37,5 +45,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(20604) then
 		warnMC:Show(args.destName)
 		timerMC:Start(args.destName)
+	elseif args:IsSpellID(350073) then
+		warnTouch:Show(args.destName)
+		timerNextTouch:Start()
+		if args:IsPlayer() then
+			warnTouchYou:Show()
+		end
 	end
 end

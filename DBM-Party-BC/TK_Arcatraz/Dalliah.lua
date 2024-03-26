@@ -19,7 +19,6 @@ local timerGift			= mod:NewTargetTimer(10, 39009)
 
 local specwarnWhirlwind	= mod:NewSpecialWarningRun(36175, mod:IsMelee())
 
-local soundWhirlwind	= mod:NewSound(36175, nil, mod:IsMelee())
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(39013, 36144) then
@@ -27,7 +26,6 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(36175, 36142) then
 		warnWhirlwind:Show()
 		specwarnWhirlwind:Show()
-		soundWhirlwind:Play()
 	end
 end
 

@@ -1,0 +1,23 @@
+## Interface: 30300
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Mount Hyjal|r
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core, DBM-BurningCrusade
+## SavedVariablesPerCharacter: DBMHyjal_SavedVars, DBMHyjal_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Category: BC
+## X-DBM-Mod-Name: Mount Hyjal
+## X-DBM-Tab-Sort: 306
+## X-DBM-Mod-LoadZone: Hyjal Summit
+localization.en.lua
+localization.de.lua
+localization.cn.lua
+localization.tw.lua
+localization.ru.lua
+localization.es.lua
+localization.kr.lua
+RageWinterchill.lua
+Anetheron.lua
+Kazrogal.lua
+Azgalor.lua
+Chromius.lua
+Archimonde.lua

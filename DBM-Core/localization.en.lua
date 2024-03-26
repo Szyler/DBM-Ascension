@@ -4,11 +4,11 @@ DBM_DBM								= "DBM"
 DBM_HOW_TO_USE_MOD					= "Welcome to "..DBM_DBM..". Type /dbm help for a list of supported commands. To access options type /dbm in your chat to begin configuration. Load specific zones manually to configure any boss specific settings to your liking as well. DBM will setup defaults for your spec, but you may want to fine tune these."
 DBM_SILENT_REMINDER					= "Reminder: "..DBM_DBM.." is still in silent mode."
 
-DBM_CORE_UPDATEREMINDER_URL			= "https://github.com/Barsoomx/DBM-wowcircle"
+DBM_CORE_UPDATEREMINDER_URL			= "https://github.com/Szyler/DBM-Ascension"
 
 DBM_COPY_URL_DIALOG					= "Copy URL"
 
-DBM_CORE_NEED_SUPPORT				= "Are you good with programming or languages? If yes, the DBM team needs your help to keep DBM the best boss mod for WoW. Join the team by visiting www.deadlybossmods.com or sending a message to tandanu@deadlybossmods.com or nitram@deadlybossmods.com."
+DBM_CORE_NEED_SUPPORT				= "Are you good with programming or languages? If yes, the DBM team needs your help to keep DBM the best boss mod for WoW. Join the team by visiting https://discord.gg/4ZHfgskSvM or sending a message to Szyler on Discord or on Area52."
 
 DBM_CORE_LOAD_MOD_ERROR				= "Error while loading boss mods for %s: %s"
 DBM_CORE_LOAD_MOD_SUCCESS			= "Loaded '%sfg' boss mods. For more options, type /dbm in your chat."
@@ -329,7 +329,9 @@ DBM_CORE_AUTO_ANNOUNCE_TEXTS = {
 	prestage	= "Stage %s soon",
 	count		= "%s (%%s)",
 	stack		= "%s on >%%s< (%%d)",
-	moveto		= "%s - move to >%%s<"
+	moveto		= "%s - move to >%%s<",
+	phase		= "Phase %d",
+	interrupt	= "Interrupt %d",
 }
 
 local prewarnOption = "Show pre-warning for $spell:%s"
@@ -354,7 +356,9 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS = {
 	prestage	= "Show a prewarning for Stage %s",
 	count		= "Show warning for $spell:%s (with count)",
 	stack		= "Announce $spell:%s stacks",
-	moveto		= "Show warning to move to someone or some place for $spell:%s"
+	moveto		= "Show warning to move to someone or some place for $spell:%s",
+	phase		= "Announce Phase %d",
+	interrupt	= "Show warning for when to interrupt %d"
 }
 
 
@@ -492,6 +496,26 @@ DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT	= "Show info frame for $spell:%s"
 DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT2	= "Show info frame for encounter overview"
 DBM_CORE_AUTO_READY_CHECK_OPTION_TEXT	= "Play ready check sound when boss is pulled (even if it's not targeted)"
 
+DBM_CORE_AUTO_YELL_OPTION = {
+	shortyell		= "Yell when you are affected by $spell:%d",
+	yell			= "Yell with name when you are affected \n by $spell:%d",
+	count			= "Yell with count when you are affected\n  by $spell:%d",
+	fade			= "Yell with countdown and spell name \n when $spell:%d is fading",
+	shortfade		= "Yell with countdown when $spell:%d \n is fading",
+	iconfade		= "Yell with countdown and icon when \n $spell:%d is fading",
+	position		= "Yell with position when you are affected \n by $spell:%d",
+	combo			= "Yell when you are affected by $spell:%d \n and other spells at same time"
+}
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT = {
+	shortyell		= "%s",
+	yell			= "%s on " .. UnitName("player"),
+	count			= "%s on " .. UnitName("player") .. " (%%d)",
+	fade			= "%s fading in %%d",
+	shortfade		= "%%d",
+	iconfade		= "{rt%%2$d} %%1$d {rt%%2$d}",
+	position 		= "%s %%s on {rt%%d}"..UnitName("player").."{rt%%d}",
+	combo			= "%s and %%s"--Spell name (from option, plus spellname given in arg)
+}
 
 DBM_CORE_AUTO_ICONS_OPTION_TEXT		= "Set icons on $spell:%d targets"
 DBM_CORE_AUTO_SOUND_OPTION_TEXT		= "Play sound on $spell:%d"

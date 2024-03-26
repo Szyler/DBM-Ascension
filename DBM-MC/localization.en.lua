@@ -18,6 +18,17 @@ L:SetGeneralLocalization{
 	name = "Magmadar"
 }
 
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
+    lavaBombYellOpt           = "Yell when you are affected by $spell:2105054"
+}
+
+L:SetMiscLocalization{
+    lavaBombYell			    = "Lava Bomb on me!",
+}
+
 ----------------
 --  Gehennas  --
 ----------------
@@ -25,6 +36,17 @@ L = DBM:GetModLocalization("Gehennas")
 
 L:SetGeneralLocalization{
 	name = "Gehennas"
+}
+
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
+    CaveinYellOpt           = "Yell when you are affected by $spell:20277"
+}
+
+L:SetMiscLocalization{
+    RainYell			    = "Rain of Fire on me!",
 }
 
 ------------
@@ -73,13 +95,17 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("Golemagg")
 
 L:SetGeneralLocalization{
-	name = "Golemagg the Incinerator"
+	name 					= "Golemagg the Incinerator"
 }
 L:SetWarningLocalization{
-	WarnP2Soon	= "Phase 2 soon"
+	WarnP2Soon				= "Phase 2 soon"
 }
 L:SetOptionLocalization{
-	WarnP2Soon 	= "Warn when phase 2 is about to start"
+	WarnP2Soon 				= "Warn when phase 2 is about to start",
+	CaveinYellOpt           = "Yell when you are affected by $spell:36240"
+}
+L:SetMiscLocalization{
+	CaveinYell			    = "Cave in on me!",
 }
 
 -----------------
@@ -107,7 +133,8 @@ L:SetWarningLocalization{
 	WarnSubmerge		= "Submerge",
 	WarnSubmergeSoon	= "Submerge soon",
 	WarnEmerge			= "Emerge",
-	WarnEmergeSoon		= "EmergeSoon"
+	WarnEmergeSoon		= "EmergeSoon",
+	RagFire				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 L:SetTimerLocalization{
 	TimerCombatStart	= "Combat starts",
@@ -121,9 +148,17 @@ L:SetOptionLocalization{
 	TimerSubmerge		= "Show timer for submerge",
 	WarnEmerge			= "Show warning for emerge",
 	WarnEmergeSoon		= "Show pre-warning for emerge",
-	TimerEmerge			= "Show timer for emerge"
+	TimerEmerge			= "Show timer for emerge",
+	RagFire				= "Show $spell:85178 targets and stack number warning" --(args.spellName, args.destName, args.amount or 1)
 }
 L:SetMiscLocalization{
 	Submerge	= "COME FORTH, MY SERVANTS! DEFEND YOUR MASTER!",
-	Pull		= "Impudent whelps! You've rushed headlong to your own deaths! See now, the master stirs!\r\n"
+	Pull		= "Behold Ragnaros - the Firelord! He who was ancient when this world was young! Bow before him, mortals! Bow before your ending!"
+}
+
+
+L:SetWarningLocalization{
+}
+
+L:SetOptionLocalization{
 }

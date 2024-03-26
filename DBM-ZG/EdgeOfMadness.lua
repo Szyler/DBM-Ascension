@@ -16,7 +16,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
-	"SPELL_SUMMON"
+	"SPELL_SUMMON",
+	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
 local warnIllusions	= mod:NewSpellAnnounce(24728)
@@ -28,6 +29,14 @@ local warnCloud		= mod:NewSpellAnnounce(24683)
 
 local timerSleep	= mod:NewBuffActiveTimer(6, 24664)
 local timerCloud	= mod:NewBuffActiveTimer(15, 24683)
+
+-- Grilek
+local warnStun		= mod:NewSpellAnnounce(6524)
+local timerStun		= mod:NewNextTimer(12, 6524)
+-- local warnTarget		= mod:NewSpellAnnounce(6524)
+--Gri'lek sets his sights on Red!
+local warnStun		= mod:NewSpecialWarningYou(40414)
+local timerFixate	= mod:NewTargetTimer(20, 40414)
 
 local spamSleep = 0
 function mod:OnCombatStart(delay)
@@ -41,6 +50,20 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(24699) then
 		warnCloud:Show()
 		timerCloud:Start()
+	elseif args:IsSpellID(6524) then
+		warnStun:Show()
+		timerStun:Start()
+	end
+end
+
+--Gri'lek sets his sights on X!
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, src)
+	local targetName = msg:match("Gri\'lek sets his sights on (.+)!");
+	if targetName then
+		if target == UnitName("player") then
+			warnStun:Show()
+		end
+		timerFixate:Start(targetName)
 	end
 end
 

@@ -89,14 +89,14 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(21063) then
-		if args.destName == UnitName("player") then 
+		if args:IsPlayer() then 
 			WarnTwistedYou:Show()
 		end
 		WarnTwisted:Show(args.destName)
 		TimerTwisted:Start(args.destName)
 	elseif args:IsSpellID(32960) then
 		-- local target = tostring(args.destName)
-		if args.destName == UnitName("player") then 
+		if args:IsPlayer() then 
 			WarnMarkYou:Show()
 		else
 			if self.Options.KazzakWhisper and DBM:GetRaidRank() >= 1 then

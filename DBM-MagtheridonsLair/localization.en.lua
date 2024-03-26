@@ -17,6 +17,9 @@ DBM_MAG_EMOTE_NOVA		= "%s begins to cast Blast Nova!";
 
 DBM_MAG_PHASE2_WARN		= "*** Phase 2 in %s sec ***";
 DBM_MAG_WARN_P2			= "*** Magtheridon is free ***";
+DBM_MAG_EMOTE_P2		= "Maghteridon breaks free!";
+DBM_MAG_WARN_P3			= "*** Phase 3 incoming!";
+
 DBM_MAG_WARN_INFERNAL	= "*** Infernal ***";
 DBM_MAG_WARN_HEAL		= "*** Heal ***";
 DBM_MAG_WARN_NOVA_NOW	= "*** Blast Nova ***";
@@ -31,6 +34,11 @@ L:SetGeneralLocalization{
 	name = "Magtheridon"
 }
 
+L:SetTimerLocalization{
+	TimerFingers			= "Next Finger of Death",
+	TimerHands	 			= "Next Hand of Death",
+	TimerRoofCollapsing		= "Roof is collapsing"
+}
 L:SetWarningLocalization{
 	MagCleave				= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
@@ -40,5 +48,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	DBM_MAG_YELL_PHASE2		= "I... am... unleashed!"
+	DBM_MAG_YELL_PHASE2		= "I... am... unleashed!",
+	DBM_MAG_YELL_PHASE3		= "I will not be taken so easily! Let the walls of this prison tremble... and fall!",
+	DBM_MAG_EMOTE_PHASE2	= "%s breaks free!"
 }
