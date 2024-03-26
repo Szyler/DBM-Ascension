@@ -48,10 +48,10 @@ local timerWickedThoughts		= mod:NewBuffActiveTimer(300, 2144036)
 
 
 
-local warningShahrazAvian		= mod:NewAnnounce(L.ShahrazAvian, 2, 2144004)
-local warningShahrazFila		= mod:NewAnnounce(L.ShahrazFila, 2, 2144003)
-local warningShahrazMater		= mod:NewAnnounce(L.ShahrazMater, 2, 2144001)
-local warningWiShahrazVirgo		= mod:NewAnnounce(L.ShahrazVirgo, 2, 2144096)
+local warningShahrazAvian		= mod:NewAnnounce("ShahrazAvian", 2, 2144004)
+local warningShahrazFila		= mod:NewAnnounce("ShahrazFila", 2, 2144003)
+local warningShahrazMater		= mod:NewAnnounce("ShahrazMater", 2, 2144001)
+local warningWiShahrazVirgo		= mod:NewAnnounce("ShahrazVirgo", 2, 2144096)
 
 --Ascended
 local warningALittleChat		= mod:NewSpellAnnounce(2144007, 3)

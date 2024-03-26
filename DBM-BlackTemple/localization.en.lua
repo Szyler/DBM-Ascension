@@ -243,10 +243,10 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-    AttSunderAvian			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
-    AttSunderFila			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
-    AttSunderMater			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
-    AttSunderVirgo			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+    SunderAvian			    = "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    SunderFila			    = "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    SunderMater			    = "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    SunderVirgo			    = "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
 }
 
 L:SetOptionLocalization{
