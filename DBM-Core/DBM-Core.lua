@@ -5472,6 +5472,22 @@ function DBM:Capitalize(str)
 	return str:sub(1, numBytes):upper()..str:sub(numBytes + 1):lower()
 end
 
+-- An anti spam function to throttle spammy events (e.g. SPELL_AURA_APPLIED on all group members)
+-- @param time the time to wait between two events (optional, default 2.5 seconds)
+-- @param id the id to distinguish different events (optional, only necessary if your mod keeps track of two different spam events at the same time)
+function DBM:AntiSpam(times, id)
+    if GetTime() - (id and (self["lastAntiSpam" .. tostring(id)] or 0) or self.lastAntiSpam or 0) > (times or 2.5) then
+        if id then
+            self["lastAntiSpam" .. tostring(id)] = GetTime()
+        else
+            self.lastAntiSpam = GetTime()
+        end
+        return true
+    else
+        return false
+    end
+end
+
 -----------------
 --  Map Sizes  --
 -----------------
