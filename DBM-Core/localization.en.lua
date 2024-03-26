@@ -11,7 +11,7 @@ DBM_COPY_URL_DIALOG					= "Copy URL"
 DBM_CORE_NEED_SUPPORT				= "Are you good with programming or languages? If yes, the DBM team needs your help to keep DBM the best boss mod for WoW. Join the team by visiting https://discord.gg/4ZHfgskSvM or sending a message to Szyler on Discord or on Area52."
 
 DBM_CORE_LOAD_MOD_ERROR				= "Error while loading boss mods for %s: %s"
-DBM_CORE_LOAD_MOD_SUCCESS			= "Loaded '%sfg' boss mods. For more options, type /dbm in your chat."
+DBM_CORE_LOAD_MOD_SUCCESS			= "Loaded '%s' boss mods. For more options, type /dbm in your chat."
 DBM_CORE_LOAD_GUI_ERROR				= "Could not load GUI: %s"
 
 DBM_CORE_COMBAT_STARTED				= "%s engaged. Good luck and have fun! :)"
