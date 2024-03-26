@@ -41,6 +41,7 @@ local bombNextTimer = 0
 
 mod:SetUsedIcons(1)
 mod:AddBoolOption("FlameIcon")
+mod:AddBoolOption("Hatclings")
 
 function mod:OnCombatStart(delay)
 	timerNextAdds:Start(20)

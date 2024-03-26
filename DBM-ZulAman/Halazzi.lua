@@ -51,7 +51,7 @@ local yellFrostShock		= mod:NewFadesYell(2136023)
 local specWarnMagma			= mod:NewSpecialWarningRun(2136011)
 local specWarnSpiritLink	= mod:NewSpecialWarningRun(2136040)
 
-mod:AddBoolOption(L.ShockYellOpt)
+mod:AddBoolOption("ShockYellOpt")
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)

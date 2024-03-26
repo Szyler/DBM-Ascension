@@ -41,6 +41,7 @@ local warnEyeBeam 					= mod:NewSpellAnnounce(2144816, 2)
 local warnDarkBarrage 				= mod:NewSpellAnnounce(2144812, 2)
 
 local yellUnharnessedBlade			= mod:NewFadesYell(2144742)
+local specWarnUnharnessedBlade		= mod:NewSpecialWarning("Unharnessed Blade on YOU!",3, 2144742)
 
 local timerChaosBlast          		= mod:NewCastTimer(2, 2144805)
 local timerChaosBlastDebuff    		= mod:NewBuffActiveTimer(6, 2144805)
