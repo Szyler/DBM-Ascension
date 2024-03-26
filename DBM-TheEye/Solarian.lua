@@ -19,7 +19,7 @@ mod:RegisterEvents(
 -- local warn
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
-local specWarnHeal			= mod:NewSpecialWarningInterupt(2135264) --Heroic and ascended : 2135265
+local specWarnHeal			= mod:NewSpecialWarningInterrupt(2135264) --Heroic and ascended : 2135265
 local specWarnPriest		= mod:NewSpecialWarning("specWarnPriest")
 local specWarnLunar			= mod:NewSpecialWarningRun(2135278) --Heroic: 2135279 ,Ascended 10Man: 2135280 , 25Man: 2135281
 local specWarnSolar			= mod:NewSpecialWarningMove(2135287) --Heroic: 2135288, Ascended 10Man: 2135289 , 25Man: 2135290
