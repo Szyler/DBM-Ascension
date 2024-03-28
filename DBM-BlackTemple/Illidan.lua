@@ -27,7 +27,7 @@ local timerDemonForm				= mod:NewTimer(60, "TimerDemonForm", 2457)
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
 
-local timerAddsSpawn				= mod:NewTimer(9, L.TimerAddsSpawn, 19879)
+local timerAddsSpawn				= mod:NewTimer(9, "TimerAddsSpawn", 19879)
 local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
@@ -311,7 +311,8 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
+	
+	local cid = mod:GetUnitCreatureId(args.destGUID)
 	if cid == 22997 and self.vb.phase == 2 then
 		if azzinothKilled == 1 then
 			local elapsed1, total1 = timerTargetDarkBarrage:GetTime()
@@ -361,7 +362,7 @@ function mod:UNIT_HEALTH(unit)
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 75) and DBM:AntiSpam(5) and self.vb.phase == 1 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 71) and DBM:AntiSpam(5) and self.vb.phase == 1 then
+		elseif (hp <= 71) and self.vb.phase == 1 then
 			self.vb.phase = 2
 			warnPhase:Show(2)
 			timerNextForceNova:Stop()
@@ -373,7 +374,7 @@ function mod:UNIT_HEALTH(unit)
 			timerNextEyeBeam:Start(25)
 		elseif (hp <= 35) and DBM:AntiSpam(5) and self.vb.phase == 4 then
 			warnPhaseSoon:Show()
-		elseif (hp <= 31) and DBM:AntiSpam(5) and self.vb.phase == 5 then
+		elseif (hp <= 31) and self.vb.phase == 5 then
 			self.vb.phase = 6
 			warnPhase:Show(6)
 			timerCombatStart:Start(34)
@@ -382,7 +383,9 @@ function mod:UNIT_HEALTH(unit)
 			timerNextShear:Start(25)
 			timerNextDrawSoul:Start(30)
         end
-    end
+	elseif mod:GetUnitCreatureId(unit) == 22997 then
+
+	end
 end
 
 -- if self.Options.RangeCheck then
