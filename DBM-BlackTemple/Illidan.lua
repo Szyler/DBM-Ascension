@@ -311,7 +311,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
+	local cid = mod:GetUnitCreatureId(args.destGUID)
 	if cid == 22997 and self.vb.phase == 2 then
 		if azzinothKilled == 1 then
 			local elapsed1, total1 = timerTargetDarkBarrage:GetTime()
