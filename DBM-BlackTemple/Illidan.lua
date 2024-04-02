@@ -67,6 +67,9 @@ local timerNextShadowBreach   		= mod:NewNextTimer(42, 2144868)
 local timerParalyzingStare 			= mod:NewTargetTimer(30, 2144871)
 local timerShadowPrison          	= mod:NewCastTimer(60, 2144960)
 
+local timerBladeCD					= mod:NewNextTimer(40, 2144742)
+local warnBlade						= mod:NewSpellAnnounce(2144742)
+
 ----------- 
 -- Ascended 
 
