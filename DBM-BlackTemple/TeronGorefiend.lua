@@ -58,7 +58,7 @@ function mod:UNIT_AURA(uId)
 	if (not name) then return end
 	local spellName, _, _, _, _, duration, expires, _, _, _, spellId = UnitDebuff(uId, shadowOfDeathName)
 	if not spellId or not expires then return end
-	if spellId:IsSpellID(2143286, 2143287, 2143288, 2143289) and expires > 0 then
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and expires > 0 then
 		if expires < 60 then
 			timerTargetShadowofDeath:Start(expires, name)
 		end
