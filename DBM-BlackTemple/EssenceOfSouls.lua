@@ -37,7 +37,7 @@ local timerTease = mod:NewBuffActiveTimer(15, 2143808)
 local timerNextTease = mod:NewNextTimer(30, 2143808)
 
 local warnSeethe = mod:NewSpellAnnounce(2143861, 2)
-local timerSeethe = mod:NewBuffActiveTimer(15, 2143861)
+local timerSeethe = mod:NewTargetTimer(15, 2143861)
 local timerNextSeethe = mod:NewNextTimer(15, 2143861)
 
 local warnSoulScream = mod:NewSpellAnnounce(2143853, 2)
