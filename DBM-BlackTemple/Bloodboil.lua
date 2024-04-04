@@ -33,20 +33,22 @@ function mod:OnCombatStart(delay)
 	timerNextBoilingBlood:Start(10-delay)
 	timerNextSeismicSmash:Start(20-delay)
 	timerNextMakgora:Start(70-delay)
+	remainingTimerNextMakgora = 30
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if DBM:AntiSpam(1) then
-		elapsed, total = timerNextMakgora:GetTime()
-		remainingTimerNextMakgora = total - elapsed
-	end
+
 	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (remainingTimerNextMakgora >= 25) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (remainingTimerNextMakgora >= 10) then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
 		timerSeismicSmash:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143523) then
 		warnMakgora:Show()
 		timerNextMakgora:Start()
@@ -55,9 +57,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143527) and (remainingTimerNextMakgora >= 20) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilBlood:Show()
 		timerNextBoilBlood:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	end
 end
 
