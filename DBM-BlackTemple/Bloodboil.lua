@@ -54,6 +54,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextMakgora:Start()
 		timerMakgora:Start(args.destName)
 		timerNextMalevolentCleave:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143527) and (remainingTimerNextMakgora >= 20) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
