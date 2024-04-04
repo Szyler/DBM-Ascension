@@ -40,10 +40,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		elapsed, total = timerNextMakgora:GetTime()
 		remainingTimerNextMakgora = total - elapsed
 	end
-	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (25 >= remainingTimerNextMakgora) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (remainingTimerNextMakgora >= 25) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
-	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (10 >= remainingTimerNextMakgora) then
+	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (remainingTimerNextMakgora >= 10) then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
 		timerSeismicSmash:Start()
@@ -52,10 +52,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextMakgora:Start()
 		timerMakgora:Start(args.destName)
 		timerNextMalevolentCleave:Start()
-	elseif args:IsSpellID(2143527) and (20 >= remainingTimerNextMakgora) then
+	elseif args:IsSpellID(2143527) and (remainingTimerNextMakgora >= 20) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
-	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (25 >= remainingTimerNextMakgora) then
+	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilBlood:Show()
 		timerNextBoilBlood:Start()
 	end
