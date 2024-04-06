@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(23418)
-mod:RegisterCombat("yell", DBM_SOULS_YELL_PULL, 23420)
+mod:RegisterCombat("yell", L.DBM_SOULS_YELL_PULL, 23420)
 
 
 mod:RegisterEvents(
@@ -30,14 +30,14 @@ local timerNextSoulDrain = mod:NewNextTimer(20, 2143760)
 
 local warnRuneShield = mod:NewSpellAnnounce(2143808, 2)
 local timerRuneShield = mod:NewTargetTimer(15, 2143808)
-local timerNextRuneShield = mod:NewNextTimer(16, 2143808)
+local timerNextRuneShield = mod:NewNextTimer(15, 2143808)
 
 local warnTease = mod:NewSpellAnnounce(2143808, 2)
 local timerTease = mod:NewBuffActiveTimer(15, 2143808)
 local timerNextTease = mod:NewNextTimer(30, 2143808)
 
 local warnSeethe = mod:NewSpellAnnounce(2143861, 2)
-local timerSeethe = mod:NewBuffActiveTimer(15, 2143861)
+local timerSeethe = mod:NewTargetTimer(15, 2143861)
 local timerNextSeethe = mod:NewNextTimer(15, 2143861)
 
 local warnSoulScream = mod:NewSpellAnnounce(2143853, 2)
@@ -50,11 +50,15 @@ local warnAuraOfDesire = mod:NewSpellAnnounce(2143800, 2)
 local warnAuraOfAnger = mod:NewSpellAnnounce(2143850, 2)
 
 --local
-local isSuffer		=	false
+-- local isSuffer
+-- local isDesire
+-- local isAnger
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	isSuffer = true
+	-- isSuffer = true
+	-- isDesire = false
+	-- isAnger = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -63,7 +67,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTargetSpiritShock:Start(args.destName)
 	elseif args:IsSpellID(2143961) and args.amount and args.amount >= 20 and args.amount % 5 == 0 then
 		warnSoulBlast:Show()
-	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) then
+	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) and DBM:AntiSpam() then
 		warnSoulDrain:Show()
 	elseif args:IsSpellID(2143808) then
 		warnRuneShield:Show()
@@ -73,19 +77,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTease:Start()
 		timerNextTease:Start()
 	elseif args:IsSpellID(2143861) then
-		warnSeethe:Show()
-		timerSeethe:Start()
-		timerNextSeethe:Start()
-	elseif args:IsSpellID(2143750, 2143751, 2143752, 2143753) and DBM:AntiSpam(60) and self.vb.phase == 1 then
-		warnAuraOfSuffering:Show()
-		timerNextSoulDrain:Start(20)
-	elseif args:IsSpellID(2143800, 2143803) and DBM:AntiSpam(60) and self.vb.phase == 1 then
+		if DBM:AntiSpam() then
+			warnSeethe:Show()
+			timerNextSeethe:Start()
+		end
+		timerSeethe:Start(args.destName)
+	elseif args:IsSpellID(2143800, 2143803) and DBM:AntiSpam(60) then
 		self.vb.phase = 2
+		-- isDesire = true
 		warnAuraOfDesire:Show()
-		timerNextRuneShield:Start(16)
-		timerNextTease:Start(20)
-	elseif args:IsSpellID(2143850) and DBM:AntiSpam(60) and self.vb.phase == 2 then
+		timerNextRuneShield:Start(20)
+		timerNextTease:Start(25)
+	elseif args:IsSpellID(2143850, 2143852) and DBM:AntiSpam(60) then
 		self.vb.phase = 3
+		-- isAnger = true
 		warnAuraOfAnger:Show()
 		timerNextSoulScream:Start(10)
 	end
@@ -109,23 +114,24 @@ end
 
 function mod:UNIT_HEALTH(unit)
 	--Essence of Suffering
-	if isSuffer and (mod:GetUnitCreatureId(unit) == 23418) then
+	if (mod:GetUnitCreatureId(unit) == 23418) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 1) then
+		if (hp <= 2) then
 			intermissionSummonEssenceOfSuffering:Start()
         end
 	--Essence of Desire
-	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23419) then
+	elseif (mod:GetUnitCreatureId(unit) == 23419) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 1) then
+		if (hp <= 2) then
 			intermissionSummonEssenceOfDesire:Start()
+			self.vb.phase = 2
 		end
 	--Essence of Anger
-	elseif isSuffer and (mod:GetUnitCreatureId(unit) == 23420) then
-		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 1) then
-			intermissionSummonEssenceOfAnger:Start()
-		end
+	-- elseif isAnger and (mod:GetUnitCreatureId(unit) == 23420) then
+	-- 	local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+	-- 	if (hp <= 2) then
+	-- 		intermissionSummonEssenceOfAnger:Start()
+	-- 	end
     end
 end
 

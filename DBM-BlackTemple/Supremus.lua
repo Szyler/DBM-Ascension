@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22898)
-mod:RegisterCombat("combat")
+mod:RegisterCombat("combat", 22898)
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
@@ -11,45 +11,64 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
-	"SPELL_DAMAGE"
+	"SPELL_DAMAGE",
+	"UNIT_HEALTH"
 )
 
 local warningTitanic				= mod:NewSpellAnnounce(2142758, 3)
 local warningSupreme				= mod:NewSpellAnnounce(2142764, 3)
 local warnCracked					= mod:NewAnnounce(L.SupremusCracked, 2, 2142751)
+local warnThreatDetected			= mod:NewTargetAnnounce(2142765, 3)
 
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
 local timerSupreme					= mod:NewCastTimer(2, 2142764)
 local timerThreatDetected			= mod:NewTargetTimer(60, 2142765)
 
 local timerEruption					= mod:NewCastTimer(4, 2142774)
+local timerNextPillar				= mod:NewNextTimer(15, 2142574)
 
 local warnPhase2					= mod:NewPhaseAnnounce(2)
+local warnPhase2Soon				= mod:NewAnnounce(L.WarnPhase2Soon, 1)
+local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
+local oldMarkThreat
+local oldMarkTarget
 
 mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
+	oldMarkThreat = 0
+	self:ScheduleMethod(0-delay, "NewPillar")
+	timerEnrage:Start()
+end
+
+function mod:NewPillar()
+	self:UnscheduleMethod("NewPillar")
+	timerNextPillar:Start()
+	self:ScheduleMethod(15, "NewPillar")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142772) then --Enrages at 30% hp need hp check
 		warnPhase2:Show()
 		timerThreatDetected:Stop()
+		timerEnrage:Stop()
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2142765) then
+		-- warnThreatDetected:Show(args.destName) --Game does this
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
 		if self.Options.threatIconsOpt then
+			oldMarkThreat, oldMarkTarget = self:GetIcon(args.destName), args.destName
 			self:SetIcon(args.destName, 8, 60)
 		end
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2122807) then
+	if args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
-			removeIcon(args.destName)
+			self:SetIcon(oldMarkTarget, oldMarkThreat or 0)
 		end
 	end
 end
@@ -74,6 +93,16 @@ function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2142774) and DBM:AntiSpam(3) then
 		timerEruption:Start()
 	end
+end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE -- Hack to include SPELL_MISSED as well without more code
+
+function mod:UNIT_HEALTH(unit)
+	if mod:GetUnitCreatureId(unit) == 22898 then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
+		if (hp <= 40) and DBM:AntiSpam(600) then
+			warnPhase2Soon:Show()
+        end
+    end
 end
 
 -- Supremus.MinRevision = 828

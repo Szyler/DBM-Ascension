@@ -13,9 +13,11 @@ mod:RegisterEvents(
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
 local warningDischarge		= mod:NewSpellAnnounce(2142504, 3)
+local specWarnYouDischarge	= mod:NewSpecialWarningYou(2142504)
 local warningPuddle			= mod:NewSpellAnnounce(2142594, 3)
 local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
+local specWarnDampFeet		= mod:NewSpecialWarning("Move out of the water!", 2142550)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 
@@ -31,13 +33,13 @@ local yellDischarge			= mod:NewFadesYell(2142504)
 mod:AddBoolOption(L.SpineYellOpt)
 mod:AddBoolOption(L.DischargeYellOpt)
 mod:AddBoolOption(L.SpineIconsOpt)
+mod:AddBoolOption(L.RangeCheck)
 
 local spineWreathIcon = 8
 
 function mod:OnCombatStart(delay)
 	self:ScheduleMethod(0-delay, "NewAdds")
-	timerNextSpine:Start(50-delay)
-	timerNextShield:Start(35-delay)
+	timerNextDischarge:Start(10-delay)
 	spineWreathIcon = 8
 end
 
@@ -57,8 +59,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextShield:Start()
 		timerNextSpine:Start(10)
 	elseif args:IsSpellID(2142504) then
-		if args:IsPlayer() and self.Options.DischargeYellOpt then
-			yellDischarge:Countdown(8, 5)
+		if args:IsPlayer() then
+			if self.Options.DischargeYellOpt then
+				SendChatMessage(L.SayDischargeFade, "SAY")
+				yellDischarge:Countdown(8, 5)
+			end
+			specWarnYouDischarge:Show()
+			if self.Options.RangeCheck then
+				DBM.RangeCheck:Show(15)
+			end
 		end
 		if DBM:AntiSpam() then
 			warningDischarge:Show()
@@ -84,6 +93,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnOozeDot:Show()
 		end
+	elseif args:IsSpellID(2142550, 2142551) then
+		if args:IsPlayer() then
+			specWarnDampFeet:Show()
+		end
 	end
 end
 
@@ -92,6 +105,12 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerTargetSpine:Stop()
 		if self.Options.SpineIconsOpt then
 			spineWreathIcon = spineWreathIcon + 1
+		end
+	elseif args:IsSpellID(2142504) then
+		if args:IsPlayer() then
+			if self.Options.RangeCheck then
+				DBM.RangeCheck:Hide()
+			end
 		end
 	end
 end

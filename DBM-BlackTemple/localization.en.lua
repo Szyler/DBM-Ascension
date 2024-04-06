@@ -18,7 +18,10 @@ L:SetOptionLocalization{
 
 L:SetMiscLocalization{
     SpineYell			    = "Spine on me!",
-    DBM_NAJENTUS_YELL_PULL	= "You will die in the name of Lady Vashj!";
+    DBM_NAJENTUS_YELL_PULL	= "You will die in the name of Lady Vashj!",
+    SayDischarge		    = "Static Charge on "..UnitName("PLAYER"),
+    SayDischargeFade        = "Discharge on "..UnitName("PLAYER"),
+    NewAdds                 = "New filth"
 }
 
 
@@ -52,7 +55,8 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-    SupremusCracked			= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
+    SupremusCracked			= "%s on >%s< (%d)", --(args.spellName, args.destName, args.amount or 1)
+    WarnPhaseSoon		    = "Phase %s soon",
 }
 
 L:SetOptionLocalization{
@@ -61,6 +65,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
+    NewPillar                = "New vulcano"
 }
 
 -- DBM_SUPREMUS_NAME					= "Supremus";
@@ -341,6 +346,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
+    TimerAddsSpawn	                    = "Adds spawning"
 }
 
 L:SetOptionLocalization{
@@ -348,7 +354,13 @@ L:SetOptionLocalization{
 
 L:SetMiscLocalization{
     DBM_ILLIDAN_YELL_PULL				= "You are not prepared!",
+    DBM_ILLIDAN_YELL_PULL_RP			= "Akama. Your duplicity is hardly surprising. I should have slaughtered you and your malformed brethren long ago.",
     UnharnessedBlade			        = "Blade on me!",
+    DBM_ILLIDAN_YELL_DEMON              = "You know nothing of power!",
+    Phase5                              = "It is finished. You are beaten.",
+    TimerCombatStart                    = "Combat starts",
+    TimerHumanForm                      = "Human Form",
+    TimerDemonForm                      = "Demon Form",
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"

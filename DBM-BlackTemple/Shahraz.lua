@@ -53,6 +53,9 @@ local warningShahrazFila		= mod:NewAnnounce(L.ShahrazFila, 2, 2144003)
 local warningShahrazMater		= mod:NewAnnounce(L.ShahrazMater, 2, 2144001)
 local warningWiShahrazVirgo		= mod:NewAnnounce(L.ShahrazVirgo, 2, 2144096)
 
+--Ascended
+local warningALittleChat		= mod:NewSpellAnnounce(2144007, 3)
+local timerNextALittleChat		= mod:NewNextTimer(48, 2144007)
 
 --local
 local isMother		=	false
@@ -62,6 +65,7 @@ local below10		=   false
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
 	timerNextFatalAttraction:Start(35-delay)
+	timerNextALittleChat:Start(20-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
 	below20		=   false
 	below10		=   false
@@ -105,6 +109,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningShahrazAvian:Show()
 	elseif args:IsSpellID(2144096) and args.amount and args.amount >= 8 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
 		warningWiShahrazVirgo:Show()
+	elseif args:IsSpellID(2144007) then
+		warningALittleChat:Show()
 	end
 end
 

@@ -6,7 +6,8 @@ mod:SetCreatureID(22871)
 mod:RegisterCombat("yell", L.DBM_GOREFIEND_YELL_PULL)
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_APPLIED",
+	"UNIT_AURA"
 )
 
 local warningWitherAndRot		= mod:NewSpellAnnounce(2143286, 3)
@@ -17,10 +18,14 @@ local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
 local timerNextWitherAndRot		= mod:NewNextTimer(30, 2143286)
 local timerNextGraspingDeath	= mod:NewNextTimer(30, 2143282)
 local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
+local timerTargetShadowofDeath	= mod:NewTargetTimer(37, 2143264)
+local timerTargetShadowofDeath2	= mod:NewTargetTimer(75, 2143264)
 local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
 --Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss.  Spell id 2143255
+
+local shadowOfDeathName = GetSpellInfo(2143282)
 
 function mod:OnCombatStart(delay)
 	timerNextWitherAndRot:Start(15-delay)
@@ -30,13 +35,13 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(10) then
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(29) then
 		warningWitherAndRot:Show()
 		timerNextWitherAndRot:Start()
-	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(10) then
+	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(29) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264) then
+	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:AntiSpam() then
 		warnShadowOfDeath:Show()
 		timerNextShadowofDeath:Start()
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
@@ -45,7 +50,23 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+--name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId 
+-- = UnitAura("unit", index or "name"[, "rank"[, "filter"]])
 
+function mod:UNIT_AURA(uId)
+	local name = UnitName(uId)
+	if (not name) then return end
+	local spellName, _, _, _, _, duration, expires, _, _, _, spellId = UnitDebuff(uId, shadowOfDeathName)
+	if not spellId or not expires then return end
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and expires > 0 then
+		if expires < 60 then
+			timerTargetShadowofDeath:Start(expires, name)
+		end
+		if expires < 130 and expires > 60 then
+			timerTargetShadowofDeath2:Start(expires, name)
+		end
+	end
+end
 
 --Gorefiend:AddOption("WarnIncinerate", false, DBM_GOREFIEND_OPTION_INCINERATE)
 
