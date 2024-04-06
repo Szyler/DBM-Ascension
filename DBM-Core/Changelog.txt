@@ -250,3 +250,8 @@ v5.19 17/02/2024
 - Fixed Lua errors in MC
 - Added a antispam to rockfall on Golemagg, defaulted to off. (go to settings to turn on manually)
 - Removed spammy warnHandofRagTargets.
+----------------------------------------------------------------------------------------------------
+v5.20 06/04/2024
+- Fixed many bugs to Black Temple
+- Added many new mechanics to Black Temple
+- Fixed auch crypt spam
