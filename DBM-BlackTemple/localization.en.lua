@@ -361,6 +361,21 @@ L:SetMiscLocalization{
     TimerCombatStart                    = "Combat starts",
     TimerHumanForm                      = "Human Form",
     TimerDemonForm                      = "Demon Form",
+    Pull				                = "Akama. Your duplicity is hardly surprising. I should have slaughtered you and your malformed brethren long ago.",
+	RealPull			                = "You are not prepared!",
+	Eyebeam				                = "Stare into the eyes of the Betrayer!",
+	Demon				                = "You know nothing of power!",
+	DemonWithinQuote 	                = "Behold the power... of the demon within!",
+	Phase4				                = "Is this it, mortals? Is this all the fury you can muster?",
+	MaievTrap			                = "There shall be no prison for you this time!",
+	Trapped1			                = "That is for Naisha!",
+	Trapped2			                = "Bleed as I have bled!",
+	Trapped3			                = "Meet your end, demon!",
+	S1YouAreNotPrepared	                = "Stage One: You Are Not Prepared",
+	S2FlamesOfAzzinoth	                = "Stage Two: Flames of Azzinoth",
+	S3TheDemonWithin	                = "Stage Three: The Demon Within",
+	S4TheLongHunt		                = "Stage Four: The Long Hunt",
+	DemonWithin			                = "Demon Form"
 }
 
 -- DBM_ILLIDAN_NAME					= "Illidan Stormrage"
