@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22871)
 mod:RegisterCombat("yell", L.DBM_GOREFIEND_YELL_PULL)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"UNIT_AURA"
 )
@@ -26,15 +26,22 @@ local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 --Would like to add warnings for Teron's soul shards, tracked in a stacking buff on the boss.  Spell id 2143255
 
 local shadowOfDeathName = GetSpellInfo(2143282)
+local teron 			= false
 
 function mod:OnCombatStart(delay)
+	teron = true
 	timerNextWitherAndRot:Start(15-delay)
 	timerNextGraspingDeath:Start(30-delay)
 	timerNextShadowofDeath:Start(10-delay)
 	timerSoulReaper:Start(20-delay)
 end
 
+function mod:OnCombatEnd()
+	teron = false
+end
+
 function mod:SPELL_AURA_APPLIED(args)
+	if teron == true then
 	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(29) then
 		warningWitherAndRot:Show()
 		timerNextWitherAndRot:Start()
@@ -49,11 +56,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerSoulReaper:Start()
 	end
 end
+end
 
 --name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId 
 -- = UnitAura("unit", index or "name"[, "rank"[, "filter"]])
 
 function mod:UNIT_AURA(uId)
+	if teron == true then
 	local name = UnitName(uId)
 	if (not name) then return end
 	local spellName, _, _, _, _, duration, expires, _, _, _, spellId = UnitDebuff(uId, shadowOfDeathName)
@@ -66,6 +75,7 @@ function mod:UNIT_AURA(uId)
 			timerTargetShadowofDeath2:Start(expires, name)
 		end
 	end
+end
 end
 
 --Gorefiend:AddOption("WarnIncinerate", false, DBM_GOREFIEND_OPTION_INCINERATE)

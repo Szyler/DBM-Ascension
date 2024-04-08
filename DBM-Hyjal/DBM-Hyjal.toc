@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Mount Hyjal|r
 ## LoadOnDemand: 1
-## RequiredDeps: DBM-Core, DBM-BurningCrusade
+## RequiredDeps: DBM-Core
 ## SavedVariablesPerCharacter: DBMHyjal_SavedVars, DBMHyjal_SavedStats
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC

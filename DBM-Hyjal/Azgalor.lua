@@ -6,7 +6,7 @@ mod:SetCreatureID(17842)
 mod:SetUsedIcons(8)
 mod:RegisterCombat("combat", 17842)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
@@ -48,8 +48,10 @@ local timerImpending			= mod:NewTimer(8, "Impending Doom on %s", 2141216)
 --fight
 local berserkTimer				= mod:NewBerserkTimer(600)
 
+local azgalor = false
 --combat start
 function mod:OnCombatStart(delay)
+	azgalor = true
 	berserkTimer:Start(-delay)
 	timerNextRoF:Start(20-delay)
 	timerNextPortal:Start(31-delay)
@@ -67,6 +69,7 @@ function mod:LegionPortal()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if azgalor == true then
 	if args:IsSpellID(2141200,2141201,2141202,2141203) and args:IsPlayer() and DBM:AntiSpam(5, 1) then
 		specWarnFire:Show()
 	end
@@ -93,8 +96,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerImpending:Show(args.destName)
 	end
 end
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if azgalor == true then
 	if args:IsSpellID(2141200,2141201,2141202,2141203) and args:IsPlayer() and DBM:AntiSpam(5, 1) then
 		specWarnFire:Show()
 	end
@@ -103,14 +108,18 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		timerNextMark:Start()
 	end
 end
+end
 
 function mod:SPELL_DAMAGE(args)
+	if azgalor == true then
 	if args:IsSpellID(2141226) and DBM:AntiSpam(40,2) then
 		self:SetIcon(args.sourceGUID, 8)
 	end
 end
+end
 
 function mod:SPELL_CAST_START(args)
+	if azgalor == true then
 	if args:IsSpellID(2141200,2141201,2141202,2141203) then
 		warnRoF:Show()
 		timerRoF:Start()
@@ -125,9 +134,16 @@ function mod:SPELL_CAST_START(args)
 		warnShadowStorm:Show()
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if azgalor == true then
 	if args.destName == "Legion Portal" then
 		DBM.BossHealth:Clear()
 	end
+end
+end
+
+function mod:OnCombatEnd()
+	azgalor = false
 end

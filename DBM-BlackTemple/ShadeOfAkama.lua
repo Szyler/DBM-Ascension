@@ -6,7 +6,7 @@ mod:SetCreatureID(23421)
 mod:RegisterCombat("combat", 22841)
 -- Akama:SetMinCombatTime(60)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"UNIT_DIED",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
@@ -28,8 +28,10 @@ local warnRiptide					= mod:NewSpellAnnounce(2142680, 2) --Might be useful to wa
 local warnVigilance					= mod:NewSpellAnnounce(2142686, 2) --Might be useful to warn if this is cast on shade of akama
 
 local fightStarted = false
+local akama = false
 
 function mod:OnCombatStart(delay)
+	akama = true
 	timerNextGroup:Start(5-delay)
 	self:ScheduleMethod(5-delay, "NewGroup")
 	timerNextSorcerer:Start(60-delay)
@@ -39,6 +41,7 @@ end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
+	akama = false
 end
 
 function mod:NewGroup()
@@ -55,6 +58,7 @@ function mod:NewSorcerer()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if akama == true then
 	if args:IsSpellID(2142603) and fightStarted == true then
 		warnSoulDomination:Show()
 		timerSoulDomination:Start()
@@ -68,20 +72,25 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnRiptide:Show()
 	end
 end
+end
 
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED -- Hack to include applied_dose as well without more code
 
 function mod:SPELL_AURA_REMOVED(args)
+	if akama == true then
 	if args:IsSpellID(2142603) then
 		-- warnSoulDomination:Hide()
 		timerSoulDomination:Stop()
 	end
 end
+end
 
 function mod:SPELL_HEAL(args)
+	if akama == true then
 	if args:IsSpellID(2142677) and DBM:AntiSpam(5) then
 		warnHealingStream:Show()
 	end
+end
 end
 
 -- local channelersDown = 0

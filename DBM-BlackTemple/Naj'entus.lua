@@ -5,10 +5,9 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22887)
 mod:RegisterCombat("yell", L.DBM_NAJENTUS_YELL_PULL)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_PERIODIC_DAMAGE"
+	"SPELL_AURA_REMOVED"
 )
 
 local warningShield			= mod:NewSpellAnnounce(2142521, 3)
@@ -19,7 +18,7 @@ local warnSpine				= mod:NewTargetAnnounce(2142516, 2)
 local warnOozeDot			= mod:NewSpellAnnounce(2142564, 2)
 local specWarnDampFeet		= mod:NewSpecialWarning("Move out of the water!", 2142550)
 
-local warnPhase2			= mod:NewPhaseAnnounce(2)
+local warnIntermission		= mod:NewAnnounce("Intermission phase",3)
 
 local timerNextShield		= mod:NewNextTimer(80, 2142521)
 local timerNextDischarge	= mod:NewNextTimer(20, 2142504)
@@ -30,6 +29,8 @@ local timerNextAdds			= mod:NewNextTimer(15, 2142574)
 
 local yellDischarge			= mod:NewFadesYell(2142504)
 
+local naj = false
+
 mod:AddBoolOption("SpineYellOpt")
 mod:AddBoolOption("DischargeYellOpt")
 mod:AddBoolOption("SpineIconsOpt")
@@ -38,13 +39,15 @@ mod:AddBoolOption("RangeCheck")
 local spineWreathIcon = 8
 
 function mod:OnCombatStart(delay)
-	self:ScheduleMethod(0-delay, "NewAdds")
+	naj = true
+	self:ScheduleMethod(10-delay, "NewAdds")
 	timerNextDischarge:Start(10-delay)
 	spineWreathIcon = 8
 end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
+	naj = false
 end
 
 function mod:NewAdds()
@@ -54,6 +57,7 @@ function mod:NewAdds()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if naj == true then
 	if args:IsSpellID(2142521) then
 		warningShield:Show()
 		timerNextShield:Start()
@@ -74,7 +78,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerNextDischarge:Start()
 		end
 	elseif args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
+		if args:IsPlayer() and self.Options.SpineYellOpt then
+			SendChatMessage(L.SpineYell, "YELL")
+		else
 		warnSpine:Show(args.destName)
+		end
 		timerNextSpine:Start()
 		timerTargetSpine:Start(args.destName)
 		if self.Options.SpineIconsOpt then
@@ -82,7 +90,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			spineWreathIcon = spineWreathIcon - 1
 		end
 	elseif args:IsSpellID(2142526) then
-		warnPhase2:Show()
+		warnIntermission:Show()
 		timerNextShield:Stop()
 		timerNextSpine:Stop()
 	elseif args:IsSpellID(2142594,2142595,2142596,2142597) or args:IsSpellID(2142560, 21425601,2142562,2142563) then
@@ -99,8 +107,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	end
 end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
+	if naj == true then
 	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		timerTargetSpine:Stop()
 		if self.Options.SpineIconsOpt then
@@ -114,13 +124,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	end
 end
-
-function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
-		if self.Options.SpineYellOpt and args:IsPlayer() then
-			SendChatMessage(L.SpineYell, "YELL")
-		end
-	end
 end
 
 --Najentus:AddOption("RangeCheck", true, DBM_NAJENTUS_OPTION_RANGECHECK)

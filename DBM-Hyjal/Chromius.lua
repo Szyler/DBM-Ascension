@@ -5,9 +5,8 @@ mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(26643)
 mod:RegisterCombat("combat", 26643)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_DAMAGE",
 	"CHAT_MSG_MONSTER_YELL",
@@ -76,11 +75,13 @@ local JainaHP
 local TyrandeHP
 local ThrallHP
 
+local chromius = false
 -- INFO ---
 -- SPELL_CAST_START Arcane Breath (2141705)
 
 
 function mod:OnCombatStart(delay)
+	chromius = true
 	duration 		= 2
 	count 	 		= 1
 	countdown		= 1
@@ -95,6 +96,11 @@ function mod:OnCombatStart(delay)
 	timerNextFinalCountdown:Start(67-delay, count)
 	warnFinalCDSoon:Schedule(60-delay)
 	self:ScheduleMethod(67-delay,"FinalCountdown")
+end
+
+function mod:OnCombatEnd()
+	chromius = false
+	self:UnscheduleMethod("FinalCountdown")
 end
 
 function mod:FinalCountdown()
@@ -153,6 +159,7 @@ function mod:StopTimers()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if chromius == true then
 	if args:IsSpellID(2141904) then
 		if args:IsPlayer() then
 			specWarnBlackArrow:Show()
@@ -161,8 +168,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	end
 end
+end
 
 function mod:SPELL_DAMAGE(args)
+	if chromius == true then
 	if args:IsSpellID(2141858,2141859,2141860,2141861) and args:IsPlayer() and DBM:AntiSpam(5,1) then
 		specWarnConsecration:Show()
 	end
@@ -176,8 +185,10 @@ function mod:SPELL_DAMAGE(args)
 		end
 	end
 end
+end
 
 function mod:SPELL_CAST_START(args)
+	if chromius == true then
 	if args:IsSpellID(2141705) then
 		warnArcaneBreath:Show()
 		timerArcaneBreath:Start()
@@ -201,11 +212,11 @@ function mod:SPELL_CAST_START(args)
 	timerInsanity:Stop()
 	end
 end
-
-function mod:SPELL_CAST_SUCCESS(args)
 end
 
+
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if chromius == true then
 	if msg == L.ChromiusRP or msg:find(L.ChromiusRP) then
 		timerCombatStart:Start()
 	elseif msg == L.ChromiusRP2 or msg:find(L.ChromiusRP2) then
@@ -232,8 +243,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		phase = 3
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if chromius == true then
 	if  args.destName =="Infinite Manipulator" then
 		timerTeleport:Start(5)
 		timerArcaneBreath:Start(13)
@@ -265,8 +278,10 @@ function mod:UNIT_DIED(args)
 		end
 	end
 end
+end
 
 function mod:UNIT_HEALTH(uId)
+	if chromius == true then
 	if self:GetUnitCreatureId(uId) == 26643 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.80 and prewarn == 0 and DBM:AntiSpam(5,3) then
 		prewarn = 1
 		warnTransSoon:Show()
@@ -278,8 +293,10 @@ function mod:UNIT_HEALTH(uId)
 		warnTransSoon:Show()
 	end
 end
+end
 
 function mod:AddBoss()
+	if chromius == true then
 	if JainaHP == 1 then
 		DBM.BossHealth:AddBoss(17772,"Lady Jaina Proudmoore")
 	elseif TyrandeHP == 1 then
@@ -288,3 +305,5 @@ function mod:AddBoss()
 		DBM.BossHealth:AddBoss(17852,"Thrall")
 	end
 end
+end
+

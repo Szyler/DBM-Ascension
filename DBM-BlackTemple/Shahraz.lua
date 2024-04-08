@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22947)
 mod:RegisterCombat("yell", L.DBM_SHAHRAZ_YELL_PULL)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_DAMAGE",
 	"UNIT_HEALTH"
@@ -61,6 +61,7 @@ local timerNextALittleChat		= mod:NewNextTimer(48, 2144007)
 local isMother		=	false
 local below20		=   false
 local below10		=   false
+local mother	=	false
 
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
@@ -70,11 +71,13 @@ function mod:OnCombatStart(delay)
 	below20		=   false
 	below10		=   false
 	isMother	=	true
+	mother		=	true
 end
 
 function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 	self:UnscheduleMethod("NewThoughts")
+	mother = false
 end
 
 function mod:NewThoughts()
@@ -84,6 +87,7 @@ function mod:NewThoughts()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if mother == true then
 	if args:IsSpellID(2144012) then
 		warningFatalAttraction:Show()
 		timerNextFatalAttraction:Start()
@@ -113,8 +117,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningALittleChat:Show()
 	end
 end
+end
 
 function mod:SPELL_DAMAGE(args)
+	if mother == true then
 	if args:IsSpellID(2144017) or args:IsSpellID(2144018) or args:IsSpellID(2144019) or args:IsSpellID(2144020) and DBM:AntiSpam() then
 		warningSinfulBeam:Show()
 		timerCastSinfulBeam:Start()
@@ -158,8 +164,10 @@ function mod:SPELL_DAMAGE(args)
 		end
 	end
 end
+end
 
 function mod:UNIT_HEALTH(unit)
+	if mother == true then
 	if isMother and (not below20 and not below10) and (mod:GetUnitCreatureId(unit) == 22947) then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 23) and (below20 == false) then
@@ -176,6 +184,9 @@ function mod:UNIT_HEALTH(unit)
         end
     end
 end
+end
+
+
 
 --Shahraz:AddOption("WarnBeam", false, DBM_SHAHRAZ_OPTION_BEAM)
 --Shahraz:AddOption("WarnBeamSoon", false, DBM_SHAHRAZ_OPTION_BEAM_SOON)

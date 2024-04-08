@@ -11,7 +11,7 @@ mod:SetBossHealthInfo(
 	26647, "Haaroon"
 )
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START",
@@ -102,13 +102,16 @@ local lastForce
 local remainingForce
 local drawFlames
 
+local archie = false
+
 function mod:OnCombatStart(delay)
-prewarn 		= 0
-phase 			= 0
-terror 			= 0
-lastDoomfire 	= 0
-lastForce 		= 0
-drawFlames		= 0
+	archie = true
+	prewarn 		= 0
+	phase 			= 0
+	terror 			= 0
+	lastDoomfire 	= 0
+	lastForce 		= 0
+	drawFlames		= 0
 end
 
 function mod:AddPhase()
@@ -184,6 +187,7 @@ function mod:LightningStrikes()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if archie == true then
 	if args:IsSpellID(2141428) and args:IsPlayer() then -- Grasp of the Defiler is Weakened
 		specWarnWeakCurse:Show()
 	end
@@ -208,22 +212,28 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextWardWinter:Start()
 	end
 end
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if archie == true then
 	if args:IsSpellID(2141422,2141423,2141424,2141425) and args:IsPlayer() then -- Curse of the Defiler
 		warnCurseoftheDefiler:Show(args.amount)
 	end
 end
+end
 
 function mod:SPELL_DAMAGE(args)
+	if archie == true then
 	if args:IsSpellID(2141455,2141456,2141457,2141458) and DBM:AntiSpam(6,5) then
 		self:UnscheduleMethod("LightningStrikes")
 		warnLightningStrikes:Cancel()
 		self:ScheduleMethod(0,"LightningStrikes")
 	end
 end
+end
 
 function mod:SPELL_CAST_START(args)
+	if archie == true then
 	if args:IsSpellID(2141553) and DBM:AntiSpam(5,3) then -- Fel Iron Bombs
 		warnFelBombs:Show()
 		timerFelBombs:Start()
@@ -258,8 +268,10 @@ function mod:SPELL_CAST_START(args)
 		end
 	end
 end
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
+	if archie == true then
 	if args:IsSpellID(2141442) then -- Draw Flames
 		warnDrawFlames:Show()
 		if drawFlames == 1 then
@@ -272,8 +284,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerLivingLightning:Start()
 	end
 end
+end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if archie == true then
 	if msg == L.FightStartYell or msg:find(L.FightStartYell) then -- Archimonde
 		timerCombatStart:Start()
 		self:ScheduleMethod(23,"AddPhase")
@@ -304,8 +318,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 --	if msg == L.VoidSpawn or msg:find(L.VoidSpawn) then -- Archimonde Void Spawn
 	--end
 end
+end
 
 function mod:UNIT_HEALTH(uId)
+	if archie == true then
 	if self:GetUnitCreatureId(uId) == 17968 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.85 and prewarn == 0 and DBM:AntiSpam(5,2) then
 		prewarn = 1
 		remainingDoomfire = 45 - (GetTime() - lastDoomfire)
@@ -328,8 +344,10 @@ function mod:UNIT_HEALTH(uId)
 		warnVoidPhaseSoon:Show()
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if archie == true then
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 26647 then
 		timerShockwave:Stop()
@@ -337,8 +355,10 @@ function mod:UNIT_DIED(args)
 		timerFelBombs:Stop()
 	end
 end
+end
 
 function mod:CombatEnd()
+	archie = false
 	self:ScheduleMethod("CancelP0Timers")
 	self:ScheduleMethod("CancelP1Timers")
 	self:ScheduleMethod("CancelP2Timers")

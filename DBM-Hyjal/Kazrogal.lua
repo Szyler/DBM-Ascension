@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(17888)
 mod:RegisterCombat("combat", 17888)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
@@ -53,15 +53,22 @@ local warnTormenting			= mod:NewAnnounce("You have %s stacks of Tormenting Scar"
 local warnChallenged			= mod:NewAnnounce("Kaz'rogal fixates on %s!",2141039)
 local warnManaTotem				= mod:NewAnnounce("Thrall is summoning a Mana Stream Totem! Click it to replenish your mana!", 2140261)
 
+local kaz = false
 
 function mod:OnCombatStart(delay)
+	kaz = true
 	pillar = 0
 	timerPillar1:Start(-delay)
 	timerStomp:Start(-delay)
 	timerMark:Start(14-delay)
 end
 
+function mod:OnCombatEnd()
+	kaz = false
+end
+
 function mod:SPELL_AURA_APPLIED(args)
+	if kaz == true then
 	if args:IsSpellID(2141001) and args:IsPlayer() and DBM:AntiSpam(5,1) then
 	timerMark:Start()
 	warnMark:Show(args.amount)
@@ -70,8 +77,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnChallenged:Show(args.destName)
 	end
 end
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if kaz == true then
 	if args:IsSpellID(2141040) and args:IsPlayer() and args.amount >= 4 and DBM:AntiSpam(3,2) then
 		warnCataclysmic:Show(args.amount)
 	end
@@ -79,8 +88,10 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		warnTormenting:Show(args.amount)
 	end
 end
+end
 
 function mod:SPELL_MISSED(args)
+	if kaz == true then
 	if args:IsSpellID(2141009) and DBM:AntiSpam(1,1) then
 		if pillar == 1 then
 			timerNextPCataclysm:Start()
@@ -92,8 +103,10 @@ function mod:SPELL_MISSED(args)
 		timerStomp:Start()
 	end
 end
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
+	if kaz == true then
 	if args:IsSpellID(2141027,2141028,2141029,2141030) and DBM:AntiSpam(40,3) then
 		warnPSuffering:Show()
 		timerPSuffering:Start()
@@ -113,9 +126,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnMalevolent:Show()
 	end
 end
+end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-if msg == "I am summoning a Mana Stream Totem near us. Use it to replenish!" then
-	warnManaTotem:Show()
-end
+	if kaz == true then
+		if msg == "I am summoning a Mana Stream Totem near us. Use it to replenish!" then
+			warnManaTotem:Show()
+		end
+	end
 end

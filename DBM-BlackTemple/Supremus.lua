@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22898)
 mod:RegisterCombat("combat", 22898)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
@@ -33,12 +33,15 @@ local timerEnrage					= mod:NewTimer(600, "Berserk", 44427)
 local oldMarkThreat
 local oldMarkTarget
 
+local supremus	= false
+
 mod:AddBoolOption("threatIconsOpt")
 
 function mod:OnCombatStart(delay)
 	oldMarkThreat = 0
 	self:ScheduleMethod(0-delay, "NewPillar")
 	timerEnrage:Start()
+	supremus 	= true
 end
 
 function mod:NewPillar()
@@ -48,6 +51,7 @@ function mod:NewPillar()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if supremus == true then
 	if args:IsSpellID(2142772) then --Enrages at 30% hp need hp check
 		warnPhase2:Show()
 		timerThreatDetected:Stop()
@@ -63,23 +67,29 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, 8, 60)
 		end
 	end
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
+	if supremus == true then
 	if args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
 			self:SetIcon(oldMarkTarget, oldMarkThreat or 0)
 		end
 	end
 end
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if supremus == true then
 	if args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
+end
 
 function mod:SPELL_CAST_START(args)
+	if supremus == true then
 	if args:IsSpellID(2142758) then
 		warningTitanic:Show()
 		timerTitanic:Start()
@@ -88,21 +98,30 @@ function mod:SPELL_CAST_START(args)
 		timerSupreme:Start()
 	end
 end
+end
 
 function mod:SPELL_DAMAGE(args)
+	if supremus == true then
 	if args:IsSpellID(2142774) and DBM:AntiSpam(3) then
 		timerEruption:Start()
 	end
 end
+end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE -- Hack to include SPELL_MISSED as well without more code
 
 function mod:UNIT_HEALTH(unit)
+	if supremus == true then
 	if mod:GetUnitCreatureId(unit) == 22898 then
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 40) and DBM:AntiSpam(600) then
 			warnPhase2Soon:Show()
         end
     end
+end
+end
+
+function mod:OnCombatEnd()
+	supremus = false
 end
 
 -- Supremus.MinRevision = 828

@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22948)
 mod:RegisterCombat("combat", 22948)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED"
 )
@@ -29,13 +29,17 @@ local timerNextBoilBlood 		= mod:NewNextTimer(20, 2143517)
 
 local elapsed, total, remainingTimerNextMakgora
 
+local bloodboil = false
+
 function mod:OnCombatStart(delay)
+	bloodboil = true
 	timerNextBoilingBlood:Start(10-delay)
 	timerNextSeismicSmash:Start(20-delay)
 	timerNextMakgora:Start(70-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if bloodboil == true then
 	if DBM:AntiSpam(1) then
 		elapsed, total = timerNextMakgora:GetTime()
 		remainingTimerNextMakgora = total - elapsed
@@ -60,13 +64,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextBoilBlood:Start()
 	end
 end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
+	if bloodboil == true then
 	if args:IsSpellID(2143523) then
 		timerNextBoilingBlood:Start(9)
 		timerNextSeismicSmash:Start(14)
 		timerNextMakgora:Start()
 	end
+end
+end
+
+function mod:OnCombatEnd()
+	bloodboil = false
 end
 
 -- local boilCounter = 0

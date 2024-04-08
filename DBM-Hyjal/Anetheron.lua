@@ -6,7 +6,7 @@ mod:SetCreatureID(17808)
 mod:SetUsedIcons(1,2,3,4,5,6,7,8)
 mod:RegisterCombat("combat", 17808)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REFRESH",
 	"SPELL_AURA_REMOVED",
@@ -44,7 +44,10 @@ local target1
 local target2
 local target3
 
+local anetheron = false
+
 function mod:OnCombatStart(delay)
+	anetheron = true
 	timerSwarm:Start(10-delay)
 	timerNextNightmare:Start(35-delay)
 	timerNextInfernal:Start(20-delay)
@@ -74,6 +77,7 @@ function mod:InfernalRain()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if anetheron == true then
 	if args:IsSpellID(2140825) then
 		if 	target3 == nil and target2 ~= nil and target1 ~= nil then
 				target3 = args.DestName
@@ -106,8 +110,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		target3 = nil
 	end
 end
+end
 
 function mod:SPELL_AURA_REFRESH(args)
+	if anetheron == true then
 	if args:IsSpellID(2140825) and args.destName == target1 then
 		DBM.BossHealth:RemoveBoss(92171,target1)
 		self:setIcon(target1, 0)
@@ -122,21 +128,25 @@ function mod:SPELL_AURA_REFRESH(args)
 		target3 = nil
 	end
 end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_START(args)
+	if anetheron == true then
 	if args:IsSpellID(2140800) then
 		warnSwarm:Show()
 		timerSwarm:Start()
 	end
+end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if anetheron == true then
 	if msg == L.Infernal1 or msg == L.Infernal2	or msg:find(L.Infernal1) or msg:find(L.Infernal2) then
 		self:UnscheduleMethod("InfernalRain")
 		timerInfernal:Stop()
@@ -152,8 +162,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerRingofFrost:Schedule(2)
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if anetheron == true then
 	if args.destName == target1 then
 		DBM.BossHealth:RemoveBoss(92171,target1)
 		target1 = nil
@@ -165,8 +177,10 @@ function mod:UNIT_DIED(args)
 		target3 = nil
 	end
 end
+end
 
 function mod:OnCombatEnd()
+	anetheron = false
 	DBM.BossHealth:RemoveBoss(92171,target1)
 	DBM.BossHealth:RemoveBoss(92171,target2)
 	DBM.BossHealth:RemoveBoss(92171,target3)
@@ -180,6 +194,7 @@ end
 
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if anetheron == true then
 	if msg == " Anetheron sends %s into a nightmare!" or msg:find(L.Nightmare) then
 		if target3 == nil and target2 ~= nil and target1 ~= nil then
 				target3 = msg:find(L.Nightmare)
@@ -195,4 +210,5 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 				DBM.BossHealth:AddBoss(92171,target1)
 		end
 	end
+end
 end

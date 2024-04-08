@@ -6,7 +6,7 @@ mod:SetCreatureID(17767)
 mod:SetUsedIcons(8)
 mod:RegisterCombat("combat", 17767)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
 	"SPELL_DAMAGE",
 	"SPELL_AURA_APPLIED_DOSE",
@@ -67,9 +67,12 @@ local lastSlap
 local remainingSlap
 local berserkTimer		= mod:NewBerserkTimer(600)
 
+local rage = false
+
 mod:AddBoolOption("ChainWhisper", false)
 
 function mod:OnCombatStart(delay)
+	rage = true
 	prewarn 			= 1
 	phylDeath 			= 0
 	phase 				= 1
@@ -140,6 +143,7 @@ function mod:DnD()
 	end
 
 function mod:SPELL_DAMAGE(args)
+	if rage == true then
 	if args:IsSpellID(2140600,2140601,2140602,2140603) then
 		if args:IsPlayer() and DBM:AntiSpam(8,1) then
 		specWarnDnD:Show()
@@ -150,15 +154,19 @@ function mod:SPELL_DAMAGE(args)
 		timerNextNova:Start(65)
 	end
 end
+end
 
 function mod:SPELL_MISSED(args)
+	if rage == true then
 	if args:IsSpellID(2140620,2140621,2140622,2140623) and DBM:AntiSpam(5,5) then
 		lastNova = GetTime()
 		timerNextNova:Start(65)
 	end
 end
+end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if rage == true then
 	if args:IsSpellID(2140617) and args:IsPlayer() then
 		specWarnFrozen:Show()
 		SendChatMessage(L.SayFrozenFade, "SAY")
@@ -178,17 +186,21 @@ function mod:SPELL_AURA_APPLIED(args)
 --		end
 	end
 end
+end
 
 -- SendChatMessage(""..UnitName("PLAYER").." is chained to "..args.destName.."!", "YELL")
 -- SendChatMessage(""..args.destName.." is chained to "..UnitName("PLAYER").."!", "YELL")
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if rage == true then
 	if args:IsSpellID(2140612) and args:IsPlayer() and args.amount > 14 and DBM:AntiSpam(5,4) then
 		SpecWarnChilled:Show(args.amount)
 	end
 end
+end
 
 function mod:SPELL_CAST_START(args)
+	if rage == true then
 	if args:IsSpellID(2140605) then
 		self:ScheduleMethod(0.2,"WTouch")
 		lastWintersTouch = GetTime()
@@ -216,22 +228,28 @@ function mod:SPELL_CAST_START(args)
 		timerNextSlap:Start(remainingSlap + 10)
 	end
 end
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
+	if rage == true then
 	if args:IsSpellID(2140645) then
 		timerNextSlap:Start(30)
 		lastSlap = GetTime()
 		warnLichSlap:Show(args.destName)
 	end
 end
+end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if rage == true then
 	if msg == L.TransitionYell or msg:find(L.TransitionYell) then
 		self:ScheduleMethod(0,"Intermission")
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if rage == true then
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 26634 then
 		phylDeath = phylDeath + 1
@@ -242,8 +260,10 @@ function mod:UNIT_DIED(args)
 		self:ScheduleMethod(1,"BossPhase")
 	end
 end
+end
 
 function mod:UNIT_HEALTH(uId)
+	if rage == true then
 	if self:GetUnitCreatureId(uId) == 17767 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.70 and prewarn == 1 and DBM:AntiSpam(5,2) then
 		prewarn = 2
 		warnTransSoon:Show()
@@ -252,8 +272,10 @@ function mod:UNIT_HEALTH(uId)
 		warnTransSoon:Show()
 	end
 end
+end
 
 function mod:OnCombatEnd()
+	rage = false
 	DBM.BossHealth:RemoveBoss(17772)
 	self:UnscheduleMethod("BossPhase")
 	self:UnscheduleMethod("Intermission")

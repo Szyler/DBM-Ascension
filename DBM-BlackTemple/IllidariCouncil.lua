@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22949, 22950, 22951, 22952)
 mod:RegisterCombat("combat", 22949, 22950, 22951, 22952)
 
-mod:RegisterEvents(
+mod:RegisterEventsInCombat(
 	"SPELL_CAST_START",
 	"SPELL_HEAL",
 	"SPELL_INTERRUPT",
@@ -52,7 +52,10 @@ local timerCrownofCommand			= mod:NewTimer(18, "Crown of Command on %s", 2144201
 local warnCrownofCommand			= mod:NewAnnounce("Crown of Command on %s", 3, 2144201)
 local councilDeath = 0
 
+local council = false
+
 function mod:OnCombatStart(delay)
+	council = true
 	councilDeath = 0
 	timerNextPaintoPleasure:Start(25-delay)
 	timerNextSmokeBomb:Start(33-delay)
@@ -78,6 +81,7 @@ function mod:SmokeBomb()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
+	if council == true then
 	if args:IsSpellID(2144560, 2144610) and DBM:AntiSpam(16, 1) then
 		warnSmokeBomb:Show()
 		if councilDeath == 0 then
@@ -142,6 +146,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:ScheduleMethod(2,"SmokeBomb")
 	end
 end
+end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2144351, 2144401) then
@@ -150,6 +155,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:SPELL_CAST_START(args)
+	if council == true then
 	if args:IsSpellID(2144462, 2144463, 2144512, 2144513) then
 		warnPaintoPleasure:Show()
 		timerNextPaintoPleasure:Start()
@@ -181,14 +187,18 @@ function mod:SPELL_CAST_START(args)
 		end
 	end
 end
+end
 
 function mod:SPELL_INTERRUPT(args)
+	if council == true then
 	if args:IsSpellID(2144462, 2144463, 2144512, 2144513) then
 		timerPaintoPleasure:Cancel()
 	end
 end
+end
 
 function mod:UNIT_DIED(args)
+	if council == true then
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 22952 and DBM:AntiSpam(2,8) then
 		self:UnscheduleMethod("SmokeBomb")
@@ -206,4 +216,9 @@ function mod:UNIT_DIED(args)
 		councilDeath = councilDeath + 1
 		timerNextDeathSentence:Cancel()
 	end
+end
+end
+
+function mod:OnCombatEnd()
+	council = false
 end
