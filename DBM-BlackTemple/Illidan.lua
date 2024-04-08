@@ -27,7 +27,8 @@ local timerDemonForm				= mod:NewTimer(60, "TimerDemonForm", 2457)
 local warnPhase						= mod:NewPhaseAnnounce(2)
 local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 1)
 
-local timerAddsSpawn				= mod:NewTimer(9, "TimerAddsSpawn", 19879)
+local timerAddsSpawn				= mod:NewTimer(69, "TimerAddsSpawn", 19879)
+local timerFirstAddsSpawn			= mod:NewTimer(9, "TimerAddsSpawn", 19879)
 local warnChaosBlast           		= mod:NewSpellAnnounce(2144805, 2)
 local warnFlameCrash           		= mod:NewSpellAnnounce(2144720, 2)
 local warnFlameCrashDot        		= mod:NewSpellAnnounce(2144720, 3)
@@ -141,11 +142,12 @@ function mod:OnCombatStart(delay)
 		DBM.RangeCheck:Show(15)
 	end
 	timerCombatStart:Start(4)
-	timerAddsSpawn:Start(9-delay)
+	timerFirstAddsSpawn:Start(9-delay)
 	timerNextForceNova:Start(19-delay)
 	timerNextShear:Start(29-delay)
 	timerNextDrawSoul:Start(34-delay)
 	timerNextUnharnessedBlade:Start(39-delay)
+	timerAddsSpawn:Start(69-delay)
 end
 
 function mod:UnharnessedBlade()
@@ -340,7 +342,7 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_ILLIDAN_YELL_PULL_RP then
 		timerCombatStart:Start(40)
-	elseif msg == L.DBM_ILLIDAN_YELL_DEMON then
+	elseif msg == L.DBM_ILLIDAN_YELL_DEMON then -- First at 60% health
 		self.vb.phase = 4
 		warnPhase:Show(4)
 		timerDemonForm:Stop()
@@ -386,8 +388,6 @@ function mod:UNIT_HEALTH(unit)
 			timerNextShear:Start(25)
 			timerNextDrawSoul:Start(30)
         end
-	elseif mod:GetUnitCreatureId(unit) == 22997 then
-
 	end
 end
 
