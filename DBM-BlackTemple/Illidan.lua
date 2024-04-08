@@ -3,7 +3,6 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(22917)
-mod:SetUsedIcons(8)
 mod:RegisterCombat("combat", 22917)
 mod:SetBossHealthInfo(
 	22917, "Illidan Stormrage"
@@ -159,6 +158,7 @@ local function phase4Start(self)
 	timerNextDemon:Start(60)
 	timerTrap:Start()
 end
+
 local function humanHatredForms(self)
 	self:Unschedule(humanForms)
 	timerChaosBurst:Start()
@@ -237,21 +237,21 @@ function mod:OnCombatStart(delay)
 	crashCount = 0
 	EliteCD = 60
 	if LongPullRP == true then
-	self:Schedule(18, illidariElites, self)
-	timerElites:Start(18)
-	timerFlameCrash:Start(28)
-	timerShearCD:Start(38)
-	timerDrawSoul:Start(43)
-	timerBladeCD:Start(48)
-	self:Schedule(5, Prepared, self)
+		self:Schedule(18, illidariElites, self)
+		timerElites:Start(18)
+		timerFlameCrash:Start(28)
+		timerShearCD:Start(38)
+		timerDrawSoul:Start(43)
+		timerBladeCD:Start(48)
+		self:Schedule(5, Prepared, self)
 	else
-	self:Schedule(8, illidariElites, self)
-	timerElites:Start(8)
-	timerFlameCrash:Start(18)
-	timerShearCD:Start(28)
-	timerDrawSoul:Start(33)
-	timerBladeCD:Start(38)
-	self:Schedule(5, Prepared, self)
+		self:Schedule(8, illidariElites, self)
+		timerElites:Start(8)
+		timerFlameCrash:Start(18)
+		timerShearCD:Start(28)
+		timerDrawSoul:Start(33)
+		timerBladeCD:Start(38)
+		self:Schedule(5, Prepared, self)
 	end
 end
 
@@ -281,43 +281,43 @@ function mod:SPELL_CAST_START(args)
 		warnCrash:Show()
 	elseif args:IsSpellID(2144742, 2145015) then
 		if bladeCount >= 1 and phase == 3 then
-		timerBladeCD:Start()
-		warnBlade:Show()
-		bladeCount = bladeCount + 1
+			timerBladeCD:Start()
+			warnBlade:Show()
+			bladeCount = bladeCount + 1
 		elseif bladeCount >= 1 and phase == 5 then
-		timerBladeCD:Start()
-		warnBlade:Show()
-		bladeCount = bladeCount + 1
+			timerBladeCD:Start()
+			warnBlade:Show()
+			bladeCount = bladeCount + 1
 		elseif bladeCount >= 1 and phase == 6 then
-		warnBlade:Show()
-		timerBladeCD:Start(75)
-		bladeCount = 0
+			warnBlade:Show()
+			timerBladeCD:Start(75)
+			bladeCount = 0
 		elseif bladeCount == 0 and phase == 6 then
-		timerBladeCD:Start(35)
-		warnBlade:Show()
-		bladeCount = bladeCount + 1
+			timerBladeCD:Start(35)
+			warnBlade:Show()
+			bladeCount = bladeCount + 1
 		else
-		timerBladeCD:Start(30)
-		warnBlade:Show()
-		bladeCount = bladeCount + 1
+			timerBladeCD:Start(30)
+			warnBlade:Show()
+			bladeCount = bladeCount + 1
 		end
 	elseif args:IsSpellID(2145040) then
 		warnSoulShear:Show()
 		if shearCount == 0 then
-		timerSoulShear:Start()
-		shearCount = shearCount + 1
+			timerSoulShear:Start()
+			shearCount = shearCount + 1
 		elseif shearCount == 1 then
-		shearCount = 0
-		timerSoulShear:Start(75)
+			shearCount = 0
+			timerSoulShear:Start(75)
 		end
 	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
 		warnHateCrash:Show()
 		if phase == 6 and crashCount == 0 then
-		timerHateCrash:Start()
-		crashCount = crashCount + 1
+			timerHateCrash:Start()
+			crashCount = crashCount + 1
 		elseif phase == 6 and crashCount == 1 then
 			timerHateCrash:Start(74)
-		crashCount = 0
+			crashCount = 0
 		end
 	elseif args:IsSpellID(2145051,2145052) then
 		warnMadness:Show()
@@ -362,16 +362,15 @@ function mod:SPELL_AURA_APPLIED(args)
 		castBarrage = true
 	end
 	if args:IsSpellID(2145061) and args.destName == "Illidan Stormrage" then
-	timerUnleash:Start(110)
-	timerMotes:Start(5)
-	warnUnleash:Show()
+		timerUnleash:Start(110)
+		timerMotes:Start(5)
+		warnUnleash:Show()
 	end
 end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if illidan == true then
-	local spellId = args.spellId
 	if args:IsSpellID(2144751, 2144752, 2144753, 2144754, 2144755) then
 		timerParasite:Stop(args.destName)
 	elseif args:IsSpellID(2144816) then
@@ -392,31 +391,31 @@ function mod:UNIT_DIED(args)
 			warnPhase3:Show()
 			bladeCount = 0
 			if castEyebeam == true then
-			local eyebeamTime = timerEyebeam:GetTime();
-			timerLanding:Start(eyebeamTime+7)
-			timerBladeCD:Start(eyebeamTime+10)
-			timerFlameCrash:Start(eyebeamTime+18)
-			timerNextParasite:Start(eyebeamTime+23)
-			timerShearCD:Start(eyebeamTime+28)
-			timerDrawSoul:Start(eyebeamTime+33)
-			timerNextDemon:Start(eyebeamTime+67)
+				local eyebeamTime = timerEyebeam:GetTime();
+				timerLanding:Start(eyebeamTime+7)
+				timerBladeCD:Start(eyebeamTime+10)
+				timerFlameCrash:Start(eyebeamTime+18)
+				timerNextParasite:Start(eyebeamTime+23)
+				timerShearCD:Start(eyebeamTime+28)
+				timerDrawSoul:Start(eyebeamTime+33)
+				timerNextDemon:Start(eyebeamTime+67)
 			elseif castBarrage == true then
-			local barrageTime = timerBarrage:GetTime();
-			timerLanding:Start(barrageTime+7)
-			timerBladeCD:Start(barrageTime+10)
-			timerFlameCrash:Start(barrageTime+18)
-			timerNextParasite:Start(barrageTime+23)
-			timerShearCD:Start(barrageTime+28)
-			timerDrawSoul:Start(barrageTime+33)
-			timerNextDemon:Start(barrageTime+67)
+				local barrageTime = timerBarrage:GetTime();
+				timerLanding:Start(barrageTime+7)
+				timerBladeCD:Start(barrageTime+10)
+				timerFlameCrash:Start(barrageTime+18)
+				timerNextParasite:Start(barrageTime+23)
+				timerShearCD:Start(barrageTime+28)
+				timerDrawSoul:Start(barrageTime+33)
+				timerNextDemon:Start(barrageTime+67)
 			else
-			timerLanding:Start(7)
-			timerBladeCD:Start(10)
-			timerFlameCrash:Start(18)
-			timerNextParasite:Start(23)
-			timerShearCD:Start(28)
-			timerDrawSoul:Start(33)
-			timerNextDemon:Start(67)
+				timerLanding:Start(7)
+				timerBladeCD:Start(10)
+				timerFlameCrash:Start(18)
+				timerNextParasite:Start(23)
+				timerShearCD:Start(28)
+				timerDrawSoul:Start(33)
+				timerNextDemon:Start(67)
 			end
 		end
 	end
@@ -445,9 +444,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerChaosBurst:Start(10)
 		timerShadowDemon:Start(30)
 		if phase == 3 then
-		self:Schedule(60, humanForms, self)
+			self:Schedule(60, humanForms, self)
 		elseif phase == 5 then
-		self:Schedule(60, humanHatredForms, self)
+			self:Schedule(60, humanHatredForms, self)
 		end
 	elseif msg == L.Phase4 or msg:find(L.Phase4) then
 		phase = 5
