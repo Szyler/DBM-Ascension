@@ -6,7 +6,8 @@ mod:SetCreatureID(22948)
 mod:RegisterCombat("combat", 22948)
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED"
 )
 
 local warningBoilingBlood		= mod:NewSpellAnnounce(2143508, 3)
@@ -29,6 +30,7 @@ local timerNextBoilBlood 		= mod:NewNextTimer(20, 2143517)
 local elapsed, total, remainingTimerNextMakgora
 
 function mod:OnCombatStart(delay)
+	self.vb.phase = 1
 	timerNextBoilingBlood:Start(10-delay)
 	timerNextSeismicSmash:Start(20-delay)
 	timerNextMakgora:Start(70-delay)
@@ -48,6 +50,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		elapsed, total = timerNextMakgora:GetTime()
 		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143523) then
+		self.vb.phase = 2
 		warnMakgora:Show()
 		timerNextMakgora:Start()
 		timerMakgora:Start(args.destName)
@@ -69,6 +72,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2143523) then
+		self.vb.phase = 1
+	end
+end
 
 -- local boilCounter = 0
 
