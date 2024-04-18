@@ -55,10 +55,10 @@ end
 
 function mod:UNIT_AURA(args)
 	
-	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) then
+	local spellName, _, _, _, _, duration, expires, _, _, _, spellId = UnitDebuff(args, shadowOfDeathName)
+	if spellName == shadowOfDeathName then
 		local name = UnitName(args)
 		if (not name) then return end
-		local spellName, _, _, _, _, duration, expires, _, _, _, spellId = UnitDebuff(args, shadowOfDeathName)
 		if not spellId or not expires then return end
 		if expires > 0 then
 			if expires < 60 then
