@@ -7,6 +7,7 @@ mod:RegisterCombat("combat", 22948)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED"
 )
 
@@ -18,7 +19,7 @@ local warningFatalstrike		= mod:NewSpellAnnounce(2143527, 2)
 local timerNextBoilingBlood		= mod:NewNextTimer(20, 2143508)
 local timerNextSeismicSmash		= mod:NewNextTimer(20, 2143531)
 local timerSeismicSmash			= mod:NewCastTimer(5, 2143531)
-local timerNextMakgora			= mod:NewNextTimer(70, 2143520)
+local timerNextMakgora			= mod:NewNextTimer(105, 2143520)
 local timerNextFatalstrike		= mod:NewNextTimer(20, 2143527)
 local timerNextMalevolentCleave	= mod:NewNextTimer(5, 2143526)
 
@@ -34,11 +35,11 @@ function mod:OnCombatStart(delay)
 	timerNextBoilingBlood:Start(10-delay)
 	timerNextSeismicSmash:Start(20-delay)
 	timerNextMakgora:Start(70-delay)
-	remainingTimerNextMakgora = 30
+	remainingTimerNextMakgora = 70
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (remainingTimerNextMakgora >= 25) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
 		elapsed, total = timerNextMakgora:GetTime()
@@ -59,18 +60,21 @@ function mod:SPELL_AURA_APPLIED(args)
 		remainingTimerNextMakgora = total - elapsed
 		timerNextBoilingBlood:Start(42)
 		timerNextSeismicSmash:Start(50)
+		timerNextFatalstrike:Start(40)
 	elseif args:IsSpellID(2143527) and (remainingTimerNextMakgora >= 20) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
 		elapsed, total = timerNextMakgora:GetTime()
 		remainingTimerNextMakgora = total - elapsed
-	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
+	elseif args:IsSpellID(2143519) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilBlood:Show()
 		timerNextBoilBlood:Start()
 		elapsed, total = timerNextMakgora:GetTime()
 		remainingTimerNextMakgora = total - elapsed
 	end
 end
+
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2143523) then
