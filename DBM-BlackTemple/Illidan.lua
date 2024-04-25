@@ -8,7 +8,7 @@ mod:SetBossHealthInfo(
 	22917, "Illidan Stormrage"
 )
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_CAST_START",
