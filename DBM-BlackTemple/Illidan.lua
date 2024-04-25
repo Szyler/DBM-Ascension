@@ -4,9 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22917)
 mod:RegisterCombat("combat", 22917)
-mod:SetBossHealthInfo(
-	22917, "Illidan Stormrage"
-)
+mod:SetBossHealthInfo(22917, "Illidan Stormrage")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
@@ -18,8 +16,6 @@ mod:RegisterEvents(
 	"UNIT_HEALTH",
 	"UNIT_AURA"
 )
-
-
 
 -- General
 local timerLongRPStart		= mod:NewTimer(39, "Combat starting in ", 560576)
