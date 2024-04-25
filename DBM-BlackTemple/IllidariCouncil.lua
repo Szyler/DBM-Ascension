@@ -67,13 +67,13 @@ function mod:SmokeBomb()
 	warnSmokeBomb:Show()
 	timerNextSmokeBomb:Cancel()
 	if councilDeath == 0 then
-		timerNextSmokeBomb:start(60)
+		timerNextSmokeBomb:Start(60)
 	elseif councilDeath == 1 then
-		timerNextSmokeBomb:start(45)
+		timerNextSmokeBomb:Start(45)
 	elseif councilDeath == 2 then
-		timerNextSmokeBomb:start(30)
+		timerNextSmokeBomb:Start(30)
 	elseif councilDeath == 3 then
-		timerNextSmokeBomb:start(15)
+		timerNextSmokeBomb:Start(15)
 	end
 end
 
