@@ -20,24 +20,23 @@ mod:RegisterEvents(
 		"SPELL_MISSED"
 )
 
-local WarnInfernal		= mod:NewSpellAnnounce(2132327, 2)
-local WarnHeal			= mod:NewCastAnnounce(30528, 2, nil, false)
-local WarnNova			= mod:NewSpellAnnounce(2132301, 2)
-local specWarnNova		= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
-local WarnQuake			= mod:NewSpellAnnounce(2132310, 2)
-local specWarnDebris	= mod:NewSpecialWarningYou(85030)
-local specWarnConflag	= mod:NewSpecialWarningYou(2132315)
-local warnGlaiveCleave	= mod:NewAnnounce(L.MagCleave, 2, 2132300)
-local warnInterrupt		= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
-local warnPhaseTwo		= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
-local warnPhaseThree	= mod:NewAnnounce("Phase 3", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local WarnInfernal			= mod:NewSpellAnnounce(2132327, 2)
+local WarnHeal				= mod:NewCastAnnounce(30528, 2, nil, false)
+local WarnNova				= mod:NewSpellAnnounce(2132301, 2)
+local specWarnNova			= mod:NewSpecialWarning("Pre-Quake Blast Nova in 10 seconds!")
+local WarnQuake				= mod:NewSpellAnnounce(2132310, 2)
+local specWarnDebris		= mod:NewSpecialWarningYou(85030)
+local specWarnConflag		= mod:NewSpecialWarningYou(2132315)
+local warnGlaiveCleave		= mod:NewAnnounce(L.MagCleave, 2, 2132300)
+local warnInterrupt			= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface\\Icons\\ability_kick")
+local warnPhaseTwo			= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
+local warnPhaseThree		= mod:NewAnnounce("Phase 3", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
-local timerQuake		= mod:NewNextTimer(60, 2132310)
-local timerSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 2132301, 3)
-local Nova				= 1;
-local timerNova			= mod:NewTimer(55, "Blast Nova #%s", 2132301)
-local timerPhaseTwo		= mod:NewPhaseTimer(120, 30205, "Magtheridon breaks free")
-local timerFallingRoof	= mod:NewTimer(10, "Roof is collapsing!")
+local timerNextQuake		= mod:NewNextTimer(60, 2132310)
+local timerNextSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 2132301, 3)
+local timerNextNova			= mod:NewTimer(55, "Blast Nova #%s", 2132301)
+local timerPhaseTwo			= mod:NewPhaseTimer(120, 30205, "Magtheridon breaks free")
+local timerFallingRoof		= mod:NewTimer(10, "Roof is collapsing!")
 
 --Heroic
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(2132323,2)
@@ -56,6 +55,7 @@ local specWarnYouFelShock		= mod:NewSpecialWarningYou(2132333)
 local timerNextFelShock			= mod:NewNextTimer(11, 2132333)
 
 -- local 
+local Nova					= 1;
 local isMag				= false;
 local below30			= false;
 local deathAbility = 0;
@@ -110,9 +110,9 @@ function mod:NextHandofDeath()
 end
 
 function mod:OnCombatEnd()
-	timerQuake:Cancel()
-	timerSpecialNova:Cancel()
-	timerNova:Cancel()
+	timerNextQuake:Cancel()
+	timerNextSpecialNova:Cancel()
+	timerNextNova:Cancel()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -180,8 +180,8 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_MAG_YELL_PHASE2 and self.vb.phase == 1 then
-		timerQuake:Cancel()
-		timerNova:Cancel()
+		timerNextQuake:Cancel()
+		timerNextNova:Cancel()
 		if mod:IsDifficulty("heroic10", "heroic25") then
 		timerNextFingerofDeath:Start(21)
 			timerNextHandofDeath:Start(36)
@@ -189,8 +189,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:ScheduleMethod(36,"NextHandofDeath");
 		end
 		timerPhaseTwo:Cancel()
-		timerQuake:Start(41)
-		timerNova:Start(66, tostring(Nova))
+		timerNextQuake:Start(41)
+		timerNextNova:Start(66, tostring(Nova))
 		below30 = false;
 		isMag	= true;
 		self.vb.phase = 2
@@ -224,15 +224,39 @@ function mod:SPELL_CAST_START(args)
 		WarnHeal:Show()
 	elseif args:IsSpellID(2132310) then
 		WarnQuake:Show()
-		timerQuake:Start()
+		timerNextQuake:Start()
+
+		local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
+		local remainingTimerNextHand = totalHand - elapsedHand
+		local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
+		local remainingTimerNextFinger = totalFinger - elapsedFinger
+		if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
+			if remainingTimerNextFinger < remainingTimerNextHand then
+				timerNextFingerofDeath:AddTime(7)
+			else
+				timerNextHandofDeath:AddTime(7)
+			end
+		end
 	elseif args:IsSpellID(2132301) then
 		Nova = Nova + 1;
 		WarnNova:Show()
 		if Nova >= 7 then
-			timerSpecialNova:Start()
+			timerNextSpecialNova:Start()
 			specWarnNova:Schedule(45)
 		else
-			timerNova:Start(55, tostring(Nova))
+			timerNextNova:Start(55, tostring(Nova))
+
+			local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
+			local remainingTimerNextHand = totalHand - elapsedHand
+			local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
+			local remainingTimerNextFinger = totalFinger - elapsedFinger
+			if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
+				if remainingTimerNextFinger < remainingTimerNextHand then
+					timerNextFingerofDeath:AddTime(3)
+				else
+					timerNextHandofDeath:AddTime(3)
+				end
+			end
 		end
 	end
 
@@ -240,7 +264,7 @@ function mod:SPELL_CAST_START(args)
 			self:ScheduleMethod(0.2, "HandofDeath")
 	elseif args:IsSpellID(2132319, 2132320, 2132321, 2132322) then
 			self:ScheduleMethod(0.2, "FingerofDeath")
-		end
+	end
 end
 
 
@@ -275,14 +299,14 @@ function mod:UNIT_HEALTH(unit)
 		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
 		if (hp <= 30) then
 			self.vb.phase = 3
-			local elapsed, total = timerQuake:GetTime();
-			timerQuake:Update(elapsed, total+12);
+			local elapsed, total = timerNextQuake:GetTime();
+			timerNextQuake:Update(elapsed, total+12);
 				if Nova >= 7 then
-					local elapsed, total = timerSpecialNova:GetTime();
-					timerSpecialNova:Update(elapsed, total+12);
+					local elapsed, total = timerNextSpecialNova:GetTime();
+					timerNextSpecialNova:Update(elapsed, total+12);
 				else
-					local elapsed, total = timerNova:GetTime(tostring(Nova));
-					timerNova:Update(elapsed, total+12, tostring(Nova));
+					local elapsed, total = timerNextNova:GetTime(tostring(Nova));
+					timerNextNova:Update(elapsed, total+12, tostring(Nova));
 				end 
 			below30 = true;
         end
