@@ -7,6 +7,7 @@ mod:RegisterCombat("combat", 22948)
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED"
 )
 
@@ -18,7 +19,7 @@ local warningFatalstrike		= mod:NewSpellAnnounce(2143527, 2)
 local timerNextBoilingBlood		= mod:NewNextTimer(20, 2143508)
 local timerNextSeismicSmash		= mod:NewNextTimer(20, 2143531)
 local timerSeismicSmash			= mod:NewCastTimer(5, 2143531)
-local timerNextMakgora			= mod:NewNextTimer(70, 2143520)
+local timerNextMakgora			= mod:NewNextTimer(105, 2143520)
 local timerNextFatalstrike		= mod:NewNextTimer(20, 2143527)
 local timerNextMalevolentCleave	= mod:NewNextTimer(5, 2143526)
 
@@ -33,45 +34,57 @@ local bloodboil = false
 
 function mod:OnCombatStart(delay)
 	bloodboil = true
+	self.vb.phase = 1
 	timerNextBoilingBlood:Start(10-delay)
 	timerNextSeismicSmash:Start(20-delay)
 	timerNextMakgora:Start(70-delay)
+	remainingTimerNextMakgora = 70
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if bloodboil == true then
-	if DBM:AntiSpam(1) then
-		elapsed, total = timerNextMakgora:GetTime()
-		remainingTimerNextMakgora = total - elapsed
-	end
-	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and (25 >= remainingTimerNextMakgora) then
+	if args:IsSpellID(2143508, 2143509, 2143510, 2143511) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilingBlood:Show()
 		timerNextBoilingBlood:Start()
-	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (10 >= remainingTimerNextMakgora) then
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
+	elseif args:IsSpellID(2143530, 2143531, 2143532, 2143533) and (remainingTimerNextMakgora >= 10) then
 		warningSeismicSmash:Show()
 		timerNextSeismicSmash:Start()
 		timerSeismicSmash:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	elseif args:IsSpellID(2143523) then
+		self.vb.phase = 2
 		warnMakgora:Show()
 		timerNextMakgora:Start()
 		timerMakgora:Start(args.destName)
 		timerNextMalevolentCleave:Start()
-	elseif args:IsSpellID(2143527) and (20 >= remainingTimerNextMakgora) then
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
+		timerNextBoilingBlood:Start(42)
+		timerNextSeismicSmash:Start(50)
+		timerNextFatalstrike:Start(40)
+	elseif args:IsSpellID(2143527) and (remainingTimerNextMakgora >= 20) then
 		warningFatalstrike:Show()
 		timerNextFatalstrike:Start()
-	elseif args:IsSpellID(2143517) and DBM:AntiSpam(15) and (25 >= remainingTimerNextMakgora) then
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
+	elseif args:IsSpellID(2143519) and DBM:AntiSpam(15) and (remainingTimerNextMakgora >= 25) then
 		warningBoilBlood:Show()
 		timerNextBoilBlood:Start()
+		elapsed, total = timerNextMakgora:GetTime()
+		remainingTimerNextMakgora = total - elapsed
 	end
 end
 end
 
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+
 function mod:SPELL_AURA_REMOVED(args)
 	if bloodboil == true then
 	if args:IsSpellID(2143523) then
-		timerNextBoilingBlood:Start(9)
-		timerNextSeismicSmash:Start(14)
-		timerNextMakgora:Start()
+		self.vb.phase = 1
 	end
 end
 end

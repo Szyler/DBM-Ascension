@@ -4,9 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(22917)
 mod:RegisterCombat("combat", 22917)
-mod:SetBossHealthInfo(
-	22917, "Illidan Stormrage"
-)
+mod:SetBossHealthInfo(22917, "Illidan Stormrage")
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
@@ -18,8 +16,6 @@ mod:RegisterEventsInCombat(
 	"UNIT_HEALTH",
 	"UNIT_AURA"
 )
-
-
 
 -- General
 local timerLongRPStart		= mod:NewTimer(39, "Combat starting in ", 560576)
@@ -458,6 +454,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerDrawSoul:Cancel()
 		timerNextParasite:Cancel()
 		timerNextHuman:Cancel()
+		timerNextDemon:Cancel()
 		timerP4RP:Start()
 		warnPhase4:Schedule(33)
 		self:Schedule(33, phase4Start, self)
