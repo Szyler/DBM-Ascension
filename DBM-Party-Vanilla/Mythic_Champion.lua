@@ -90,8 +90,7 @@ end
 function mod:SPELL_CAST_START(args)
     if args.spellId == 2129159 then
         self:handleFirstFrozenOrb(args)
-    end
-    if args.spellId == 2129169 and firstFrozenOrbTriggered == true then
+    elseif args.spellId == 2129169 and firstFrozenOrbTriggered == true then
         timerNextAbsoluteZero:Start(68)
         frozenOrbCounter = 0
         iceBarrageCounter = 0
