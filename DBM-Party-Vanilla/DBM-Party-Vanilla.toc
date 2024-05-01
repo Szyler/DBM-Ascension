@@ -13,7 +13,6 @@
 ## X-DBM-Mod-Sort: 125
 ## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme
 
-MysticChampion.lua
 localization.en.lua
 Scholomance\BloodSteward.lua
 Scholomance\Kirtonos.lua
