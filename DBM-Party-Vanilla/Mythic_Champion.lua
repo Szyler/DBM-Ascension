@@ -1,15 +1,12 @@
-local DBM   = DBM or require("DBM") -- require the DBM module if it's not already loaded
 local mod	= DBM:NewMod("Mythic Champion", "DBM-Party-Vanilla")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(80227)
+mod:RegisterCombat("combat", 80227)
 mod:SetUsedIcons(8)
-mod:RegisterCombat("combat","SPELL_CAST_SUCCESS", 80227)
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START"
 )
 
@@ -55,18 +52,17 @@ local frozenOrbCounter               = 0
 local iceBarrageCounter              = 0
 
 
-local firstAbsoluteZero         = mod:NewTimer(15, 2129169)
+
 --local warningAbsoluteZero   	= mod:NewSpellAnnounce(2129169, 3)
-local timerAbsoluteZero     	= mod:NewNextTimer(68, 2129169)
+local timerNextAbsoluteZero     	= mod:NewNextTimer(68, 2129169)
 --local AbsoluteZeroCast 			= mod:NewCastTimer(2, 2129169)
 
 --local warningFrozenOrb     		= mod:NewSpellAnnounce(2129159, 3)
-local timerFrozenOrb      		= mod:NewNextTimer(30, 2129159)
+local timerNextFrozenOrb      		= mod:NewNextTimer(30, 2129159)
 --local FrozenOrbCast     		= mod:NewCastTimer(2, 2129159)
 
-local firstIceBarrage           = mod:NewTimer(28, 2129161)
 --local warningIceBarrage   		= mod:NewSpellAnnounce(2129161, 3)
-local timerIceBarrage      		= mod:NewNextTimer(30, 2129161)
+local timerNextIceBarrage      		= mod:NewNextTimer(30, 2129161)
 --local IceBarrageCast      		= mod:NewCastTimer(2, 2129161)
 
 
@@ -74,39 +70,38 @@ mod:AddBoolOption("SetIconOnBombTarget", true)
 
 
 function mod:handleFirstFrozenOrb(args)
-    if args.spellId == 2129159 then
-        if not firstFrozenOrbTriggered then
-            firstFrozenOrb = not firstFrozenOrb
-            timerFrozenOrb:Start(38)
-            firstFrozenOrb = true
-            firstFrozenOrbTriggered = true
+    if not firstFrozenOrbTriggered then
+        firstFrozenOrb = not firstFrozenOrb
+        timerNextFrozenOrb:Start(38)
+        firstFrozenOrb = true
+        firstFrozenOrbTriggered = true
 
-            -- Trigger firstAbsoluteZero and firstIceBarrage only once
-            if not firstAbsoluteZeroTriggered then
-                firstAbsoluteZero:Start(15)
-                firstAbsoluteZeroTriggered = true
-            end
-            if not firstIceBarrageTriggered then
-                firstIceBarrage:Start(28)
-                firstIceBarrageTriggered = true
-            end
+        -- Trigger firstAbsoluteZero and firstIceBarrage only once
+        if not firstAbsoluteZeroTriggered then
+            timerNextAbsoluteZero:Start(15)
+            firstAbsoluteZeroTriggered = true
+        elseif not firstIceBarrageTriggered then
+            timerNextIceBarrage:Start(28)
+            firstIceBarrageTriggered = true
         end
     end
 end
 
 function mod:SPELL_CAST_START(args)
-    self:handleFirstFrozenOrb(args)
+    if args.spellId == 2129159 then
+        self:handleFirstFrozenOrb(args)
+    end
     if args.spellId == 2129169 and firstFrozenOrbTriggered == true then
-        timerAbsoluteZero:Start(68)
+        timerNextAbsoluteZero:Start(68)
         frozenOrbCounter = 0
         iceBarrageCounter = 0
     elseif args.spellId == 2129161 then
         iceBarrageCounter = iceBarrageCounter + 1
         local delayIceBarrage = (absoluteZeroCast and iceBarrageCounter == 1) and 38 or 30
-        timerIceBarrage:Start(delayIceBarrage)
+        timerNextIceBarrage:Start(delayIceBarrage)
     elseif args.spellId == 2129159 then
         frozenOrbCounter = frozenOrbCounter + 1
         local delayFrozenOrb = (absoluteZeroCast and frozenOrbCounter == 1) and 38 or 30
-        timerFrozenOrb:Start(delayFrozenOrb)
+        timerNextFrozenOrb:Start(delayFrozenOrb)
     end
 end
