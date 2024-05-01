@@ -13,19 +13,25 @@ mod:RegisterEvents(
 	"UNIT_HEALTH",
 	"CHAT_MSG_MONSTER_YELL"
 )
-
+--197216 Fear ID
+--19202 Massive Shadow Flame Bolt 
+--197221 - Shadow Flame Breath 20 sec ICD
+--Start timer on first bellowing roar
+--45 sec CD on fear
+--30 sec after first breath, class call
+--
 local warnClassCallSoon	= mod:NewAnnounce("WarnClassCallSoon", 2)
 local warnClassCall		= mod:NewAnnounce("WarnClassCall", 3)
 local warnPhaseSoon		= mod:NewAnnounce("WarnPhaseSoon", 2)
 local warnPhase			= mod:NewAnnounce("WarnPhase", 3)
 local warnShadowFlame	= mod:NewCastAnnounce(22539, 2)
-local warnFear			= mod:NewCastAnnounce(22686, 2)
+local warnFear			= mod:NewCastAnnounce(197216, 2)
 local warnVeilShadow	= mod:NewTargetAnnounce(22687, 3)
 local warnMC			= mod:NewTargetAnnounce(22667, 4)
 
 local timerClassCall	= mod:NewTimer(30, "TimerClassCall")
 local timerShadowFlame	= mod:NewCastTimer(2, 22539)
-local timerFearNext		= mod:NewNextTimer(30, 22686)
+local timerFearNext		= mod:NewNextTimer(45, 197216)
 local timerVeilShadow	= mod:NewTargetTimer(6, 22687)
 local timerMC			= mod:NewTargetTimer(15, 22667)
 
@@ -38,7 +44,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(22539) and self:IsInCombat() then
 		warnShadowFlame:Show()
 		timerShadowFlame:Start()
-	elseif args:IsSpellID(22686) and self:IsInCombat() then
+	elseif args:IsSpellID(197216) and self:IsInCombat() then
 		warnFear:Show()
 		timerFearNext:Start()
 	end

@@ -1,90 +1,122 @@
+local DBM = require("DBM") -- assuming DBM is a module you have in your project
 local mod	= DBM:NewMod("Chromaggus", "DBM-BWL", 1)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 188 $"):sub(12, -3))
 mod:SetCreatureID(14020)
-mod:RegisterCombat("combat")
+mod:RegisterCombat("combat",14020)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"UNIT_HEALTH"
+    "SPELL_AURA_APPLIED"
 )
 
-local warnBreathSoon	= mod:NewAnnounce("WarnBreathSoon", 1, 23316)
-local warnBreath		= mod:NewAnnounce("WarnBreath", 2, 23316)
-local warnRed			= mod:NewTargetAnnounce(23155, 2, nil, false)
-local warnGreen			= mod:NewTargetAnnounce(23169, 2, nil, false)
-local warnBlue			= mod:NewTargetAnnounce(23153, 2, nil, false)
-local warnBlack			= mod:NewTargetAnnounce(23154, 2, nil, false)
-local warnBronze		= mod:NewSpellAnnounce(23170, 2)
-local warnEnrage		= mod:NewSpellAnnounce(23128)
-local warnPhase2Soon	= mod:NewAnnounce("WarnPhase2Soon")
-local warnPhase2		= mod:NewPhaseAnnounce(2)
+--ORDER FOR PHASES IS BELOW
+--FROST, FIRE, SHADOW, NATURE, ARCANE
 
-local specWarnBronze	= mod:NewSpecialWarningYou(23170)
+--breath 15 sec cd
+--intermission 30 sec
+--Phase transmission 3 sec
+--enrage 6:48~6:50
+--Flame, Frost, Arcane, Acidic, Shadow Breath
 
-local timerBreath		= mod:NewTimer(2, "TimerBreath")
-local timerBreathCD		= mod:NewTimer(60, "TimerBreathCD")
-local timerEnrage		= mod:NewBuffActiveTimer(8, 23128)
+--Brood Affliction: Blue    197228
+--Frost Burn 197232
+--Frost Breath 197233
+
+--Brood Affliction: Red     197223
+--Incinerate 197201
+--Flame Breath 197205
+
+--Brood Affliction: Black   197203
+--Engulfing Shadow 197208
+--2111309
+--Shadow Breath 197212
+
+--Brood Affliction: Green   197210
+--Corrosive Acid 197215
+--Acidic Breath 197220
+
+--Brood Affliction: Bronze  197216
+--Time Lapse 197222
+--Arcane Breath 197224
 
 
-local prewarn_P2
-function mod:OnCombatStart(delay)
-	warnBreathSoon:Schedule(25-delay)
-	timerBreathCD:Start(30-delay, "Breath 1")
-	timerBreathCD:Start(-delay, "Breath 2")
-	prewarn_P2 = false;
+
+
+--local specWarnRed   	    = mod:NewSpecialWarningYou(197223, 3)
+--local specWarnGreen 	    = mod:NewSpecialWarningYou(197210, 3)
+--local warnBreathSoon	    = mod:NewAnnounce("WarnBreathSoon", 1, 23316)
+--local warnBreath		    = mod:NewAnnounce("WarnBreath", 2, 23316)
+
+local enrageTimer		    = mod:NewBerserkTimer(408)
+--Phases
+local timerBlueNext			= mod:NewNextTimer(34, 2111286)
+local timerRedNext			= mod:NewNextTimer(34, 2111263)
+local timerBlackNext		= mod:NewNextTimer(34, 2111309)
+local timerGreenNext		= mod:NewNextTimer(34, 2111273)
+local timerBronzeNext		= mod:NewNextTimer(34, 2111296)
+--Debuffs
+local specWarnBlue	        = mod:NewSpecialAnnounceYou(197228, 3)
+local specWarnBlack	        = mod:NewSpecialAnnounceYou(197203, 3)
+local specWarnBronze	    = mod:NewSpecialAnnounceYou(197216, 3)
+--Breaths
+local timerFrostBreath		= mod:NewNextTimer(6, 2111240)
+local timerFlameBreath		= mod:NewNextTimer(6, 2111230)
+local timerShadowBreath		= mod:NewNextTimer(6, 2111235)
+local timerAcidicBreath		= mod:NewNextTimer(6, 197220)
+local timerArcaneBreath		= mod:NewNextTimer(6, 197224)
+local timerBreathCD		    = mod:NewTimer(15, 197212)
+
+
+--functions
+
+function mod:FirstPhase()
+    timerBlueNext:Start(10)
+    timerBreathCD:Start(16)
 end
 
+function mod:onCombatStart(delay)
+    enrageTimer:Start(-delay)
+        self:ScheduleMethod(0,"FirstPhase")
+end
+
+function mod:secondBreath(delay)
+    timerBreathCD:Start(15)
+end
+
+--Combat Log reading
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(23309, 23313, 23189, 23316) or args:IsSpellID(23312) then
-		warnBreathSoon:Cancel()
-		warnBreathSoon:Schedule(25)
-		warnBreath:Show(args.spellName)
-		timerBreath:Start(args.spellName)
-	end
+    if args:IsSpellID(2111286) then
+        self:ScheduleMethod(6, "secondBreath")
+        timerFrostBreath:Start(6)
+        timerRedNext:Start(34)
+    elseif args:IsSpellID(2111263) then
+        self:ScheduleMethod(6, "secondBreath")
+        timerFlameBreath:Start(6)
+        timerBlackNext:Start(34)
+    elseif args:IsSpellID(2111309) then
+        self:ScheduleMethod(6, "secondBreath")
+        timerShadowBreath:Start(6)
+        timerGreenNext:Start(34)
+    elseif args:IsSpellID(2111273) then
+        self:ScheduleMethod(6, "secondBreath")
+        timerAcidicBreath:Start(6)
+        timerBronzeNext:Start(34)
+    elseif args:IsSpellID(2111296) then
+        self:ScheduleMethod(6, "secondBreath")
+        timerArcaneBreath:Start(6)
+        timerBlueNext:Start(34)
+    end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(23170) then
-		warnBronze:Show()
-	end
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(23155) then
-		warnRed:Show(args.destName)
-	elseif args:IsSpellID(23169) then
-		warnGreen:Show(args.destName)
-	elseif args:IsSpellID(23153) then
-		warnBlue:Show(args.destName)
-	elseif args:IsSpellID(23154) then
-		warnBlack:Show(args.destName)
-	elseif args:IsSpellID(23170) then
-		warnBronze:Show()
-		if args:IsPlayer() then
-			specWarnBronze:Show()
-		end
-	elseif args:IsSpellID(23128) then
-		warnEnrage:Show()
-		timerEnrage:Start()
-	elseif args:IsSpellID(23537) then
-		warnPhase2:Show()
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(23128) then
-		timerEnrage:Cancel()
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.25 and self:GetUnitCreatureId(uId) == 14020 and not prewarn_P2 then
-		warnPhase2Soon:Show()
-		prewarn_P2 = true
-	end
+    function mod:SPELL_AURA_APPLIED(args)
+    if args.IsSpellID(197228) and args:IsPlayer() then
+        specWarnBlue:Show()
+    elseif args.isSpellID(197216) and args:IsPlayer() then
+        specWarnBronze:Show()
+    elseif args.IsSpellID(197203) and args:IsPlayer() then
+        specWarnBlack:Show()
+    end
 end
