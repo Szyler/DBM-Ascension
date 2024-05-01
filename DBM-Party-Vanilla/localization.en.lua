@@ -559,3 +559,8 @@ L = DBM:GetModLocalization("Pusillin")
 L:SetGeneralLocalization({
 	name = "Pusillin"
 })
+L = DBM:GetModLocalization("Mythic Champion")
+
+L:SetGeneralLocalization({
+	name = "Mythic Champion"
+})

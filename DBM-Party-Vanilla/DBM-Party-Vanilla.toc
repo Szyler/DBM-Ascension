@@ -8,11 +8,12 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: Vanilla
 ## X-DBM-Mod-Has-Heroic-Mode: 0
-## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme
+## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Blackfathom Deeps
 ## X-DBM-Mod-Name: Party-Vanilla
 ## X-DBM-Mod-Sort: 125
-## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme
+## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Blackfathom Deeps
 
+MythicChampion.lua
 localization.en.lua
 Scholomance\BloodSteward.lua
 Scholomance\Kirtonos.lua
@@ -124,3 +125,16 @@ Dire Maul\Tendris.lua
 Dire Maul\Thimblejack.lua
 Dire Maul\Tsuzee.lua
 Dire Maul\Zevrim.lua
+Blackfathom Deeps\GhamooRa.lua
+Blackfathom Deeps\Gelihast.lua
+Blackfathom Deeps\LorgusJett.lua
+Blackfathom Deeps\OldSerrakis.lua
+Blackfathom Deeps\TwilightLord.lua
+Blackfathom Deeps\Zora.lua
+Blackfathom Deeps\AkuMai.lua
+
+
+
+
+
+
