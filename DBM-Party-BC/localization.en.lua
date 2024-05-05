@@ -1153,5 +1153,19 @@ L:SetMiscLocalization({
 	KaelP2	= "I'll turn your world... upside... down."
 })
 
+------------------------------------
+--  Kael'thas Sunstrider (Party)  --
+------------------------------------
+L = DBM:GetModLocalization("Mythic Champion")
 
+L:SetGeneralLocalization({
+	name = "Mythic Champion"
+})
+--------------------------
+--  Mythic Champion TBC --
+--------------------------
+L = DBM:GetModLocalization("Mythic Champion")
 
+L:SetGeneralLocalization({
+	name = "Mythic Champion"
+})
