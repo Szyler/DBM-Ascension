@@ -84,14 +84,12 @@ local timerMagmaInfusion            = mod:NewBuffActiveTimer(30, 2129118)
 local timerFirefromtheSkys          = mod:NewCastTimer(6, 2129123)
 local timerFlameTorrent             = mod:NewCastTimer(6, 2129112)
 
+local firstAbilityUsed = false
 
 mod:AddBoolOption("SetIconOnBombTarget", true)
 
 function mod:OnCombatStart(delay)
-    timerNextLivingBomb:Start(2-delay)
-    timerNextMagmaInfusion:Start(4-delay)
-    timerNextFirefromtheSkys:Start(19-delay)
-    timerNextFlameTorrent:Start(25-delay)
+    firstAbilityUsed = false
 end
 
 
@@ -161,6 +159,13 @@ function mod:SPELL_AURA_APPLIED(args)
         timerNextFirefromtheSkys:AddTime(6)
     elseif args:IsSpellID(2129107)  then
         timerNextMeltDown:Start()
+        if not firstAbilityUsed then
+            timerNextLivingBomb:Start(2-delay)
+            timerNextMagmaInfusion:Start(4-delay)
+            timerNextFirefromtheSkys:Start(19-delay)
+            timerNextFlameTorrent:Start(25-delay)
+            firstAbilityUsed = true
+        end
     end
 end
 
