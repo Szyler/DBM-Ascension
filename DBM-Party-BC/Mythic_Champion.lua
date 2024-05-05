@@ -66,33 +66,32 @@ local timerNextFrozenOrb      		= mod:NewNextTimer(30, 2129159)
 local timerNextIceBarrage      		= mod:NewNextTimer(30, 2129161)
 --local IceBarrageCast      		= mod:NewCastTimer(2, 2129161)
 
-local warnMagmaInfusion             = mod:NewSpellAnnounce(SPELL_ID_MAGMA_INFUSION, 2)
-local warnBurningGround             = mod:NewSpellAnnounce(SPELL_ID_MAGMA_INFUSION, 3)
-local warnLivingBombTarget          = mod:NewSpecialWarningYou()
 
-local timerNextLivingBomb           = mod:NewNextTimer(30, SPELL_ID_LIVING_BOMB)
-local timerNextMagmaInfusion        = mod:NewNextTimer(30, SPELL_ID_MAGMA_INFUSION)
-local timerNextFirefromtheSkys      = mod:NewNextTimer(30, SPELL_ID_FirefromtheSkys)
-local timerNextFlameTorrent         = mod:NewNextTimer(30, SPELL_ID_FLAME_TORRENT)
 
-local timerTargetLivingBombTarget   = mod:NewTargetTimer(30, SPELL_ID_LIVING_BOMB_TARGET)
-local timerMagmaInfusion            = mod:NewBuffActiveTimer(30, SPELL_ID_MAGMA_INFUSION)
+local warnMagmaInfusion             = mod:NewSpellAnnounce(2129118, 2)
+local warnBurningGround             = mod:NewSpellAnnounce(2129129, 3)
+local warnLivingBombTarget          = mod:NewSpecialWarningYou(2129133, 4)
 
-local timerFirefromtheSkys          = mod:NewCastTimer(30, SPELL_ID_FIRE_FROM_THE_SKYS)
-local timerFlameTorrent             = mod:NewCastTimer(30, SPELL_ID_FLAME_TORRENT)
+local timerNextLivingBomb           = mod:NewNextTimer(12, 2129123)
+local timerNextMeltDown             = mod:NewNextTimer(20, 2129107)
+local timerNextMagmaInfusion        = mod:NewNextTimer(30, 2129118)
+local timerNextFlameTorrent         = mod:NewNextTimer(30, 2129112)
+local timerNextFirefromtheSkys      = mod:NewNextTimer(90, 2129123)
+
+local timerTargetLivingBomb         = mod:NewTargetTimer(30, 2129133)
+local timerMagmaInfusion            = mod:NewBuffActiveTimer(30, 2129118)
+
+local timerFirefromtheSkys          = mod:NewCastTimer(6, 2129123)
+local timerFlameTorrent             = mod:NewCastTimer(6, 2129112)
 
 
 mod:AddBoolOption("SetIconOnBombTarget", true)
 
 function mod:OnCombatStart(delay)
-	councilDeath = 0
-	timerNextPaintoPleasure:Start(25-delay)
-	timerNextSmokeBomb:Start(33-delay)
-	timerNextDeathSentence:Start(15-delay)
-	timerNextConsecrate:Start(10-delay)
-	timerNextRuneofPower:Start(45-delay)
-	timerNextSadism:Start(60-delay)
-	self:ScheduleMethod(33-delay,"SmokeBomb")
+    timerNextLivingBomb:Start(2-delay)
+    timerNextMagmaInfusion:Start(4-delay)
+    timerNextFirefromtheSkys:Start(19-delay)
+    timerNextFlameTorrent:Start(25-delay)
 end
 
 
@@ -130,30 +129,38 @@ function mod:SPELL_CAST_START(args)
         local delayFrozenOrb = (absoluteZeroCast and frozenOrbCounter == 1) and 38 or 30
         timerNextFrozenOrb:Start(delayFrozenOrb)
 
-    ---Fire Champions
-    elseif args:IsSpellID(SPELL_ID_FirefromtheSkys)  then
-        timerNextFirefromtheSkys:Start(30)
-        timerFirefromtheSkys:Start(30)
-    elseif args:IsSpellID(SPELL_ID_FLAME_TORRENT)  then
-        timerNextFlameTorrent:Start(30)
-        timerFlameTorrent:Start(30)
+---Fire Champions
+    elseif args:IsSpellID(2129112)  then
+        timerNextFlameTorrent:Start()
+        timerFlameTorrent:Start()
     end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
             ---Fire Champions
-    if args:IsSpellID(SPELL_ID_MAGMA_INFUSION)  then
+    if args:IsSpellID(2129118)  then
         warnMagmaInfusion:Show()
-        timerNextMagmaInfusion:Start(30)
+        timerNextMagmaInfusion:Start()
         timerMagmaInfusion:Start()
-    elseif args:IsSpellID(SPELL_ID_LIVING_BOMB)  then
+    elseif args:IsSpellID(2129123)  then
         warnLivingBombTarget:Show()
-        timerNextLivingBomb:Start(30)
-        timerTargetLivingBombTarget:Start(args.destName)
-    elseif args:IsSpellID(SPELL_ID_BURNING_GROUND) then
+        timerNextLivingBomb:Start()
+        timerTargetLivingBomb:Start(args.destName)
+    elseif args:IsSpellID(2129129) then
         if args:IsPlayer() then
             warnBurningGround:Show()
         end
+    elseif args:IsSpellID(2129123)  then
+        timerNextFirefromtheSkys:Start()
+        timerFirefromtheSkys:Start()
+
+        timerNextLivingBomb:AddTime(6)
+        timerNextMeltDown:AddTime(6)
+        timerNextMagmaInfusion:AddTime(6)
+        timerNextFlameTorrent:AddTime(6)
+        timerNextFirefromtheSkys:AddTime(6)
+    elseif args:IsSpellID(2129107)  then
+        timerNextMeltDown:Start()
     end
 end
 
