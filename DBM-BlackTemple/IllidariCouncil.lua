@@ -24,7 +24,7 @@ local timerNextSadism				= mod:NewNextTimer(45, 2144464)
 local timerSadism					= mod:NewCastTimer(3.5, 2144464)
 
 --- Mythic/Ascended
-local specWarnEmpoweredSadism		= mod:NewSpecialWarning("Empowered Sadism", 2144514, 3)
+local specWarnEmpoweredSadism		= mod:NewSpecialWarningSpell(2144514)
 local timerCastEmpoweredSadism		= mod:NewCastTimer(3.5, 2144514)
 
 
@@ -33,10 +33,10 @@ local warnSmokeBomb					= mod:NewSpellAnnounce(2144560, 3)
 local timerNextSmokeBomb			= mod:NewNextTimer(60, 2144560)
 
 --Gathios the Shatterer
-local warnDeathSentence 			= mod:NewAnnounce("Death Sentence on %s", 3, 2144260)
-local warnEmpoweredDeathSentence	= mod:NewAnnounce("Empowered Death Sentence on %s", 3, 214431)
+local warnDeathSentence				= mod:NewTargetAnnounce(2144260, 3)
+local warnEmpoweredDeathSentence	= mod:NewTargetAnnounce(2144310, 3)
 local specWarnDeathSentence			= mod:NewSpecialWarningYou(2144260)
-local specWarnEmpoweredDeathSentence= mod:NewSpecialWarning("Empowered Death Sentence on you", 3, 214431)
+local specWarnEmpoweredDeathSentence= mod:NewSpecialWarningYou(2144310, 4)
 
 local timerNextDeathSentence		= mod:NewNextTimer(60, 2144260)
 local timerDeathSentence			= mod:NewTargetTimer(10, 2144260)
@@ -48,8 +48,8 @@ local warnNetherprotection			= mod:NewSpellAnnounce(2144351, 3)
 local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
 
 --Authority
-local timerCrownofCommand			= mod:NewTimer(18, "Crown of Command on %s", 2144201)
-local warnCrownofCommand			= mod:NewAnnounce("Crown of Command on %s", 3, 2144201)
+local timerCrownofCommand			= mod:NewTargetTimer(18, 2144201)
+local warnCrownofCommand			= mod:NewSpellAnnounce(2144201, 3)
 local councilDeath = 0
 
 function mod:OnCombatStart(delay)
