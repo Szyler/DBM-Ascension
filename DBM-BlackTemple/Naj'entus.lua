@@ -23,6 +23,7 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 
 local timerNextShield		= mod:NewNextTimer(80, 2142521)
 local timerNextDischarge	= mod:NewNextTimer(20, 2142504)
+local timerDischarge		= mod:NewTargetTimer(8, 2142504)
 local timerTargetSpine		= mod:NewTargetTimer(30, 2142516)
 local timerNextSpine		= mod:NewNextTimer(30, 2142516)
 
@@ -59,6 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextShield:Start()
 		timerNextSpine:Start(10)
 	elseif args:IsSpellID(2142504) then
+		timerDischarge:Start()
 		if args:IsPlayer() then
 			if self.Options.DischargeYellOpt then
 				SendChatMessage(L.SayDischargeFade, "SAY")
