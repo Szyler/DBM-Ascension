@@ -69,7 +69,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSoulBlast:Show()
 	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) and DBM:AntiSpam() then
 		warnSoulDrain:Show()
-	elseif args:IsSpellID(2143808) then
+	elseif args:IsSpellID(2143808) and self:GetCIDFromGUID(args.destGUID) == 23418 then
 		warnRuneShield:Show()
 		timerRuneShield:Start(args.destName)
 	elseif args:IsSpellID(2143808) then
@@ -97,7 +97,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2143808) then
+	if args:IsSpellID(2143808) and self:GetCIDFromGUID(args.destGUID) == 23418 then
 		-- warnRuneShield:Hide()
 		timerRuneShield:Stop()
 	end
