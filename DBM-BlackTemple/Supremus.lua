@@ -38,7 +38,7 @@ mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
 	oldMarkThreat = 0
-	self:ScheduleMethod(10-delay, "NewAdds")
+	self:ScheduleMethod(-delay, "NewAdds")
 	self:ScheduleMethod(15-delay, "NewPillar")
 	timerEnrage:Start()
 end
