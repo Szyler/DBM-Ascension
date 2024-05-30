@@ -106,7 +106,8 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2142516, 2142517, 2142518, 2142519) then
 		timerTargetSpine:Stop()
 		if self.Options.SpineIconsOpt then
-			spineWreathIcon = spineWreathIcon + 1
+			self:RemoveIcon(args.destName, 0)
+			spineWreathIcon = math.min(spineWreathIcon + 1, 8) or 8
 		end
 	elseif args:IsSpellID(2142504) then
 		if args:IsPlayer() then
