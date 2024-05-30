@@ -23,7 +23,7 @@ local warnThreatDetected			= mod:NewTargetAnnounce(2142765, 3)
 local timerTitanic					= mod:NewCastTimer(6, 2142758)
 local timerSupreme					= mod:NewCastTimer(2, 2142764)
 local timerThreatDetected			= mod:NewTargetTimer(120, 2142765)
-local timerNextAdds					= mod:NewNextTimer(15, 29316)
+local timerNextAdds					= mod:NewNextTimer(45, 29316)
 
 local timerEruption					= mod:NewCastTimer(4, 2142774)
 local timerNextPillar				= mod:NewNextTimer(20, 2136441)
@@ -38,7 +38,8 @@ mod:AddBoolOption(L.threatIconsOpt)
 
 function mod:OnCombatStart(delay)
 	oldMarkThreat = 0
-	self:ScheduleMethod(-delay, "NewAdds")
+	timerNextAdds:Start(15)
+	self:ScheduleMethod(15-delay, "NewAdds")
 	self:ScheduleMethod(15-delay, "NewPillar")
 	timerEnrage:Start()
 end
