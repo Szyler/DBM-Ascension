@@ -67,7 +67,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerThreatDetected:Stop()
 		timerThreatDetected:Start(args.destName)
 		if self.Options.threatIconsOpt then
-			oldMarkThreat, oldMarkTarget = self:GetIcon(args.destName), args.destName
+			oldMarkThreat, oldMarkTarget = self:GetIcon(args.destName) or 0, args.destName
 			self:SetIcon(args.destName, 8, 120)
 		end
 	end
@@ -76,7 +76,7 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2142765) then
 		if self.Options.threatIconsOpt then
-			self:SetIcon(oldMarkTarget, oldMarkThreat or 0)
+			self:SetIcon(oldMarkTarget or args.destName, oldMarkThreat or 0)
 		end
 	end
 end
