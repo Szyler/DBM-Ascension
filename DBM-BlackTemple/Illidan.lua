@@ -48,8 +48,8 @@ local specWarnEyebeam		= mod:NewSpecialWarning("Eyebeam on >YOU!<", 2144766)
 
 local timerNextBarrage		= mod:NewNextTimer(10, 2144811)
 local timerBarrage			= mod:NewTargetTimer(10, 2144811)
-local timerEyebeam			= mod:NewCastTimer(20, 2144766)
-local timerNextEyebeam		= mod:NewNextTimer(35, 2144766)
+local timerEyebeam			= mod:NewCastTimer(20, 2144816)
+local timerNextEyebeam		= mod:NewNextTimer(35, 2144816)
 local timerLanding			= mod:NewTimer(7, "Illidan is targetable", 560576)
 
 local specWarnChaosBlast	= mod:NewSpecialWarning("Chaos Blast on you", 2144803)
@@ -104,6 +104,7 @@ local specWarnHatred 		= mod:NewSpecialWarning("Unleash Hatred!", 2145065)
 
 local timerMotes			= mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
 local timerP5RP				= mod:NewTimer(49, "Illidan tranformation RP", 2145004)
+local timerDyingRP			= mod:NewTimer(23, "Illidan dying RP", 2145004)
 local timerSoulShear		= mod:NewNextTimer(35, 2145040)
 local timerHateCrash		= mod:NewNextTimer(35, 2145025)
 local timerMadness			= mod:NewNextTimer(110, 2145051)
@@ -463,11 +464,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerStun:Start()
 		warnTrapped:Show()
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
-		phase = 6
-		warnPhase5:Schedule(46)
-		timerP5RP:Start()
-		self:ScheduleMethod(0,"CancelP5timers")
-		self:ScheduleMethod(49, "StartP5timers")
+		if mod:IsDifficulty("heroic25") then
+			phase = 6
+			warnPhase5:Schedule(46)
+			timerP5RP:Start()
+			self:ScheduleMethod(0,"CancelP5timers")
+			self:ScheduleMethod(49, "StartP5timers")
+		else
+			timerDyingRP:Start()
+		end
 	end
 end
 
