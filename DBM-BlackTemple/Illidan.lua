@@ -232,15 +232,7 @@ function mod:OnCombatStart(delay)
 	shearCount = 0
 	crashCount = 0
 	EliteCD = 60
-	if LongPullRP == true then
-		self:Schedule(18, illidariElites, self)
-		timerElites:Start(18)
-		timerFlameCrash:Start(28)
-		timerShearCD:Start(38)
-		timerDrawSoul:Start(43)
-		timerBladeCD:Start(48)
-		self:Schedule(5, Prepared, self)
-	else
+	if LongPullRP == false or nil then
 		self:Schedule(8, illidariElites, self)
 		timerElites:Start(8)
 		timerFlameCrash:Start(18)
@@ -425,7 +417,14 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Pull or msg:find(L.Pull) then
 		timerLongRPStart:Start()
 		LongPullRP = true
-	elseif msg == L.RealPull and LongPullRP == false and prepared == false then
+		self:Schedule(18, illidariElites, self)
+		timerElites:Start(18)
+		timerFlameCrash:Start(28)
+		timerShearCD:Start(38)
+		timerDrawSoul:Start(43)
+		timerBladeCD:Start(48)
+		self:Schedule(5, Prepared, self)
+	elseif msg == L.RealPull or msg:find(L.RealPull) and prepared == false or nil then
 		timerShortRPStart:Start()
 	elseif msg == L.Demon or msg:find(L.Demon) then
 		warnDemonForm:Show()
