@@ -3,6 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22949, 22950, 22951, 22952)
+mod:SetUsedIcons(4,5,6)
 mod:RegisterCombat("combat", 22949, 22950, 22951, 22952)
 
 mod:RegisterEvents(
@@ -96,7 +97,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnDeathSentence:Show(args.destName)
 		end
 		timerDeathSentence:Start(args.destName)
-		self:SetIcon(args.destName, 8, 15)
+		if DBM:AntiSpam(2) then
+			self:SetIcon(args.destName, 6, 15)
+		elseif DBM:AntiSpam(2) then
+			self:SetIcon(args.destName, 5, 10)
+		else
+			self:SetIcon(args.destName, 4, 10)
+		end
 		if DBM:AntiSpam(2,5) then
 			if councilDeath == 0 then
 				timerNextDeathSentence:Start(60)
@@ -110,23 +117,29 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2144310) then
 		if args:IsPlayer() then
-				specWarnEmpoweredDeathSentence:Show();
+			specWarnEmpoweredDeathSentence:Show();
 		else
-		warnEmpoweredDeathSentence:Show(args.destName)
+			warnEmpoweredDeathSentence:Show(args.destName)
 		end
 		timerDeathSentence:Start(args.destName)
-			self:SetIcon(args.destName, 8, 15)
-			if DBM:AntiSpam(2,4) then
-				if councilDeath == 0 then
-					timerNextDeathSentence:Start(60)
-				elseif councilDeath == 1 then
-					timerNextDeathSentence:Start(45)
-				elseif councilDeath == 2 then
-					timerNextDeathSentence:Start(30)
-				elseif councilDeath == 3 then
-					timerNextDeathSentence:Start(15)
-				end
+		if DBM:AntiSpam(2) then
+			self:SetIcon(args.destName, 6, 15)
+		elseif DBM:AntiSpam(2) then
+			self:SetIcon(args.destName, 5, 10)
+		else
+			self:SetIcon(args.destName, 4, 10)
+		end
+		if DBM:AntiSpam(2,4) then
+			if councilDeath == 0 then
+				timerNextDeathSentence:Start(60)
+			elseif councilDeath == 1 then
+				timerNextDeathSentence:Start(45)
+			elseif councilDeath == 2 then
+				timerNextDeathSentence:Start(30)
+			elseif councilDeath == 3 then
+				timerNextDeathSentence:Start(15)
 			end
+		end
 	elseif args:IsSpellID(2144256) then
 		timerNextConsecrate:Start()
 	elseif args:IsSpellID(2144368, 2144418) and DBM:AntiSpam(20, 2) then
