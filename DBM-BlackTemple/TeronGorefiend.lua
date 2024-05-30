@@ -18,8 +18,17 @@ local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
 local timerNextWitherAndRot		= mod:NewNextTimer(30, 2143286)
 local timerNextGraspingDeath	= mod:NewNextTimer(30, 2143282)
 local timerNextShadowofDeath	= mod:NewNextTimer(30, 2143264)
+local timerTargetShadowofDeaths	= mod:NewTargetTimer(37, 2143264)
 local timerTargetShadowofDeath	= mod:NewTargetTimer(37, 2143264)
 local timerTargetShadowofDeath2	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath3	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath4	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath5	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath6	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath7	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath8	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath9	= mod:NewTargetTimer(75, 2143264)
+local timerTargetShadowofDeath10= mod:NewTargetTimer(75, 2143264)
 local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 --Shadow of death has different timer for everyone.  First person to expire has to run out.
@@ -41,9 +50,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(29) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
-	elseif args:IsSpellID(2143264, 2143258, 2143259) and DBM:AntiSpam() then
+	elseif args:IsSpellID(2143264, 2143258, 2143259)  then --and DBM:AntiSpam()
 		warnShadowOfDeath:Show()
-		timerNextShadowofDeath:Start()
+		-- timerNextShadowofDeath:Start()
+		-- timerTargetShadowofDeaths:Start()
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
 		warnSoulReaper:Show()
 		timerSoulReaper:Start()
@@ -61,12 +71,26 @@ function mod:UNIT_AURA(args)
 		if (not name) then return end
 		if not spellId or not expires then return end
 		if expires > 0 then
-			if expires < 60 then
+		elseif expires < 30 and DBM:AntiSpam(500) then
 				timerTargetShadowofDeath:Start(expires, name)
-			end
-			if expires < 130 and expires > 60 then
-				timerTargetShadowofDeath2:Start(expires, name)
-			end
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath2:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath3:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath4:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath5:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath6:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath7:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath8:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath9:Start(expires, name)
+		elseif DBM:AntiSpam(500) then
+			timerTargetShadowofDeath10:Start(expires, name)
 		end
 	end
 end
