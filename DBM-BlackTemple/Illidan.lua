@@ -500,18 +500,18 @@ end
 end
 
 function mod:UNIT_AURA(unit)
-	if illidan == true then
-	Name = UnitName(unit)
-	if UnitDebuff(unit, "Betrayer's Gaze") and eyebeamTarget == 0 and DBM:AntiSpam(2,4) then
+if illidan == true then
+	if phase == 2 and eyebeamTarget == 0 and UnitDebuff(unit, "Betrayer's Gaze") and DBM:AntiSpam(35) then
 		eyebeamTarget = 1
+		Name = UnitName(unit)
 		if Name == UnitName("player") then
-		specWarnEyebeam:Show()
-		SendChatMessage("Eye Beam on "..UnitName("PLAYER").."!", "SAY")
+			specWarnEyebeam:Show()
+			SendChatMessage("Eye Beam on "..UnitName("PLAYER").."!", "SAY")
 		else
-		warnEyebeamTarget:Show(Name)
+			warnEyebeamTarget:Show(Name)
  		end
-		 self:SetIcon(Name, 8, 10)
-		 self:ScheduleMethod(10,"EyeBeamReset")
+		self:SetIcon(Name, 8, 10)
+		self:ScheduleMethod(10,"EyeBeamReset")
 	end
 	if UnitDebuff("Boss", "Struggle for Control") and DBM:AntiSpam(105, 3) then
 		warnStruggle:Show()
