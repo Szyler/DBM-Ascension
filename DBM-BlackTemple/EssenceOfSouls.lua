@@ -26,7 +26,10 @@ local timerTargetSpiritShock = mod:NewTargetTimer(5, 2143804)
 
 local warnSoulBlast = mod:NewSpellAnnounce(2143961, 2)
 local warnSoulDrain = mod:NewSpellAnnounce(2143760, 2)
-local timerNextSoulDrain = mod:NewNextTimer(20, 2143760)
+local timerNextSoulDrain = mod:NewNextTimer(30, 2143760)
+
+local warnVengenace = mod:NewSpellAnnounce(2143764, 2)
+local timerNextVengenace = mod:NewNextTimer(30, 2143764)
 
 local warnRuneShield = mod:NewSpellAnnounce(2143808, 2)
 local timerRuneShield = mod:NewTargetTimer(15, 2143808)
@@ -56,6 +59,8 @@ local warnAuraOfAnger = mod:NewSpellAnnounce(2143850, 2)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
+	timerNextSoulDrain:Start(20-delay)
+	timerNextVengenace:Start(32-delay)
 	-- isSuffer = true
 	-- isDesire = false
 	-- isAnger = false
@@ -69,6 +74,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSoulBlast:Show()
 	elseif args:IsSpellID(2143760, 2143761, 2143762, 2143763) and DBM:AntiSpam() then
 		warnSoulDrain:Show()
+		timerNextSoulDrain:Start()
 	elseif args:IsSpellID(2143808) and self:GetCIDFromGUID(args.destGUID) == 23418 then
 		warnRuneShield:Show()
 		timerRuneShield:Start(args.destName)
@@ -109,6 +115,8 @@ function mod:SPELL_CAST_START(args)
 		warnSoulScream:Show()
 		timerSoulScream:Start()
 		timerNextSoulScream:Start()
+	elseif args:IsSpellID(2143764) then
+		warnVengenace:Show()
 	end
 end
 
