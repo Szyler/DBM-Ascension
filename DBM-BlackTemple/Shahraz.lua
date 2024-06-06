@@ -55,7 +55,7 @@ local warningWiShahrazVirgo		= mod:NewAnnounce(L.ShahrazVirgo, 2, 2144096)
 
 --Ascended
 local warningALittleChat		= mod:NewSpellAnnounce(2144007, 3)
-local timerNextALittleChat		= mod:NewNextTimer(48, 2144007)
+local timerNextALittleChat		= mod:NewNextTimer(49, 2144007)
 
 --local
 local isMother		=	false
@@ -65,7 +65,7 @@ local below10		=   false
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
 	timerNextFatalAttraction:Start(35-delay)
-	timerNextALittleChat:Start(20-delay)
+	timerNextALittleChat:Start(24-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
 	below20		=   false
 	below10		=   false
@@ -111,6 +111,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warningWiShahrazVirgo:Show()
 	elseif args:IsSpellID(2144007) then
 		warningALittleChat:Show()
+		timerNextALittleChat:Start()
 	end
 end
 
