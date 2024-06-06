@@ -65,7 +65,7 @@ local below10		=   false
 function mod:OnCombatStart(delay)
 	timerNextForcedThoughts:Start(15-delay)
 	timerNextFatalAttraction:Start(35-delay)
-	timerNextALittleChat:Start(24-delay)
+	timerNextALittleChat:Start(20-delay)
 	self:ScheduleMethod(15-delay, "NewThoughts")
 	below20		=   false
 	below10		=   false
@@ -84,10 +84,8 @@ function mod:NewThoughts()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2144012) then
-		warningFatalAttraction:Show()
-		timerNextFatalAttraction:Start()
-	elseif args:IsSpellID(2144050, 2144051) then
+
+	if args:IsSpellID(2144050, 2144051) then
 		warningBossRunning:Show()
 		timerSinfulThoughts:Stop()
 		timerSinisterThoughts:Stop()
@@ -157,6 +155,9 @@ function mod:SPELL_DAMAGE(args)
 			timerVileThoughts:Stop()
 			timerWickedThoughts:Start()
 		end
+	elseif args:IsSpellID(2144012) and DBM:AntiSpam(15) then
+		warningFatalAttraction:Show()
+		timerNextFatalAttraction:Start()
 	end
 end
 
