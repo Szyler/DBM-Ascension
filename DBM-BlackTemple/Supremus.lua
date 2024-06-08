@@ -61,6 +61,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnPhase2:Show()
 		timerThreatDetected:Stop()
 		timerEnrage:Stop()
+		self:UnscheduleMethod("NewAdds")
+		self:UnscheduleMethod("NewPillar")
 	elseif args:IsSpellID(2142751) then
 		warnCracked:Show(args.spellName, args.destName, args.amount or 1)
 	elseif args:IsSpellID(2142765) then
