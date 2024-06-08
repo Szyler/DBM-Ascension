@@ -53,7 +53,7 @@ end
 function mod:NewAdds()
 	self:UnscheduleMethod("NewAdds")
 	timerNextAdds:Start()
-	self:ScheduleMethod(45, "NewAdds")
+	self:ScheduleMethod(46, "NewAdds")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
