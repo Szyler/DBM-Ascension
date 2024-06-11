@@ -47,6 +47,7 @@ local timerNextConsecrate			= mod:NewNextTimer(15, 2144256, nil, false)
 local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
 local warnNetherprotection			= mod:NewSpellAnnounce(2144351, 3)
 local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
+local timerTargetNetherProtection	= mod:NewTargetTimer(120, 2144351)
 
 --Authority
 local timerCrownofCommand			= mod:NewTargetTimer(18, 2144201)
@@ -146,6 +147,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextRuneofPower:Start()
 	elseif args:IsSpellID(2144351, 2144401) then
 		warnNetherprotection:Show()
+		timerTargetNetherProtection:Start()
 	end
 	if args:IsSpellID(2144201) then
 		timerCrownofCommand:Start(args.destName)
