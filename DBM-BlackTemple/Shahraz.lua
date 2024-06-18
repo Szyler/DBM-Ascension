@@ -55,6 +55,7 @@ local warningWiShahrazVirgo		= mod:NewAnnounce(L.ShahrazVirgo, 2, 2144096)
 
 --Ascended
 local warningALittleChat		= mod:NewSpellAnnounce(2144007, 3)
+local timerCastALittleChat		= mod:NewCastTimer(4, 2144007)
 local timerNextALittleChat		= mod:NewNextTimer(49, 2144007)
 
 --local
@@ -110,6 +111,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2144007) then
 		warningALittleChat:Show()
 		timerNextALittleChat:Start()
+		timerCastALittleChat:Start()
 	end
 end
 
