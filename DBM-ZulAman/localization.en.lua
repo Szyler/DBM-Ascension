@@ -53,7 +53,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
 	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
-	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER")"!"
+	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER").."!"
 }
 
 ---------------
