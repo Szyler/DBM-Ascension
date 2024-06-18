@@ -7,11 +7,13 @@ mod:RegisterCombat("yell", L.DBM_GOREFIEND_YELL_PULL)
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
+	"SPELL_PERIODIC_DAMAGE",
 	"UNIT_AURA"
 )
 
 local warningWitherAndRot		= mod:NewSpellAnnounce(2143286, 3)
 local warningGraspingDeath		= mod:NewSpellAnnounce(2143282, 3)
+local specWarnWitherAndRot		= mod:NewSpecialWarningYou(2143282)
 local warnShadowOfDeath			= mod:NewSpellAnnounce(2143264, 2)
 local warnSoulReaper			= mod:NewSpellAnnounce(2143272, 2)
 
@@ -36,18 +38,28 @@ local timerSoulReaper			= mod:NewNextTimer(20, 2143271)
 
 -- local shadowOfDeathName = GetSpellInfo(2143282)
 
+
+function mod:WitherAndRot()
+	self:UnscheduleMethod("WitherAndRot")
+	warningWitherAndRot:Show()
+	timerNextWitherAndRot:Start()
+	self:ScheduleMethod(30, "WitherAndRot")
+end
+
 function mod:OnCombatStart(delay)
-	timerNextWitherAndRot:Start(15-delay)
-	timerNextGraspingDeath:Start(30-delay)
 	timerNextShadowofDeath:Start(10-delay)
+	timerNextGraspingDeath:Start(15-delay)
 	timerSoulReaper:Start(20-delay)
+	self:ScheduleMethod(15, "WitherAndRot")
+	timerNextGraspingDeath:Start(30-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(29) then
-		warningWitherAndRot:Show()
-		timerNextWitherAndRot:Start()
-	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(29) then
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(1) then
+		if args:IsPlayer() then
+			specWarnWitherAndRot:Show()
+		end
+	elseif args:IsSpellID(2143282, 2143283, 2143284, 2143285) and DBM:AntiSpam(1) then
 		warningGraspingDeath:Show()
 		timerNextGraspingDeath:Start()
 	elseif args:IsSpellID(2143264, 2143258, 2143259)  then --and DBM:AntiSpam()
@@ -57,6 +69,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(2143271, 2143272, 2143273, 2143274) then
 		warnSoulReaper:Show()
 		timerSoulReaper:Start()
+	end
+end
+
+function mod:SPELL_PERIODIC_DAMAGE(args)
+	if args:IsSpellID(2143286, 2143287, 2143288, 2143289) and DBM:AntiSpam(1) then
+		if args:IsPlayer() then
+			specWarnWitherAndRot:Show()
+		end
 	end
 end
 
