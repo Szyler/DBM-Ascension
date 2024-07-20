@@ -306,8 +306,15 @@ function mod:HandleFocusedBurstTarget()
 	end
 end
 
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) and DBM:AntiSpam(20, 1) then
+		timerNextPyro:Start(36)
+	end
+end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE -- Hack to include SPELL_MISSED as well without more code
+
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) then
+	if args:IsSpellID(2135444, 2135445, 2135446, 2135447) and DBM:AntiSpam(20, 1) then
 		pyroCast:Start()
 		timerNextPyro:Start()
 	elseif args:IsSpellID(2135362) then
