@@ -13,6 +13,7 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_DIED",
+	"SPELL_INTERRUPT",
 	"UNIT_HEALTH",
 	"UNIT_AURA"
 )
@@ -35,6 +36,7 @@ local timerFlameCrash		= mod:NewNextTimer(30, 2144720)
 local timerDrawSoul			= mod:NewNextTimer(30, 2144737)
 local timerBladeCD			= mod:NewNextTimer(40, 2144742)
 local timerElites			= mod:NewTimer(60, "Illidari Elites", 804613)
+local timerChainLightning	= mod:NewCastTimer(20, 2144908)
 
 
 -- Stage Two: Flames of Azzinoth
@@ -311,6 +313,8 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2145051,2145052) then
 		warnMadness:Show()
 		timerMadness:Start(110)
+	elseif args:IsSpellID(2144908) then
+		timerChainLightning:Start(3)
 	elseif args:IsSpellID(2145074) then
 		warnHateBeam:Show()
 		timerHateBeam:Start()
@@ -320,6 +324,15 @@ function mod:SPELL_CAST_START(args)
 		timerEyebeam:Start()
 	elseif args:IsSpellID(2144803) then
 		self:ScheduleMethod(0.15,"ChaosBlast")
+	end
+end
+end
+
+
+function mod:SPELL_INTERRUPT(args)
+	if illidan == true then
+	if args:IsSpellID(2144908) then
+		timerChainLightning:Cancel()
 	end
 end
 end
