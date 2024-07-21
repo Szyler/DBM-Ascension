@@ -298,7 +298,7 @@ function mod:HandleFocusedBurstTarget()
 	if target then
 		warnFocusedBurst:Show(target)
 		if mod.vb.phase == 3 and UnitName("player") == target then
-			specWarnFocusedBurst:Show()
+			specWarnFocusedBurstYou:Show()
 		end
 		if self.Options.FocusedBurst then
 			self:SetIcon(target, 7, 8)
