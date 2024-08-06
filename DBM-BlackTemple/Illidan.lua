@@ -209,8 +209,8 @@ end
 
 local function illidariElites(self)
 	self:Unschedule(illidariElites)
-	timerElites:Start(EliteCD)
-	self:Schedule(EliteCD, illidariElites, self)
+	timerElites:Start(EliteCD or 60)
+	self:Schedule(EliteCD or 60, illidariElites, self)
 	warnElites:Show()
 	EliteCD = EliteCD - 5
 end
