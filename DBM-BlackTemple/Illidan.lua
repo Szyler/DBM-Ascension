@@ -126,7 +126,6 @@ local warned_flame = false
 local warned_50demon = false
 local warned_10demon = false
 local LongPullRP = false
-local phase
 local Name
 local bladeCount
 local crashCount
@@ -226,7 +225,7 @@ end
 
 function mod:OnCombatStart(delay)
 	illidan = true
-	phase = 1
+	self.vb.phase = 1
 	warnPhase1:Show()
 	eyebeamTarget = 0
 	castEyebeam = false
@@ -275,19 +274,19 @@ function mod:SPELL_CAST_START(args)
 		timerFlameCrash:Start()
 		warnCrash:Show()
 	elseif args:IsSpellID(2144742, 2145015) then
-		if bladeCount >= 1 and phase == 3 then
+		if bladeCount >= 1 and self.vb.phase == 3 then
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and phase == 5 then
+		elseif bladeCount >= 1 and self.vb.phase == 5 then
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and phase == 6 then
+		elseif bladeCount >= 1 and self.vb.phase == 6 then
 			warnBlade:Show()
 			timerBladeCD:Start(75)
 			bladeCount = 0
-		elseif bladeCount == 0 and phase == 6 then
+		elseif bladeCount == 0 and self.vb.phase == 6 then
 			timerBladeCD:Start(35)
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
@@ -307,10 +306,10 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
 		warnHateCrash:Show()
-		if phase == 6 and crashCount == 0 then
+		if self.vb.phase == 6 and crashCount == 0 then
 			timerHateCrash:Start()
 			crashCount = crashCount + 1
-		elseif phase == 6 and crashCount == 1 then
+		elseif self.vb.phase == 6 and crashCount == 1 then
 			timerHateCrash:Start(74)
 			crashCount = 0
 		end
@@ -329,6 +328,7 @@ function mod:SPELL_CAST_START(args)
 		timerEyebeam:Start()
 	elseif args:IsSpellID(2144803) then
 		self:ScheduleMethod(0.15,"ChaosBlast")
+		self.vb.phase = 2
 	end
 end
 end
@@ -400,7 +400,7 @@ function mod:UNIT_DIED(args)
 	if cid == 22997 then
 		self.vb.flamesDown = self.vb.flamesDown + 1
 		if self.vb.flamesDown >= 2 then
-			phase = 3
+			self.vb.phase = 3
 			warnPhase3:Show()
 			bladeCount = 0
 			if castEyebeam == true then
@@ -463,13 +463,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextHuman:Start()
 		timerChaosBurst:Start(10)
 		timerShadowDemon:Start(30)
-		if phase == 3 then
+		if self.vb.phase == 3 then
 			self:Schedule(60, humanForms, self)
-		elseif phase == 5 then
+		elseif self.vb.phase == 5 then
 			self:Schedule(60, humanHatredForms, self)
 		end
 	elseif msg == L.Phase4 or msg:find(L.Phase4) then
-		phase = 5
+		self.vb.phase = 5
 		bladeCount = 0
 		self:Unschedule(humanForms)
 		timerBladeCD:Cancel()
@@ -489,7 +489,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnTrapped:Show()
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
 		if mod:IsDifficulty("heroic25") then
-			phase = 6
+			self.vb.phase = 6
 			warnPhase5:Schedule(46)
 			timerP5RP:Start()
 			self:ScheduleMethod(0,"CancelP5timers")
@@ -525,7 +525,7 @@ end
 
 function mod:UNIT_AURA(unit)
 if illidan == true then
-	if phase == 2 and eyebeamTarget == 0 and UnitDebuff(unit, "Betrayer's Gaze") and DBM:AntiSpam(35) then
+	if self.vb.phase == 2 and eyebeamTarget == 0 and UnitDebuff(unit, "Betrayer's Gaze") and DBM:AntiSpam(35) then
 		eyebeamTarget = 1
 		Name = UnitName(unit)
 		if Name == UnitName("player") then
