@@ -66,7 +66,7 @@ local timerFelFireBlast		= mod:NewNextTimer(20, 2144780)
 local warnPhase3			= mod:NewAnnounce("Stage Three: The Demon Within", 3, 40506)
 local warnParasite			= mod:NewTargetAnnounce(2144749, 3)
 local specWarnParasite		= mod:NewSpecialWarning("Parasitic Shadowfiends on >YOU!<", 2144751)
-local yellParasiteFades		= mod:NewShortFadesYell(2144751)
+local yellParasiteFades		= mod:NewFadesYell(2144751)
 local warnDemonSoon			= mod:NewAnnounce("Demon Within soon", 40506)
 local timerNextDemon		= mod:NewTimer(70, "Next Demon Phase", 40506)
 
@@ -118,6 +118,8 @@ local timerStruggle			= mod:NewNextTimer(110, 2145081)
 local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 
 local illidan = false
+
+mod:AddBoolOption(L.ParasiteIcon)
 
 mod.vb.flamesDown = 0
 local warned_flame = false
@@ -347,11 +349,17 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerParasite:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnParasite:Show()
+			yellParasiteFades:Countdown(10, 3)
 		else
 			warnParasite:Show(args.destName)
 		end
 		if self.Options.ParasiteIcon then
-			self:SetIcon(args.destName, 8)
+			if DBM:AntiSpam(10) then self:SetIcon(args.destName, 7)
+			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 6)
+			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 5)
+			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 4)
+			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 3) 
+			end
 		end
 		timerNextParasite:Start()
 	end
