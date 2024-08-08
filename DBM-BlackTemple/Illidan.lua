@@ -235,7 +235,7 @@ function mod:OnCombatStart(delay)
 	shearCount = 0
 	crashCount = 0
 	EliteCD = 60
-	if LongPullRP == false or nil then
+	if LongPullRP == false or LongPullRP == nil then
 		self:Schedule(8, illidariElites, self)
 		timerElites:Start(8)
 		timerFlameCrash:Start(18)
