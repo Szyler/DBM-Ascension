@@ -328,7 +328,6 @@ function mod:SPELL_CAST_START(args)
 		timerEyebeam:Start()
 	elseif args:IsSpellID(2144803) then
 		self:ScheduleMethod(0.15,"ChaosBlast")
-		self.vb.phase = 2
 	end
 end
 end
@@ -513,6 +512,7 @@ function mod:UNIT_HEALTH(uId)
 	elseif warned_flame == false and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.7 then
 		warned_flame = true
 		warnPhase2:Show()
+		self.vb.phase = 2
 		self:Unschedule(illidariElites)
 		timerBladeCD:Cancel()
 		timerFlameCrash:Cancel()
