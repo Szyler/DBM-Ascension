@@ -130,7 +130,7 @@ local Name
 local bladeCount
 local crashCount
 local shearCount
-local EliteCD
+local EliteCD = 60
 local prepared
 local Struggled
 local eyebeamTarget
