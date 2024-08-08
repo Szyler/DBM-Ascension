@@ -36,7 +36,8 @@ local timerFlameCrash		= mod:NewNextTimer(30, 2144720)
 local timerDrawSoul			= mod:NewNextTimer(30, 2144737)
 local timerBladeCD			= mod:NewNextTimer(40, 2144742)
 local timerElites			= mod:NewTimer(60, "Illidari Elites", 804613)
-local timerChainLightning	= mod:NewCastTimer(20, 2144908)
+local timerChainLightning	= mod:NewCastTimer(3, 2144908)
+local timerChainLightningCD	= mod:NewCDTimer(20, 2144908)
 
 
 -- Stage Two: Flames of Azzinoth
@@ -134,6 +135,7 @@ local Struggled
 local eyebeamTarget
 local castEyebeam = false
 local castBarrage = false
+
 
 local function humanForms(self)
 	self:Unschedule(humanForms)
@@ -315,6 +317,7 @@ function mod:SPELL_CAST_START(args)
 		timerMadness:Start(110)
 	elseif args:IsSpellID(2144908) then
 		timerChainLightning:Start(3)
+		timerChainLightningCD:Start()
 	elseif args:IsSpellID(2145074) then
 		warnHateBeam:Show()
 		timerHateBeam:Start()
