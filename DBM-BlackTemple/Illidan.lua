@@ -37,7 +37,7 @@ local timerDrawSoul			= mod:NewNextTimer(30, 2144737)
 local timerBladeCD			= mod:NewNextTimer(40, 2144742)
 local timerElites			= mod:NewTimer(60, "Illidari Elites", 804613)
 local timerChainLightning	= mod:NewCastTimer(3, 2144908)
-local timerChainLightningCD	= mod:NewCDTimer(20, 2144908)
+local timerChainLightningCD	= mod:NewCDTimer(9, 2144908)
 
 
 -- Stage Two: Flames of Azzinoth
