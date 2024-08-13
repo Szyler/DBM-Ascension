@@ -117,7 +117,10 @@ local timerHateBeam			= mod:NewTimer(12,"Eye Beam", 2145074)
 local timerStruggle			= mod:NewNextTimer(110, 2145081)
 local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 
+local ParasiteTargets = {}
+
 local illidan = false
+
 
 mod:AddBoolOption(L.ParasiteIcon)
 
@@ -137,6 +140,10 @@ local eyebeamTarget
 local castEyebeam = false
 local castBarrage = false
 
+function mod:warnParasiteTargets()
+	warnFist:Show(table.concat(ParasiteTargets, "<, >"))
+	table.wipe(ParasiteTargets)
+end
 
 local function humanForms(self)
 	self:Unschedule(humanForms)
@@ -238,6 +245,7 @@ function mod:OnCombatStart(delay)
 	shearCount = 0
 	crashCount = 0
 	EliteCD = 60
+	table.wipe(ParasiteTargets)
 	if LongPullRP == false or LongPullRP == nil then
 		self:Schedule(8, illidariElites, self)
 		timerElites:Start(8)
@@ -349,9 +357,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnParasite:Show()
 			yellParasiteFades:Countdown(10, 3)
-		else
-			warnParasite:Show(args.destName)
 		end
+		self:UnscheduleMethod("warnParasiteTargets")
+		ParasiteTargets[#ParasiteTargets + 1] = args.destName
+		self:ScheduleMethod(0.3, "warnParasiteTargets")
 		if self.Options.ParasiteIcon then
 			if DBM:AntiSpam(10) then self:SetIcon(args.destName, 7)
 			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 6)
