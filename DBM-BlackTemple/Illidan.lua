@@ -369,7 +369,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnBarrage:Show(args.destName)
 		end
-		self:SetIcon(args.destName, 8, 2)
+		self:SetIcon(args.destName, 7, 2)
 		timerBarrage:Start()
 		castBarrage = true
 	end
@@ -534,7 +534,7 @@ if illidan == true then
 		else
 			warnEyebeamTarget:Show(Name)
  		end
-		self:SetIcon(Name, 8, 10)
+		self:SetIcon(Name, 6, 10)
 		self:ScheduleMethod(10,"EyeBeamReset")
 	end
 	if UnitDebuff("Boss", "Struggle for Control") and DBM:AntiSpam(105, 3) then
