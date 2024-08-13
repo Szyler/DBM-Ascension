@@ -379,7 +379,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnBarrage:Show(args.destName)
 		end
 		self:SetIcon(args.destName, 7, 2)
-		timerBarrage:Start()
+		timerBarrage:Start(args.destName)
 		castBarrage = true
 	end
 	if args:IsSpellID(2145061) and args.destName == "Illidan Stormrage" then
