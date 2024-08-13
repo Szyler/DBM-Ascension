@@ -219,6 +219,7 @@ end
 
 local function illidariElites(self)
 	self:Unschedule(illidariElites)
+	if not EliteCD then EliteCD = 60 end
 	timerElites:Start(EliteCD or 60)
 	self:Schedule(EliteCD or 60, illidariElites, self)
 	warnElites:Show()
