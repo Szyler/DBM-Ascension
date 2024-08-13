@@ -51,7 +51,7 @@ local specWarnEyebeam		= mod:NewSpecialWarning("Eyebeam on >YOU!<", 2144766)
 
 local timerNextBarrage		= mod:NewNextTimer(10, 2144811)
 local timerBarrage			= mod:NewTargetTimer(10, 2144811)
-local timerEyebeam			= mod:NewCastTimer(20, 2144816)
+local timerEyebeam			= mod:NewTargetTimer(20, 2144816)
 local timerNextEyebeam		= mod:NewNextTimer(35, 2144816)
 local timerLanding			= mod:NewTimer(7, "Illidan is targetable", 560576)
 
@@ -333,7 +333,6 @@ function mod:SPELL_CAST_START(args)
 		timerNextHateBeam:Start()
 	elseif args:IsSpellID(2144816) then
 		castEyebeam = true
-		timerEyebeam:Start()
 	elseif args:IsSpellID(2144803) then
 		self:ScheduleMethod(0.15,"ChaosBlast")
 	end
@@ -543,6 +542,7 @@ if illidan == true then
 		else
 			warnEyebeamTarget:Show(Name)
  		end
+		 timerEyebeam:Start(Name)
 		self:SetIcon(Name, 6, 10)
 		self:ScheduleMethod(10,"EyeBeamReset")
 	end
