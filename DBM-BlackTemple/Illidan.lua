@@ -141,7 +141,7 @@ local castEyebeam = false
 local castBarrage = false
 
 function mod:warnParasiteTargets()
-	warnFist:Show(table.concat(ParasiteTargets, "<, >"))
+	warnParasite:Show(table.concat(ParasiteTargets, "<, >"))
 	table.wipe(ParasiteTargets)
 end
 
