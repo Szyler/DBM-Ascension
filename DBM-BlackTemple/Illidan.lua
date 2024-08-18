@@ -308,10 +308,10 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
 		warnHateCrash:Show()
-		if phase == 6 and crashCount == 0 then
+		if crashCount == 0 then
 			timerHateCrash:Start()
 			crashCount = crashCount + 1
-		elseif phase == 6 and crashCount == 1 then
+		elseif crashCount == 1 then
 			timerHateCrash:Start(74)
 			crashCount = 0
 		end
