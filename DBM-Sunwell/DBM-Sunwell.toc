@@ -18,3 +18,4 @@ Felmyst.lua
 EredarTwins.lua
 M'uru.lua
 Kil'jaeden.lua
+Arynyes.lua
