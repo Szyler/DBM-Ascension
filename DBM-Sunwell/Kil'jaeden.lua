@@ -1,10 +1,8 @@
 local mod	= DBM:NewMod("Kil", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 527 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25315)
-mod:SetModelID(23200)
-mod:SetZone()
 mod:SetUsedIcons(4, 5, 6, 7, 8)
 
 mod:RegisterCombat("yell", L.YellPull)
@@ -15,6 +13,9 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",
+	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"CHAT_MSG_RAID_WARNING",
 	"SPELL_DAMAGE"
 )
 
@@ -171,6 +172,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 	end
 end
+mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_RAID_BOSS_EMOTE
+mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_RAID_WARNING
 
 function mod:SPELL_DAMAGE(args)
 	if args.spellId == 45680 and not orbGUIDs[args.sourceGUID] then

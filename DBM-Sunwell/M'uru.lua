@@ -1,10 +1,8 @@
 local mod	= DBM:NewMod("Muru", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 527 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25741)--25741 Muru, 25840 Entropius
-mod:SetModelID(23404)
-mod:SetZone()
 
 mod:RegisterCombat("combat")
 

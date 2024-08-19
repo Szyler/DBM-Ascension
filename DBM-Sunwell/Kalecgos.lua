@@ -1,9 +1,8 @@
 local mod	= DBM:NewMod("Kal", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 530 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(24850)
-mod:SetZone()
 
 mod:RegisterCombat("combat")
 
@@ -67,19 +66,19 @@ end
 
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 44978 and args:IsPlayer() and self:IsHealer() then
+	if args.spellId == 44978 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Heal)
 	elseif args.spellId == 45001 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Haste)
-	elseif args.spellId == 45002 and args:IsPlayer() and self:IsMelee() then
+	elseif args.spellId == 45002 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Hit)
-	elseif args.spellId == 45004 and args:IsPlayer() and not self:IsHealer() then
+	elseif args.spellId == 45004 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Crit)
-	elseif args.spellId == 45006 and args:IsPlayer() and not self:IsHealer() then
+	elseif args.spellId == 45006 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Aggro)
 	elseif args.spellId == 45010 and args:IsPlayer() then
 		specWarnWildMagic:Show(L.Mana)
-	elseif args.spellId == 45029 and self:IsInCombat() then
+	elseif args.spellId == 45029 then
 		warnCorrupt:Show(args.destName)
 	elseif args.spellId == 46021 then
 		if args:IsPlayer() then

@@ -1,10 +1,8 @@
 local mod	= DBM:NewMod("Twins", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 535 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25165, 25166)
-mod:SetModelID(23334)
-mod:SetZone()
 mod:SetUsedIcons(7, 8)
 
 mod:RegisterCombat("combat")
@@ -15,7 +13,9 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
-	"CHAT_MSG_RAID_BOSS_EMOTE"
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_RAID_WARNING"
 )
 
 mod:SetBossHealthInfo(
@@ -128,9 +128,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		timerConflagCD:Start()
 		if target == UnitName("player") then
 			specWarnConflag:Show()
-			soundConflag:Play()
 		else
-			soundConflag:Play("Interface\\AddOns\\DBM-Core\\sounds\\beware.ogg")
 			for i=0, GetNumRaidMembers() do
 				if UnitName("raid"..i) == target then
 					local inRange = CheckInteractDistance("raid"..i, 2)
@@ -145,3 +143,5 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		end
 	end
 end
+mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_RAID_WARNING

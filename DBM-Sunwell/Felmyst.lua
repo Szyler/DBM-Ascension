@@ -1,10 +1,8 @@
 local mod	= DBM:NewMod("Felmyst", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 531 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25038)
-mod:SetModelID(22838)
-mod:SetZone()
 mod:SetUsedIcons(8)
 
 mod:RegisterCombat("combat")
@@ -16,6 +14,8 @@ mod:RegisterEvents(
 	"RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_YELL",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"CHAT_MSG_MONSTER_EMOTE",
+	"CHAT_MSG_RAID_WARNING",
 	"UNIT_AURA"
 )
 
@@ -147,6 +147,8 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		end
 	end
 end
+mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_RAID_WARNING
 
 
 function mod:UNIT_AURA(uId)

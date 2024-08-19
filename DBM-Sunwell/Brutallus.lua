@@ -1,13 +1,12 @@
 local mod	= DBM:NewMod("Brutallus", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 4436 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(24882)
-mod:SetZone()
-mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
+mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
 
 mod:RegisterCombat("combat")
-mod:RegisterCombat("yell", L.YellPull)
+mod:RegisterCombat("yell", L.Pull)
 
 mod.disableHealthCombat = true
 
@@ -18,7 +17,6 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_MISSED",
-	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_DIED"
 )
 
@@ -51,7 +49,7 @@ do
 end
 
 function mod:OnCombatStart(delay)
-	burnIcon = 8
+	burnIcon = 7
 	timerBurnCD:Start(-delay)
 	timerStompCD:Start(-delay)
 	berserkTimer:Start(-delay)
@@ -76,7 +74,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.BurnIcon then
 			self:SetIcon(args.destName, burnIcon)
 			if burnIcon == 1 then
-				burnIcon = 8
+				burnIcon = 7
 			else
 				burnIcon = burnIcon - 1
 			end
