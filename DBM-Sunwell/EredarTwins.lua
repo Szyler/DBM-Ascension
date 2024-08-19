@@ -13,9 +13,11 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
-	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"CHAT_MSG_MONSTER_EMOTE",
-	"CHAT_MSG_RAID_WARNING"
+    "CHAT_MSG_MONSTER_YELL",
+    "CHAT_MSG_MONSTER_EMOTE",
+    "CHAT_MSG_RAID_BOSS_EMOTE",
+    "CHAT_MSG_MONSTER_SAY",
+    "CHAT_MSG_RAID_WARNING"
 )
 
 mod:SetBossHealthInfo(
@@ -102,7 +104,7 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg == L.Nova or msg:find(L.Nova) then
 		warnNova:Show(target)
 		timerNova:Start()
@@ -143,5 +145,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		end
 	end
 end
-mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_RAID_WARNING
+mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_MONSTER_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_EMOTE
+mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_EMOTE
