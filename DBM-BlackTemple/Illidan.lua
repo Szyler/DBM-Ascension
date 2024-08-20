@@ -421,7 +421,7 @@ function mod:UNIT_DIED(args)
 				timerDrawSoul:Start(eyebeamTime+33)
 				timerNextDemon:Start(eyebeamTime+67)
 			elseif castBarrage == true then
-			local barrageTime = timerBarrage:GetTime();
+				local barrageTime = timerBarrage:GetTime();
 				timerLanding:Start(barrageTime+7)
 				timerBladeCD:Start(barrageTime+10)
 				timerFlameCrash:Start(barrageTime+18)
@@ -451,11 +451,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerLongRPStart:Start()
 		LongPullRP = true
 		self:Schedule(18, illidariElites, self)
-		timerElites:Start(18)
-		timerFlameCrash:Start(28)
-		timerShearCD:Start(38)
-		timerDrawSoul:Start(43)
-		timerBladeCD:Start(48)
+		timerElites:Start(44)
+		timerFlameCrash:Start(54)
+		timerShearCD:Start(64)
+		timerDrawSoul:Start(69)
+		timerBladeCD:Start(74)
 		self:Schedule(5, Prepared, self)
 	elseif msg == L.RealPull or msg:find(L.RealPull) and prepared == false or nil then
 		timerShortRPStart:Start()
