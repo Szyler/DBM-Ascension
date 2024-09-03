@@ -477,7 +477,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:Schedule(60, humanHatredForms, self)
 		end
 	elseif msg == L.Phase4 or msg:find(L.Phase4) then
-		self.vb.phase = 5
+		self.vb.phase = 4
 		bladeCount = 0
 		self:Unschedule(humanForms)
 		timerBladeCD:Cancel()
@@ -497,7 +497,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnTrapped:Show()
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
 		if mod:IsDifficulty("heroic25") then
-			self.vb.phase = 6
+			self.vb.phase = 5
 			warnPhase5:Schedule(46)
 			timerP5RP:Start()
 			self:ScheduleMethod(0,"CancelP5timers")
