@@ -20,7 +20,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2142343) then
 		warningIgnorePain:Show(args.destName)
         timerIgnorePain:Start(args.destName)
-	elseif args:IsSpellID(2142255) and args.amount and args.amount % 5 or args.amount > 10 then
+	elseif args:IsSpellID(2142255) and args.amount and (args.amount % 5 or args.amount > 10) then
 		warningJealousy:Show(args.destName)
 		timerJealousy:Start(args.destName)
 		if args:IsPlayer() then
