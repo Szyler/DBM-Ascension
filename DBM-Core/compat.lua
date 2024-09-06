@@ -1,3 +1,7 @@
+C_Timer = {}
+-- this should allow addons to ruin C_Timer but not Timer zzzz
+setmetatable(C_Timer, {__index = Timer})
+
 -- local ipairs = ipairs
 -- local pairs = pairs
 -- local ceil, floor = math.ceil, math.floor
