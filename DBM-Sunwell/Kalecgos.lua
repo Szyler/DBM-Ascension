@@ -16,7 +16,6 @@ mod:RegisterEvents(
 
 local warnPortal						= mod:NewAnnounce("WarnPortal", 4, 46021)
 
-
 local specWarnBuffet         			= mod:NewSpecialWarningStack(2145512, 10)   	-- 2145512, 2145513 SPELL_AURA_APPLIED
 local timerNextBuffet        			= mod:NewNextTimer(8, 2145512)               	-- 2145512, 2145513 SPELL_AURA_APPLIED
 
@@ -29,6 +28,12 @@ local timerNextSpectralBlast 			= mod:NewNextTimer(25, 2145504)              	--
 local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	-- 2145506 Spell_cast_success 
 
 local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
+
+local warnMindWipe						= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
+local timerCastMindWipe					= mod:NewCastTimer(2, 2145524)					-- 2145524 SPELL_CAST_START
+
+local warnCorruptorsTouch				= mod:NewSpellAnnounce(2145523, 2)				-- 2145523 SPELL_AURA_APPLIED
+local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 SPELL_AURA_APPLIED
 
 
 mod:AddBoolOption("HealthFrame", true)
@@ -73,29 +78,36 @@ function mod:OnCombatEnd()
 	DBM.RangeCheck:Hide()
 end
 
-
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145512, 2145513) and args.amount and args.amount >= 3 then
 		specWarnBuffet:Show(args.destName, args.amount or 1)
 		timerNextBuffet:Start()
 	elseif args:IsSpellID(2145501, 2145502) and args.amount and args.amount >= 10 and args.amount % 5 == 0 then
 		warnDescentIntoMadness:Show(args.destName, args.amount or 1)
+	elseif args:IsSpellID(2145524) then
+		warnMindWipe:Show()
+	elseif args:IsSpellID(2145523) then
+		warnCorruptorsTouch:Show()
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-		if args:IsSpellID(2145511) then
-			timerBreathCast:Start()
-			timerNextBreath:Start()
-		elseif args:IsSpellID(2145504) then
-			timerSpectralBlast:Start()
-			timerNextSpectralBlast:Start()
-		end
+	if args:IsSpellID(2145511) then
+		timerBreathCast:Start()
+		timerNextBreath:Start()
+	elseif args:IsSpellID(2145504) then
+		timerSpectralBlast:Start()
+		timerNextSpectralBlast:Start()
+	elseif args:IsSpellID(2145524) then
+		timerCastMindWipe:Start()
+	elseif args:IsSpellID(2145523) then
+		timerNextCorruptorsTouch:Start()
 	end
+end
 
-	function mod:SPELL_CAST_SUCCESS(args)
-		if args:IsSpellID(2145506) then
-		timernextTailSweep:Start()
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(2145506) then
+		timerNextTailSweep:Start()
 	end
 end
 
