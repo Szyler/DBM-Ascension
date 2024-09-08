@@ -1,63 +1,41 @@
 local mod	= DBM:NewMod("Curator", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(15691)
---mod:RegisterCombat("yell", L.DBM_CURA_YELL_PULL)
+
+mod:SetModelID(16958)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"CHAT_MSG_MONSTER_YELL",
-	"UNIT_HEALTH"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 30254 30403",
+	"SPELL_CAST_SUCCESS 30235"
 )
 
-local warnEvoSoon			= mod:NewPreWarnAnnounce(30254, 10, 2)
-local warnEvo				= mod:NewSpellAnnounce(30254, 3)
-local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
-local warnTerminate			= mod:NewTargetAnnounce(85082, 3)
-local specWarnTerminate		= mod:NewSpecialWarning(L.TerminationTarget); --,1,85082)
-local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
+--TODO, fix evocate timer in classic TBC, it was fucked with on retail and kinda broken but should work fine in TBC
+--EDIT, it seems there is a max evo timer of 115, but if you kill sparks early he spawns new ones early and if you keep doing this you caan shorten timer considerably
+--As such, this mod would need to recheck boss energy every time adds spawn and live update timer off UNIT_POWER maybe?
+--ability.id = 30254 and type = "cast"
+local warnAdd			= mod:NewAnnounce("warnAdd", 3, "136116")
+local warnEvo			= mod:NewSpellAnnounce(30254, 2)
+local warnArcaneInfusion= mod:NewSpellAnnounce(30403, 4)
 
-local timerTerminate		= mod:NewTargetTimer(10, 85082)
-local timerTerminateCD		= mod:NewCDTimer(15, 85082) --15 seconds??
-local timerEvo				= mod:NewBuffActiveTimer(20, 30254)
-local timerNextEvo			= mod:NewNextTimer(130, 30254)
-local timerNextHateful		= mod:NewNextTimer(6, 30383)--, mod:IsTank() or mod:IsHealer())
-local timerNextHatefulHc	= mod:NewNextTimer(6, 85267)--, mod:IsTank() or mod:IsHealer())
+local timerEvo			= mod:NewBuffActiveTimer(20, 30254, nil, nil, nil, 6)
+--local timerNextEvo		= mod:NewNextTimer(115, 30254, nil, nil, nil, 6)
 
-local berserkTimer			= mod:NewBerserkTimer(720)
-local isCurator 			= false
+local berserkTimer		= mod:NewBerserkTimer(720)
 
-mod:SetUsedIcons(5, 6, 7)
-local terminateIcon = 5;
-mod:AddBoolOption(L.CuratorIcon)
-mod:AddBoolOption("RangeFrame", true)
+mod:AddRangeFrameOption("10", nil, true)
 
-local iconText = {
-	[5] = "{Moon}",
-	[6] = "{Square}",
-	[7] = "{Cross}",
-};
-
-local iconText2 = {
-	[5] = "(MOON)",
-	[6] = "(SQUARE)",
-	[7] = "(CROSS)",
-};
+local addGUIDS = {}
 
 function mod:OnCombatStart(delay)
-	timerTerminateCD:Start(30-delay)
+	table.wipe(addGUIDS)
 	berserkTimer:Start(-delay)
-	timerNextEvo:Start(95-delay)
-	warnEvoSoon:Schedule(85-delay)
-	warnBreakCrystal:Schedule((95-35)-delay);
+--	timerNextEvo:Start(-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
-	isCurator = true
-	terminateIcon = 5;
-	self.vb.phase = 1;
 end
 
 function mod:OnCombatEnd()
@@ -67,54 +45,21 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30403) then
-		warnArcaneInfusion:Show()
-		timerNextEvo:Stop()
-		timerEvo:Stop()
-		self.vb.phase = 2
-		--warnBreakCrystal:Cancel();
-	elseif args:IsSpellID(85082) then
-		if self.Options.CuratorIcon then
-			terminateIcon = (terminateIcon <= ((mod:IsDifficulty("heroic25") and 5) or (mod:IsDifficulty("heroic10") and 6) or 7)) and 7 or (terminateIcon - 1);
-			self:SetIcon(args.destName, terminateIcon, 10)
-		end
-		warnTerminate:Show(args.destName)
-		timerTerminate:Start(args.destName)
-		timerTerminateCD:Start()
-		if args:IsPlayer() then
-			local myIconText = self.Options.CuratorIcon and iconText[terminateIcon] or "";
-			local myIconText2 = self.Options.CuratorIcon and iconText2[terminateIcon] or "";
-			specWarnTerminate:Show(myIconText2);
-			SendChatMessage(L.YellTermination:format(myIconText,args.destName,myIconText),"YELL");
-		end
-	end
-end
-
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.DBM_CURA_YELL_OOM then
-		warnEvoSoon:Cancel()
+	if args.spellId == 30254 then
 		warnEvo:Show()
-		timerNextEvo:Start()
 		timerEvo:Start()
-		warnEvoSoon:Schedule(125);
-		warnBreakCrystal:Cancel();
-		warnBreakCrystal:Schedule(125-30);
+--		timerNextEvo:Start()
+	elseif args.spellId == 30403 then
+		warnArcaneInfusion:Show()
+--		timerNextEvo:Stop()
 	end
 end
 
-function mod:SPELL_DAMAGE(args)
-	-----Hateful Strike-----
-	if args:IsSpellID(33813) then
-		if self.vb.phase == 2 then 
-			timerNextHateful:Start()
-		else
-			timerNextHateful:Start(4)
-		end
-	elseif args:IsSpellID(85267) then
-		if self.vb.phase == 2 then 
-			timerNextHatefulHc:Start()
-		else
-			timerNextHatefulHc:Start(4)
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == 30235 and not addGUIDS[args.sourceGUID] then
+		addGUIDS[args.sourceGUID] = true
+		if self:AntiSpam(3, 1) then
+			warnAdd:Show()
 		end
 	end
 end

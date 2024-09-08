@@ -1,35 +1,14 @@
-local mod	= DBM:NewMod("O'mrogg", "DBM-Party-BC", 3)
+local mod	= DBM:NewMod(568, "DBM-Party-BC", 3, 259)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod.statTypes = "normal,heroic,mythic"
+
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(16809)
 
+mod:SetModelID(18031)
+mod:SetModelOffset(0, 0, -0.1)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS"
+mod:RegisterEventsInCombat(
 )
-
-local timerFear		        = mod:NewNextTimer(30, 30584)
-local timerBlastWave		= mod:NewNextTimer(30, 30600)
-local timerThunderClap		= mod:NewNextTimer(30, 30633)
-
-function mod:OnCombatStart(delay)
-	timerBlastWave:Start(27)
-	timerFear:Start()
-	timerThunderClap:Start(15)
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 30584 then
-		timerFear:Start()
-	elseif args.spellId == 30600 then
-		timerBlastWave:Start()
-	elseif args.spellId == 30600 then
-		timerThunderClap:Start()
-	end
-end
-
--- 30600 - Blast Wave
--- 30633 - Thunderclap
--- 30584 - Fear

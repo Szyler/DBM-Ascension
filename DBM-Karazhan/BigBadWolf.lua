@@ -1,68 +1,53 @@
 local mod	= DBM:NewMod("BigBadWolf", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 163 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(17521)
+--
+mod:SetModelID(17053)
+mod:SetUsedIcons(8)
 mod:RegisterCombat("yell", L.DBM_BBW_YELL_1)
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"CHAT_MSG_RAID_WARNING"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 30753 30752",
+	"SPELL_AURA_REMOVED 30753"
 )
 
-local warningFearSoon		= mod:NewSoonAnnounce(30752, 2)
-local warningFear			= mod:NewSpellAnnounce(30752, 3)
-local warningRRHSoon		= mod:NewSoonAnnounce(30753, 3)
-local warningRRH			= mod:NewTargetAnnounce(30753, 4)
+local warningFear		= mod:NewSpellAnnounce(30752, 3)
+local warningRRH		= mod:NewTargetNoFilterAnnounce(30753, 4)
 
-local specWarnRRH			= mod:NewSpecialWarningYou(30753)
+local specWarnRRH		= mod:NewSpecialWarningRun(30753, nil, nil, nil, 4, 2)
 
-local timerTargetRRH		= mod:NewTargetTimer(20, 30753)
-local timerRRH				= mod:NewNextTimer(60, 30753)
-local timerFearCD			= mod:NewNextTimer(24, 30752)
-local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
+local timerRRH			= mod:NewTargetTimer(20, 30753, nil, nil, nil, 3)
+local timerRRHCD		= mod:NewNextTimer(30, 30753, nil, nil, nil, 3)
+local timerFearCD		= mod:NewNextTimer(24, 30752, nil, nil, nil, 2)
 
-mod:AddBoolOption("RRHIcon")
-
-local lastFear = 0
-
-function mod:OnCombatStart(delay)
-	timerRRH:Start(30-delay)
-	timerFearCD:Start(25-delay)
-	timerNextSpotlight:Start(30-delay)
-end
-
+mod:AddSetIconOption("RRHIcon", 30753, true, false, {8})
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30753) then
-		warningRRH:Show(args.destName)
-		timerTargetRRH:Start(args.destName)
-		timerRRH:Start()
-		warningRRHSoon:Cancel()
-		warningRRHSoon:Schedule(55)
-		if args:IsPlayer() then
-			specWarnRRH:Show()
+	if args.spellId == 30753 then
+		timerRRH:Start(args.destName)
+		if self:IsInCombat() then--Because sometimes debuff goes out half sec after combat end
+			timerRRHCD:Start()
+			if args:IsPlayer() then
+				specWarnRRH:Show()
+				specWarnRRH:Play("justrun")
+				specWarnRRH:ScheduleVoice(1, "keepmove")
+			else
+				warningRRH:Show(args.destName)
+			end
+			if self.Options.RRHIcon then
+				self:SetIcon(args.destName, 8, 20)
+			end
 		end
-		RRHTimerStart = GetTime()
-		if self.Options.RRHIcon then
-			self:SetIcon(args.destName, 8, 20)
-		end
-	elseif args:IsSpellID(30752) and GetTime() - lastFear > 2 then
+	elseif args.spellId == 30752 and self:AntiSpam() then
 		warningFear:Show()
-		warningFearSoon:Cancel()
-		warningFearSoon:Schedule(19)
 		timerFearCD:Start()
-		lastFear = GetTime()
-	--elseif args:IsSpellID(85112) then
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(30753) then
-		local RRHRunDuration = GetTime() - RRHTimerStart
-		if RRHRunDuration < 20 then
-			local elapsed, total = timerRRH:GetTime();
-			timerQuake:Update(elapsed, total+20-RRHRunTimerGetTime)
-		end
+	if args.spellId == 30753 and self.Options.RRHIcon then
+		self:SetIcon(args.destName, 0)
 	end
 end

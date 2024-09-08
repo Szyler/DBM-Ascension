@@ -1,116 +1,55 @@
 local mod	= DBM:NewMod("Magmadar", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(11982)
+
+mod:SetModelID(10193)
+
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_DAMAGE",
-	"SPELL_PERIODIC_DAMAGE"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 19451 19428",
+	"SPELL_AURA_REMOVED 19451",
+	"SPELL_CAST_SUCCESS 19408"
 )
 
-local warnPanic			= mod:NewSpellAnnounce(19408)
-local warnEnrage		= mod:NewSpellAnnounce(19451)
-local warnDog			= mod:NewSpellAnnounce(2105054)
-local warnLavaBomb		= mod:NewSpecialWarningYou(2105054)
+--[[
+(ability.id = 19408 or ability.id = 19451) and type = "cast"
+ or ability.id = 19428 and type = "applydebuff"
+--]]
+local warnPanic			= mod:NewSpellAnnounce(19408, 2)
+local warnEnrage		= mod:NewTargetNoFilterAnnounce(19451, 3, nil , "Healer|Tank|RemoveEnrage", 2)
+local warnConflagration	= mod:NewTargetNoFilterAnnounce(19428, 2, nil , false)
 
-local timerNextDog		= mod:NewNextTimer(40, 5105044)
-local timerNextPanic	= mod:NewNextTimer(30, 19408)
-local timerNextLava		= mod:NewNextTimer(30, 2105054)
-local timerNextBreath	= mod:NewNextTimer(10, 2105049)
+local specWarnEnrage	= mod:NewSpecialWarningDispel(19451, "RemoveEnrage", nil, nil, 1, 6)
 
-local warnNextHysteria	= mod:NewSpellAnnounce(2105031)
-local warnNextDread		= mod:NewSpellAnnounce(2105032)
-local warnNextFury		= mod:NewSpellAnnounce(2105033)
-local warnNextDispair	= mod:NewSpellAnnounce(2105030)
-
-local timerNextHysteria	= mod:NewNextTimer(150, 2105031)
-local timerNextDread	= mod:NewNextTimer(150, 2105032)
-local timerNextFury		= mod:NewNextTimer(150, 2105033)
-local timerNextDispair	= mod:NewNextTimer(150, 2105030)
-
-local timerPanic		= mod:NewBuffActiveTimer(8, 19408)
-local timerEnrage		= mod:NewBuffActiveTimer(8, 19451)
-
-mod:AddBoolOption(L.lavaBombYellOpt)
-
-function mod:OnCombatStart(delay)
-	timerPanic:Start(-delay)
-	timerNextDog:Start(25-delay)
-	warnDog:Schedule(25-delay)
-	self:ScheduleMethod(25, "DogSpawner")
-	timerNextHysteria:Start(15-delay)
-	timerNextDread:Start(45-delay)
-	timerNextFury:Start(75-delay)
-	timerNextDispair:Start(105-delay)
-end
-
-function mod:DogSpawner()
-	self:UnscheduleMethod("DogSpawner")
-	warnDog:Show()
-	timerNextDog:Start()
-	self:ScheduleMethod(40, "DogSpawner")
-end
+local timerPanicCD		= mod:NewCDTimer(30, 19408, nil, nil, nil, 2)--30-40
+local timerEnrage		= mod:NewBuffActiveTimer(8, 19451, nil, nil, nil, 5, nil, DBM_COMMON_L.ENRAGE_ICON)
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(19451) then
-		warnEnrage:Show()
-		timerEnrage:Start()
-	elseif args:IsSpellID(2105054) then
-		if args:IsPlayer() then
-			warnLavaBomb:Show()
-			if self.Options.lavaBombYellOpt then
-				SendChatMessage(L.lavaBombYell, "YELL")
-			end
+	if args.spellId == 19451 and args:IsDestTypeHostile() then
+		if self.Options.SpecWarn19451dispel then
+			specWarnEnrage:Show(args.destName)
+			specWarnEnrage:Play("enrage")
+		else
+			warnEnrage:Show(args.destName)
 		end
-		timerNextLava:Start()
-	elseif args:IsSpellID(2105054) then
-		warnNextHysteria:Show()
-		timerNextHysteria:Start()
-	elseif args:IsSpellID(2105054) then
-		warnNextDread:Show()
-		timerNextDread:Start()
-	elseif args:IsSpellID(2105054) then
-		warnNextFury:Show()
-		timerNextFury:Start()
-	elseif args:IsSpellID(2105054) then
-		warnNextDispair:Show()
-		timerNextDispair:Start()
+		timerEnrage:Start()
+	elseif args.spellId == 19428 and args:IsDestTypePlayer() then
+		warnConflagration:CombinedShow(0.5, args.destName)
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(19451) then
-		timerEnrage:Cancel()
+	if args.spellId == 19451 and args:IsDestTypeHostile() then
+		timerEnrage:Stop()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(19408, 2105045) then
+	if args.spellId == 19408 then
 		warnPanic:Show()
-		timerPanic:Start()
-		timerNextPanic:Start()
-	end
-end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2105049) then
-		timerNextBreath:Start()
-	end
-end
-
-
-function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(2105054) then
-		if args:IsPlayer() then
-			warnLavaBomb:Show()
-			if self.Options.lavaBombYellOpt then
-				SendChatMessage(L.lavaBombYell, "YELL")
-			end
-		end
+		timerPanicCD:Start()
 	end
 end

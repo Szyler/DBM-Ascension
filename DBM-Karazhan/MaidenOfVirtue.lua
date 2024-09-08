@@ -1,96 +1,63 @@
 local mod	= DBM:NewMod("Maiden", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 164 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(16457)
---mod:RegisterCombat("yell", L.DBM_MOV_YELL_PULL)
+
+mod:SetModelID(16198)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_CAST_START",
-	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_REMOVED"
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 29511",
+	"SPELL_AURA_APPLIED 29522",
+	"SPELL_AURA_REMOVED 29522"
 )
 
-local warningHolyFire			= mod:NewTargetAnnounce(85122, 3)
+--TODO, rependance timer is consistent but there is an unknown trigger that happens once per kill where the timer resets?
+--Maybe reaching a health threshold resets the CD?
+--ability.id = 29511 and type = "begincast"
+local warningRepentance		= mod:NewSpellAnnounce(29511, 4)
+local warningHolyFire		= mod:NewTargetNoFilterAnnounce(29522, 2)
 
--- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
-local warningRepentance			= mod:NewSpellAnnounce(85177, 3)
-local warningRepentanceSoon		= mod:NewSoonAnnounce(85177, 2)
-local timerRepentance			= mod:NewNextTimer(53, 85177)
-local timerRepentanceCast		= mod:NewCastTimer(3, 85177)
+--local specWarnHolyFire		= mod:NewSpecialWarningMoveAway(29522, nil, nil, nil, 1, 2)
 
+local timerRepentance		= mod:NewBuffActiveTimer(12.6, 29511, nil, nil, nil, 2)
+local timerRepentanceCD		= mod:NewCDTimer(29.1, 29511, nil, nil, nil, 6)--29.1-49
+local timerHolyFire			= mod:NewTargetTimer(12, 29522, nil, nil, nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)
 
--- Ascension specific
-local warningSpecDespRun		= mod:NewSpecialWarning(L.WarnPrayerRun)
-local warningDesperate			= mod:NewSpellAnnounce(85108, 2)
--- local timerDesperates		= mod:NewBuffActiveTimer(3, 85120)
-local timerDesperateExplode		= mod:NewBuffActiveTimer(14, 85103)
-local timerNextDesperate		= mod:NewNextTimer(53, 85120)
-local timerDesperateCast		= mod:NewCastTimer(4, 85120)
--- local timerWrathSkipped		= mod:NewCDTimer(12, 32445)
-local timerWrath				= mod:NewNextTimer(12, 32445)
-local warnSoonWrath				= mod:NewSoonAnnounce(32445, 2)
-
-mod:AddBoolOption("RangeFrame", true)
-
+mod:AddRangeFrameOption(10, 29522)
 
 function mod:OnCombatStart(delay)
-	timerRepentance:Start(20-delay)
-	timerNextDesperate:Start(40-delay)
-	timerWrath:Start(7-delay)
-	-- timerWrathSkipped:Schedule(26)
+	timerRepentanceCD:Start(28-delay)--28-35
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
+	DBM:AddMsg("Repentance timer is not broken. This is an ability that has a 29 second minimum cooldown window, but after coming off CD can be delayed up to 20 seconds on when it's cast. Basically it's a 29-49sec window. DBM shows timer for the start of that window, but cannot control whether or not the boss casts it at 29, 39, or 49. Use this knowledge to inform you of when the ability can NOT be cast, not when it will be.")
 end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-end	
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85122) then
-		warningHolyFire:Show(args.destName)
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(32445, 85228, 85229) then
-		-- self:Unschedule(timerWrathSkipped);
-		local elapsed, total = timerNextDesperate:GetTime()
-		if total - elapsed < 12 then
-			timerWrath:Start(29)
-			warnSoonWrath:Schedule(27)
-		else
-			timerWrath:Start()
-			warnSoonWrath:Schedule(10)
-		end
-		-- timerWrathSkipped:Schedule(20)
-	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(196718, 196754, 196719, 351009) then -- Cast start of Repentance (3s)
-			--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
-		warningRepentanceSoon:Cancel()
-		timerRepentanceCast:Start()
+	if args.spellId == 29511 then
+		warningRepentance:Show()
 		timerRepentance:Start()
-		warningRepentanceSoon:Schedule(48)
-	elseif args:IsSpellID(85120) then
-		warningDesperate:Show()
-		timerDesperateCast:Start()
-		timerNextDesperate:Start()
-		timerDesperateExplode:Start()
-		warningSpecDespRun:Schedule(10)
+		timerRepentanceCD:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 29522 then
+		warningHolyFire:Show(args.destName)
+		timerHolyFire:Start(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(29522) then
-		timerHolyFire:Cancel()
+	if args.spellId == 29522 then
+		timerHolyFire:Stop(args.destName)
 	end
 end

@@ -1,63 +1,65 @@
 local mod	= DBM:NewMod("Jindo", "DBM-ZG", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(11380)
+
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_SUMMON"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 24306 17172 24261",
+	"SPELL_AURA_REMOVED 17172",
+	"SPELL_CAST_SUCCESS 24466",
+	"SPELL_SUMMON 24309 24262"
 )
 
-local warnDelusion		= mod:NewTargetAnnounce(24306)
-local warnHex			= mod:NewTargetAnnounce(17172)
-local warnHealingWard	= mod:NewSpellAnnounce(24309)
-local warnBrainTotem	= mod:NewSpellAnnounce(24262)
-local warnBrainWash		= mod:NewTargetAnnounce(24261)
-local warnBanish		= mod:NewTargetAnnounce(24466)
+local warnDelusion			= mod:NewTargetNoFilterAnnounce(24306, 2, nil, "RemoveCurse")
+local warnHex				= mod:NewTargetNoFilterAnnounce(17172, 2, nil, "RemoveMagic|Healer")
+local warnBrainWash			= mod:NewTargetNoFilterAnnounce(24261, 4)
+local warnBanish			= mod:NewTargetNoFilterAnnounce(24466, 2)
 
-local timerHex			= mod:NewTargetTimer(5, 17172)
-local timerDelusion		= mod:NewTargetTimer(20, 24306)
+local specWarnHealingWard	= mod:NewSpecialWarningSwitch(24309, "Dps", nil, nil, 1, 2)
+local specWarnBrainTotem	= mod:NewSpecialWarningSwitch(24262, "Dps", nil, nil, 1, 2)
+local specWarnDelusion		= mod:NewSpecialWarningYou(24306, nil, nil, nil, 1, 2)--Don't remember why this has special warning, but trusting 2011 me
 
-local specWarnDelusion	= mod:NewSpecialWarningYou(24306)
-
-function mod:OnCombatStart(delay)
-end
+local timerHex				= mod:NewTargetTimer(5, 17172, nil, "RemoveMagic|Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)
+local timerDelusion			= mod:NewTargetTimer(20, 24306, nil, "RemoveCurse", nil, 5, nil, DBM_COMMON_L.CURSE_ICON)
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(24306) then
+	if args.spellId == 24306 then
 		timerDelusion:Start(args.destName)
-		warnDelusion:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnDelusion:Show()
+			specWarnDelusion:Play("targetyou")
+		else
+			warnDelusion:Show(args.destName)
 		end
-	elseif args:IsSpellID(17172) and self:IsInCombat() then
+	elseif args.spellId == 17172 and args:IsDestTypePlayer() then
 		timerHex:Start(args.destName)
 		warnHex:Show(args.destName)
-	elseif args:IsSpellID(24261) then
+	elseif args.spellId == 24261 then
 		warnBrainWash:Show(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(17172) then
-		timerHex:Cancel(args.destName)
+	if args.spellId == 17172 and args:IsDestTypePlayer() then
+		timerHex:Stop(args.destName)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(24466) then
+	if args.spellId == 24466 and args:IsSrcTypeHostile() then
 		warnBanish:Show(args.destName)
 	end
 end
 
 function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(24309) then
-		warnHealingWard:Show()
-	elseif args:IsSpellID(24262) then
-		warnBrainTotem:Show()
+	if args.spellId == 24309 and args:IsDestTypeHostile() then
+		specWarnHealingWard:Show()
+		specWarnHealingWard:Play("attacktotem")
+	elseif args.spellId == 24262 then
+		specWarnBrainTotem:Show()
+		specWarnBrainTotem:Play("attacktotem")
 	end
 end

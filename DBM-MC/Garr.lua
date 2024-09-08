@@ -1,49 +1,38 @@
-local mod	= DBM:NewMod("Garr", "DBM-MC", 1)
+local mod	= DBM:NewMod("Garr-Classic", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(12057)--, 12099
-mod:RegisterCombat("combat", 12057)
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+mod:SetModelID(12110)
+mod:RegisterCombat("combat")
+
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 15732",
+	"SPELL_CAST_SUCCESS 19492"
 )
-local ReverbSpam = 0
 
-local warnReverb				= mod:NewSoonAnnounce(2105076)
-local warnHarden				= mod:NewSpellAnnounce(2105073)
+--[[
+ability.id = 19492 and type = "cast"
+--]]
+local warnAntiMagicPulse	= mod:NewSpellAnnounce(19492, 2)
+local warnImmolate			= mod:NewTargetNoFilterAnnounce(15732, 2, nil, false, 3)--Still feels spammy, they can opt into this if they want it
 
--- local warnImmolate				= mod:NewTargetAnnounce(15732)
--- local timerImmolate				= mod:NewTargetTimer(21, 15732)
-
-local timerNextReverb			= mod:NewNextTimer(25, 2105076)
+local timerAntiMagicPulseCD	= mod:NewCDTimer(15.7, 19492, nil, nil, nil, 2)--15.7-20 variation
 
 function mod:OnCombatStart(delay)
-	timerNextReverb:Start(-delay)
+	timerAntiMagicPulseCD:Start(10-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	-- if args:IsSpellID(15732) and self:IsInCombat() then
-	-- 	-- warnImmolate:Show(args.destName)
-	-- 	-- timerImmolate:Start(args.destName)
-	-- else
-	if args:IsSpellID(2105076) and GetTime() > ReverbSpam then
-		ReverbSpam = GetTime()
-		warnReverb:Schedule(22)
-		timerNextReverb:Start()
+	if args.spellId == 15732 and args:IsDestTypePlayer() then
+		warnImmolate:CombinedShow(1, args.destName)
 	end
 end
 
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2105073) and (GetTime() - HardenSpam) > 5 and args.amount >= 75 and args.amount % 5 == 0 then
-		HardenSpam = GetTime()
-		warnHarden:Show()
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == 19492 then
+		warnAntiMagicPulse:Show()
+		timerAntiMagicPulseCD:Start()
 	end
 end
-
--- function mod:SPELL_AURA_REMOVED(args)
--- 	if args:IsSpellID(15732) then
--- 		-- timerImmolate:Cancel(args.destName)
--- 	end
--- end

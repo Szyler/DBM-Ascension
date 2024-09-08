@@ -1,87 +1,131 @@
 local mod	= DBM:NewMod("Gothik", "DBM-Naxx", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2248 $"):sub(12, -3))
+mod:SetRevision("20220629223621")
 mod:SetCreatureID(16060)
+
 mod:RegisterCombat("combat")
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED", --This should allow the addon to process this Event using the scripting from Kel'Thuzad for Harvest Soul.
-	"SPELL_AURA_APPLIED_DOSE", --This should allow the addon to process this Event using the scripting from Kel'Thuzad for Harvest Soul.
-	"UNIT_DIED",
-	"PLAYER_ALIVE",
-	"UNIT_HEALTH",
-	"UNIT_DIED",
-	"CHAT_MSG_MONSTER_YELL"
+
+mod:RegisterEventsInCombat(
+	"UNIT_DIED"
 )
 
------ADD DEATHS-----
-local warnRiderDown				= mod:NewAnnounce("Unrelenting Rider Killed", 2, 36461, nil, "Show a warning when an Unrelenting Rider is killed")
-local warnKnightDown			= mod:NewAnnounce("Unrelenting Death Knight Killed", 2, 36461, nil, "Show a warning when an Unrelenting Rider is killed")
------HARVEST SOUL-----
-local warnHarvestSoon			= mod:NewSoonAnnounce(28679, 2)
-local warnHarvest				= mod:NewSpellAnnounce(28679, 2)
-local timerHarvest				= mod:NewNextTimer(15, 28679)
------COMBAT START----
-local timerCombatStart			= mod:NewTimer(25, "Combat Starts", 2457, nil, "Show timer for the start of combat")
-local warnCombatStartSoon		= mod:NewAnnounce("Combat Starts Soon", 2, 2457, nil, "Show pre-warning for the end of the Safety Dance")
-local warnCombatStart			= mod:NewAnnounce("Combat Starts Now", 2, 2457, nil, "Show warning for the end of the Safety Dance")
------GOTHIK ARRIVES----
-local timerGothik				= mod:NewTimer(100, "Gothik Arrives", 46573, nil, "Show timer for the arrival of Gothik")
-local warnGothikSoon			= mod:NewAnnounce("Gothik Arrives Soon", 2, 46573, nil, "Show pre-warning for the arrival of Gothik")
-local warnGothik 				= mod:NewAnnounce("Gothik Arrives Now", 2, 46573, nil, "Show warning for the arrival of Gothik")
+--TODO, sync infoframe from classic era version?
+--(source.type = "NPC" and source.firstSeen = timestamp) or (target.type = "NPC" and target.firstSeen = timestamp)
+local warnWaveNow		= mod:NewAnnounce("WarningWaveSpawned", 3, nil, false)
+local warnWaveSoon		= mod:NewAnnounce("WarningWaveSoon", 2)
+local warnRiderDown		= mod:NewAnnounce("WarningRiderDown", 4)
+local warnKnightDown	= mod:NewAnnounce("WarningKnightDown", 2)
+local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
 
---------MISC--------
-local phase = nil
+local timerPhase2		= mod:NewTimer(277, "TimerPhase2", 27082, nil, nil, 6)
+local timerWave			= mod:NewTimer(20, "TimerWave", 5502, nil, nil, 1)
+local timerGate			= mod:NewTimer(155, "Gate Opens", 9484)
 
------BOSS FUNCTIONS-----
-function mod:OnCombatStart(delay)
+mod.vb.wave = 0
+local wavesNormal = {
+	{2, L.Trainee, timer = 20},
+	{2, L.Trainee, timer = 20},
+	{2, L.Trainee, timer = 10},
+	{1, L.Knight, timer = 10},
+	{2, L.Trainee, timer = 15},
+	{1, L.Knight, timer = 5},
+	{2, L.Trainee, timer = 20},
+	{1, L.Knight, 2, L.Trainee, timer = 10},
+	{1, L.Rider, timer = 10},
+	{2, L.Trainee, timer = 5},
+	{1, L.Knight, timer = 15},
+	{2, L.Trainee, 1, L.Rider, timer = 10},
+	{2, L.Knight, timer = 10},
+	{2, L.Trainee, timer = 10},
+	{1, L.Rider, timer = 5},
+	{1, L.Knight, timer = 5},
+	{2, L.Trainee, timer = 20},
+	{1, L.Rider, 1, L.Knight, 2, L.Trainee, timer = 15},
+	{2, L.Trainee},
+}
+
+local wavesHeroic = {
+	{3, L.Trainee, timer = 20},
+	{3, L.Trainee, timer = 20},
+	{3, L.Trainee, timer = 10},
+	{2, L.Knight, timer = 10},
+	{3, L.Trainee, timer = 15},
+	{2, L.Knight, timer = 5},
+	{3, L.Trainee, timer = 20},
+	{3, L.Trainee, 2, L.Knight, timer = 10},
+	{3, L.Trainee, timer = 10},
+	{1, L.Rider, timer = 5},
+	{3, L.Trainee, timer = 15},
+	{1, L.Rider, timer = 10},
+	{2, L.Knight, timer = 10},
+	{1, L.Rider, timer = 10},
+	{1, L.Rider, 3, L.Trainee, timer = 5},
+	{1, L.Knight, 3, L.Trainee, timer = 5},
+	{1, L.Rider, 3, L.Trainee, timer = 20},
+	{1, L.Rider, 2, L.Knight, 3, L.Trainee},
+}
+
+local waves = wavesNormal
+
+local function StartPhase2(self)
+	self:SetStage(2)
 end
 
-function mod:HarvestSoul()
-	timerHarvest:Start(20)
-	warnHarvestSoon:Schedule(17)
-	warnHarvest:Schedule(20)
-	self:ScheduleMethod(20, "HarvestSoul")
+local function getWaveString(wave)
+	local waveInfo = waves[wave]
+	if #waveInfo == 2 then
+		return L.WarningWave1:format(unpack(waveInfo))
+	elseif #waveInfo == 4 then
+		return L.WarningWave2:format(unpack(waveInfo))
+	elseif #waveInfo == 6 then
+		return L.WarningWave3:format(unpack(waveInfo))
+	end
+end
+
+local function NextWave(self)
+	self.vb.wave = self.vb.wave + 1
+	warnWaveNow:Show(self.vb.wave, getWaveString(self.vb.wave))
+	local timer = waves[self.vb.wave].timer
+	if timer then
+		timerWave:Start(timer, self.vb.wave + 1)
+		warnWaveSoon:Schedule(timer - 3, self.vb.wave + 1, getWaveString(self.vb.wave + 1))
+		self:Schedule(timer, NextWave, self)
+	end
+end
+
+function mod:OnCombatStart()
+	self:SetStage(1)
+	if self:IsDifficulty("normal25") then
+		waves = wavesHeroic
+	else
+		waves = wavesNormal
+	end
+	self.vb.wave = 0
+	timerGate:Start()
+	timerPhase2:Start()
+	warnPhase2:Schedule(277)
+	timerWave:Start(25, self.vb.wave + 1)
+	warnWaveSoon:Schedule(22, self.vb.wave + 1, getWaveString(self.vb.wave + 1))
+	self:Schedule(25, NextWave, self)
+	self:Schedule(277, StartPhase2, self)
+end
+
+function mod:OnTimerRecovery()
+	if self:IsDifficulty("normal25") then
+		waves = wavesHeroic
+	else
+		waves = wavesNormal
+	end
 end
 
 function mod:UNIT_DIED(args)
 	if bit.band(args.destGUID:sub(0, 5), 0x00F) == 3 then
-		local guid = tonumber(args.destGUID:sub(9, 12), 16)
-		if guid == 16126 then -- Unrelenting Rider
+		local cid = self:GetCIDFromGUID(args.destGUID)
+		if cid == 16126 then -- Unrelenting Rider
 			warnRiderDown:Show()
-		elseif guid == 16125 then -- Unrelenting Death Knight
+		elseif cid == 16125 then -- Unrelenting Deathknight
 			warnKnightDown:Show()
 		end
 	end
-end
-
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if (msg == L.yell or msg:find(L.yell)) and phase == nil then
-		self:ScheduleMethod(100, "HarvestSoul")
-		phase = 1
-		-----HARVEST SOUL-----
-		warnHarvestSoon:Schedule(115)
-		warnHarvest:Schedule(120)
-		timerHarvest:Start(120)
-		-----COMBAT START----
-		timerCombatStart:Start(25)
-		warnCombatStartSoon:Schedule(20)
-		warnCombatStart:Schedule(25)
-		-----GOTHIK ARRIVES----
-		timerGothik:Start(100)
-		warnGothikSoon:Schedule(95)
-		warnGothik:Schedule(100)
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 16060 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.11 and phase ==1 then
-		self:UnscheduleMethod("HarvestSoul")
-		timerHarvest:Stop()
-		phase = 2
-	end
-end
-
-function mod:OnCombatEnd()
-	self:UnscheduleMethod("HarvestSoul")
 end

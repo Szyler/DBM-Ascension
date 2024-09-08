@@ -1,49 +1,33 @@
-local mod	= DBM:NewMod("Nethekurse", "DBM-Party-BC", 3)
+local mod	= DBM:NewMod(566, "DBM-Party-BC", 3, 259)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod.statTypes = "normal,heroic,mythic"
+
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(16807)
 
+mod:SetModelID(16628)
+mod:SetModelOffset(-1, 0.4, -0.4)
 mod:RegisterCombat("combat")
 
-
-mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS",
-    "SPELL_SUMMON",
-    "SPELL_AURA_APPLIED"
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_SUCCESS 30496"
 )
 
-local timerShadowSlam		= mod:NewCDTimer(7, 29544)
-local timerDeathcoil		= mod:NewNextTimer(7, 29544)
-local timerDeathcoil		= mod:NewTargetTimer(12, 831623)
-local warnFear			    = mod:NewTargetAnnounce(39661, 3)
-local warnVoid			    = mod:NewSpellAnnounce(30496, 3)
-local timerVoid		        = mod:NewNextTimer(12, 30496)
-local warnBerserk			= mod:NewSpellAnnounce(30502)
+--TODO, maybe add a GTFO for 35951 (Void zone damage)
+--TODO, check target scanning when in a group. Solo testing cannot verify this
+--If target scanning works on fissure, special warning and yell
+local warnShadowFissure		= mod:NewSpellAnnounce(30496, 3)
+
+local timerShadowFissureCD	= mod:NewNextTimer(8.5, 30496, nil, nil, nil, 3)--8.5-8.8
+
+function mod:OnCombatStart(delay)
+	timerShadowFissureCD:Start(8.3-delay)
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 35953 then
-		timerShadowSlam:Start()
-	elseif args.spellId == 39661 then
-		warnFear:Show()
-		timerDeathcoil:Start()
-	end
-end
-
-function mod:SPELL_SUMMON(args)
 	if args.spellId == 30496 then
-		warnVoid:Show()
+		warnShadowFissure:Show()
+		timerShadowFissureCD:Start()
 	end
 end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 30502 then
-		warnBerserk:Show()
-	end
-end
-
-
--- 35953 - Shadow Slam
--- 39661 - Death Coil
--- 30496 - Lesser Shadow Fissure
--- 30502 - Dark Spin

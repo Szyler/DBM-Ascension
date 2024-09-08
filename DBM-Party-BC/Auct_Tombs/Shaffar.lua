@@ -1,42 +1,26 @@
-local mod	= DBM:NewMod("Shaffar", "DBM-Party-BC", 8)
-local L		= mod:GetLocalizedStrings()
+local mod	= DBM:NewMod(537, "DBM-Party-BC", 8, 250)
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(18344)
 
+mod:SetModelID(19780)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS"
+mod:RegisterEventsInCombat(
+	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
-local timerNextBlink   				= mod:NewNextTimer(20, 34605)
-local warnNova 			 			= mod:NewSpellAnnounce(32365, 3)
-local timerNextNova   				= mod:NewNextTimer(20, 32365)
-local timerNextEthereal   			= mod:NewNextTimer(10, 32371)
+local specWarnAdds	= mod:NewSpecialWarningAdds(32371, "-Healer", nil, nil, 1, 2)
 
-function mod:OnCombatStart(delay)
-	timerNextBlink:Start(15-delay)
-	timerNextNova:Start(14-delay)
-	timerNextEthereal:Start(-delay)
-	self:ScheduleMethod(10-delay, "NewAdds")
-	timerNextEthereal:Start(10-delay)
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 34605 then
-		timerNextBlink:Start()
-	elseif args.spellId == 32365 then
-		warnNova:Show()
-		timerNextNova:Start()
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, spellName)
+	if spellName == GetSpellInfo(32371) then
+		self:SendSync("Adds")
 	end
 end
 
-function mod:NewAdds()
-	timerNextEthereal:Start()
-	self:ScheduleMethod(10, "NewAdds")
+function mod:OnSync(msg)
+	if msg == "Adds" and self:AntiSpam(5, 1) then
+		specWarnAdds:Show()
+		specWarnAdds:Play("killmob")
+	end
 end
-
--- 34605 - Blink
--- 32365 - Frost Nova
--- 32371 - Summon Ethereal Becon

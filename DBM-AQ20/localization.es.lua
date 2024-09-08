@@ -1,4 +1,4 @@
-﻿if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return end
+if GetLocale() ~= "esES" then return end
 local L
 
 ---------------
@@ -6,93 +6,108 @@ local L
 ---------------
 L = DBM:GetModLocalization("Kurinnaxx")
 
-L:SetGeneralLocalization{
-	name 		= "Kurinnaxx"
-}
-L:SetWarningLocalization{
-	WarnWound	= "%s en >%s< (%s)"
-}
-L:SetOptionLocalization{
-	WarnWound	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(25646, GetSpellInfo(25646) or "unknown"),	
-}
+L:SetGeneralLocalization({
+	name		= "Kurinnaxx"
+})
+
 ------------
 -- Rajaxx --
 ------------
 L = DBM:GetModLocalization("Rajaxx")
 
-L:SetGeneralLocalization{
-	name 		= "General Rajaxx"
-}
-L:SetWarningLocalization{
-	WarnWave	= "Oleada %s",
-	WarnBoss	= "Sale Boss"
-}
-L:SetOptionLocalization{
-	WarnWave	= "Mostrar aviso para oleada siguiente"
-}
-L:SetMiscLocalization{
-	Wave1		= "They come now. Try not to get yourself killed, young blood.", --translate
-	Wave3		= "The time of our retribution is at hand! Let darkness reign in the hearts of our enemies!", --translate
-	Wave4		= "No longer will we wait behind barred doors and walls of stone! No longer will our vengeance be denied! The dragons themselves will tremble before our wrath!", --translate
-	Wave5		= "Fear is for the enemy! Fear and death!", --translate
-	Wave6		= "Staghelm will whimper and beg for his life, just as his whelp of a son did! One thousand years of injustice will end this day!", --translate
-	Wave7		= "Fandral! Your time has come! Go and hide in the Emerald Dream and pray we never find you!", --translate
-	Wave8		= "Impudent fool! I will kill you myself!" --translate
-}
+L:SetGeneralLocalization({
+	name		= "General Rajaxx"
+})
+
+L:SetWarningLocalization({
+	WarnWave	= "Oleada %s"
+})
+
+L:SetOptionLocalization({
+	WarnWave	= "Mostrar aviso previo para la siguiente oleada"
+})
+
+L:SetMiscLocalization({
+	Wave12		= "Ahí vienen. Intenta que no te maten,",--Followed by 'chico' or 'chica'
+	Wave12Alt	= "Rajaxx, ¿recuerdas que te dije que serías el último en morir?",
+	Wave3		= "¡Se acerca la hora de imponer nuestro castigo!	¡Que la oscuridad reine en los corazones de nuestros enemigos!",
+	Wave4		= "¡No nos quedaremos esperando por más tiempo tras puertas con barrotes ni muros de piedra! ¡Ya no nos negarán nuestra venganza! ¡Hasta los propios dragones temblarán antes nuestra ira!",
+	Wave5		= "¡El miedo es para el enemigo! ¡El miedo y la muerte!",
+	Wave6		= "¡Corzocelada lloriqueará y suplicará por su vida, al igual que hizo el mocoso de su cría! ¡Hoy se pondrá fin a mil años de injusticia!",
+	Wave7		= "¡Fandral! ¡Tu hora ha llegado! ¡Ve y escóndete en el Sueño Esmeralda y reza para que nunca te encontremos!",
+	Wave8		= "¡Idiota insolente! ¡Te mataré yo mismo!"
+})
 
 ----------
 -- Moam --
 ----------
 L = DBM:GetModLocalization("Moam")
 
-L:SetGeneralLocalization{
-	name 		= "Moam"
-}
+L:SetGeneralLocalization({
+	name		= "Moam"
+})
 
 ----------
 -- Buru --
 ----------
 L = DBM:GetModLocalization("Buru")
 
-L:SetGeneralLocalization{
-	name 		= "Buru el Manducador"
-}
-L:SetWarningLocalization{
-	WarnPursue		= "Persigue a >%s<",
-	SpecWarnPursue	= "Te persigue a ti"
-}
-L:SetOptionLocalization{
-	WarnPursue		= "Anunciar los objetivos perseguidos",
-	SpecWarnPursue	= "Mostrar aviso especial cuando te persigan"
-}
-L:SetMiscLocalization{
-	PursueEmote 	= "%s fija su mirada en %s!"
-}
+L:SetGeneralLocalization({
+	name		= "Buru el Manducador"
+})
+
+L:SetWarningLocalization({
+	WarnPursue		= "Persiguiendo a >%s<",
+	SpecWarnPursue	= "Buru te está persiguiendo",
+	WarnDismember	= "%s en >%s< (%s)"
+})
+
+L:SetOptionLocalization({
+	WarnPursue		= "Anunciar objetivos de la persecución de Buru",
+	SpecWarnPursue	= "Mostrar aviso especial cuando te persiga el jefe",
+	WarnDismember	= DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.spell:format(96)
+})
+
+L:SetMiscLocalization({
+	PursueEmote	= "%s mira a"
+})
 
 -------------
 -- Ayamiss --
 -------------
 L = DBM:GetModLocalization("Ayamiss")
 
-L:SetGeneralLocalization{
-	name 		= "Ayamiss el Cazador"
-}
+L:SetGeneralLocalization({
+	name		= "Ayamiss el Cazador"
+})
 
 --------------
 -- Ossirian --
 --------------
 L = DBM:GetModLocalization("Ossirian")
 
-L:SetGeneralLocalization{
-	name 		= "Osirio el Sinmarcas"
-}
-L:SetWarningLocalization{
+L:SetGeneralLocalization({
+	name		= "Osirio el Sinmarcas"
+})
+
+L:SetWarningLocalization({
 	WarnVulnerable	= "%s"
-}
-L:SetTimerLocalization{
+})
+
+L:SetTimerLocalization({
 	TimerVulnerable	= "%s"
-}
-L:SetOptionLocalization{
-	WarnVulnerable	= "Anunciar Debilidad",
-	TimerVulnerable	= "Mostrar tiempo para Debilidad"
-}
+})
+
+L:SetOptionLocalization({
+	WarnVulnerable	= "Anunciar debilidades",
+	TimerVulnerable	= "Mostrar temporizador para la duración de las debilidades"
+})
+
+----------------
+-- AQ20 Trash --
+----------------
+L = DBM:GetModLocalization("AQ20Trash")
+
+L:SetGeneralLocalization({
+	name = "AQ20: Bichos"
+})

@@ -1,91 +1,57 @@
 local mod	= DBM:NewMod("Gluth", "DBM-Naxx", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2869 $"):sub(12, -3))
+mod:SetRevision("20220806123502")
 mod:SetCreatureID(15932)
+
 mod:RegisterCombat("combat")
-mod:EnableModel()
-mod:RegisterEvents(
-	"SPELL_DAMAGE",
-	"PLAYER_ALIVE",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE",
-	"UNIT_DIED"
+
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 28371",
+	"SPELL_AURA_REMOVED 28371",
+	"SPELL_DAMAGE 28375 54426"
 )
 
------DECIMATE-----
-local warnDecimateSoon		= mod:NewSoonAnnounce(2122905, 2)
-local warnDecimateNow		= mod:NewSpellAnnounce(2122905, 2)
-local timerDecimate			= mod:NewNextTimer(120, 2122905)
-local timerFeedFrenzy 		= mod:NewTimer(30, "Gluth is in a Frenzy", 2122923)
--------MOOD--------
-local warnHungry			= mod:NewAnnounce("Gluth is Hungry", 2, 2122903, nil, "Show a warning when Gluth gets hungry")
-local specWarnAngry			= mod:NewSpecialWarning("%s on >%s< (%d)", 2, 2122904)
-local warnViciousStacks		= mod:NewAnnounce("%s on >%s< (%d)", 2, 2122901)
-local SpecWarnVicStacks 	= mod:NewSpecialWarningStack(2122901, 2)
+--TODO, is it really necessary to use SPELL_DAMAGE here?
+--TODO, verify decimate timer is actually accurate for wrath (it certainly wasn't for naxx 40)
+local warnEnrage		= mod:NewTargetNoFilterAnnounce(19451, 3, nil , "Healer|Tank|RemoveEnrage", 2)
+local warnDecimateSoon	= mod:NewSoonAnnounce(28374, 2)
+local warnDecimateNow	= mod:NewSpellAnnounce(28374, 3)
 
------MISC-----
-local enrageTimer			= mod:NewBerserkTimer(480)
+local specWarnEnrage	= mod:NewSpecialWarningDispel(19451, "RemoveEnrage", nil, nil, 1, 6)
 
------BOSS FUNCTIONS-----
+local timerEnrage		= mod:NewBuffActiveTimer(8, 19451, nil, nil, nil, 5, nil, DBM_COMMON_L.ENRAGE_ICON)
+local timerDecimate		= mod:NewCDTimer(104, 28374, nil, nil, nil, 2)
+local enrageTimer		= mod:NewBerserkTimer(420)
+
 function mod:OnCombatStart(delay)
-	enrageTimer:Start(480 - delay)
-	timerDecimate:Start(120 - delay)
-	warnDecimateSoon:Schedule(115 - delay)
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2122905)then
-		warnDecimateNow:Show()
-		timerDecimate:Start()
-		warnDecimateSoon:Schedule(115)
-	end
-end
-
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2122901) then
-		if args:IsPlayer() then
-			SpecWarnVicStacks:Show(args.amount)
-		else
-			warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
-		end
-	elseif args:IsSpellID(2122904) then
-		if args.amount >=1 then
-			specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
-		end
-	end
+	enrageTimer:Start(420 - delay)
+	timerDecimate:Start(110 - delay) -- 25m Log review from 2022-05-05 - 1 minutes 50 seconds
+	warnDecimateSoon:Schedule(100 - delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2122901) then
-		if args:IsPlayer() then
-			SpecWarnVicStacks:Show(args.amount or 1)
+	if args.spellId == 28371 then
+		if self.Options.SpecWarn19451dispel then
+			specWarnEnrage:Show(args.destName)
+			specWarnEnrage:Play("enrage")
 		else
-			warnViciousStacks:Show(args.spellName, args.destName, args.amount or 1)
+			warnEnrage:Show(args.destName)
 		end
-	elseif args:IsSpellID(2122904) then
-		specWarnAngry:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(2122903) then
-		warnHungry:Show()
-	elseif args:IsSpellID(2122923) and (args.destName == "Gluth") then
-		timerFeedFrenzy:Start()
+		timerEnrage:Start()
 	end
 end
 
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 15932 or cid == 26628 then
-		timerDecimate:Stop()
+function mod:SPELL_AURA_REMOVED(args)
+	if args.spellId == 28371 then
+		timerEnrage:Stop()
 	end
 end
 
-function mod:OnCombatEnd()
-	timerDecimate:Stop()
+function mod:SPELL_DAMAGE(_, _, _, _, _, _, spellId)
+	if (spellId == 28375 or spellId == 54426) and self:AntiSpam(20) then
+		warnDecimateNow:Show()
+		timerDecimate:Start()
+		warnDecimateSoon:Schedule(96)
+	end
 end
-
---Vicious Strike debuff 2122901 || Feeding Frenzy 2122923
---DBM_MOROES_GARROTE		= "%s on >%s< (%d)" --(args.spellName, args.destName, args.amount or 1)
---local warningGarrote		= mod:NewAnnounce(DBM_GLUTH_VICIOUS_BITE, 3, 37066)
---warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
---L:SetWarningLocalization{

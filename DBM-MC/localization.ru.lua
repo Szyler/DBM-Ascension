@@ -1,4 +1,4 @@
-﻿if GetLocale() ~= "ruRU" then return end
+if GetLocale() ~= "ruRU" then return end
 
 local L
 
@@ -7,116 +7,113 @@ local L
 ----------------
 L = DBM:GetModLocalization("Lucifron")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Люцифрон"
-}
+})
 
 ----------------
 --  Magmadar  --
 ----------------
 L = DBM:GetModLocalization("Magmadar")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Магмадар"
-}
+})
 
 ----------------
 --  Gehennas  --
 ----------------
 L = DBM:GetModLocalization("Gehennas")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Гееннас"
-}
+})
 
 ------------
 --  Garr  --
 ------------
-L = DBM:GetModLocalization("Garr")
+L = DBM:GetModLocalization("Garr-Classic")
 
-L:SetGeneralLocalization{
-	name = "Гарр"
-}
+L:SetGeneralLocalization({
+	name = "Гарр (Classic)"
+})
 
 --------------
 --  Geddon  --
 --------------
 L = DBM:GetModLocalization("Geddon")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Барон Геддон"
-}
-
-L:SetOptionLocalization{
-	SetIconOnBombTarget	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(20475)
-}
+})
 
 ----------------
 --  Shazzrah  --
 ----------------
 L = DBM:GetModLocalization("Shazzrah")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Шаззрах"
-}
+})
 
 ----------------
 --  Sulfuron  --
 ----------------
 L = DBM:GetModLocalization("Sulfuron")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Предвестник Сульфурон"
-}
+})
 
 ----------------
 --  Golemagg  --
 ----------------
 L = DBM:GetModLocalization("Golemagg")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Големагг Испепелитель"
-}
-L:SetWarningLocalization{
-	WarnP2Soon	= "Скоро 2-ая фаза"
-}
-L:SetOptionLocalization{
-	WarnP2Soon 	= "Предупреждать о скором начале второй фазы"
-}
+})
 
 -----------------
 --  Majordomo  --
 -----------------
 L = DBM:GetModLocalization("Majordomo")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Мажордом Экзекутус"
-}
+})
 
-L:SetMiscLocalization{
-	Kill	= "Impossible! Stay your attack, mortals... I submit! I submit!"
-}
+L:SetTimerLocalization({
+	timerShieldCD		= "Следующий Щит"
+})
+
+L:SetOptionLocalization({
+	timerShieldCD		= "Показывать таймер для следующего Щита (Damage/Reflect)"
+})
 
 ----------------
 --  Ragnaros  --
 ----------------
-L = DBM:GetModLocalization("Ragnaros")
+L = DBM:GetModLocalization("Ragnaros-Classic")
 
-L:SetGeneralLocalization{
-	name = "Рагнарос"
-}
-L:SetWarningLocalization{
+L:SetGeneralLocalization({
+	name = "Рагнарос (Classic)"
+})
+
+L:SetWarningLocalization({
 	WarnSubmerge		= "Погружение",
 	WarnSubmergeSoon	= "Скоро погружение",
 	WarnEmerge			= "Появление",
 	WarnEmergeSoon		= "Скоро появление"
-}
-L:SetTimerLocalization{
+})
+
+L:SetTimerLocalization({
 	TimerCombatStart	= "Начало боя",
 	TimerSubmerge		= "Погружение",
 	TimerEmerge			= "Появление"
-}
-L:SetOptionLocalization{
+})
+
+L:SetOptionLocalization({
 	TimerCombatStart	= "Показывать время до начала боя",
 	WarnSubmerge		= "Показывать предупреждение о погружении",
 	WarnSubmergeSoon	= "Показывать предварительное предупреждение о погружении",
@@ -124,8 +121,19 @@ L:SetOptionLocalization{
 	WarnEmerge			= "Показывать предупреждение о появлении",
 	WarnEmergeSoon		= "Показывать предварительное предупреждение о появлении",
 	TimerEmerge			= "Показывать время до появления"
-}
-L:SetMiscLocalization{
-	Submerge	= "COME FORTH, MY SERVANTS! DEFEND YOUR MASTER!",
-	Pull		= "Impudent whelps! You've rushed headlong to your own deaths! See now, the master stirs!\r\n"
-}
+})
+
+L:SetMiscLocalization({
+	Submerge	= "ПРИДИТЕ, МОИ СЛУГИ! ЗАЩИТИТЕ СВОЕГО ХОЗЯИНА!",
+	Submerge2	= "ТЫ НЕ МОЖЕШЬ ПОБЕДИТЬ ЖИВОЙ ЖАР! ПРИДИТЕ, СЛУГИ ОГНЯ! ПРИДИТЕ, ТВОРЕНИЯ НЕНАВИСТИ! ВАШ ГОСПОДИН ПРИЗЫВАЕТ ВАС!",
+	Pull		= "Нахальные щенки! Вы сами обрекли себя на смерть! Узрите же Повелителя в гневе!"
+})
+
+-----------------
+--  MC: Trash  --
+-----------------
+L = DBM:GetModLocalization("MCTrash")
+
+L:SetGeneralLocalization({
+	name = "ОН: Треш"
+})

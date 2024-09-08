@@ -1,62 +1,21 @@
 local mod	= DBM:NewMod("Golemagg", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(11988)--, 11672
-mod:RegisterCombat("combat", 11988)
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"UNIT_HEALTH",
-	"SPELL_PERIODIC_DAMAGE"
+mod:SetModelID(11986)
+mod:RegisterCombat("combat")
+
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_SUCCESS 20553"
 )
 
-mod:AddBoolOption(L.CaveinYellOpt, false)
-local CaveInSpam = 0
-
-local warnTrust			= mod:NewSpellAnnounce(20553)
-local warnCaveIn		= mod:NewSpellAnnounce(350098)
-
-local warnP2Soon		= mod:NewAnnounce("WarnP2Soon")
-local warnP2			= mod:NewPhaseAnnounce(2)
-
-local timerNextCaveIn	= mod:NewNextTimer(45, 350098)
-
-local prewarn_p2
-
-function mod:OnCombatStart(delay)
-	timerNextCaveIn:Start(32-delay)
-	prewarn_p2 = false
-end
+--TODO, quake not in combat log on classic?
+local warnQuake		= mod:NewSpellAnnounce(20553)
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(20553) then
-		warnTrust:Show()
-	elseif args:IsSpellID(350098, 975009) then
-		if args:IsPlayer() then
-			warnCaveIn:Show()
-			if self.Options.CaveinYellOpt and DBM:AntiSpam(5, 1) then
-				SendChatMessage(L.CaveinYell, "YELL")
-			end
-		end
-		timerNextCaveIn:Start()
-	end
-end
-
-function mod:SPELL_PERIODIC_DAMAGE(args)
-	if args:IsSpellID(350098, 975009) then
-		if args:IsPlayer() then
-			warnCaveIn:Show()
-			if self.Options.CaveinYellOpt and DBM:AntiSpam(5, 1) then
-				SendChatMessage(L.CaveinYell, "YELL")
-			end
-		end
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.10 and self:GetUnitCreatureId(uId) == 11099 and not prewarn_P2 then
-		warnP2Soon:Show()
-		prewarn_P2 = true
+	if args.spellId == 20553 then
+		warnQuake:Show()
 	end
 end

@@ -1,6 +1,54 @@
-﻿if GetLocale() ~= "koKR" then return end
-
+if GetLocale() ~= "koKR" then return end
 local L
+
+------------------------------
+--  The Crown Chemical Co.  --
+------------------------------
+L = DBM:GetModLocalization("ApothecaryTrio")
+
+L:SetTimerLocalization({
+	HummelActive	= "훔멜 활성화",
+	BaxterActive	= "벡스터 활성화",
+	FryeActive		= "프라이 활성화"
+})
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "각 보스 활성화 타이머 바 보기"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "저들이 내가 누군지와 왜 이 일을 하는지 말해주려고 귀찮게 하든가?"
+})
+
+----------------------------
+--  The Frost Lord Ahune  --
+----------------------------
+L = DBM:GetModLocalization("Ahune")
+
+L:SetGeneralLocalization({
+	name = "아훈"
+})
+
+L:SetWarningLocalization({
+	Emerged			= "등장",
+	specWarnAttack	= "아훈 약화 - 공격 시작!"
+})
+
+L:SetTimerLocalization({
+	SubmergeTimer	= "잠복",
+	EmergeTimer		= "등장"
+})
+
+L:SetOptionLocalization({
+	Emerged			= "등장 경고 보기",
+	specWarnAttack	= "아훈 약화 특별 경고 보기",
+	SubmergeTimer	= "잠복 타이머 바 보기",
+	EmergeTimer		= "등장 타이머 바 보기"
+})
+
+L:SetMiscLocalization({
+	Pull			= "얼음 기둥이 녹아 내렸다!"
+})
 
 --------------------
 -- Coren Direbrew --
@@ -12,23 +60,22 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	specWarnBrew			= "흑맥주요정이 맥주를 다시 던지기전에 마셔버리세요!",
-	specWarnBrewStun		= "힌트: 맥주를 들고있네요.흑맥주요정의 맥주가 오기전에 마셔버리면 됩니다!"
+	specWarnBrew		= "다른 맥주가 넘어오기 전에 가방에 있는 맥주를 사용하세요!",
+	specWarnBrewStun	= "힌트: 기절했습니다. 다음엔 맥주를 꼭 마시세요!"
 })
 
 L:SetOptionLocalization({
-	specWarnBrew			= "흑맥주요정의 맥주 특수 경고 보기",
-	specWarnBrewStun		= "흑맥주요정의 기절 특수 경고 보기",
-	YellOnBarrel			= "맥주통을 가지게 될 경우 외치기"
+	specWarnBrew		= "$spell:47376 특별 경고 보기",
+	specWarnBrewStun	= "$spell:47340 특별 경고 보기"
 })
 
-L:SetMiscLocalization{
-	YellBarrel				= "저에게 맥주통!"
-}
+L:SetMiscLocalization({
+	YellBarrel			= "나에게 맥주통!"
+})
 
--------------------
--- Headless Horseman --
--------------------
+-----------------------------
+--  The Headless Horseman  --
+-----------------------------
 L = DBM:GetModLocalization("HeadlessHorseman")
 
 L:SetGeneralLocalization({
@@ -36,77 +83,18 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	warnHorsemanSoldiers		= "고동치는 호박 생성!",
-	specWarnHorsemanHead		= "머리 생성! 머리로 대상 전환!"
+	WarnPhase				= "%d단계",
+	warnHorsemanSoldiers	= "고동치는 호박 생성",
+	warnHorsemanHead		= "저주받은 기사의 머리 등장"
 })
 
 L:SetOptionLocalization({
-	warnHorsemanSoldiers		= "고동치는 호박 소환 경고 보기",
-	specWarnHorsemanHead		= "저주받은 기사의 머리 대상 전환 특수 경고 보기"
+	WarnPhase				= "단계 전환 경고 보기",
+	warnHorsemanSoldiers	= "고동치는 호박 등장 경고 보기",
+	warnHorsemanHead		= "저주받은 기사 머리 등장 경고 보기"
 })
 
 L:SetMiscLocalization({
-	HorsemanHead				= "냉큼 이리 와라, 이 얼간아!",
-	HorsemanSoldiers			= "일어나라, 별사들이여. 나가서 싸워라! 이 쇠락한 기사에게 승리를 안겨다오!",
-	SayCombatEnd				= "죽음은 이미 겪어 보았노라. 이제 어떤 모험이 날 기다리는가?"
-})
-
------------------------
---  Apothecary Trio  --
------------------------
-L = DBM:GetModLocalization("ApothecaryTrio")
-
-L:SetGeneralLocalization({
-	name = "화학회사 삼인방"
-})
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization{
-	HummelActive	= "훔멜 활성화",
-	BaxterActive	= "벡스터 활성화",
-	FryeActive		= "프라이 활성화"
-}
-
-L:SetOptionLocalization({
-	TrioActiveTimer		= "화학회사 삼인방 활성화 타이머 보기"
-})
-
-L:SetMiscLocalization({
-	SayCombatStart		= "저들이 내가 누군지와 왜 이 일을 하는지 말해주려고 귀찮게 하든가?"
-})
-
--------------
---  Ahune  --
--------------
-L = DBM:GetModLocalization("Ahune")
-
-L:SetGeneralLocalization({
-	name = "아훈"
-})
-
-L:SetWarningLocalization({
-	Submerged		= "아훈 잠수",
-	Emerged			= "아훈 등장",
-	specWarnAttack	= "아훈이 약해졌습니다. - 딜링 고고싱!"
-})
-
-L:SetTimerLocalization{
-	SubmergTimer	= "잠수",
-	EmergeTimer		= "등장",
-	TimerCombat		= "전투 시작"
-}
-
-L:SetOptionLocalization({
-	Submerged		= "아훈 잠수 경고 보기",
-	Emerged			= "아훈 등장 경고 보기",
-	specWarnAttack	= "아훈이 약해 질때 공격 특수 경보 보기",
-	SubmergTimer	= "잠수 타이머 보기",
-	EmergeTimer		= "등장 타이머 보기",
-	TimerCombat		= "전투 시작 타이머 보기",
-})
-
-L:SetMiscLocalization({
-	Pull			= "얼음 기둥이 녹아 내렸다!"
+	HorsemanSummon		= "기사여, 일어나라...",
+	HorsemanSoldiers	= "일어나라, 병사들이여. 나가서 싸워라! 이 쇠락한 기사에게 승리를 안겨다오!"
 })

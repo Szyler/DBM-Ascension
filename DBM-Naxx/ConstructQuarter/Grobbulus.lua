@@ -1,146 +1,106 @@
 local mod	= DBM:NewMod("Grobbulus", "DBM-Naxx", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 4154 $"):sub(12, -3))
+mod:SetRevision("20221016191326")
 mod:SetCreatureID(15931)
-mod:SetUsedIcons(8)
+mod:SetUsedIcons(1, 2, 3, 4)
+
 mod:RegisterCombat("combat")
-mod:EnableModel()
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_SUCCESS",
-	"UNIT_DIED",
-	"PLAYER_ALIVE"
+
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 28169",
+	"SPELL_AURA_REMOVED 28169",
+	"SPELL_CAST_SUCCESS 28240 28157 54364"
 )
 
------MUTATING INJECTION-----
-local warnInjection			= mod:NewTargetAnnounce(28169, 2)
-local specWarnInjection		= mod:NewSpecialWarningYou(2122807)
-local timerInjection		= mod:NewTargetTimer(10, 2122807)
-local timerNextInjection	= mod:NewNextTimer(15, 2122807)
------POISON CLOUD-----
-local timerPoisonCloud		= mod:NewNextTimer(8, 2122812)
-local warnCloud				= mod:NewSpellAnnounce(2122812, 2)
-local specWarnPoison1		= mod:NewSpecialWarningMove(2122812, true, nil, true)
------VIVIFYING TOXIN-----
-local timerStitchedGiant 	= mod:NewTimer(60, "Stitched Giant", 79012)
------SLIME SPRAY-----
-local timerSpray			= mod:NewCDTimer(20, 2122818)
-local warnSpray				= mod:NewSpellAnnounce(2122818, 2)
------MISC-----
-local enrageTimer			= mod:NewBerserkTimer(480)
-mod:AddBoolOption("SetIconOnInjectionTarget", true)
+local warnInjection			= mod:NewTargetNoFilterAnnounce(28169, 2)
+local warnCloud				= mod:NewSpellAnnounce(28240, 2)
+local warnSlimeSprayNow		= mod:NewSpellAnnounce(54364, 2)
+local warnSlimeSpraySoon	= mod:NewSoonAnnounce(54364, 1)
+
+local specWarnInjection		= mod:NewSpecialWarningYou(28169, nil, nil, nil, 1, 2)
+local yellInjection			= mod:NewYellMe(28169, nil, false)
+
+local timerInjection		= mod:NewTargetTimer(10, 28169, nil, nil, nil, 3)
+local timerCloud			= mod:NewNextTimer(15, 28240, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerSlimeSprayCD		= mod:NewCDTimer(32, 54364, nil, nil, nil, 2) -- Transcriptor snippet below
+local enrageTimer			= mod:NewBerserkTimer(720)
+
+mod:AddSetIconOption("SetIconOnInjectionTarget", 28169, false, false, {1, 2, 3, 4})
+
+mod.vb.slimeSprays = 1
 local mutateIcons = {}
 
------BOSS FUNCTIONS-----
-function mod:OnCombatStart(delay)
-	table.wipe(mutateIcons)
-	enrageTimer:Start(-delay)
-	-----Poison Cloud-----
-	timerPoisonCloud:Start(10-delay)
-	self:ScheduleMethod(10-delay,"PoisonCloud")
-	-----Vivifying Toxin-----
-	timerStitchedGiant:Start(20-delay)
-	self:ScheduleMethod(20-delay, "StitchedGiant")
-	-----Slime Spray-----
-	timerSpray:Start(25-delay)
-	----Injection----
-	timerNextInjection:Start(10-delay)
-end
-
-local function addIcon()
+local function addIcon(self)
 	for i,j in ipairs(mutateIcons) do
-		local icon = 9 - i
-		mod:SetIcon(j, icon)
+		local icon = 0 + i
+		self:SetIcon(j, icon)
 	end
 end
 
-local function removeIcon(target)
+local function removeIcon(self, target)
 	for i,j in ipairs(mutateIcons) do
 		if j == target then
 			table.remove(mutateIcons, i)
-			mod:SetIcon(target, 0)
+			self:SetIcon(target, 0)
 		end
 	end
-	addIcon()
+	addIcon(self)
+end
+
+function mod:OnCombatStart(delay)
+	self.vb.slimeSprays = 1
+	table.wipe(mutateIcons)
+	enrageTimer:Start(-delay)
+	warnSlimeSpraySoon:Schedule(27)
+	timerSlimeSprayCD:Start(31) -- REVIEW! variance? (25man Lordaeron 2022/10/16) - 31.0
+end
+
+function mod:OnCombatEnd()
+	for _, j in ipairs(mutateIcons) do
+		self:SetIcon(j, 0)
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2122807) then
+	if args.spellId == 28169 then
+		warnInjection:Show(args.destName)
+		timerInjection:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnInjection:Show()
-		else
-			warnInjection:Show(args.destName)
+			specWarnInjection:Play("runout")
+			yellInjection:Yell()
 		end
-		timerInjection:Start(args.destName)
-		timerNextInjection:Start()
 		if self.Options.SetIconOnInjectionTarget then
 			table.insert(mutateIcons, args.destName)
-			addIcon()
-		end
-	elseif args:IsSpellID(2122812,2122813,2122814) then
-		if args:IsPlayer() then
-			specWarnPoison1:Show()
-		end
-	end
-end
-
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(2122812,2122813,2122814) then
-		if args:IsPlayer() then
-			specWarnPoison1:Show()
+			addIcon(self)
 		end
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(2122807) then
+	if args.spellId == 28169 then
 		timerInjection:Cancel(args.destName)--Cancel timer if someone is dumb and dispels it.
 		if self.Options.SetIconOnInjectionTarget then
-			removeIcon(args.destName)
+			removeIcon(self, args.destName)
 		end
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2122818) then
-		timerSpray:Start()
-		warnSpray:Show()
+	if args.spellId == 28240 then
+		warnCloud:Show()
+		timerCloud:Start()
+	elseif args:IsSpellID(28157, 54364) then
+		warnSlimeSprayNow:Show()
+		self.vb.slimeSprays = self.vb.slimeSprays + 1
+		 -- REVIEW! variance? (25man Lordaeron 2022/10/16) - pull:31.0, 27.7, 61.1, 25.5
+		if self.vb.slimeSprays % 2 == 0 then -- every 2/4/6... spray short cd
+			warnSlimeSpraySoon:Schedule(20.5)
+			timerSlimeSprayCD:Start(25.5)
+		else -- every 3/5/7... spray long cd
+			warnSlimeSpraySoon:Schedule(54)
+			timerSlimeSprayCD:Start(59)
+		end
 	end
-end
-
-function mod:PoisonCloud()
-	timerPoisonCloud:Stop()
-	timerPoisonCloud:Start()
-	warnCloud:Show()
-	self:ScheduleMethod(8,"PoisonCloud")
-end
-
-function mod:StitchedGiant()
-	timerStitchedGiant:Stop()
-	timerStitchedGiant:Start()
-	self:ScheduleMethod(60,"StitchedGiant")
-end
-
---if args:IsSpellID(28240) then
---	timer = 15
---	timerCloud:Start(timer)
---	warnCloud:Schedule(timer)
---	prewarnCloud:Schedule(timer-5)
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 15931 or cid == 26627 then
-		timerInjection:Stop()
-		timerSpray:Stop()
-		timerNextInjection:Stop()
-	end
-end
-
-function mod:OnCombatEnd()
-	timerInjection:Stop()
-	timerSpray:Stop()
-	timerNextInjection:Stop()
 end

@@ -1,557 +1,353 @@
 local mod	= DBM:NewMod("Illidan", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
+mod:SetRevision("20230311092740")
 mod:SetCreatureID(22917)
-mod:RegisterCombat("combat", 22917)
-mod:SetBossHealthInfo(22917, "Illidan Stormrage")
+
+mod:SetModelID(21135)
+mod:SetUsedIcons(8)
+
+mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
-	"CHAT_MSG_MONSTER_YELL",
-	"UNIT_DIED",
-	"SPELL_INTERRUPT",
-	"UNIT_HEALTH",
-	"UNIT_AURA"
+	"CHAT_MSG_MONSTER_YELL"
 )
 
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 40904 41117 39849 41032",
+	"SPELL_CAST_SUCCESS 41126",
+	"SPELL_AURA_APPLIED 41917 41914 40585 40932 41083 40683 40695 41032 39869",
+	"SPELL_AURA_REMOVED 41917 41914",
+--	"SPELL_SUMMON 40018",
+	"UNIT_DIED"
+)
+
+--TODO, phase 4 log where I don't overkill boss too fast.
+
 -- General
-local timerLongRPStart		= mod:NewTimer(39, "Combat starting in ", 560576)
-local timerShortRPStart		= mod:NewTimer(3, "Combat starting in ", 560576)
-local berserkTimer			= mod:NewBerserkTimer(1200) -- 20 minutes
+local timerCombatStart		= mod:NewCombatTimer(36)
+local berserkTimer			= mod:NewBerserkTimer(1500)
 
 -- Stage One: You Are Not Prepared
-local warnPhase1			= mod:NewAnnounce("Stage One: You Are Not Prepared", 3, 804613)
-local warnDrawSoul			= mod:NewSpellAnnounce(2144737)
-local warnShear				= mod:NewSpellAnnounce(2144715)
-local warnCrash				= mod:NewSpellAnnounce(2144720)
-local warnBlade				= mod:NewSpellAnnounce(2144742)
-local warnElites			= mod:NewAnnounce("New waves of Illidari Elites", 804613)
+mod:AddTimerLine(L.S1YouAreNotPrepared)
+local warnShearSoon			= mod:NewSoonAnnounce(41032, 2, nil, "Tank")
+local warnDrawSoul			= mod:NewSpellAnnounce(40904, 3, nil, "Tank", 2)--Needed?
+local warnParasite			= mod:NewTargetAnnounce(41917, 3)
+local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2, 3)
 
-local timerShearCD			= mod:NewNextTimer(30, 2144715)
-local timerFlameCrash		= mod:NewNextTimer(30, 2144720)
-local timerDrawSoul			= mod:NewNextTimer(30, 2144737)
-local timerBladeCD			= mod:NewNextTimer(40, 2144742)
-local timerElites			= mod:NewTimer(60, "Illidari Elites", 804613)
-local timerChainLightning	= mod:NewCastTimer(3, 2144908)
-local timerChainLightningCD	= mod:NewCDTimer(9, 2144908)
+local specWarnShearBlock	= mod:NewSpecialWarningDefensive(41032, "Tank", nil, nil, 1, 2)
+local specWarnShearTaunt	= mod:NewSpecialWarningTaunt(41032, "Tank", nil, nil, 1, 2)
+local specWarnGTFO			= mod:NewSpecialWarningGTFO(40832, nil, nil, nil, 1, 2) -- Phase 1: Flame Crash // Phase 2: Blaze
+local specWarnParasite		= mod:NewSpecialWarningYou(41917, nil, nil, nil, 1, 2)
+local yellParasiteFades		= mod:NewShortFadesYell(41917)
 
+local timerShearCD			= mod:NewCDTimer(10, 41032, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON) -- (Timewalking Frostmourne [2023-02-18]@[22:07:38]) - "Shear-41032-npc:22917-337 = pull:10.0/Stage 1/10.0, 10.1, 11.3, 10.6, 10.1, 10.6, 10.8, 10.5, 11.9, 11.9, 10.5, 10.0, 10.5, Stage 2/13.0, Stage 3/76.5, 27.6/104.1/117.1, 10.0, 11.3, 10.1, 10.7, 88.9, 11.8, 11.3, 10.6, 10.0, Stage 4/81.4, 39.1/120.5, 10.1, 11.7, 10.2, 102.9"
+local timerDrawSoul			= mod:NewCDTimer(35, 40904, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON) -- (Timewalking Frostmourne [2023-02-18]@[22:07:38]) - "Draw Soul-40904-npc:22917-337 = pull:35.0/Stage 1/35.0, 35.0, 35.0, 35.6, Stage 2/11.4, Stage 3/76.5, 52.6/129.1/140.5, 131.0, Stage 4/100.1, 64.1/164.2", -- [3]
+local timerFlameCrash		= mod:NewNextTimer(30, 40832, nil, nil ,nil, 3) -- (Timewalking Frostmourne [2023-02-18]@[22:07:38]) - "Flame Crash-40832-npc:22917-337 = pull:30.0/Stage 1/30.0, 30.0, 30.0, 30.0, Stage 2/31.9, Stage 3/76.5, 47.5/124.0/156.0, 131.0, Stage 4/105.1, 59.1/164.2"
+local timerParasite			= mod:NewTargetTimer(10, 41917, nil, false, nil, 1, nil, DBM_COMMON_L.IMPORTANT_ICON)
+
+mod:AddSetIconOption("ParasiteIcon", 41917)
 
 -- Stage Two: Flames of Azzinoth
-local warnPhase2			= mod:NewAnnounce("Stage Two: Flames of Azzinoth", 3, 801892)
+mod:AddTimerLine(L.S2FlamesOfAzzinoth)
 --Illidan Stormrage
-local warnBarrage			= mod:NewTargetAnnounce(2144811, 3)
-local warnEyebeamTarget		= mod:NewAnnounce("Eye Beam on %s!", 3, "Interface\\Icons\\ability_demonhunter_eyebeam")
+local warnPhase2			= mod:NewPhaseAnnounce(2)
+local warnBarrage			= mod:NewTargetAnnounce(40585, 3)
+local warnEyebeam			= mod:NewSpellAnnounce(40018, 3)
 
-local specWarnBarrage		= mod:NewSpecialWarning("Shadow Barrage on >YOU!<", 2144811)
-local specWarnEyebeam		= mod:NewSpecialWarning("Eyebeam on >YOU!<", 2144766)
+local specWarnBarrage		= mod:NewSpecialWarningMoveAway(40585, nil, nil, nil, 1, 2)
+local specWarnUncagedWrath	= mod:NewSpecialWarningDefensive(39869, nil, nil, nil, 3, 2)
 
-local timerNextBarrage		= mod:NewNextTimer(10, 2144811)
-local timerBarrage			= mod:NewTargetTimer(10, 2144811)
-local timerEyebeam			= mod:NewTargetTimer(20, 2144816)
-local timerNextEyebeam		= mod:NewNextTimer(35, 2144816)
-local timerLanding			= mod:NewTimer(7, "Illidan is targetable", 560576)
-
-local specWarnChaosBlast	= mod:NewSpecialWarning("Chaos Blast on you", 2144803)
-local warnChaosBlast		= mod:NewAnnounce("Chaos Blast on %s", 2144803)
-local timerCBcast			= mod:NewCastTimer(2, 2144803)
-
+local timerBarrage			= mod:NewTargetTimer(10, 40585, nil, false, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerNextBarrage		= mod:NewCDTimer(44, 40585, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON) -- REVIEW! broken?? Fired on P3...
+local timerEyebeam			= mod:NewCDTimer(30, 40018, nil, nil, nil, 2) -- (Timewalking Frostmourne [2023-02-18]@[22:07:38]) - "?-Stare into the eyes of the Betrayer!-npc:Illidan Stormrage = pull:182.7/Stage 2/31.2, 30.3, Stage 3/15.0, Stage 4/283.7", -- [16]
 -- Flame of Azzinoth
-local timerFelFireBlast		= mod:NewNextTimer(20, 2144780)
+--local specWarnGTFO			= mod:NewSpecialWarningGTFO(40611, nil, nil, nil, 1, 2) -- Phase 2: Blaze
 
 -- Stage Three: The Demon Within
-local warnPhase3			= mod:NewAnnounce("Stage Three: The Demon Within", 3, 40506)
-local warnParasite			= mod:NewTargetAnnounce(2144749, 3)
-local specWarnParasite		= mod:NewSpecialWarning("Parasitic Shadowfiends on >YOU!<", 2144751)
-local yellParasiteFades		= mod:NewFadesYell(2144751)
-local warnDemonSoon			= mod:NewAnnounce("Demon Within soon", 40506)
-local timerNextDemon		= mod:NewTimer(70, "Next Demon Phase", 40506)
+mod:AddTimerLine(L.S3TheDemonWithin)
+local warnPhase3			= mod:NewPhaseAnnounce(3)
+local warnFlame				= mod:NewTargetAnnounce(40932, 3)
+local warnPhase4Soon		= mod:NewPrePhaseAnnounce(4, 3)
 
-local timerNextParasite		= mod:NewNextTimer(40, 2144749)
-local timerParasite			= mod:NewTargetTimer(10, 2144751)
-
+--local timerFlame			= mod:NewTargetTimer(60, 40932)
 
 -- [Stage Three: The Demon Within] Demon Form
+mod:AddTimerLine(DBM:GetSpellInfo(40506))
+local warnDemon				= mod:NewSpellAnnounce(40506, 3)
+local warnFlameBurst		= mod:NewSpellAnnounce(41131, 3)
+local warnShadowDemon		= mod:NewTargetNoFilterAnnounce(41117, 3)
+local warnHuman				= mod:NewAnnounce("WarnHuman", 3, 62844, nil, nil, nil, 40506)
 
-local warnDemonForm			= mod:NewAnnounce("Demon Form", 3, 40506)
+local specWarnShadowDemon	= mod:NewSpecialWarningSwitch(41117, "Dps", nil, nil, 3, 2)
+local timerNextFlameBurst	= mod:NewCDTimer(20, 41131, nil, nil, nil, 3)
 
-local specWarnShadowDemon	= mod:NewSpecialWarning("Switch to Shadow Demons", 2144868)
-
-local timerShadowDemon		= mod:NewNextTimer(20, 2144868)
-local timerNextHuman		= mod:NewTimer(60, "Next Human Phase", 560576)
-local timerChaosBurst		= mod:NewNextTimer(10, 2144858)
+local timerNextDemon		= mod:NewCDTimer(60, 40506, nil, nil, nil, 6, nil, DBM_COMMON_L.IMPORTANT_ICON) -- REVIEW! phase 3 and 5 variance? (Timewalking Frostmourne [2023-02-18]@[21:51:02] || Timewalking Frostmourne [2023-02-18]@[22:07:38]) - ?-Behold the power... of the demon within!-npc:Illidan Stormrage = pull:296.2/Stage 3/77.8, 131.0, Stage 4/90.6, 89.1/179.7, 114.8 || pull:305.6/Stage 3/77.6, 131.0, Stage 4/75.1, 93.0/168.1"
+local timerShadowDemon		= mod:NewCDTimer(34, 41117, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerNextHuman		= mod:NewTimer(60, "TimerNextHuman", 62844, nil, nil, 6, nil, nil, nil, nil, nil, nil, nil, 40506)
 
 -- Stage Four: The Long Hunt
-local warnPhase4			= mod:NewAnnounce("Stage Four: The Long Hunt", 3, 2144934)
-local warnTrapped			= mod:NewAnnounce("Illidan is trapped", 3, 5116)
-local specWarnTrap			= mod:NewSpecialWarning("Maiev has placed the trap!", 1499)
+mod:AddTimerLine(L.S4TheLongHunt)
+local warnPhase4			= mod:NewPhaseAnnounce(4)
+local warnEnrage			= mod:NewSpellAnnounce(40683, 3) -- Frenzy
 
-local timerP4RP				= mod:NewTimer(33, "Enemies to Lovers RP", 2144934)
-local timerHatred			= mod:NewNextTimer(20, 2144761)
-local timerTrap				= mod:NewTimer(30, "Next Maiev Trap", 1499)
-local timerStun				= mod:NewTimer(15, "Illidan is trapped", 5116)
+local timerPhase4			= mod:NewPhaseTimer(30)
+local timerEnrage			= mod:NewBuffActiveTimer(10, 40683)
+--local timerNextEnrage		= mod:NewCDTimer(40, 40683)
 
--- Stage Five: Avatar of Hatred
-local warnPhase5			= mod:NewAnnounce("Stage Five: Avatar of Hatred", 3, 2145004)
-local warnSoulShear			= mod:NewSpellAnnounce(2145040)
-local warnHateCrash			= mod:NewSpellAnnounce(2145025)
-local warnMadness			= mod:NewSpellAnnounce(2145051)
-local warnUnleash			= mod:NewSpellAnnounce(2145061)
-local warnStruggle			= mod:NewSpellAnnounce(2145081)
-local warnHateBeam			= mod:NewSpellAnnounce(2145074)
+-- Maiev Shadowsong
+local warnCaged				= mod:NewSpellAnnounce(40695, 3)
 
-local specWarnHatred 		= mod:NewSpecialWarning("Unleash Hatred!", 2145065)
+local timerCaged			= mod:NewBuffActiveTimer(15, 40695, nil, nil, nil, 6)
 
-local timerMotes			= mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
-local timerP5RP				= mod:NewTimer(49, "Illidan tranformation RP", 2145004)
-local timerDyingRP			= mod:NewTimer(23, "Illidan dying RP", 2145004)
-local timerSoulShear		= mod:NewNextTimer(35, 2145040)
-local timerHateCrash		= mod:NewNextTimer(35, 2145025)
-local timerMadness			= mod:NewNextTimer(110, 2145051)
-local timerUnleash			= mod:NewNextTimer(110, 2145061)
-local timerNextHateBeam		= mod:NewNextTimer(110, 2145074)
-local timerHateBeam			= mod:NewTimer(12,"Eye Beam", 2145074)
-local timerStruggle			= mod:NewNextTimer(110, 2145081)
-local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
-
-local ParasiteTargets = {}
-
-local illidan = false
-
-
-mod:AddBoolOption(L.ParasiteIcon)
+mod:AddRangeFrameOption("6/8")-- 40932: Spell is 5 yards, but give it 6 or good measure since 5 yard check is probably least precise one since nerfs. / 41917: Parasitic. REVIEW! arbitrary range
 
 mod.vb.flamesDown = 0
-local warned_flame = false
-local warned_50demon = false
-local warned_10demon = false
-local LongPullRP = false
-local Name
-local bladeCount
-local crashCount
-local shearCount
-local EliteCD = 60
-local prepared
-local Struggled
-local eyebeamTarget
-local castEyebeam = false
-local castBarrage = false
+mod.vb.flameBursts = 0
+mod.vb.warned_preP2 = false
+mod.vb.warned_preP4 = false
+mod.vb.demonForm = false
 
-function mod:warnParasiteTargets()
-	warnParasite:Show(table.concat(ParasiteTargets, "<, >"))
-	table.wipe(ParasiteTargets)
-end
+local parasiticDebuffName = DBM:GetSpellInfo(41917)
 
-local function humanForms(self)
-	self:Unschedule(humanForms)
-	timerChaosBurst:Start()
-	timerBladeCD:Start(15)
-	timerFlameCrash:Start(25)
-	timerNextParasite:Start(30)
-	timerShearCD:Start(35)
-	timerDrawSoul:Start(40)
-	timerNextDemon:Start()
-end
-
-local function phase4Start(self)
-	self:Unschedule(humanForms)
-	timerBladeCD:Start(5)
-	timerFlameCrash:Start(15)
-	timerHatred:Start()
-	timerShearCD:Start(25)
-	timerDrawSoul:Start(30)
-	timerParasite:Start(50)
-	timerNextDemon:Start(60)
-	timerTrap:Start()
-end
-
-local function humanHatredForms(self)
-	self:Unschedule(humanForms)
-	timerChaosBurst:Start()
-	timerBladeCD:Start(15)
-	timerFlameCrash:Start(25)
-	timerHatred:Start(30)
-	timerShearCD:Start(35)
-	timerDrawSoul:Start(40)
-	timerTrap:Start(30)
-	timerParasite:Start(60)
-	timerNextDemon:Start()
-end
-
-function mod:CancelP5timers()
-	timerBladeCD:Cancel()
-	timerFlameCrash:Cancel()
-	timerParasite:Cancel()
-	timerDrawSoul:Cancel()
-	timerShearCD:Cancel()
-	timerNextDemon:Cancel()
-	bladeCount = 0
-end
-
-function mod:StartP5timers()
-	timerBladeCD:Start(16)
-	timerMadness:Start(30)
-	timerSoulShear:Start(37)
-	timerHateCrash:Start(44)
-	timerUnleash:Start(70)
-	timerNextHateBeam:Start(77)
-	timerStruggle:Start(93)
-end
-
-function mod:EyeBeamReset()
-	eyebeamTarget = 0
-end
-
-function mod:ChaosBlast()
-	local targetCB = mod:GetBossTarget(22917)
-	if targetCB == UnitName("player") then
-		specWarnChaosBlast:Show()
-		SendChatMessage("Chaos Blast on "..UnitName("PLAYER").."!", "SAY")
-	else
-		warnChaosBlast:Show(targetCB)
+local parasiticDebuffFilter
+do
+	parasiticDebuffFilter = function(uId)
+		return DBM:UnitDebuff(uId, parasiticDebuffName)
 	end
-	timerCBcast:Start(targetCB)
-	self:SetIcon(targetCB, 8, 2)
 end
 
-local function illidariElites(self)
-	self:Unschedule(illidariElites)
-	if not EliteCD then EliteCD = 60 end
-	timerElites:Start(EliteCD or 60)
-	self:Schedule(EliteCD or 60, illidariElites, self)
-	warnElites:Show()
-	EliteCD = EliteCD - 5
-end
-
-local function Prepared(self)
-	self:Unschedule(Prepared)
-	prepared = true
+local function humanForms(self) -- corrected on the fly using UNIT_AURA, and checking debuff 40506 to OnSync
+	self:Unschedule(humanForms)
+	self.vb.demonForm = false
+	warnHuman:Show()
+	timerNextFlameBurst:Cancel()
+	timerNextDemon:Start()
+	timerShearCD:Start()
+	timerFlameCrash:Start()
+	if self.vb.phase == 4 then
+		timerEnrage:Start()
+	end
 end
 
 function mod:OnCombatStart(delay)
-	illidan = true
-	self.vb.phase = 1
-	warnPhase1:Show()
-	eyebeamTarget = 0
-	castEyebeam = false
-	castBarrage = false
-	warned_50demon = false
-	warned_10demon = false
-	warned_flame = false
+	self:SetStage(1)
 	self.vb.flamesDown = 0
-	bladeCount = 0
-	shearCount = 0
-	crashCount = 0
-	EliteCD = 60
-	table.wipe(ParasiteTargets)
-	if LongPullRP == false or LongPullRP == nil then
-		self:Schedule(8, illidariElites, self)
-		timerElites:Start(8)
-		timerFlameCrash:Start(18)
-		timerShearCD:Start(28)
-		timerDrawSoul:Start(33)
-		timerBladeCD:Start(38)
-		self:Schedule(5, Prepared, self)
+	self.vb.flameBursts = 0
+	self.vb.warned_preP2 = false
+	self.vb.warned_preP4 = false
+	self.vb.demonForm = false
+	timerShearCD:Start()
+	timerFlameCrash:Start()
+	berserkTimer:Start(-delay)
+	if not self:IsTrivial() then
+		self:RegisterShortTermEvents(
+			"SPELL_DAMAGE 40841 40832 40611",
+			"SPELL_MISSED 40841 40832 40611",
+			"UNIT_HEALTH"
+		)
 	end
 end
 
 function mod:OnCombatEnd()
-	illidan = false
-	self:UnregisterAllEvents()
+	self:UnregisterShortTermEvents()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-	LongPullRP = false
-	prepared = false
-	Struggled = false
 end
 
 function mod:SPELL_CAST_START(args)
-	if illidan == true then
-	if args:IsSpellID(2144737, 2144738, 2144739, 2144740) then
+	local spellId = args.spellId
+	if spellId == 40904 then
 		warnDrawSoul:Show()
 		timerDrawSoul:Start()
-	elseif args:IsSpellID(2144868) then
+	elseif spellId == 41117 then
 		specWarnShadowDemon:Show()
-	elseif args:IsSpellID(2144715) then -- Shear
+		specWarnShadowDemon:Play("killmob")
+	elseif spellId == 39849 then--Throw Glaive
+		self:SetStage(2)
+		self.vb.flamesDown = 0
+		self.vb.warned_preP2 = true
+		timerShearCD:Cancel()
+		timerFlameCrash:Cancel()
+		warnPhase2:Show()
+		timerNextBarrage:Start(85)
+		timerEyebeam:Start()
+	elseif spellId == 41032 then -- Shear
+		warnShearSoon:Schedule(7) -- 3s (+1.5s from cast time) is good enough to plan ahead
 		timerShearCD:Start()
-		warnShear:Show()
-	elseif args:IsSpellID(2144720, 2144721, 2144722, 2144723) then -- Flame Crash
+		specWarnShearBlock:Show()
+		specWarnShearBlock:Play("defensive")
+	elseif spellId == 40832 then -- Flame Crash
 		timerFlameCrash:Start()
-		warnCrash:Show()
-	elseif args:IsSpellID(2144742, 2145015) then
-		if bladeCount >= 1 and self.vb.phase == 3 then
-			timerBladeCD:Start()
-			warnBlade:Show()
-			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and self.vb.phase == 5 then
-			timerBladeCD:Start()
-			warnBlade:Show()
-			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and self.vb.phase == 6 then
-			warnBlade:Show()
-			timerBladeCD:Start(75)
-			bladeCount = 0
-		elseif bladeCount == 0 and self.vb.phase == 6 then
-			timerBladeCD:Start(35)
-			warnBlade:Show()
-			bladeCount = bladeCount + 1
-		else
-			timerBladeCD:Start(30)
-			warnBlade:Show()
-			bladeCount = bladeCount + 1
-		end
-	elseif args:IsSpellID(2145040) then
-		warnSoulShear:Show()
-		if shearCount == 0 then
-			timerSoulShear:Start()
-			shearCount = shearCount + 1
-		elseif shearCount == 1 then
-			shearCount = 0
-			timerSoulShear:Start(75)
-		end
-	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
-		warnHateCrash:Show()
-		if self.vb.phase == 6 and crashCount == 0 then
-			timerHateCrash:Start()
-			crashCount = crashCount + 1
-		elseif self.vb.phase == 6 and crashCount == 1 then
-			timerHateCrash:Start(74)
-			crashCount = 0
-		end
-	elseif args:IsSpellID(2145051,2145052) then
-		warnMadness:Show()
-		timerMadness:Start(110)
-	elseif args:IsSpellID(2144908) then
-		timerChainLightning:Start(3)
-		timerChainLightningCD:Start()
-	elseif args:IsSpellID(2145074) then
-		warnHateBeam:Show()
-		timerHateBeam:Start()
-		timerNextHateBeam:Start()
-	elseif args:IsSpellID(2144816) then
-		castEyebeam = true
-	elseif args:IsSpellID(2144803) then
-		self:ScheduleMethod(0.15,"ChaosBlast")
 	end
 end
-end
 
-
-function mod:SPELL_INTERRUPT(args)
-	if illidan == true then
-	if args:IsSpellID(2144908) then
-		timerChainLightning:Cancel()
+function mod:SPELL_CAST_SUCCESS(args)
+	local spellId = args.spellId
+	if spellId == 41126 then
+		warnFlameBurst:Show()
+		self.vb.flameBursts = self.vb.flameBursts + 1
+		if self.vb.flameBursts < 3 then
+			timerNextFlameBurst:Start()
+		end
 	end
 end
-end
-
 
 function mod:SPELL_AURA_APPLIED(args)
-	if illidan == true then
-	if args:IsSpellID(2144751, 2144752, 2144753, 2144754, 2144755) then
+	local spellId = args.spellId
+	if spellId == 41917 or spellId == 41914 then
 		timerParasite:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnParasite:Show()
-			yellParasiteFades:Countdown(10, 3)
+			specWarnParasite:Play("targetyou")
+			yellParasiteFades:Countdown(spellId)
+		else
+			warnParasite:Show(args.destName)
 		end
-		self:UnscheduleMethod("warnParasiteTargets")
-		ParasiteTargets[#ParasiteTargets + 1] = args.destName
-		self:ScheduleMethod(0.3, "warnParasiteTargets")
 		if self.Options.ParasiteIcon then
-			if DBM:AntiSpam(10) then self:SetIcon(args.destName, 7)
-			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 6)
-			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 5)
-			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 4)
-			elseif DBM:AntiSpam(10) then self:SetIcon(args.destName, 3) 
+			self:SetIcon(args.destName, 8)
+		end
+		if self.Options.RangeFrame then
+			if DBM:UnitDebuff("player", args.spellName) then -- You have debuff, show everyone
+				DBM.RangeCheck:Show(8, nil)
+			else -- You do not have debuff, only show players who do
+				DBM.RangeCheck:Show(8, parasiticDebuffFilter)
 			end
 		end
-		timerNextParasite:Start()
-	end
-	if args:IsSpellID(2144810) then
-		if args.destName == args:IsPlayer() then
+	elseif spellId == 40585 then
+		timerBarrage:Start(args.destName)
+		timerNextBarrage:Start()
+		if args:IsPlayer() then
 			specWarnBarrage:Show()
-			SendChatMessage("Dark Barrage on "..UnitName("PLAYER").."!", "SAY")
+			specWarnBarrage:Play("runout")
+			specWarnBarrage:ScheduleVoice(1, "keepmove")
 		else
 			warnBarrage:Show(args.destName)
 		end
-		self:SetIcon(args.destName, 7, 2)
-		timerBarrage:Start(args.destName)
-		castBarrage = true
+	elseif spellId == 40932 then
+		warnFlame:CombinedShow(0.3, args.destName)
+		--timerFlame:Start(args.destName)
+	elseif spellId == 41083 then
+		warnShadowDemon:CombinedShow(1, args.destName)
+	elseif spellId == 40683 then
+		warnEnrage:Show()
+		timerEnrage:Start()
+	elseif spellId == 40695 then
+		warnCaged:Show()
+		timerCaged:Start()
+	elseif spellId == 41032 then -- Shear
+		if not args:IsPlayer() then
+			specWarnShearTaunt:Show(args.destName)
+			specWarnShearTaunt:Play("tauntboss")
+		end
+	elseif spellId == 39869 then -- Uncaged Wrath
+		specWarnUncagedWrath:Show()
+		specWarnUncagedWrath:Play("defensive")
 	end
-	if args:IsSpellID(2145061) and args.destName == "Illidan Stormrage" then
-		timerUnleash:Start(110)
-		timerMotes:Start(5)
-		warnUnleash:Show()
-	end
-end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if illidan == true then
-	if args:IsSpellID(2144751, 2144752, 2144753, 2144754, 2144755) then
+	local spellId = args.spellId
+	if spellId == 41917 or spellId == 41914 then
 		timerParasite:Stop(args.destName)
-	elseif args:IsSpellID(2144816) then
-		castEyebeam = false
-	elseif args:IsSpellID(2144810) then
-		castBarrage = false
+		if args:IsPlayer() then
+			yellParasiteFades:Cancel()
+		end
+		if self.Options.ParasiteIcon then
+			self:SetIcon(args.destName, 0)
+		end
 	end
 end
+
+function mod:SPELL_DAMAGE(_, _, _, destGUID, _, _, spellId)
+	if (spellId == 40841 or spellId == 40832 or spellId == 40611) and destGUID == UnitGUID("player") and self:AntiSpam(4, 5) then -- Flame Crash / Blaze (Flame of Azzinoth)
+		specWarnGTFO:Show()
+		specWarnGTFO:Play("runaway")
+	end
 end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:UNIT_DIED(args)
-	if illidan == true then
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 22997 then
 		self.vb.flamesDown = self.vb.flamesDown + 1
 		if self.vb.flamesDown >= 2 then
-			self.vb.phase = 3
-			warnPhase3:Show()
-			bladeCount = 0
-			if castEyebeam == true then
-				local eyebeamTime = timerEyebeam:GetTime();
-				timerLanding:Start(eyebeamTime+7)
-				timerBladeCD:Start(eyebeamTime+10)
-				timerFlameCrash:Start(eyebeamTime+18)
-				timerNextParasite:Start(eyebeamTime+23)
-				timerShearCD:Start(eyebeamTime+28)
-				timerDrawSoul:Start(eyebeamTime+33)
-				timerNextDemon:Start(eyebeamTime+67)
-			elseif castBarrage == true then
-				local barrageTime = timerBarrage:GetTime();
-				timerLanding:Start(barrageTime+7)
-				timerBladeCD:Start(barrageTime+10)
-				timerFlameCrash:Start(barrageTime+18)
-				timerNextParasite:Start(barrageTime+23)
-				timerShearCD:Start(barrageTime+28)
-				timerDrawSoul:Start(barrageTime+33)
-				timerNextDemon:Start(barrageTime+67)
-			else
-				timerLanding:Start(7)
-				timerBladeCD:Start(10)
-				timerFlameCrash:Start(18)
-				timerNextParasite:Start(23)
-				timerShearCD:Start(28)
-				timerDrawSoul:Start(33)
-				timerNextDemon:Start(67)
+			self:SetStage(3)
+			if self.Options.RangeFrame then
+				DBM.RangeCheck:Show(6)
 			end
+			timerNextBarrage:Cancel()
+			timerEyebeam:Cancel()
+			warnPhase3:Show()
+			timerNextDemon:Start(77.6) -- (Timewalking Frostmourne [2023-02-18]@[22:07:38]) - 77.6
+			timerShearCD:Start(27.6)
+			timerFlameCrash:Start(47.5)
+			self:RegisterShortTermEvents(
+				"UNIT_AURA focus target mouseover"
+			)
 		end
 	end
-	if args.destName == Name then
-		eyebeamTarget = 0
-	end
-end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Pull or msg:find(L.Pull) then
-		timerLongRPStart:Start()
-		LongPullRP = true
-		self:Schedule(18, illidariElites, self)
-		timerElites:Start(44)
-		timerFlameCrash:Start(54)
-		timerShearCD:Start(64)
-		timerDrawSoul:Start(69)
-		timerBladeCD:Start(74)
-		self:Schedule(5, Prepared, self)
-	elseif msg == L.RealPull or msg:find(L.RealPull) and prepared == false or nil then
-		timerShortRPStart:Start()
+		timerCombatStart:Start()
+	elseif msg == L.Eyebeam or msg:find(L.Eyebeam) then
+		warnEyebeam:Show()
+		timerEyebeam:Start()
 	elseif msg == L.Demon or msg:find(L.Demon) then
-		warnDemonForm:Show()
-		timerBladeCD:Cancel()
-		timerFlameCrash:Cancel()
-		timerParasite:Cancel()
-		timerDrawSoul:Cancel()
-		timerShearCD:Cancel()
-		bladeCount = 0
-	elseif msg == L.DemonWithinQuote or msg:find(L.DemonWithinQuote) then
+		self.vb.flameBursts = 0
+		self.vb.demonForm = true
+		timerNextDemon:Cancel()
+		warnDemon:Show()
 		timerNextHuman:Start()
-		timerChaosBurst:Start(10)
-		timerShadowDemon:Start(30)
-		if self.vb.phase == 3 then
-			self:Schedule(60, humanForms, self)
-		elseif self.vb.phase == 5 then
-			self:Schedule(60, humanHatredForms, self)
-		end
-	elseif msg == L.Phase4 or msg:find(L.Phase4) then
-		self.vb.phase = 4
-		bladeCount = 0
-		self:Unschedule(humanForms)
-		timerBladeCD:Cancel()
-		timerFlameCrash:Cancel()
-		timerShearCD:Cancel()
-		timerDrawSoul:Cancel()
-		timerNextParasite:Cancel()
+		timerNextFlameBurst:Start()
+		timerShadowDemon:Start()
+--		self:Schedule(74, humanForms, self)
+	elseif (msg == L.Phase4 or msg:find(L.Phase4)) and self.vb.phase < 4 then
+		self:SetStage(4)
+		self.vb.warned_preP4 = true
+--		self:Unschedule(humanForms)
+		timerParasite:Cancel()
+		--timerFlame:Cancel()
+		timerNextFlameBurst:Cancel()
+		timerShadowDemon:Cancel()
 		timerNextHuman:Cancel()
 		timerNextDemon:Cancel()
-		timerP4RP:Start()
-		warnPhase4:Schedule(33)
-		self:Schedule(33, phase4Start, self)
-	elseif msg == L.MaievTrap or msg:find(L.MaievTrap) then
-		specWarnTrap:Show()
-	elseif msg == L.Trapped1 or msg == L.Trapped2 or msg == L.Trapped3 then
-		timerStun:Start()
-		warnTrapped:Show()
-	elseif msg == L.Phase5 or msg:find(L.Phase5) then
-		if mod:IsDifficulty("heroic25") then
-			self.vb.phase = 5
-			warnPhase5:Schedule(46)
-			timerP5RP:Start()
-			self:ScheduleMethod(0,"CancelP5timers")
-			self:ScheduleMethod(49, "StartP5timers")
-		else
-			timerDyingRP:Start()
-		end
+		timerPhase4:Start()
+		warnPhase4:Schedule(30)
+		timerNextDemon:Start(89.1) -- REVIEW! 5s variance? (Timewalking Frostmourne [2023-02-18]@[21:51:02] || Timewalking Frostmourne [2023-02-18]@[22:07:38]) - 89.1 || 93.0
+
 	end
 end
 
+function mod:UNIT_AURA(uId)
+	if not self.vb.demonForm then return end -- Demon phase
+	if DBM:GetUnitCreatureId(uId) ~= 22917 then return end -- Illidan
+
+	local demonForm = DBM:UnitBuff(uId, 40506)
+	if self.vb.demonForm and not demonForm then -- Illidan was in Demon Form but just lost buff and morphed into Human Form
+--		self.vb.demonForm = false -- redundancy. untested if it is actually needed, but theoretically I want to prevent UNIT_AURA from rerunning during OnSync runtime
+		DBM:Debug("<personal> Illidan switched to Human Form!")
+		self:SendSync("humanForm")
+	end
+end
 
 function mod:UNIT_HEALTH(uId)
-	if illidan == true then
 	local cid = self:GetUnitCreatureId(uId)
-	if warned_50demon == false and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.55 then
-		warned_50demon = true
-		warnDemonSoon:Show()
-	elseif warned_10demon == false and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.15 then
-		warned_10demon = true
-		warnDemonSoon:Show()
-	elseif warned_flame == false and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.7 then
-		warned_flame = true
-		warnPhase2:Show()
-		self.vb.phase = 2
-		self:Unschedule(illidariElites)
-		timerBladeCD:Cancel()
-		timerFlameCrash:Cancel()
-		timerShearCD:Cancel()
-		timerDrawSoul:Cancel()
-		timerElites:Cancel()
+	if not self.vb.warned_preP2 and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.75 then
+		self.vb.warned_preP2 = true
+		warnPhase2Soon:Show()
+	elseif not self.vb.warned_preP4 and cid == 22917 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.35 then
+		self.vb.warned_preP4 = true
+		warnPhase4Soon:Show()
 	end
-end
 end
 
-function mod:UNIT_AURA(unit)
-if illidan == true then
-	if self.vb.phase == 2 and eyebeamTarget == 0 and UnitDebuff(unit, "Betrayer's Gaze") and DBM:AntiSpam(35) then
-		eyebeamTarget = 1
-		Name = UnitName(unit)
-		if Name == UnitName("player") then
-			specWarnEyebeam:Show()
-			SendChatMessage("Eye Beam on "..UnitName("PLAYER").."!", "SAY")
-		else
-			warnEyebeamTarget:Show(Name)
- 		end
-		 timerEyebeam:Start(Name)
-		self:SetIcon(Name, 6, 10)
-		self:ScheduleMethod(10,"EyeBeamReset")
+function mod:OnSync(msg)
+	if msg == "humanForm" and self.vb.demonForm then
+		DBM:Debug("<sync> Illidan switched to Human Form!")
+		humanForms(self)
 	end
-	if UnitDebuff("Boss", "Struggle for Control") and DBM:AntiSpam(105, 3) then
-		warnStruggle:Show()
-		timerStruggling:Start()
-		timerStruggle:Start()
-		Struggled = true
-	end
-end
 end

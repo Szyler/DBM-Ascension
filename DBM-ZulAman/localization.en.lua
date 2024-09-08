@@ -5,138 +5,116 @@ local L
 ---------------
 L = DBM:GetModLocalization("Nalorakk")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Nalorakk"
-}
+})
 
-L:SetWarningLocalization{
+L:SetWarningLocalization({
 	WarnBear		= "Bear Form",
 	WarnBearSoon	= "Bear Form in 5 sec",
 	WarnNormal		= "Normal Form",
 	WarnNormalSoon	= "Normal Form in 5 sec"
-}
+})
 
-L:SetTimerLocalization{
+L:SetTimerLocalization({
 	TimerBear		= "Bear Form",
 	TimerNormal		= "Normal Form"
-}
+})
 
-L:SetOptionLocalization{
+L:SetOptionLocalization({
 	WarnBear		= "Show warning for Bear form",
 	WarnBearSoon	= "Show pre-warning for Bear form",
 	WarnNormal		= "Show warning for Normal form",
 	WarnNormalSoon	= "Show pre-warning for Normal form",
 	TimerBear		= "Show timer for Bear form",
 	TimerNormal		= "Show timer for Normal form"
-}
+})
 
-L:SetMiscLocalization{
-	YellBear 	= "You call on da beast, you gonna get more dan you bargain for!",
+L:SetMiscLocalization({
+	YellPull	= "Get da move on, guards! It be killin' time!",
+	YellBear	= "You call on da beast, you gonna get more dan you bargain for!",
 	YellNormal	= "Make way for Nalorakk!"
-}
+})
 
 ---------------
 --  Akil'zon --
 ---------------
 L = DBM:GetModLocalization("Akilzon")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Akil'zon"
-}
+})
 
-L:SetOptionLocalization{
-	StormIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43648),
-	RangeFrame				= "Show range frame",
-	RodYellOpt  = "Yell when you are affected by $spell:2135700"
-}
-
-L:SetMiscLocalization{
-	DBM_ROD_PLAYER = "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
-	DBM_EOS_PLAYER = "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
-	DBM_TURBULENT_WINDS = "Turbulent winds on "..UnitName("PLAYER").."!"
-}
+L:SetMiscLocalization({
+	YellPull	= "I be da predator! You da prey...",
+})
 
 ---------------
 --  Jan'alai --
 ---------------
 L = DBM:GetModLocalization("Janalai")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Jan'alai"
-}
+})
 
-L:SetMiscLocalization{
+L:SetMiscLocalization({
+	YellPull	= "Spirits of da wind be your doom!",
 	YellBomb	= "I burn ya now!",
-	YellAdds	= "Where ma hatcha? Get to work on dem eggs!",
-	Hatchlings	= "Hatchlings alive >%s<" --(args.amount or 1)
-}
-
-L:SetOptionLocalization{
-	FlameIcon				= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43140),
-	Hatchlings				= "Show warning for each increments of 5 Dragonhawk Hatchlings" --(args.spellName, args.destName, args.amount or 1)
-}
+	YellAdds	= "Where ma hatcha? Get to work on dem eggs!"
+})
 
 --------------
 --  Halazzi --
 --------------
 L = DBM:GetModLocalization("Halazzi")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Halazzi"
-}
+})
 
-L:SetWarningLocalization{
+L:SetWarningLocalization({
 	WarnSpirit	= "Spirit Phase",
-	WarnNormal	= "Normal Phase",
-	WarnMerge	= "Normal Phase"
-}
+	WarnNormal	= "Normal Phase"
+})
 
-L:SetOptionLocalization{
-	WarnSpirit		= "Show warning for Spirit phase",
-	WarnNormal		= "Show warning for Normal phase",
-	WarnMerge		= "Show warning for Merge phase",
-	ShockYellOpt	= "Yell when you are affected by $spell:2136002 , $spell:2136023 or $spell:2136015",
-}
+L:SetOptionLocalization({
+	WarnSpirit	= "Show warning for Spirit phase",
+	WarnNormal	= "Show warning for Normal phase"
+})
 
-L:SetMiscLocalization{
-	YellSpirit		= "I fight wit' untamed spirit....",
-	YellNormal		= "Spirit, come back to me!",
-	FlameShockYell  = "Flame Shock on "..UnitName("PLAYER"),
-	EarthShockYell	= "Earth Shock on "..UnitName("PLAYER"),
-	FrostShockYell	= "Frost Shock on "..UnitName("PLAYER")
-}
+L:SetMiscLocalization({
+	YellPull	= "Get on ya knees and bow.... to da fang and claw!",
+	YellSpirit	= "I fight wit' untamed spirit....",
+	YellNormal	= "Spirit, come back to me!"
+})
 
 --------------------------
 --  Hex Lord Malacrass --
 --------------------------
 L = DBM:GetModLocalization("Malacrass")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Hex Lord Malacrass"
-}
+})
 
-L:SetMiscLocalization{
+L:SetMiscLocalization({
 	YellPull	= "Da shadow gonna fall on you...."
-}
+})
 
 --------------
 --  Zul'jin --
 --------------
 L = DBM:GetModLocalization("ZulJin")
 
-L:SetGeneralLocalization{
+L:SetGeneralLocalization({
 	name = "Zul'jin"
-}
+})
 
-L:SetMiscLocalization{
-	YellPhase2				= "Got me some new tricks... like me brudda bear....",
-	YellPhase3				= "Dere be no hidin' from da eagle!",
-	YellPhase4				= "Let me introduce you to me new bruddas: fang and claw!",
-	YellPhase5				= "Ya don' have to look to da sky to see da dragonhawk!",
-	DBM_JANALAI_HATCHERS 	= "Where ma hatcha? Get to work on dem eggs!",
-	DBM_ROD_PLAYER 			= "Lightnig rod on "..UnitName("PLAYER").."! I have to run!",
-	DBM_EOS_PLAYER 			= "Eye of storm on "..UnitName("PLAYER").."! Get under me!",
-	DBM_TURBULENT_WINDS 	= "Turbulent winds on "..UnitName("PLAYER").."!",
-	DBM_BLOOD_SCYTHE 		= "Massive Blood Scythe on "..UnitName("PLAYER"),
-	DBM_BLOOD_ORBS 			= "Blood orbs on"..UnitName("PLAYER").."! "
-}
+L:SetMiscLocalization({
+	YellPull	= "Nobody badduh dan me!",
+	YellPhase2	= "Got me some new tricks... like me brudda bear....",
+	YellPhase3	= "Dere be no hidin' from da eagle!",
+	YellPhase4	= "Let me introduce you to me new bruddas: fang and claw!",
+	YellPhase5	= "Ya don' have to look to da sky to see da dragonhawk!"
+})

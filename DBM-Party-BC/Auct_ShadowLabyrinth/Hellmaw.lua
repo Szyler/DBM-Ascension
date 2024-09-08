@@ -1,43 +1,33 @@
-local mod = DBM:NewMod("Hellmaw", "DBM-Party-BC", 10)
+local mod = DBM:NewMod(544, "DBM-Party-BC", 10, 253)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 
 mod:SetCreatureID(18731)
+
+mod:SetModelID(18821)
+mod:SetModelScale(0.7)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED"
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_SUCCESS 33547"
 )
 
-local warnFear      			= mod:NewSpellAnnounce(33547)
-local timerNextFear     		= mod:NewNextTimer(25, 33547)
-local warningAcid				= mod:NewTargetAnnounce(33551, 2)
-local timerNextAcid     		= mod:NewNextTimer(60, 33547)
+local warnFear		= mod:NewSpellAnnounce(33547, 3)
 
-local enrageTimer				= mod:NewBerserkTimer(180)
+local timerFear		= mod:NewNextTimer(25, 33547, nil, nil, nil, 2)
 
+local enrageTimer	= mod:NewBerserkTimer(180)
 
 function mod:OnCombatStart(delay)
-	timerNextFear:Start(10-delay)
-	timerNextAcid:Start(5-delay)
-	if mod:IsDifficulty("heroic5") then
-        enrageTimer:Start(-delay)
-    end
+	if self:IsDifficulty("heroic5", "timewalker") then
+		enrageTimer:Start(-delay)
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 33547 then
 		warnFear:Show()
-		timerNextFear:Start()
+		timerFear:Start()
 	end
 end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(33551) then
-		warningAcid:Show(args.destName)
-	end
-end
-
--- 33551 - Corrosive Acid

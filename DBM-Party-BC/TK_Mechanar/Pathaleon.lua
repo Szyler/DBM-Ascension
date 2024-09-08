@@ -1,18 +1,22 @@
-local mod = DBM:NewMod("Pathaleon", "DBM-Party-BC", 13)
+local mod = DBM:NewMod(565, "DBM-Party-BC", 13, 258)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod.statTypes = "normal,heroic,mythic"
 
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(19220)
+
+mod:SetModelID(20033)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 35280",
+	"SPELL_AURA_REMOVED 35280"
 )
 
-local warnMC      = mod:NewTargetAnnounce(35280)
-local timerMC     = mod:NewTargetTimer(10, 35280)
+local warnMC	= mod:NewTargetNoFilterAnnounce(35280, 3)
+
+local timerMC	= mod:NewTargetTimer(10, 35280, nil, nil, nil, 3)
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 35280 then
@@ -23,6 +27,6 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == 35280 then
-		timerMC:Cancel(args.destName)
+		timerMC:Stop(args.destName)
 	end
 end

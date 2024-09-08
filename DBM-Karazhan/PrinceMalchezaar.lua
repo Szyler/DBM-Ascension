@@ -1,248 +1,116 @@
 local mod	= DBM:NewMod("Prince", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 172 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(15690)
---mod:RegisterCombat("yell", L.DBM_PRINCE_YELL_PULL)
+
+mod:SetModelID(19274)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_CAST_START",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED",
+mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 30852",
+	"SPELL_CAST_SUCCESS 30843",
+	"SPELL_AURA_APPLIED 30854 30898 39095 30843 30859",
 	"CHAT_MSG_MONSTER_YELL",
-	"SPELL_INSTAKILL",
-	"SPELL_CAST_SUCCESS",
-	"UNIT_HEALTH"
+	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
+--TODO, improve phase change timer updates, I don't really feel like it right now
+--TODO, also switch to pre changed timers, these are probably wrong for classic TBC, they were changed on retail
+local warningNovaCast			= mod:NewCastAnnounce(30852, 3)
+local warningInfernal			= mod:NewSpellAnnounce(37277, 2)
+local warningHellfire			= mod:NewSpellAnnounce(30859, 3)
+local warningEnfeeble			= mod:NewTargetNoFilterAnnounce(30843, 4)
 local warnPhase2				= mod:NewPhaseAnnounce(2)
 local warnPhase3				= mod:NewPhaseAnnounce(3)
-local warningNovaCast			= mod:NewCastAnnounce(30852, 3)
--- local warningInfernalSoon		= mod:NewSoonAnnounce(37277, 2) -- not needed
-local warningInfernal			= mod:NewSpellAnnounce(37277, 3)
-local warningEnfeeble			= mod:NewTargetAnnounce(30843, 4)
-local warningAmpMagic			= mod:NewSpellAnnounce(39095, 3)
-local warningSWP				= mod:NewTargetAnnounce(30898, 2, nil, false)
-local warningDoom				= mod:NewSpellAnnounce(85069, 1)
-local warningShadowRealm		= mod:NewTargetAnnounce(85077, 3)
-local priWarnSunder				= mod:NewAnnounce(L.PriSunder, 3, 85198)
+local warningAmpMagic			= mod:NewTargetNoFilterAnnounce(39095, 3)
+local warningSWP				= mod:NewTargetNoFilterAnnounce(30898, 2, nil, "RemoveMagic")
 
-local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
-local specWarnNova				= mod:NewSpecialWarningRun(30852)
-local specWarnSWP				= mod:NewSpecialWarningYou(30898)	
-local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
---local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
+local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843, nil, nil, nil, 3, 2)
+local specWarnNova				= mod:NewSpecialWarningRun(30852, "Melee", nil, nil, 4, 2)
 
-local timerNovaCast				= mod:NewCastTimer(2, 30852)
-local timerNextInfernal			= mod:NewTimer(20, "Summon Infernal #%s", 37277)
-local timerEnfeeble				= mod:NewNextTimer(30, 30843)
-local timerDoom					= mod:NewNextTimer(24, 85069)
-local timerNova					= mod:NewNextTimer(30, 30852)
-local timerShadowRealm			= mod:NewNextTimer(45, 85077)
-local timerShadowRealmTank		= mod:NewNextTimer(45, 85077)
-local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
-
-local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
-local miscCrystalKill2			= mod:NewAnnounce(L.ShadowCrystalDead2, 3, 85078, nil,false)
-local miscCrystalKill3			= mod:NewAnnounce(L.ShadowCrystalDead3, 3, 85078, nil,false)
-
-local berserkTimer				= mod:NewBerserkTimer(900)
-
-local phase	= 0
-local ampDmg = 1
-local enfeebleTargets = {}
-local firstInfernal = false
-local CrystalsKilled = 0
-local InfernalCount = 1
-
-mod:AddBoolOption(L.ShadowCrystal)
-
-local function showEnfeebleWarning()
-	warningEnfeeble:Show(table.concat(enfeebleTargets, "<, >"))
-	table.wipe(enfeebleTargets)
-end
+local timerNovaCD				= mod:NewCDTimer(18.1, 30852, nil, nil, nil, 2)--18.1-30
+local timerNextInfernal			= mod:NewCDTimer(45, 37277, nil, nil, nil, 1)--Spawning
+local timerHellfire				= mod:NewCDTimer(14.5, 30859, nil, nil, nil, 3)--Landing/activating Hellfire
+local timerEnfeebleCD			= mod:NewNextTimer(30, 30843, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerEnfeeble				= mod:NewBuffFadesTimer(9, 30843)
 
 function mod:OnCombatStart(delay)
-	phase = 1
-	self.vb.phase = 1
-	CrystalsKilled = 0
-	ampDmg = 1
-	InfernalCount = 1
-	berserkTimer:Start(-delay)
-	table.wipe(enfeebleTargets)
-	if mod:IsDifficulty("Normal25", "heroic10", "heroic25") then
-		timerEnfeeble:Start(30-delay)
-	end
-	timerNextInfernal:Start(21-delay, tostring(1))
-	timerNova:Start(34-delay)
+	self:SetStage(1)
+	timerNextInfernal:Start(14.5-delay)--14-21?
+	timerEnfeebleCD:Start(30-delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30852, 85293) then
-		warningNovaCast:Show()
-		timerNovaCast:Start()
-		specWarnNova:Show()
-		timerNova:Start()
+	if args.spellId == 30852 then
+		if self.Options.SpecWarn30852run and DBM:UnitDebuff("player", 30843) then
+			specWarnNova:Show()--Trivial damage, but because of enfeeble, don't want to do a blind level check here
+			specWarnNova:Play("justrun")
+		else
+			warningNovaCast:Show()
+		end
+		timerNovaCD:Start(self.vb.phase == 3 and 18.1 or 30)
 	end
 end
-
-function mod:SPELL_INSTAKILL(args)
-	if args:IsSpellID(85078) and CrystalsKilled == 0 and args:IsPlayerSource() then
-		CrystalsKilled = CrystalsKilled + 1
-		if self.Options.ShadowCrystal then
-			miscCrystalKill1:Show()
-		end
-	elseif args:IsSpellID(85078) and CrystalsKilled == 1 and args:IsPlayerSource() then
-		CrystalsKilled = CrystalsKilled + 1
-		if self.Options.ShadowCrystal then
-			miscCrystalKill2:Show()
-		end
-	elseif args:IsSpellID(85078) and CrystalsKilled == 2 and args:IsPlayerSource() then
-		CrystalsKilled = 0
-		if self.Options.ShadowCrystal then
-			miscCrystalKill3:Show()
-		end
-	end
-end	
-		
-
---function mod:Infernals()
---	warningInfernal:Show()
---	if Phase == 3 then
---		timerNextInfernal:Start(9)
---	else		
---		timerNextInfernal:Start()
---	end
---end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30854, 85317, 85291) then
-		warningSWP:Show(args.destName)
-		if args:IsPlayer() then
-			specWarnSWP:Show()
-		end	
-	elseif args:IsSpellID(85207) and args:IsPlayer() then
-		ampDmg = ampDmg + 1;
-		warningAmpMagic:Show()
-		timerAmpDmg:Start(tostring(ampDmg))
-	elseif args:IsSpellID(30843) then
-		enfeebleTargets[#enfeebleTargets + 1] = args.destName
-		timerEnfeeble:Start()
-		if args:IsPlayer() then
-			specWarnEnfeeble:Show()
-		end
-		self:Unschedule(showEnfeebleWarning)
-		self:Schedule(0.3, showEnfeebleWarning)
-	elseif args:IsSpellID(85198) then
-		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
-	-- elseif args:IsSpellID(85208) then -- Aura doesn't show in combatlog, can't be tracked
-	-- 	phase = 2
-	-- 	self.vb.phase = 2
-	-- 	warnPhase2:Show()
-	-- 	timerShadowRealm:Start(15)
-	-- 	timerEnfeeble:Stop()
-	-- 	timerDoom:Start(30)
-	end
-end
-
--- function mod:SPELL_AURA_REMOVED(args) -- Aura doesn't show in combatlog, can't be tracked
--- 	if args:IsSpellID(85208) then
--- 		phase = 3
--- 		self.vb.phase = 3
--- 		warnPhase3:Show()
--- 		timerAmpDmg:Start(5, tostring(ampDmg))
--- 		timerDoom:Stop()
--- 		timerDoom:Start(12)
--- 		timerNova:Stop()
--- 		timerShadowRealm:Stop()
--- 		if mod:IsDifficulty("heroic10", "heroic25") then
--- 			timerShadowRealm:Start(22)
--- 		else
--- 			timerShadowRealm:Start(33)
--- 		end
--- 	end
--- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85069) then
-		warningDoom:Show()
-		if phase == 3 then
-			timerDoom:Start(12)
-		else
-			timerDoom:Start()
-		end
-	elseif args:IsSpellID(85077) then
-		warningShadowRealm:Show(args.destName)
-		if args:IsPlayer() then
-			specWarnSRealm:Show()
-		end
-		if mod:IsDifficulty("heroic10", "heroic25") then
-			timerShadowRealm:Start(22)
-		else
-			timerShadowRealm:Start()
-		end
+	if args.spellId == 30843 then
+		timerEnfeebleCD:Start()
 	end
 end
 
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(85207) and args:IsPlayer() then
-		ampDmg = ampDmg + 1;
-		warningAmpMagic:Show()
-		timerAmpDmg:Start(tostring(ampDmg))
-	elseif args:IsSpellID(85198) then
-		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(30854, 30898) then
+		warningSWP:Show(args.destName)
+	elseif args.spellId == 39095 then
+		warningAmpMagic:Show(args.destName)
+	elseif args.spellId == 30843 then
+		warningEnfeeble:CombinedShow(0.3, args.destName)
+		if args:IsPlayer() then
+			timerEnfeeble:Start()
+			specWarnEnfeeble:Show()
+			specWarnEnfeeble:Play("targetyou")
+		end
+	elseif args.spellId == 30859 and not args:IsDestTypePlayer() then--Hellfire applied to Infernals
+		warningHellfire:Show()
+		-- (during TBC there was like a 5 second delay between landing and gaining hellfire, but at some point they changed it to gain instantly
+		--If this changes on classic TBC, this will probably need adjustment
 	end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 or DBM_PRINCE_YELL_INF3 then
+	if msg == L.DBM_PRINCE_YELL_INF1 or msg == L.DBM_PRINCE_YELL_INF2 then
 		warningInfernal:Show()
-		InfernalCount = InfernalCount + 1
---		print("Next infernal is #"..InfernalCount)        -- debug
-		if phase == 3 then
-			timerNextInfernal:Start(10, tostring(InfernalCount))
-		else
-			timerNextInfernal:Start(tostring(InfernalCount))
-		end
---		if Phase == 3 then
---			timerNextInfernal:Update(3.5, 12.5)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
---		else		
---			timerNextInfernal:Update(26.5, 45)--we attempt to update bars to show 18.5sec left. this will more than likely error out, it's not tested.
---		end
---	elseif msg == L.DBM_PRINCE_YELL_P3 then   -- Ascension doesn't use P3 yell.
---		phase = 3
---		warnPhase3:Show()
---		timerAmpDmg:Start(5, tostring(ampDmg))
-	elseif msg == L.DBM_PRINCE_YELL_P2 then             
-		phase = 2
-		self.vb.phase = 2
+		timerHellfire:Start(14.5)--14-16
+		timerNextInfernal:Start(self.vb.phase == 3 and 19.3 or 44.7)--44-48
+	elseif msg == L.DBM_PRINCE_YELL_P3 then
+		self:SendSync("Phase3")
+	elseif msg == L.DBM_PRINCE_YELL_P2 then
+		self:SetStage(2)
 		warnPhase2:Show()
-		timerShadowRealm:Start(15)
-		timerEnfeeble:Stop()
-		timerDoom:Start(30)
+		--Doesn't seem to affect any timers.
 	end
 end
 
-function mod:UNIT_HEALTH(unit)
-	if isPrince and (not below30) and (mod:GetUnitCreatureId(unit) == 15690) then
-		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100;
-		if (hp <= 30) then
-			below30 = true;
-			phase = 3
-			self.vb.phase = 3
-			warnPhase3:Show()
-			timerAmpDmg:Start(5, tostring(ampDmg))
-			timerDoom:Stop()
-			timerDoom:Start(12)
-			timerNova:Stop()
-			timerShadowRealm:Stop()
-			if mod:IsDifficulty("heroic10", "heroic25") then
-				timerShadowRealm:Start(22)
-			else
-				timerShadowRealm:Start(33)
-			end
-        end
-    end
+--"<275.31 12:32:09> [UNIT_SPELLCAST_SUCCEEDED] Prince Malchezaar(Deafstroket) -Summon Axes- [[target:Cast-3-4615-532-1222-30891-0000F6542B:30891]]", -- [3138]
+--"<275.56 12:32:10> [CHAT_MSG_MONSTER_YELL] How can you hope to stand against such overwhelming power?#Prince Malchezaar#####0#0##0#1766#nil#0#false#false#false#false", -- [3146]
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, spellName)
+	if spellName == GetSpellInfo(30891) and self:AntiSpam(3, 1) then--Summon Axes
+		self:SendSync("Phase3")
+	end
+end
+
+function mod:OnSync(msg)
+	if not self:IsInCombat() then return end
+	if msg == "Phase3" then
+		self:SetStage(3)
+		warnPhase3:Show()
+		timerNovaCD:Stop()
+		timerNextInfernal:Stop()
+		timerEnfeebleCD:Stop()
+		timerNovaCD:Start(19.2)
+		--"<326.45 01:12:48> [DBM_Announce] Stage 3#136116#stage#3#Prince#false", -- [759]
+		--"<366.46 01:13:28> [CHAT_MSG_MONSTER_YELL] You face not Malchezaar alone, but the legions I command!#Prince Malchezaar#####0#0##0#163#nil#0#false#false#false#false", -- [883]
+		timerNextInfernal:Start(40)
+	end
 end

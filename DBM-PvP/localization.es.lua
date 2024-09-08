@@ -2,115 +2,127 @@
 
 local L
 
-----------------------------
---  General BG functions  --
-----------------------------
-L = DBM:GetModLocalization("Battlegrounds")
+--------------------------
+--  General BG Options  --
+--------------------------
+L = DBM:GetModLocalization("PvPGeneral")
 
 L:SetGeneralLocalization({
-	name = "Opciones"
+	name	= "Opciones generales"
 })
 
 L:SetTimerLocalization({
-	TimerInvite = "%s"
+	TimerFlag		= "Bandera Restablecida",
+	TimerShadow		= "Visión de las Sombras",
+	TimerStart		= "La batalla comienza en",
+	TimerWin		= "Victoria en"
 })
 
 L:SetOptionLocalization({
-	ColorByClass	= "Mostrar colores de clases en la Tabla de Estadísticas.",
-	ShowInviteTimer	= "Mostrar tiempo restante para entrar en batalla.",
-	AutoSpirit	= "Liberar espíritu automaticamente"
+	AutoSpirit			= "Liberar espíritu automáticamente",
+	ColorByClass		= "Mostrar nombres con el color de su clase en la tabla de estadísticas",
+	HideBossEmoteFrame	= "Ocultar marco de jefe de banda y botón de ciudadela en campos de batalla",
+	ShowBasesToWin		= "Mostrar bases para ganar",
+	ShowEstimatedPoints	= "Mostrar recursos estimados a ganar",
+	ShowFlagCarrier		= "Mostrar el nombre del portador de la bandera",
+	ShowGatesHealth		= "Mostrar salud de puertas dañadas (¡puede dar resultados erróneos al unirse a una batalla en curso!)",
+	ShowRelativeGameTime= "Llene el temporizador de victorias en relación con la hora de inicio del campo de batalla (si está deshabilitado, la barra siempre se ve llena)",
+	TimerCap			= "Mostrar tiempo que tarda en conquistar",
+	TimerFlag			= "Mostrar tiempo que tarda en restablecer la Bandera",
+	TimerShadow			= "Mostrar tiempo para que salga Visión de las Sombras.",
+	TimerStart			= "Mostrar tiempo para que comienze la Batalla",
+	TimerWin			= "Mostrar tiempo para que una faccion gane la Batalla"
 })
 
 L:SetMiscLocalization({
-	ArenaInvite	= "Mostrar tiempo para la Arena"
+	--BG 2 minutes
+	BgStart120TC		= "¡La batalla comienza en dos minutos!",
+	--BG 1 minute
+	BgStart60TC			= "¡La batalla comienza en un minuto!",
+	BgStart60AlteracTC	= "1 minuto para que dé comienzo la batalla por el Valle de Alterac.",
+	BgStart60SotA2TC	= "La ronda 2 de la batalla por la Playa de los Ancestros comenzará en 1 minuto.",
+	BgStart60WarsongTC	= "La batalla por la Garganta Grito de Guerra comenzará en 1 minuto.",
+	-- BG 30 seconds
+	BgStart30TC			= "¡La batalla comienza en treinta segundos!",
+	BgStart30AlteracTC	= "30 segundos para que dé comienzo la batalla por el Valle de Alterac.",
+	BgStart30SotA2TC	= "La ronda 2 comenzará en 30 segundos. ¡Preparaos!",
+	BgStart30WarsongTC	= "La batalla por la Garganta Grito de Guerra comenzará en 30 segundos. ¡Preparaos!",
+	--
+	ArenaInvite			= "Invitación a la arena",
+	Start60TC			= "¡Un minuto hasta que dé comienzo la batalla en arena!",
+	Start30TC			= "¡Treinta segundos hasta que comience la batalla de arena!",
+	Start15TC			= "¡Quince segundos para que comience la batalla de arena!",
+	BasesToWin			= "Bases necesarias para ganar: %d",
+	WinBarText			= "%s ganará en",
+	-- Flag carrying system
+	Flag				= "Bandera",
+	FlagResetTC			= "La bandera se ha restablecido.",
+	FlagTakenTC			= "¡(.+) ha tomado la bandera!",
+	FlagCapturedTC		= "¡La (%w+) ha capturado la bandera!",
+	FlagDroppedTC		= "¡Ha caído la bandera!",
+	--
+	ExprFlagPickUpTC	= "¡(.+) ha cogido la bandera de la (%w+)!",
+	ExprFlagCapturedTC	= "¡(.+) ha capturado la bandera de la (%w+)!",
+	ExprFlagReturnTC	= "¡(.+) ha devuelto la bandera de la (%w+) a su base!",
+	ExprFlagDroppedTC	= "¡(.+) ha dejado caer la bandera de la (%w+)!",
+	Vulnerable1			= "¡Los portadores de las banderas se han vuelto vulnerables a los ataques!",
+	Vulnerable2			= "¡Los portadores de las banderas se han vuelto más vulnerables a los ataques!",
+	-- Gates
+	GatesHealthFrame				= "Puertas dañadas",
+	HordeGateFront					= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:127:143:92:107|t Puerta Principal",
+	HordeGateFrontDestroyedTex		= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:163:179:92:107|t Puerta Principal",
+	HordeGateWest					= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:127:143:92:107|t Puerta Oeste",
+	HordeGateWestDestroyedTex		= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:163:179:92:107|t Puerta Oeste",
+	HordeGateEast					= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:127:143:92:107|t Puerta Este",
+	HordeGateEastDestroyedTex		= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:163:179:92:107|t Puerta Este",
+	AllianceGateFront				= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:181:197:92:107|t Puerta Principal",
+	AllianceGateFrontDestroyedTex	= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:217:233:92:107|t Puerta Principal",
+	AllianceGateWest				= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:181:197:92:107|t Puerta Oeste",
+	AllianceGateWestDestroyedTex	= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:217:233:92:107|t Puerta Oeste",
+	AllianceGateEast				= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:181:197:92:107|t Puerta Este",
+	AllianceGateEastDestroyedTex	= "|TInterface\\MINIMAP\\POIICONS.BLP:16:16:0:0:256:256:217:233:92:107|t Puerta Este",
+	-- Strands of the Ancients Gates emotes
+	GreenEmeraldAttacked			= "¡Están atacando la Puerta de la Esmeralda Verde!",
+	GreenEmeraldDestroyed			= "¡La Puerta de la Esmeralda Verde ha sido destruida!",
+	BlueSapphireAttacked			= "¡Están atacando la Puerta del Zafiro Azul!",
+	BlueSapphireDestroyed			= "¡La Puerta del Zafiro Azul ha sido destruida!",
+	PurpleAmethystAttacked			= "¡Están atacando la Puerta de la Amatista Púrpura!",
+	PurpleAmethystDestroyed			= "¡La Puerta de la Amatista Púrpura ha sido destruida!",
+	RedSunAttacked					= "¡Están atacando la Puerta del Sol Rojo!",
+	RedSunDestroyed					= "¡La Puerta del Sol Rojo ha sido destruida!",
+	YellowMoonAttacked				= "¡Están atacando la Puerta de la Luna Amarilla!",
+	YellowMoonDestroyed				= "¡La Puerta de la Luna Amarilla ha sido destruida!",
+	ChamberAncientRelicsAttacked	= "¡Están atacando la Cámara de las Reliquias!",
+	ChamberAncientRelicsDestroyed	= "¡Han atravesado la fortaleza! ¡La reliquia de titán es vulnerable!",
+	-- Isle of Conquest Gates CHAT_MSG_BG_SYSTEM_NEUTRAL messages
+	HordeGateFrontDestroyedTC		= "La puerta principal de la fortaleza de la Horda ha sido destruida.",
+	HordeGateWestDestroyedTC		= "La puerta oeste de la fortaleza de la Horda ha sido destruida.",
+	HordeGateEastDestroyedTC		= "La puerta este de la fortaleza de la Horda ha sido destruida.",
+	AllianceGateFrontDestroyedTC	= "La puerta principal de la fortaleza de la Alianza ha sido destruida.",
+	AllianceGateWestDestroyedTC		= "La puerta oeste de la fortaleza de la Alianza ha sido destruida.",
+	AllianceGateEastDestroyedTC		= "La puerta este de la fortaleza de la Alianza ha sido destruida.",
 })
 
-
---------------
---  Arenas  --
---------------
-L = DBM:GetModLocalization("Arenas")
-
-L:SetGeneralLocalization({
-	name = "Arena"
-})
-
-L:SetTimerLocalization({
-	TimerStart	= "¡La arena va a Comenzar!",
-	TimerShadow	= "Visión de las Sombras"
-})
-
-L:SetOptionLocalization({
-	TimerStart	= "Mostrar tiempo para que la Arena empieze.",
-	TimerShadow 	= "Mostrar tiempo para que salga Visión de las Sombras."
-})
-
-L:SetMiscLocalization({
-    Start60     = "¡Un minuto hasta que comience la batalla en la arena!",
-	Start30		= "¡Treinta segundos hasta que comience la batalla en arena!",
-	Start15		= "¡Quince segundos hasta que comience la batalla en arena!"
-})
-
----------------
---  Alterac  --
----------------
+----------------------
+--  Alterac Valley  --
+----------------------
 L = DBM:GetModLocalization("AlteracValley")
 
 L:SetGeneralLocalization({
 	name = "Valle de Alterac"
 })
 
-L:SetTimerLocalization({
-	TimerStart		= "La batalla comezara en", 
-	TimerTower		= "%s",
-	TimerGY			= "%s",
-})
-
-L:SetMiscLocalization({
-	BgStart60		= "1 minuto para que dé comienzo la batalla por el Valle de Alterac.",
-	BgStart30		= "30 segundos para que dé comienzo la batalla por el Valle de Alterac.",
-	ZoneName		= "Valle de Alterac"
-})
-
 L:SetOptionLocalization({
-	TimerStart		= "Mostrar tiempo para que comienze la Batalla.",
-	TimerTower		= "Mostrar tiempo para conquistar las Torres.",
-	TimerGY			= "Mostrar tiempo para conquistar los Cementerios.",
-	AutoTurnIn		= "Completar automaticamente las misiones de entregar piezas."
+	AutoTurnIn	= "Entregar misiones automáticamente"
 })
 
----------------
---  Arathi  --
----------------
+--------------------
+--  Arathi Basin  --
+--------------------
 L = DBM:GetModLocalization("ArathiBasin")
 
 L:SetGeneralLocalization({
 	name = "Cuenca de Arathi"
-})
-
-L:SetMiscLocalization({
-	BgStart60		= "La batalla por la Cuenca de Arathi comenzará en 1 minuto.",
-	BgStart30		= "La Batalla por la Cuenca de Arathi comenzará en 30 segundos.",
-	ZoneName 		= "Cuenca de Arathi",
-	ScoreExpr 		= "(%d+)/1600",
-	Alliance 		= "La Alianza",
-	Horde 			= "La Horda",
-	WinBarText 		= "%s ganara en",
-	BasesToWin 		= "Bases necesarias para ganar: %d",
-	Flag 			= "Bandera"
-})
-
-L:SetTimerLocalization({
-	TimerStart 		= "¡La batalla va Comenzar!", 
-	TimerCap 		= "%s",
-})
-
-L:SetOptionLocalization({
-	TimerStart  		= "Mostrar tiempo para que comienze la Batalla.",
-	TimerWin 		= "Mostrar tiempo para que una faccion Gane la Batalla.",
-	TimerCap 		= "Mostrar tiempo que tarda en conquistar Banderas.",
-	ShowAbEstimatedPoints	= "Mostrar recursos estimados a ganar.",
-	ShowAbBasesToWin	= "Mostrar bases para ganar."
 })
 
 -----------------------
@@ -122,33 +134,6 @@ L:SetGeneralLocalization({
 	name = "Ojo de la Tormenta"
 })
 
-L:SetMiscLocalization({
-	BgStart60		= "¡La batalla comienza en un minuto!",
-	BgStart30		= "¡La batalla comienza en treinta segundos!",
-	ZoneName		= "Ojo de la Tormenta",
-	ScoreExpr		= "(%d+)/1600",
-	Alliance 		= "Alianza",
-	Horde 			= "Horda",
-	WinBarText 		= "%s ganara en",
-	FlagReset 		= "La bandera se ha restablecido.",
-	FlagTaken 		= "¡ (.+) ha tomado la bandera!",
-	FlagCaptured 		= "¡La .+ ha%w+ ha capturado la bandera!",
-	FlagDropped 		= "¡Ha caído la bandera!",
-
-})
-
-L:SetTimerLocalization({
-	TimerStart 		= "¡La batalla va a Comenzar!", 
-	TimerFlag 		= "Bandera Restablecida",
-})
-
-L:SetOptionLocalization({
-	TimerStart  		= "Mostrar tiempo para que comienze la Batalla.",
-	TimerWin 		= "Mostrar tiempo para que una faccion Gane la Batalla.",
-	TimerFlag 		= "Mostrar tiempo que tarda en restablecer la Bandera.",
-	ShowPointFrame 		= "Ver puntos que dara la bandera.",
-})
-
 --------------------
 --  Warsong Gulch --
 --------------------
@@ -158,31 +143,13 @@ L:SetGeneralLocalization({
 	name = "Garganta Grito de Guerra"
 })
 
-L:SetMiscLocalization({
-	BgStart60 			= "La batalla por la Garganta Grito de Guerra comenzará en 1 minuto.",
-	BgStart30 			= "La batalla por la Garganta Grito de Guerra comenzará en 30 segundos. ¡Preparaos!",
-	ZoneName 			= "Garganta Grito de Guerra",
-	Alliance 			= "Alianza",
-	Horde 				= "Horda",	
-	InfoErrorText 			= "The flag carrier targeting function will be restored when you are out of combat.",
-	ExprFlagPickUp 			= "¡(.+) ha cogido la bandera de la (%w+)!",
-	ExprFlagCaptured 		= "¡(.+) ha capturado la bandera de la (%w+)!",
-	ExprFlagReturn 			= "¡(.+) ha devuelto la bandera de la (%w+) a su base!",
-	FlagAlliance 			= "Banderas capturadas por la Alianza: ",
-	FlagHorde			= "Banderas capturadas por la Horda: ",
-	FlagBase			= "Base",
-})
+------------------------------
+--  Strand of the Ancients  --
+------------------------------
+L = DBM:GetModLocalization("StrandoftheAncients")
 
-L:SetTimerLocalization({
-	TimerStart 			= "La batalla va comenzar", 
-	TimerFlag 			= "La bandera se resetea en",
-})
-
-L:SetOptionLocalization({
-	TimerStart  			= "Mostrar tiempo para que comienze la Batalla.",
-	TimerFlag			= "Mostrar tiempo que tarda en restablecer la Bandera.",
-	ShowFlagCarrier			= "Mostrar por donde va la bandera",
-	ShowFlagCarrierErrorNote 	= "Mostrar error de por donde va la bandera",
+L:SetGeneralLocalization({
+	name = "Playa de los Ancestros"
 })
 
 ------------------------
@@ -196,29 +163,21 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	WarnSiegeEngine		= "Máquina de asedio Lista!",
-	WarnSiegeEngineSoon	= "Máquina de asedio en ~10 seg"
+	WarnSiegeEngine		= "¡Máquina de asedio lista!",
+	WarnSiegeEngineSoon	= "Máquina de asedio en ~10 s"
 })
 
 L:SetTimerLocalization({
-	TimerStart		= "¡La batalla va comenzar!", 
-	TimerPOI		= "%s",
-	TimerSiegeEngine	= "Máquina de asedio Lista"
+	TimerSiegeEngine	= "Máquina de asedio lista"
 })
 
 L:SetOptionLocalization({
-	TimerStart		= "Mostrar tiempo para que comienze la Batalla.", 
-	TimerPOI		= "Mostrar tiempo para las Capturas",
-	TimerSiegeEngine	= "Mostrar tiempo para la construcción de Máquina de asedio",
-	WarnSiegeEngine		= "Mostrar aviso cuando Máquina de asedio esté lista",
-	WarnSiegeEngineSoon	= "Mostrar aviso cuando Máquina de asedio esté casi lista"
+	TimerSiegeEngine	= "Mostrar temporizador para construcción de máquinas de asedio",
+	WarnSiegeEngine		= "Mostrar aviso cuando una máquina de asedio esté lista",
+	WarnSiegeEngineSoon	= "Mostrar aviso cuando una máquina de asedio esté casi lista"
 })
 
 L:SetMiscLocalization({
-	ZoneName		= "Isla de la Conquista",
-	BgStart60		= "La batalla comenzará en 60 segundos.",
-	BgStart30		= "La batalla comenzará en 30 segundos.",
-	BgStart15		= "La batalla comenzará en 15 segundos.",
 	SiegeEngine				= "Máquina de asedio",
 	GoblinStartAlliance		= "¿Ves esas bombas de seforio? Úsalas en las puertas mientras reparo la máquina de asedio.",
 	GoblinStartHorde		= "Trabajaré en la máquina de asedio, solo cúbreme las espaldas. ¡Usa esas bombas de seforio en las puertas si las necesitas!",

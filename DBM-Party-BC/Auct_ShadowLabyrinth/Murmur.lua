@@ -1,76 +1,59 @@
-local mod = DBM:NewMod("Murmur", "DBM-Party-BC", 10)
+local mod = DBM:NewMod(547, "DBM-Party-BC", 10, 253)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
+mod:SetRevision("20220518110528")
 mod:SetCreatureID(18708)
-mod:SetUsedIcons(8)
 
+mod:SetModelID(18839)
+mod:SetModelScale(0.05)
+mod:SetModelOffset(10, -2, 0)
+mod:SetUsedIcons(8)
 mod:RegisterCombat("combat")
 
-mod:RegisterEvents(
-	"SPELL_AURA_APPLIED",
-	"SPELL_DAMAGE",
-	"SPELL_MISSED",
-	"SPELL_CAST_START"
+mod:RegisterEventsInCombat(
+	"SPELL_AURA_APPLIED 33711",
+	"SPELL_AURA_REMOVED 33711",
+	"SPELL_CAST_START 33923 38796"
 )
 
-local warnBoom          		= mod:NewCastAnnounce(33923)
-local timerBoomCast     		= mod:NewCastTimer(5, 33923)
-local timerNextBoom     		= mod:NewNextTimer(45, 33923)
-local timerNextPull     		= mod:NewNextTimer(45, 33923)
-local warnTouch         		= mod:NewTargetAnnounce(38794)
-local timerTouch        		= mod:NewTargetTimer(7, 38794)
-local specWarnTouch				= mod:NewSpecialWarningMove(38794)
-local timerNextTouch			= mod:NewNextTimer(27, 38794)
-local warnStorm					= mod:NewSpecialWarningMove(39365)
-local warnShock         		= mod:NewTargetAnnounce(38794)
-local timerNextShock			= mod:NewNextTimer(60, 38794)
+local warnTouch			= mod:NewTargetAnnounce(33711, 3)
 
-mod:AddBoolOption("SetIconOnTouchTarget", true)
+local specWarnBoom		= mod:NewSpecialWarningRun(33923, nil, nil, nil, 4, 2)
+local specWarnTouch		= mod:NewSpecialWarningMoveAway(33711, nil, nil, nil, 1, 2)
 
-function mod:OnCombatStart(delay)
-	timerNextShock:Start(18-delay)
-	timerNextTouch:Start(10-delay)
-	timerNextBoom:Start(34-delay)
-	timerNextPull:Start(30-delay)
-end
+local timerBoomCast		= mod:NewCastTimer(5, 33923, nil, nil, nil, 2)
+local timerTouch		= mod:NewTargetTimer(14, 33711, nil, nil, nil, 3)
+
+mod:AddSetIconOption("SetIconOnTouchTarget", 33711, true, false, {8})
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 33923 or args.spellId == 38796 then
-		warnBoom:Show()
+		specWarnBoom:Show()
+		specWarnBoom:Play("justrun")
 		timerBoomCast:Start()
-		timerNextBoom:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(33711, 38794) then
-		warnTouch:Show(args.destName)
+	if args.spellId == 33711 then
 		timerTouch:Start(args.destName)
 		if self.Options.SetIconOnTouchTarget then
 			self:SetIcon(args.destName, 8, 14)
 		end
 		if args:IsPlayer() then
-            specWarnTouch:Show()
-        end
-	elseif args:IsSpellID(33686) then
-		warnShock:Show(args.destName)
+			specWarnTouch:Show()
+			specWarnTouch:Play("runout")
+		else
+			warnTouch:Show(args.destName)
+		end
 	end
 end
 
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(39365) and args:IsPlayer() then
-		warnStorm:Show()
+function mod:SPELL_AURA_REMOVED(args)
+	if args.spellId == 33711 then
+		timerTouch:Stop(args.destName)
+		if self.Options.SetIconOnTouchTarget then
+			self:SetIcon(args.destName, 0)
+		end
 	end
 end
-
-function mod:SPELL_MISSED(args)
-	if args:IsSpellID(39365) and args:IsPlayer() then
-		warnStorm:Show()
-	end
-end
-
--- 38794 - Murmur's Touch (old = 33711)
--- 33686 - Shockwave
--- 38796 - Sonic Boom
--- 39365 - Thundering Storm
