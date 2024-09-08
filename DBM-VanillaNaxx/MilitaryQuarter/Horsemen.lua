@@ -1,150 +1,165 @@
-local mod	= DBM:NewMod("Horsemen-Vanilla", "DBM-VanillaNaxx", 4)
+local mod	= DBM:NewMod("Horsemen", "DBM-Naxx", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240705231210")
+mod:SetRevision(("$Revision: 2248 $"):sub(12, -3))
 mod:SetCreatureID(16063, 16064, 16065, 30549)
-
 mod:RegisterCombat("combat", 16063, 16064, 16065, 30549)
-
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 28884 57467",
-	"SPELL_CAST_SUCCESS 28832 28833 28834 28835 28883 53638 57466 32455",
-	"SPELL_AURA_APPLIED 29061",
-	"SPELL_AURA_REMOVED 29061",
-	"SPELL_AURA_APPLIED_DOSE 28832 28833 28834 28835",
+mod:EnableModel()
+mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"PLAYER_ALIVE",
 	"UNIT_DIED"
 )
 
---TODO, first marks
---TODO, verify stuff migrated from naxx 40
-local warnMarkSoon				= mod:NewAnnounce("WarningMarkSoon", 1, 28835, false, nil, nil, 28835)
-local warnMeteor				= mod:NewSpellAnnounce(57467, 4)
-local warnVoidZone				= mod:NewTargetNoFilterAnnounce(28863, 3)--Only warns for nearby targets, to reduce spam
-local warnHolyWrath				= mod:NewTargetNoFilterAnnounce(28883, 3, nil, false)
-local warnBoneBarrier			= mod:NewTargetNoFilterAnnounce(29061, 2)
+-----MARKS-----
+local warnMarkSoon			= mod:NewAnnounce("WarningMarkSoon", 1, 28835, false)
+local warnMarkNow			= mod:NewAnnounce("WarningMarkNow", 2, 28835)
+local specWarnMarkOnPlayer	= mod:NewSpecialWarning("SpecialWarningMarkOnPlayer", nil, false, true)
+local specWarnHolyWrathYou	= mod:NewSpecialWarningYou(2124141,2)
+local warnHolyWrath			= mod:NewTargetAnnounce(2124141,2)
+local specWarnDeepChillYou	= mod:NewSpecialWarningYou(2124167,2)
+local warnDeepChill			= mod:NewTargetAnnounce(2124167,2)
+local specWarnMeteorYou		= mod:NewSpecialWarningYou(2124128,2)
+local warnMeteor			= mod:NewTargetAnnounce(2124128,2)
+local specWarnFamineYou		= mod:NewSpecialWarningYou(2124166,2)
+local warnFamine			= mod:NewTargetAnnounce(2124166,2)
 
-local specWarnMarkOnPlayer		= mod:NewSpecialWarning("SpecialWarningMarkOnPlayer", nil, nil, nil, 1, 6, nil, nil, 28835)
-local specWarnVoidZone			= mod:NewSpecialWarningYou(28863, nil, nil, nil, 1, 2)
-local yellVoidZone				= mod:NewYell(28863)
-
-local timerLadyMark				= mod:NewNextTimer(15.44, 28833, nil, nil, nil, 3) -- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Mark of Blaumeux-28833-npc:16065-5 = pull:20.59" || "Mark of Blaumeux-28833-npc:16065-5 = pull:20.62, 15.47, 15.45, 15.44"
-local timerZeliekMark			= mod:NewNextTimer(15.44, 28835, nil, nil, nil, 3) -- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Mark of Zeliek-28835-npc:16063-6 = pull:21.11" || "Mark of Zeliek-28835-npc:16063-6 = pull:21.09, 15.52, 15.46, 15.44"
-local timerBaronMark			= mod:NewNextTimer(12, 28834, nil, nil, nil, 3) -- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Mark of Mograine-28834-npc:30549-8 = pull:19.99, 12.01" || "Mark of Mograine-28834-npc:30549-8 = pull:20.00, 12.02, 12.00, 12.03, 12.00"
-local timerThaneMark			= mod:NewNextTimer(12, 28832, nil, nil, nil, 3) -- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Mark of Korth'azz-28832-npc:16064-7 = pull:19.99, 12.03" || "Mark of Korth'azz-28832-npc:16064-7 = pull:20.00, 12.04"
-local timerMeteorCD				= mod:NewNextTimer(15, 57467, nil, nil, nil, 3, nil, nil, true) -- Fixed timer ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Meteor-28884-npc:16064-7 = pull:14.97, 15.02" || "Meteor-28884-npc:16064-7 = pull:15.01, 15.00"
-local timerVoidZoneCD			= mod:NewCDTimer(15.4, 28863, nil, nil, nil, 3)-- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Void Zone-28863-npc:16065-5 = pull:16.20" || "Void Zone-28863-npc:16065-5 = pull:16.31, 15.37, 15.44, 15.47"
-local timerHolyWrathCD			= mod:NewCDTimer(15.43, 28883, nil, nil, nil, 3) -- ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - "Holy Wrath-28883-npc:16063-6 = pull:16.70, 15.43" || "Holy Wrath-28883-npc:16063-6 = pull:32.16, 15.49, 15.47"
-local timerBoneBarrier			= mod:NewTargetTimer(20, 29061, nil, nil, nil, 5)
-
-mod:AddRangeFrameOption("12")
-
+----timers----				
+local timerMark				= mod:NewTimer(12, "Mark of the Apocalypse", 2124107)
+local timerHolyWrath		= mod:NewTargetTimer(3.8, 2124141)
+local timerNextHolyWrath	= mod:NewNextTimer(20, 2124141)
+local timerDeepChill		= mod:NewTargetTimer(3.8, 2124167)
+local timerNextDeepChill	= mod:NewNextTimer(20, 2124167)
+local timerMeteor			= mod:NewTargetTimer(7.8, 2124128)
+local timerNextMeteor		= mod:NewNextTimer(20, 2124128)
+local timerFamine			= mod:NewTargetTimer(3.8, 2124166)
+local timerNextFamine		= mod:NewNextTimer(20, 2124166)
+-----MISC-----
+local berserkTimer			= mod:NewBerserkTimer(606)
+local meteorTarget = nil
+mod:AddBoolOption("HealthFrame", true)
 mod:SetBossHealthInfo(
-	16064, L.Korthazz,	-- Thane
-	30549, L.Rivendare,	-- Baron
-	16065, L.Blaumeux,	-- Lady
-	16063, L.Zeliek		-- Zeliek
+	16064, L.Korthazz,
+	30549, L.Rivendare,
+	16065, L.Blaumeux,
+	16063, L.Zeliek
 )
+local markCounter = 0
+local markSpam = 0
 
-mod.vb.markCount = 0
-
--- REVIEW-Have two logs where this is NOT verified! Still 15s timer on next meteor when he skips one (usually on tank swaps)
---[[local function MeteorCast(self)
-	self:Unschedule(MeteorCast)
-	timerMeteorCD:Restart()
-	self:Schedule(15, MeteorCast, self)
-end]]
-
-function mod:OnCombatStart()
-	self.vb.markCount = 0
-	timerLadyMark:Start(20.59)
-	timerZeliekMark:Start(21.09)
-	timerBaronMark:Start(20)
-	timerThaneMark:Start(20)
-	warnMarkSoon:Schedule(15)
-	timerMeteorCD:Start()
-	timerHolyWrathCD:Start(16.7) -- REVIEW! variance? ([2024-07-01]@[19:58:05] || [2024-07-01]@[20:09:25]) - 16.7 || 32.16
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(12)
-	end
+-----BOSS FUNCTIONS-----
+function mod:OnCombatStart(delay)
+	berserkTimer:Start()
+	timerMark:Start(18-delay)
+	timerNextMeteor:Start(21-delay)
+	timerNextDeepChill:Start(11-delay)
+	timerNextHolyWrath:Start(25-delay)
+	timerNextFamine:Start(16-delay)
+	markCounter = 0
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
+function mod:Meteor()
+	local myName = UnitName("player")
+	if meteorTarget == myName then
+		specWarnMeteorYou:Show()
+		SendChatMessage("Meteor on "..UnitName("PLAYER").."!", "Say")
+	else
+		warnMeteor:Show(meteorTarget)
+	end
+	timerMeteor:Start(meteorTarget)
+	timerNextMeteor:Start()
+	self:SetIcon(meteorTarget, 7, 8)
+end
+
+function mod:DeepChill()
+	local targetDC = mod:GetBossTarget(30549) or mod:GetBossTarget(26622)
+	if targetDC == UnitName("player") then
+		specWarnDeepChillYou:Show()
+		SendChatMessage("Deep Chill on "..UnitName("PLAYER").."!", "Say")
+	else
+		warnDeepChill:Show(targetDC)
+	end
+	timerDeepChill:Start(targetDC)
+	timerNextDeepChill:Start()
+	self:SetIcon(targetDC, 6, 4)
+end
+
+function mod:HolyWrath()
+	local targetHW = mod:GetBossTarget(16063) or mod:GetBossTarget(26624)
+	if targetHW == UnitName("player") then
+		specWarnHolyWrathYou:Show()
+		SendChatMessage("Holy Wrath on "..UnitName("PLAYER").."!", "Say")
+	else
+		warnHolyWrath:Show(targetHW)
+	end
+	timerHolyWrath:Start(targetHW)
+	timerNextHolyWrath:Start()
+	self:SetIcon(targetHW, 1, 4)
+end
+
+function mod:Famine()
+    local famineTarget = mod:GetBossTarget(16065) or mod:GetBossTarget(26625) --Finds target of boss (if exsists) otherwise, find target of shade (if exists)
+	if famineTarget == UnitName("player") then --if target == player
+		specWarnFamineYou:Show()
+		SendChatMessage("Field of Famine on "..UnitName("PLAYER").."!", "Say")
+	else
+		warnFamine:Show(famineTarget)
+	end
+	timerFamine:Start(famineTarget) --we want timers to start even if player is the target, you had the timers only in the "if not player".
+	timerNextFamine:Start()
+	self:SetIcon(famineTarget, 3, 4)
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(2124103,2124107,2124111,2124115) and (GetTime() - markSpam) > 5 then
+		markSpam = GetTime()
+		markCounter = markCounter + 1
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(28884, 57467) then
-		warnMeteor:Show()
-		timerMeteorCD:Start()
---		MeteorCast(self)
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if args:IsSpellID(28832, 28833, 28834, 28835) and self:AntiSpam(5, spellId) then
-		self.vb.markCount = self.vb.markCount + 1
-		if spellId == 28833 then -- Lady Mark
-			timerLadyMark:Start()
-		elseif spellId == 28835 then -- Zeliek Mark
-			timerZeliekMark:Start()
-		elseif spellId == 28834 then -- Baron Mark
-			timerBaronMark:Start()
-		elseif spellId == 28832 then -- Thane Mark
-			timerThaneMark:Start()
-		end
-		warnMarkSoon:Schedule(8)
-	elseif spellId == 28863 then
-		timerVoidZoneCD:Start()
-		if args:IsPlayer() then
-			specWarnVoidZone:Show()
-			specWarnVoidZone:Play("targetyou")
-			yellVoidZone:Yell()
-		elseif self:CheckNearby(12, args.destName) then
-			warnVoidZone:Show(args.destName)
-		end
-	elseif args:IsSpellID(28883, 53638, 57466, 32455) then
-		warnHolyWrath:Show(args.destName)
-		timerHolyWrathCD:Start()
+	if args:IsSpellID(2124141) then
+		self:ScheduleMethod(0.25, "HolyWrath")
+	elseif args:IsSpellID(2124167) then
+		self:ScheduleMethod(0.25, "DeepChill")
+	elseif args:IsSpellID(2124166) then
+		self:ScheduleMethod(0.25, "Famine")
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 29061 then
-		warnBoneBarrier:Show(args.destName)
-		timerBoneBarrier:Start(20, args.destName)
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 29061 then
-		timerBoneBarrier:Stop(args.destName)
+	if args:IsSpellID(2124128) then
+		self:ScheduleMethod(0.25, "Meteor")
+		meteorTarget = args.destName
+	elseif args:IsSpellID(2124103, 2124104, 2124105, 2124106) or args:IsSpellID(2124107, 2124108, 2124109, 2124110) or args:IsSpellID(2124111, 2124112, 2124113, 2124114) or args:IsSpellID(2124115, 2124116, 2124117, 2124118) then
+		timerMark:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(28832, 28833, 28834, 28835) and args:IsPlayer() then
-		local amount = args.amount or 1
-		if amount >= 4 then
-			specWarnMarkOnPlayer:Show(args.spellName, amount)
-			specWarnMarkOnPlayer:Play("stackhigh")
+	if args:IsSpellID(2124103,2124107,2124111,2124115) and args:IsPlayer() then
+		if args.amount >= 3 then
+			specWarnMarkOnPlayer:Show(args.spellName, args.amount)
 		end
+	elseif args:IsSpellID(2124103, 2124104, 2124105, 2124106) or args:IsSpellID(2124107, 2124108, 2124109, 2124110) or args:IsSpellID(2124111, 2124112, 2124113, 2124114) or args:IsSpellID(2124115, 2124116, 2124117, 2124118) then
+		timerMark:Start()
 	end
 end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 16064 then
-		timerThaneMark:Cancel()
-		timerMeteorCD:Cancel()
---		self:Unschedule(MeteorCast)
-	elseif cid == 30549 then
-		timerBaronMark:Cancel()
-	elseif cid == 16065 then
-		timerLadyMark:Cancel()
-	elseif cid == 16063 then
-		timerZeliekMark:Cancel()
+	if cid == 16063 or 26624 then
+		timerNextHolyWrath:Stop()
+	elseif cid == 16064 or 26623 then
+		timerNextMeteor:Stop()
+	elseif cid == 16065 or 26625 then
+		timerNextFamine:Stop()
+	elseif cid == 30549 or 26622 then
+		timerNextDeepChill:Stop()
+	elseif cid >= 26622 and cid <= 26625 then
+		timerMark:Stop()
 	end
 end

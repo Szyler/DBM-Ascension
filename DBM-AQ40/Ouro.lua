@@ -1,89 +1,92 @@
 local mod	= DBM:NewMod("Ouro", "DBM-AQ40", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240707231146")
+mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(15517)
-
-mod:SetModelID(15517)
 mod:RegisterCombat("combat")
-
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 26615",
-	"SPELL_CAST_START 26102 26103",
-	"SPELL_CAST_SUCCESS 26058",
-	"UNIT_HEALTH mouseover focus target"
+mod:RegisterEvents(
+	"UNIT_HEALTH",
+	"UNIT_DIED",
+	"COMBAT_LOG_EVENT_UNFILTERED",
+	"PLAYER_ALIVE"
 )
 
---Submerge timer is not timer based, it has some kind of hidden condition we do not know. It's not health based either (other than fact the faster you kill boss less likely you are to see it)
---[[
-(ability.id = 26102 or ability.id = 26103) and type = "begincast"
- or ability.id = 26058 and type = "cast"
- or ability.id = 26615
---]]
-local warnSubmerge		= mod:NewAnnounce("WarnSubmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local warnEmerge		= mod:NewAnnounce("WarnEmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
-local warnSweep			= mod:NewSpellAnnounce(26103, 2, nil, "Tank", 3)
-local warnBerserk		= mod:NewSpellAnnounce(26615, 3)
-local warnBerserkSoon	= mod:NewSoonAnnounce(26615, 2)
 
-local specWarnBlast		= mod:NewSpecialWarningSpell(26102, nil, nil, nil, 2, 2)
 
-local timerSubmerge		= mod:NewTimer(184, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp", nil, nil, 6) -- REVIEW! No data
-local timerEmerge		= mod:NewTimer(58, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp", nil, nil, 6)
-local timerSweepCD		= mod:NewNextTimer(20, 26103, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON) -- (Onyxia: 25N [2024-07-05]@[19:56:12]) - "Sweep-26103-npc:15517-449 = pull:21.97, 20.05, 20.03, 20.04, 86.38, 20.02, 22.00"
-local timerBlastCD		= mod:NewNextTimer(20, 26102, nil, nil, nil, 2) -- (Onyxia: 25N [2024-07-05]@[19:56:12]) - "Sand Blast-26102-npc:15517-449 = pull:19.92, 20.05, 20.01, 20.03, 86.42, 19.98, 20.01"
+local prewarnShard					= mod:NewAnnounce("Shard Spawn Soon", 3, 1002340)
+local warnShard						= mod:NewAnnounce("Mind-Corrupting Shard Spawned", 2, 1002340)
+local timerShard					= mod:NewTimer(35, "Shard Spawn", 1002340)
+local berserkTimer					= mod:NewBerserkTimer(360)
 
-mod.vb.prewarn_Berserk = false
-mod.vb.Berserked = false
+local shardsDead
+local maxShards
+local ouroHealth
+local shardNumber
+
 
 function mod:OnCombatStart(delay)
-	self.vb.prewarn_Berserk = false
-	self.vb.Berserked = false
-	timerSweepCD:Start(22-delay)--22-25
-	timerBlastCD:Start(19.92-delay)--20-26
-	timerSubmerge:Start(90-delay)
+	berserkTimer:Start()
+	self:ScheduleMethod(0, "initialShardSpawn")
+	self:ScheduleMethod(0.1, "deadShards")
+	maxShards = 1
+	shardNumber = 1
 end
 
-function mod:Emerge()
-	warnEmerge:Show()
-	timerSweepCD:Start(23)--23-24 (it might be 22-25 like pull)
-	timerBlastCD:Start(24)--24-26 (it might be 20-26 like pull)
-	timerSubmerge:Start()
+function mod:preShard()
+	prewarnShard:Show()
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 26615 and args:IsDestTypeHostile() then
-		self.vb.Berserked = true
-		warnBerserk:Show()
-		timerSubmerge:Stop()
+function mod:alertShard()
+	warnShard:Show()
+	self:ScheduleMethod(0, "alarmSound")
+end
+
+function mod:initialShardSpawn()
+	shardsDead = 0
+	local timer1 = 30
+	timerShard:Show(timer1)
+	self:ScheduleMethod(timer1-5, "preShard")
+	self:ScheduleMethod(timer1, "alertShard")
+	self:ScheduleMethod(timer1, "checkShards")
+end
+
+function mod:shardSpawn()
+	shardsDead = 0
+	local timer2 = 35	
+	timerShard:Show(timer2)
+	self:ScheduleMethod(timer2-5, "preShard")
+	self:ScheduleMethod(timer2, "alertShard")
+	self:ScheduleMethod(timer2, "checkShards")
+end
+
+function mod:deadShards()
+	if maxShards == 1 and shardsDead == 1 then
+		self:ScheduleMethod(0, "shardSpawn")
+	elseif maxShards == 2 and shardsDead == 2 then
+		self:ScheduleMethod(0, "shardSpawn")
+	elseif maxShards == 3 and shardsDead == 3 then
+		self:ScheduleMethod(0, "shardSpawn")
+	end
+	self:ScheduleMethod(0.1, "deadShards")
+end
+
+function mod:checkShards()
+	if ouroHealth > 75 then
+		maxShards = 1
+	elseif ouroHealth < 75 and ouroHealth > 33 then
+		maxShards = 2	
+	elseif ouroHealth < 33 then
+		maxShards = 3
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args.spellId == 26102 then
-		specWarnBlast:Show()
-		specWarnBlast:Play("stunsoon")
-		timerBlastCD:Start()
-	elseif args.spellId == 26103 and args:IsSrcTypeHostile() then
-		warnSweep:Show()
-		timerSweepCD:Start()
-	end
+function mod:UNIT_HEALTH(args)
+    ouroHealth = math.max(0, UnitHealth("boss1")) / math.max(1, UnitHealthMax("boss1")) * 100;
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 26058 and self:AntiSpam(3) and not self.vb.Berserked then
-		timerBlastCD:Stop()
-		timerSweepCD:Stop()
-		timerSubmerge:Stop()
-		warnSubmerge:Show()
-		timerEmerge:Start()
-		self:ScheduleMethod(58, "Emerge")
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 15517 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.23 and not self.vb.prewarn_Berserk then
-		self.vb.prewarn_Berserk = true
-		warnBerserkSoon:Show()
+function mod:UNIT_DIED(args)
+	local recapID = self:GetCIDFromGUID(args.destGUID)
+	if recapID == 19045 then
+		shardsDead = shardsDead + 1  
 	end
 end

@@ -1,90 +1,145 @@
 local mod	= DBM:NewMod("Tidewalker", "DBM-Serpentshrine")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220812215520")
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21213)
+mod:RegisterCombat("combat", 21213)
+mod:SetUsedIcons(1,2,3,8)
 
---mod:SetModelID(20739)
-mod:SetUsedIcons(5, 6, 7, 8)
-
-mod:RegisterCombat("combat")
-
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 37730",
-	"SPELL_CAST_SUCCESS 37764",
-	"SPELL_AURA_APPLIED 37850 38023 38024 38025 38049",
-	"SPELL_SUMMON 37854",
-	"CHAT_MSG_RAID_BOSS_EMOTE"
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	-- "SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_SUMMON",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"UNIT_DIED"
 )
 
-local warnTidal			= mod:NewSpellAnnounce(37730, 3)
-local warnGrave			= mod:NewTargetNoFilterAnnounce(38049, 4)--TODO, make run out special warning instead?
-local warnBubble		= mod:NewSpellAnnounce(37854, 4)
+-- local warnTidal			= mod:NewSpellAnnounce(37730, 3) -- useless, nobody cares about the tank debuff, might as well remove to reduce bloat
+local warnBubble			= mod:NewSpellAnnounce(37854, 4)
+local warnEarthquakeSoon	= mod:NewSoonAnnounce(2137704, 3)
+local warnShield			= mod:NewSpellAnnounce(2137716, 4)
+local WarnWatery			= mod:NewAnnounce("WarnWateryGlobule", 4)
 
-local specWarnMurlocs	= mod:NewSpecialWarning("SpecWarnMurlocs", nil, nil, nil, nil, nil, nil, 24984, 37764)
+local warnBubble		= mod:NewSpecialWarning("WarnRisingBubble",3)
+local specWarnMurlocs	= mod:NewAnnounce("SpecWarnMurlocs", 4)
 
-local timerGraveCD		= mod:NewCDTimer(30, 38049, nil, nil, nil, 3) -- REVIEW! variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 30.1, 30.0, 30.0, 30.0, 30.0 || 32.0, 30.1, 30.1
-local timerMurlocs		= mod:NewTimer(51, "TimerMurlocs", 39088, nil, nil, 1, nil, nil, nil, nil, nil, nil, nil, 37764)
-local timerBubble		= mod:NewBuffActiveTimer(35, 37854, nil, nil, nil, 1)
+local timerShield		= mod:NewNextTimer(10, 2137716)
+-- local timerTidal		= mod:NewNextTimer(20, 37730)
+local timerMurlocs		= mod:NewTimer(60, "TimerMurlocs", 2137719)
+local timerWatery		= mod:NewTimer(30, "TimerWateryGlobule", "Interface\\Icons\\Spell_Frost_FrozenCore")
+local timerBubble		= mod:NewTimer(30, "TimerBubble", "Interface\\Icons\\INV_Elemental_Primal_Water")
+local timerBurst		= mod:NewTimer(25, "TimerBurst", 2137730)
 
-mod:AddSetIconOption("GraveIcon", 38049, true, false, {5, 6, 7, 8})
+local warnHealer		= mod:NewSpecialWarning(L.WarnHealer)--2137713
+local warnWarrior		= mod:NewSpecialWarning(L.WarnWarrior)--83551
+local warnMage			= mod:NewSpecialWarning(L.WarnMage)--2137720
+local warnHealthLost	= mod:NewAnnounce("HPLoss", 3)
 
-local warnGraveTargets = {}
-mod.vb.graveIcon = 8
+local berserkTimer		= mod:NewBerserkTimer(600)
 
-local function showGraveTargets()
-	warnGrave:Show(table.concat(warnGraveTargets, "<, >"))
-	table.wipe(warnGraveTargets)
-end
+mod:AddBoolOption("RisingBubbleIcon")
+mod:AddBoolOption("HealerIcon")
+mod:AddBoolOption("WarriorIcon")
+mod:AddBoolOption("MageIcon")
+
+local bubblespam = 0
+local warriorAntiSpam = 0
+local MageAntiSpam = 0
+local murlocType = {[0] = "Healer", [1] = "Melee", [2] = "Frost"};
+local murlocCount = 0
+local prevHp = 0
 
 function mod:OnCombatStart(delay)
-	self.vb.graveIcon = 8
-	table.wipe(warnGraveTargets)
-	timerGraveCD:Start(19.4-delay) -- REVIEW! variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 19.4 || 19.5
-	timerMurlocs:Start(40.4-delay) -- REVIEW! variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 40.5 || 40.4
-end
-
-function mod:SPELL_CAST_START(args)
-	if args.spellId == 37730 then
-		warnTidal:Show()
+	timerMurlocs:Start(28-delay)
+	berserkTimer:Start(-delay)
+	timerWatery:Start(20-delay)
+	self:ScheduleMethod(20,"WateryGlobule");
+	if mod:IsDifficulty("heroic10", "heroic25") then
+		timerBubble:Start(-delay)
+	self:ScheduleMethod(30,"RisingBubble");
 	end
+	murlocCount = 0
+	prevHp = 0
 end
-
---[[function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 37764 then
-		specWarnMurlocs:Show()
-		timerMurlocs:Start()
-	end
-end]]
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(37850, 38023, 38024, 38025, 38049) then -- Watery Grave. Warmane bugged this (as of 2022/08/11) and it's not triggering the ability at random intervals. The emote still fires every 30 seconds, so use that for timer
-		warnGraveTargets[#warnGraveTargets + 1] = args.destName
-		self:Unschedule(showGraveTargets)
-		if self.Options.GraveIcon then
-			self:SetIcon(args.destName, self.vb.graveIcon)
+	if args.spellId == 2137713 then
+		warnHealer:Show()
+		if self.Options.HealerIcon then
+			self:SetIcon(args.sourceName, 1)
 		end
-		self.vb.graveIcon = self.vb.graveIcon - 1
-		if #warnGraveTargets >= 4 then
-			showGraveTargets()
-		else
-			self:Schedule(0.3, showGraveTargets)
+	elseif args.spellId == 2137720 and MageAntiSpam > 120 then
+		MageAntiSpam = GetTime()
+		warnMage:Show()
+		if self.Options.MageIcon then
+			self:SetIcon(args.sourceName, 2)
+		end
+	elseif args.spellId == 2137716 then
+		warnShield:Show()
+		timerShield:Start()
+	end
+end
+
+-- function mod:SPELL_CAST_START(args)
+-- end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(2137704, 2137705, 2137706, 2137707) then
+		murlocCount = murlocCount + 1;
+		warnEarthquakeSoon:Show()
+		specWarnMurlocs:Show()
+		timerMurlocs:Start(murlocType[(murlocCount % 3)])
+	elseif args.spellId == 2137718 and warriorAntiSpam > 120 then
+		warriorAntiSpam = GetTime()
+		warnWarrior:Show()
+		if self.Options.WarriorIcon then
+			self:SetIcon(args.sourceName, 3)
 		end
 	end
 end
 
-function mod:SPELL_SUMMON(args)
-	if args.spellId == 37854 and self:AntiSpam(30) then
-		warnBubble:Show()
-		timerBubble:Start()
-	end
+function mod:WateryGlobule()							
+	self:UnscheduleMethod("WateryGlobule")
+	WarnWatery:Show()
+	timerWatery:Start()
+	self:ScheduleMethod(30,"WateryGlobule")
 end
+
+function mod:RisingBubble()
+	self:UnscheduleMethod("RisingBubble")
+	local risingBubble    =self:GetUnitCreatureId(14481)
+	warnBubble:Show()
+	if self.Options.RisingBubble then
+		self:SetIcon(risingBubble, 8)
+	end
+	timerBubble:Start()
+	self:ScheduleMethod(30,"RisingBubble")
+end
+
+function mod:BurstingDamageStart(unit)
+	self:UnscheduleMethod("BurstingDamageStart")
+	local unit = "boss1"
+	if unit then
+		prevHp = self:GetHealth(unit)
+	end
+	self:ScheduleMethod(2, "BurstingDamageEnd")
+end
+
+function mod:BurstingDamageEnd(unit)
+	self:UnscheduleMethod("BurstingDamageEnd")
+	local unit = "boss1"
+	if unit and prevHp ~= 0 then
+		local percentHealthLost = self:GetHealth(unit) - prevHp
+		warnHealthLost:Show(percentHealthLost)
+		prevHp = 0
+		end
+	end
+
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
-	if msg == L.Grave or msg:find(L.Grave) then
-		timerGraveCD:Show()
-	elseif msg == L.Murlocs or msg:find(L.Murlocs) then
-		specWarnMurlocs:Show()
-		timerMurlocs:Start()
+	if msg == L.DBM_MOROGRIM_BURSTING_SPAWN or msg:find(L.DBM_MOROGRIM_BURSTING_SPAWN) then
+		timerBurst:Start()
+		self:ScheduleMethod(24, "BurstingDamageStart")
 	end
 end

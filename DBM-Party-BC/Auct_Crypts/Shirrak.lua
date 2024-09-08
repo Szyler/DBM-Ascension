@@ -1,25 +1,39 @@
-local mod	= DBM:NewMod(523, "DBM-Party-BC", 7, 247)
+local mod	= DBM:NewMod("Shirrak", "DBM-Party-BC", 7)
+local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
 mod:SetCreatureID(18371)
 
-mod:SetModelID(18916)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"CHAT_MSG_RAID_BOSS_EMOTE"
+mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE"
 )
 
-local warnFocusFire		= mod:NewTargetAnnounce(32300, 3)
+local warnAttract		 		= mod:NewSpellAnnounce(32265, 3)
+local timerNextAttract			= mod:NewNextTimer(30, 32265)
+local warnBite					= mod:NewAnnounce(L.ShirrakBite, 2, 85178)
 
-local specWarnFocusFire	= mod:NewSpecialWarningDodge(32300, nil, nil, nil, 1, 2)
-
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(_, _, _, _, target)
-	local targetname = DBM:GetUnitFullName(target) or target
-	if targetname == UnitName("player") then
-		specWarnFocusFire:Show()
-		specWarnFocusFire:Play("watchstep")
-	else
-		warnFocusFire:Show(target)
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == 32265 then
+		timerNextAttract:Start()
+		warnAttract:Show(args.destName)
 	end
 end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(39382) then
+		warnBite:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(39382) then
+		warnBite:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+-- 39382 - Carnivorous Bite
+-- 32265 - Attract Magic

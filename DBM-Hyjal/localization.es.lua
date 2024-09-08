@@ -6,70 +6,66 @@ local L
 ------------------------
 L = DBM:GetModLocalization("Rage")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Ira Fríoinvierno"
-})
+}
 
 -----------------
 --  Anetheron  --
 -----------------
 L = DBM:GetModLocalization("Anetheron")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Anetheron"
-})
+}
 
 ----------------
 --  Kazrogal  --
 ----------------
 L = DBM:GetModLocalization("Kazrogal")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Kaz'rogal"
-})
+}
 
 ---------------
 --  Azgalor  --
 ---------------
 L = DBM:GetModLocalization("Azgalor")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Azgalor"
-})
+}
 
 ------------------
 --  Archimonde  --
 ------------------
 L = DBM:GetModLocalization("Archimonde")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Archimonde"
-})
+}
 
 ----------------
 -- WaveTimers --
 ----------------
 L = DBM:GetModLocalization("HyjalWaveTimers")
 
-L:SetGeneralLocalization({
-	name		= "Oleadas"
-})
-
-L:SetWarningLocalization({
+L:SetGeneralLocalization{
+	name 		= "Oleadas"
+}
+L:SetWarningLocalization{
 	WarnWave	= "%s",
-})
-
-L:SetTimerLocalization({
+}
+L:SetTimerLocalization{
 	TimerWave	= "Siguiente oleada"
-})
-
-L:SetOptionLocalization({
+}
+L:SetOptionLocalization{
 	WarnWave		= "Mostrar aviso cuando se aproxime una oleada",
 	DetailedWave	= "Mostrar aviso detallado con los tipos y número de enemigos cuando se aproxime una oleada",
 	TimerWave		= "Mostrar temporizador para la siguiente oleada"
-})
-
-L:SetMiscLocalization({
+}
+L:SetMiscLocalization{
 	HyjalZoneName	= "La Cima Hyjal",
 	Thrall			= "Thrall",
 	Jaina			= "Lady Jaina Valiente",
@@ -78,7 +74,6 @@ L:SetMiscLocalization({
 	Anetheron		= "Se aproxima Anetheron",
 	Kazrogal		= "Se aproxima Kazrogal",
 	Azgalor			= "Se aproxima Azgalor",
-	WaveCheck		= "Oleada actual = (%d+) de 8",
 	WarnWave_0		= "Oleada %s/8",
 	WarnWave_1		= "Oleada %s/8 - %s %s",
 	WarnWave_2		= "Oleada %s/8 - %s %s y %s %s",
@@ -98,4 +93,4 @@ L:SetMiscLocalization({
 	Wyrm			= "Vermis de escarcha",
 	Stalker			= "Acechadores viles",
 	Infernal		= "Infernales"
-})
+}

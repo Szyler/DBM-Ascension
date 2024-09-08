@@ -1,133 +1,234 @@
 local mod	= DBM:NewMod("Vashj", "DBM-Serpentshrine")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220813164045")
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(21212)
---mod:SetModelID(20748)
-mod:SetUsedIcons(1)
-mod:SetHotfixNoticeRev(20210919000000)
-mod:SetMinSyncRevision(20210919000000)
+mod:RegisterCombat("combat", 21212)
+mod:SetUsedIcons(6,8)
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 38280 38575",
-	"SPELL_AURA_REMOVED 38280 38132 38112",
-	"SPELL_CAST_START 38253",
-	"SPELL_CAST_SUCCESS 38316 38509",
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
 	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL",
-	"CHAT_MSG_LOOT"
+	"CHAT_MSG_LOOT",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"UNIT_AURA"
 )
 
-local warnCharge		= mod:NewTargetNoFilterAnnounce(38280, 4)
-local warnEntangle		= mod:NewSpellAnnounce(38316, 3)
 local warnPhase2		= mod:NewPhaseAnnounce(2)
-local warnElemental		= mod:NewAnnounce("WarnElemental", 4, 31687)
-local warnStrider		= mod:NewAnnounce("WarnStrider", 3, 475)
-local warnNaga			= mod:NewAnnounce("WarnNaga", 3, 2120)
-local warnShield		= mod:NewAnnounce("WarnShield", 3, 38112)
-local warnLoot			= mod:NewAnnounce("WarnLoot", 4, 38132)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
+local warnCharge		= mod:NewTargetAnnounce(2138039, 4)
+local warnEnvenom		= mod:NewTargetAnnounce(2138049, 3)
+local warnAimedShot		= mod:NewTargetAnnounce(2138044, 4)
+local warnMulti			= mod:NewSpellAnnounce(2138011, 3)
+local WarnHeal			= mod:NewSpellAnnounce(2138024, 3)
+local warnSporebat		= mod:NewAnnounce("WarnSporebat", 3, "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
+local warnElemental		= mod:NewAnnounce("WarnElemental", 4, "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")
+local warnHydra			= mod:NewAnnounce("WarnHydra", 3, "Interface\\Icons\\achievement_boss_bazil_akumai")
+local warnNaga			= mod:NewAnnounce("WarnNaga", 3, "Interface\\Icons\\achievement_boss_warlord_kalithresh")
+local warnEnchantress	= mod:NewAnnounce("WarnEnchantress", 3, "Interface\\Icons\\Spell_Holy_FlashHeal")
+local warnLoot			= mod:NewAnnounce("WarnLoot", 3, "Interface\\Icons\\Spell_Nature_ElementalShields")
+local warnPhoenix		= mod:NewAnnounce("WarnPhoenix", 3, "Interface\\Icons\\INV_Misc_PheonixPet_01")
 
---local specWarnCore		= mod:NewSpecialWarning("SpecWarnCore", nil, nil, nil, 1, 8)
-local specWarnCharge	= mod:NewSpecialWarningMoveAway(38280, nil, nil, nil, 1, 2)
-local yellCharge		= mod:NewYell(38280)
-local specWarnElemental	= mod:NewSpecialWarning("SpecWarnElemental")--Changed from soon to a now warning. the soon warning not accurate because of 11 second variation so not useful special warning.
-local specWarnToxic		= mod:NewSpecialWarningMove(38575, nil, nil, nil, 1, 2)
+local specWarnCharge	= mod:NewSpecialWarningMove(2138039)
+local specWarnDischarge	= mod:NewSpecialWarningMove(2138020)
+local specWarnToxic		= mod:NewSpecialWarningMove(2138035)
 
-local timerEntangleCD	= mod:NewCDTimer(20.9, 38316, nil, nil, nil, 3, nil, nil, true) -- Added "keep" arg. 10s variance (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - Stage 1/25.9, Stage 3/30.0, 22.9, 24.2, 27.8 || Stage 1/24.8, Stage 3/30.0, 21.4, 20.9, 29.0, 28.6
-local timerCharge		= mod:NewTargetTimer(20, 38280, nil, nil, nil, 3)
-local timerChargeCD		= mod:NewCDTimer(10.2, 38280, nil, nil, nil, 3, nil, nil, true) -- Added "keep" arg. 10s variance (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - Stage 1/20.0, 19.0, 17.8, Stage 3/15.5, 14.2, 18.7, 18.8, 19.1, 10.5, 17.5 || Stage 1/10.2, 15.9, 11.3, Stage 3/17.5, 12.7, 19.2, 19.9, 15.8, 12.0, 19.9
-local timerShockBlastCD	= mod:NewCDTimer(10.1, 38509, nil, nil, nil, 3, nil, nil, true) -- Added "keep" arg. 10s variance (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - Stage 1/16.3, 17.8, 11.7, Stage 3/27.8, 11.0, 19.0, 11.3, 17.7, 17.2, 17.4 || Stage 1/16.2, 10.1, Stage 3/24.3, 19.8, 14.1, 10.7, 10.6, 19.3, 12.0, 14.7
-local timerElemental	= mod:NewTimer(22, "TimerElementalActive", 39088, nil, nil, 1)--Blizz says they are active 20 seconds per patch notes, but my logs don't match those results. 22 second up time.
-local timerElementalCD	= mod:NewTimer(45, "TimerElemental", 39088, nil, nil, 1)--46-57 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
-local timerStrider		= mod:NewTimer(63, "TimerStrider", 475, nil, nil, 1)
-local timerNaga			= mod:NewTimer(47.5, "TimerNaga", 2120, nil, nil, 1)
---local timerMC			= mod:NewCDTimer(21, 38511, nil, nil, nil, 3) -- removed in patch 2.1.
+local timerCharge		= mod:NewNextTimer(30, 2138039)
+local timerAimedShot	= mod:NewNextTimer(30, 2138045)
+local timerMulti		= mod:NewNextTimer(15, 2138011)
+local timerEnvenom		= mod:NewNextTimer(30, 2138049)
+local timerMark			= mod:NewTargetTimer(6, 2138044)
+local timerChargeDmg	= mod:NewTimer(8, "ChargeExplosion", 2138040)
 
-mod:AddRangeFrameOption(10, 38280)
-mod:AddSetIconOption("ChargeIcon", 38280, false, false, {1})
---mod:AddBoolOption("AutoChangeLootToFFA", true)
+local timerBreath		= mod:NewNextTimer(10, 2138076)
+local timerElementalCD	= mod:NewTimer(65, "TimerElemental", "Interface\\Icons\\Spell_Frost_SummonWaterElemental_2")--75-82 variation. because of high variation the pre warning special warning not useful, fortunately we can detect spawns with precise timing.
+local timerHydra		= mod:NewTimer(95, "TimerHydra", "INTERFACE\\ICONS\\Achievement_ZG_Gahz")
+local timerNaga			= mod:NewTimer(49, "TimerNaga", "Interface\\Icons\\achievement_boss_warlord_kalithresh")
+local timerEnchantress	= mod:NewTimer(47, "TimerEnchantress", "Interface\\Icons\\Spell_Holy_FlashHeal")
+local timerGenerator	= mod:NewTimer(30, "NextGenerator", "Interface\\Icons\\Spell_Nature_LightningOverload")
+local timerDischarge	= mod:NewTimer(9, "Discharge", "Interface\\Icons\\Spell_Nature_LightningOverload")
+local timerSporebat		= mod:NewTimer(23, "NextSporebat", "Interface\\Icons\\Ability_Hunter_Pet_Sporebat")
 
-mod.vb.shieldLeft = 4
+-- Ascended Mechanics
+
+local timerParasite		= mod:NewNextTimer(45, 2138027)
+local timerSiren		= mod:NewNextTimer(17, 2138025)
+local timerPhoenix		= mod:NewNextTimer(16, 2138015) 
+
+local warnParasite		= mod:NewTargetAnnounce(2138027, 3)   
+local yellParasite		= mod:NewFadesYell(2138027)     
+local warnSong			= mod:NewTargetAnnounce(2138026, 3) 
+
+local specWarnSiren		= mod:NewSpecialWarning("SpecWarnSiren")
+
+local berserkTimer		= mod:NewBerserkTimer(900)
+
+mod:AddBoolOption("RangeFrame", true)
+mod:AddBoolOption(L.LootIcon)
+mod:AddBoolOption(L.AimedIcon)
+mod:AddBoolOption(L.ChargeYellOpt)
+mod:AddBoolOption(L.AimedYellOpt)
+mod:AddBoolOption(L.LootYellOpt)
+mod:AddBoolOption(L.ParasiteYellOpt)
+mod:AddBoolOption("AutoChangeLootToFFA", false)
+
+mod.vb.phase = 1
 mod.vb.nagaCount = 1
-mod.vb.striderCount = 1
 mod.vb.elementalCount = 1
---local lootmethod, masterlooterRaidID
-local elementals = {}
+local lootmethod
+local ChargeTargets = {}
+local BatCD = 24;
+local lastTriggerTime = 0;
+local TaintedCoreTarget;
 
-local function StriderSpawn(self)
-	self.vb.striderCount = self.vb.striderCount + 1
-	warnStrider:Schedule(57, tostring(self.vb.striderCount))
-	timerStrider:Start(nil, tostring(self.vb.striderCount))
-	self:Schedule(63, StriderSpawn, self)
+
+function mod:HydraSpawn()
+	timerHydra:Stop()
+	warnHydra:Show()
+	timerHydra:Start()
 end
 
-local function NagaSpawn(self)
-	warnNaga:Schedule(42.5, tostring(self.vb.nagaCount))
-	self.vb.nagaCount = self.vb.nagaCount + 1
-	timerNaga:Start(nil, tostring(self.vb.nagaCount))
-	self:Schedule(47.5, NagaSpawn, self)
+function mod:NagaSpawn()
+	timerNaga:Stop()
+	warnNaga:Show(tostring(mod.vb.nagaCount))
+	timerNaga:Start(nil, tostring(mod.vb.nagaCount))
+	mod.vb.nagaCount = mod.vb.nagaCount + 1
 end
+
+function mod:EnchantressSpawn()
+	timerEnchantress:Stop()
+	warnEnchantress:Show()
+	timerEnchantress:Start()
+	self:ScheduleMethod(47,"EnchantressSpawn")
+end
+
+function mod:TaintedSpawn()
+	timerElementalCD:Stop()
+	warnElemental:Show(tostring(mod.vb.elementalCount))
+	mod.vb.elementalCount = mod.vb.elementalCount + 1
+end
+
+local function warnChargeTargets()
+	warnCharge:Show(table.concat(ChargeTargets, "<, >"))
+	timerCharge:Start()
+	timerChargeDmg:Start()
+	table.wipe(ChargeTargets)
+end
+
+function mod:SporebatSpawn()
+	BatCD = BatCD - 1
+	if BatCD <= 2 then		-- Toxic Sporebat CD is capped at 2 seconds, it does not decay below that.
+		BatCD = 2
+	end
+	timerSporebat:Start(BatCD)
+	warnSporebat:Show()
+	self:ScheduleMethod(BatCD,"SporebatSpawn")
+end
+	
 
 function mod:OnCombatStart(delay)
-	table.wipe(elementals)
-	self:SetStage(1)
-	self.vb.shieldLeft = 4
-	self.vb.nagaCount = 1
-	self.vb.striderCount = 1
-	self.vb.elementalCount = 1
-	timerEntangleCD:Start(29.5-delay) -- REVIEW! variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 29.5 || 29.5
-	timerChargeCD:Start(11.6-delay) -- REVIEW! 10s variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 11.6 || 16.3
-	timerShockBlastCD:Start(15.2-delay) -- REVIEW! 10s variance? (25 man FM log 2022/07/27 || 25 man FM log 2022/08/11) - 25.2 || 15.2
---	if DBM:IsInGroup() and DBM:GetRaidRank() == 2 then
---		lootmethod, _, masterlooterRaidID = GetLootMethod()
---	end
+	mod.vb.phase = 1
+	mod.vb.nagaCount = 1
+	mod.vb.elementalCount = 1
+	if mod:IsDifficulty("heroic10", "heroic25") then
+		timerMulti:Start(22-delay)
+		timerEnvenom:Start(19-delay)
+		timerAimedShot:Start(25-delay)
+		timerCharge:Start(10-delay)
+		timerParasite:Start(40-delay)
+	else
+		timerMulti:Start(22-delay)
+		timerEnvenom:Start(19-delay)
+		timerAimedShot:Start(25-delay)
+		timerCharge:Start(10-delay)
+	end
+	if DBM:GetRaidRank() == 2 then
+		lootmethod = GetLootMethod()
+	end
+	berserkTimer:Start(-delay)
+	table.wipe(ChargeTargets)
 end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
-	self:UnregisterShortTermEvents()
---	if DBM:IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---		if masterlooterRaidID then
---			SetLootMethod(lootmethod, "raid"..masterlooterRaidID)
---		else
---			SetLootMethod(lootmethod)
---		end
---	end
+	if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+		if lootmethod then
+			SetLootMethod(lootmethod)
+		end
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 38280 then
-		timerCharge:Start(args.destName)
-		timerChargeCD:Start()
+	if args:IsSpellID(2138039) then
+		ChargeTargets[#ChargeTargets + 1] = args.destName
+		self:Unschedule(warnChargeTargets)
+		self:Schedule(0.3, warnChargeTargets)
 		if args:IsPlayer() then
 			specWarnCharge:Show()
-			specWarnCharge:Play("runout")
-			yellCharge:Yell()
+			if self.Options.ChargeYellOpt and args:IsPlayer() then
+				SendChatMessage(L.ChargeYell, "YELL")
+			end
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10)
 			end
+		end
+		if mod:IsDifficulty("heroic10", "heroic25") then
+		timerCharge:Start(45)
 		else
-			warnCharge:Show(args.destName)
+		timerCharge:Start()
 		end
-		if self.Options.ChargeIcon then
-			self:SetIcon(args.destName, 1, 20)
+	elseif args:IsSpellID(2138013) then
+		warnAimedShot:Show(args.destName)
+		timerMark:Start(args.destName)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+		timerAimedShot:Start(45)
+		else
+		timerAimedShot:Start()
 		end
-	elseif spellId == 38575 and args:IsPlayer() and self:AntiSpam() then
+		if self.Options.AimedYellOpt and args:IsPlayer() then
+			SendChatMessage(L.AimedYell, "YELL")
+		end
+		if self.Options.AimedIcon then
+			self:SetIcon(args.destName, 8, 6)
+		end
+	elseif args:IsSpellID(38132) then
+		if self.Options.LootIcon then
+			self:SetIcon(args.destName, 6)
+		end
+	elseif args:IsSpellID(2138024) and (GetTime() - lastTriggerTime) >= 35 then
+		lastTriggerTime = GetTime()
+		self:UnscheduleMethod("EnchantressSpawn")
+		self:EnchantressSpawn()
+	elseif args:IsSpellID(2138027, 2138028, 2138029, 2138030) then
+		warnParasite:Show(args.destName)
+		timerParasite:Start()
+		if args:IsPlayer() and self.Options.ParasiteYellOpt then
+			yellParasite:Countdown(8,5)
+		end
+	elseif args:IsSpellID(2138031, 2138032, 2138033, 2138034) then
+		warnParasite:Show(args.destName)
+		if args:IsPlayer() and self.Options.ParasiteYellOpt then
+			yellParasite:Countdown(16,5)
+		end
+	elseif args.spellId == 2138026 then
+		warnSong:Show(args.destName)
+		specWarnSiren:Show()
+	elseif args:IsSpellID(2138035, 2138036, 2138037, 2138038) and args:IsPlayer() then
 		specWarnToxic:Show()
-		specWarnToxic:Play("runaway")
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 38280 then
-		timerCharge:Stop(args.destName)
+	if args:IsSpellID(2138039, 351307) then
+		timerChargeDmg:Stop(args.destName)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 0)
 		end
@@ -136,125 +237,116 @@ function mod:SPELL_AURA_REMOVED(args)
 				DBM.RangeCheck:Hide()
 			end
 		end
-	elseif spellId == 38132 then
+	elseif args:IsSpellID(38132) then
 		if self.Options.LootIcon then
 			self:SetIcon(args.destName, 0)
 		end
-	elseif spellId == 38112 then--and not self:IsTrivial()
-		DBM:AddMsg("Magic Barrier unhidden from combat log. Notify Zidras on Discord or GitHub")
-		self.vb.shieldLeft = self.vb.shieldLeft - 1
-		warnShield:Show(self.vb.shieldLeft)
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 38253 and not elementals[args.sourceGUID] then
-		specWarnElemental:Show()
-		timerElemental:Start()
-		elementals[args.sourceGUID] = true
+	if args.spellId == 2138011 then
+		warnMulti:Show()
+		timerMulti:Start()
 	end
 end
 
+function mod:SPELL_PERIODIC_HEAL(args)
+	if args.spellId == 2138024 then
+		warnHeal:Show()
+	end
+end
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.DBM_VASHJ_DISCHARGE or msg:find(L.DBM_VASHJ_DISCHARGE) then
+		timerDischarge:Start()
+		specWarnDischarge:Show()
+		if mod.vb.phase == 2 and mod:IsDifficulty("heroic10", "heroic25") then
+		timerSiren:Start()
+		elseif mod.vb.phase == 3 then
+		timerGenerator:Start()
+		end
+	elseif msg == L.DBM_VASHJ_ELITE or msg:find(L.DBM_VASHJ_ELITE) then
+		self:NagaSpawn()
+	elseif msg == L.DBM_VASHJ_HYDRA or msg:find(L.DBM_VASHJ_HYDRA) then
+		self:HydraSpawn()
+	elseif msg == L.DBM_VASHJ_TAINTED or msg:find(L.DBM_VASHJ_TAINTED) then
+		self:TaintedSpawn()
+	elseif msg == L.DBM_VASHJ_TAINTED_DEAD or msg:find(L.DBM_VASHJ_TAINTED_DEAD) then
+		timerElementalCD:Start(nil, tostring(mod.vb.elementalCount))
+	end
+end
+	
 function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 38316 then
-		timerEntangleCD:Start()
-		warnEntangle:Show()
-	elseif spellId == 38509 then
-		timerShockBlastCD:Start()
-	end
-end
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 22009 then
-		self.vb.elementalCount = self.vb.elementalCount + 1
-		timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
-		warnElemental:Schedule(45, tostring(self.vb.elementalCount))
-	end
-end
-
-function mod:UNIT_SPELLCAST_FAILED_QUIET_UNFILTERED(uId, spellName)
-	if spellName == GetSpellInfo(24390) and self:AntiSpam(2, 2) then -- Opening. This is an experimental feature to try and detect when an Invis KV Shield Generator dies
-		DBM:Debug("UNIT_SPELLCAST_FAILED_QUIET_UNFILTERED fired for player:" .. (uId and UnitName(uId) or "Unknown") .. " with the spell: " .. spellName)
-		self.vb.shieldLeft = self.vb.shieldLeft - 1
-		warnShield:Show(self.vb.shieldLeft)
+	if args:IsSpellID(2138049, 2138050, 2138051, 2138052) then
+		warnEnvenom:Show(args.destName)
+		timerEnvenom:Start()
+	elseif args.spellID == 2138025 then
+		specWarnSiren:Show()
+	elseif args:IsSpellID(2138000, 2138001, 2138002, 2138003) then
+		timerPhoenix:Start()
+		warnPhoenix:Show()
+	elseif args:IsSpellID(2138076) then
+		if timerDischarge:GetTime() == 0 then
+			timerBreath:Start()
+		end
 	end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_VASHJ_YELL_PHASE2 or msg:find(L.DBM_VASHJ_YELL_PHASE2) then
-		self:SetStage(2)
-		self.vb.nagaCount = 1
-		self.vb.striderCount = 1
-		self.vb.elementalCount = 1
-		self.vb.shieldLeft = 4
+		timerMulti:Cancel()
+		timerEnvenom:Cancel()
+		timerAimedShot:Cancel()
+		timerCharge:Cancel()
+		mod.vb.phase = 2
+		mod.vb.nagaCount = 1
+		mod.vb.elementalCount = 1
 		warnPhase2:Show()
-		timerChargeCD:Cancel()
-		timerNaga:Start(nil, tostring(self.vb.nagaCount))
-		warnNaga:Schedule(42.5, tostring(self.vb.elementalCount))
-		self:Schedule(47.5, NagaSpawn, self)
-		timerElementalCD:Start(nil, tostring(self.vb.elementalCount))
-		warnElemental:Schedule(45, tostring(self.vb.elementalCount))
-		timerStrider:Start(nil, tostring(self.vb.striderCount))
-		warnStrider:Schedule(57, tostring(self.vb.striderCount))
-		self:Schedule(63, StriderSpawn, self)
---		if DBM:IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---			SetLootMethod("freeforall")
---		end
-		self:RegisterShortTermEvents(
-			"UNIT_SPELLCAST_FAILED_QUIET_UNFILTERED"
-		)
-	elseif msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3) then
-		self:SetStage(3)
+		timerNaga:Start(13, tostring(mod.vb.nagaCount))
+		timerEnchantress:Start(25)
+		timerElementalCD:Start()
+		timerHydra:Start(35)
+		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+			SetLootMethod("freeforall")
+		end
+	elseif (msg == L.DBM_VASHJ_YELL_PHASE3 or msg:find(L.DBM_VASHJ_YELL_PHASE3)) and mod.vb.phase == 2 then
+		mod.vb.phase = 3
 		warnPhase3:Show()
 		timerNaga:Cancel()
 		warnNaga:Cancel()
 		timerElementalCD:Cancel()
 		warnElemental:Cancel()
-		timerStrider:Cancel()
-		warnStrider:Cancel()
-		self:Unschedule(NagaSpawn)
-		self:Unschedule(StriderSpawn)
-		self:UnregisterShortTermEvents()
-		timerChargeCD:Start()
---		if DBM:IsInGroup() and self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
---			if masterlooterRaidID then
---				SetLootMethod(lootmethod, "raid"..masterlooterRaidID)
---			else
---				SetLootMethod(lootmethod)
---			end
---		end
-	end
-end
-
-function mod:CHAT_MSG_LOOT(msg)
-	-- DBM:AddMsg(msg) --> Meridium receives loot: [Magnetic Core]
-	local player, itemID = msg:match(L.LootMsg)
-	if player and itemID and tonumber(itemID) == 31088 and self:IsInCombat() then
-		-- attempt to correct player name when the player is the one looting
-		if DBM:GetGroupId(player) == 0 then -- workaround to determine that player doesn't exist in our group
-			if player == DBM_COMMON_L.YOU then -- LOOT_ITEM_SELF = "You receive loot: %s." Not useable in all locales since there is no pronoun or not translateable "YOU" (ES: Recibes botín: %s.")
-				player = UnitName("player") -- convert localized "You" to player name
-			else -- logically is more prone to be innacurate, but do it anyway to account for the locales without a useable YOU and prevent UNKNOWN player name on sync handler
-				player = UnitName("player")
+		timerHydra:Cancel()
+		timerEnchantress:Cancel()
+		warnEnchantress:Cancel()
+		warnHydra:Cancel()
+		self:UnscheduleMethod("NagaSpawn")
+		self:UnscheduleMethod("EnchantressSpawn")
+		self:UnscheduleMethod("TaintedSpawn")
+		self:UnscheduleMethod("HydraSpawn")
+		self:ScheduleMethod(10, "SporebatSpawn")
+		timerSporebat:Start(10)
+		if mod:IsDifficulty("heroic10", "heroic25") then
+			timerPhoenix:Start(60)
+			timerGenerator:Start(25)
+			timerCharge:Start(15)
+		else
+			timerGenerator:Start(25)
+			timerCharge:Start(15)
+		end
+		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
+			if lootmethod then
+				SetLootMethod(lootmethod)
 			end
 		end
-		self:SendSync("LootMsg", player)
 	end
 end
 
-function mod:OnSync(event, playerName)
-	if not self:IsInCombat() then return end
-	if event == "LootMsg" and playerName then
-		playerName = DBM:GetUnitFullName(playerName)
-		if self:AntiSpam(2, playerName) then
---			if playerName == UnitName("player") then
---				specWarnCore:Show()
---				specWarnCore:Play("useitem")
---			else
-				warnLoot:Show(playerName)
---			end
-		end
-	end
+function mod:UNIT_AURA(unit)
+    local name = UnitName(unit);
+    if (name ~= TaintedCoreTarget) and UnitDebuff(unit,"Tainted Core") then
+        TaintedCoreTarget = name;
+        warnLoot:Show(name)
+    end
 end

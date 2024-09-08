@@ -1,13 +1,12 @@
-local mod = DBM:NewMod(564, "DBM-Party-BC", 13, 258)
+local mod = DBM:NewMod("Sepethrea", "DBM-Party-BC", 13)
 local L = mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,mythic"
+mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
 
-mod:SetRevision("20220518110528")
 mod:SetCreatureID(19221)
-
-mod:SetModelID(19166)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START"
 )

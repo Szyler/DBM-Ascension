@@ -1,88 +1,112 @@
-if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return end
+﻿if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return end
+
 local L
 
-------------------------------
--- Químicos La Corona, S.L. --
-------------------------------
-L = DBM:GetModLocalization("ApothecaryTrio")
+-------------------
+-- Coren Direbrew --
+-------------------
+L = DBM:GetModLocalization("CorenDirebrew")
 
-L:SetTimerLocalization({
-	HummelActive		= "Hummel entra en combate",
-	BaxterActive		= "Baxter entra en combate",
-	FryeActive			= "Frye entra en combate"
+L:SetGeneralLocalization({
+	name = "Coren Cerveza Temible"
+})
+
+L:SetWarningLocalization({
+	specWarnBrew		= "Matar a la hija antes de que lanze otra cerveza!",
+	specWarnBrewStun		= "SUGERENCIA: Bebe la cerveza si te ha lanzado!"
 })
 
 L:SetOptionLocalization({
-	TrioActiveTimer		= "Mostrar temporizadores para cuando los apotecarios entren en combate"
+	specWarnBrew		= "Mostrar aviso especial para Dark Brewmaiden's Brew",
+	specWarnBrewStun		= "Mostrar aviso especial para Dark Brewmaiden's Stun",
+	YellOnBarrel	= "Avisar si tienes el Barril"
+})
+
+L:SetMiscLocalization({
+	YellBarrel		= "Tengo el Barril!"
+})
+
+-------------------
+-- Headless Horseman --
+-------------------
+L = DBM:GetModLocalization("HeadlessHorseman")
+
+L:SetGeneralLocalization({
+	name = "El Jinete decapitado"
+})
+
+L:SetWarningLocalization({
+	warnHorsemanSoldiers		= "Vienen las Calabazas con pulso!",
+	specWarnHorsemanHead		= "Sale la cabeza - cambia de objetivo"
+})
+
+L:SetOptionLocalization({
+	warnHorsemanSoldiers		= "Mostrar aviso a la llegada de Calabazas con pulso",
+	specWarnHorsemanHead		= "Mostrar un aviso especial cuando salga la cabeza"
+})
+
+L:SetMiscLocalization({
+	HorsemanHead				= "¡Ven aquí, idiota!",  -- Attention, espace avant la virgule
+	HorsemanSoldiers			= "¡Soldados alzáos soldados, tomad vuestro acero! Dad la victoria a este deshonrado caballero!",
+	SayCombatEnd				= "Este final a mí me suena. Veamos qué nueva me espera."
+})
+
+-----------------------
+--  Apothecary Trio  --
+-----------------------
+L = DBM:GetModLocalization("ApothecaryTrio")
+
+L:SetGeneralLocalization({
+	name = "Los Tres Boticarios"
+})
+
+L:SetWarningLocalization({
+})
+
+L:SetTimerLocalization{
+	HummelActive	= "Hummel se activa",
+	BaxterActive	= "Baxter se activa",
+	FryeActive		= "Frye se activa"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Mostrar tiempo para que los Boticarios se activen"
 })
 
 L:SetMiscLocalization({
 	SayCombatStart		= "¿Se han molestado en decirte quién soy y por qué estoy haciendo esto?"
 })
 
------------
--- Ahune --
------------
+-----------------------
+--  Lord Ahune  --
+-----------------------
 L = DBM:GetModLocalization("Ahune")
 
-L:SetWarningLocalization({
-	Emerged			= "Ahune vuelve a la superficie",
-	specWarnAttack	= "Ahune es vulnerable - ¡Ataca ahora!"
+L:SetGeneralLocalization({
+	name = "Ahune"
 })
 
-L:SetTimerLocalization({
-	SubmergeTimer	= "Sumergir",
-	EmergeTimer		= "Volver a la superficie"
+L:SetWarningLocalization({
+	Submerged		= "Ahune se sumerge",
+	Emerged			= "Ahune emerge",
+	specWarnAttack	= "Ahune es vulnerable ¡Ataca ahora!"
 })
+
+L:SetTimerLocalization{
+	SubmergTimer	= "Se sumerge",
+	EmergeTimer		= "Emerge",
+	TimerCombat		= "Inicio del combate"
+}
 
 L:SetOptionLocalization({
-	Emerged			= "Mostrar aviso cuando Ahune vuelva a la superficie",
-	specWarnAttack	= "Mostrar aviso especial cuando Ahune se vuelva vulnerable",
-	SubmergeTimer	= "Mostrar temporizador para cuando Ahune se sumerja",
-	EmergeTimer		= "Mostrar temporizador para cuando Ahune vuelva a la superficie"
+	Submerged		= "Mostrar aviso cuando Ahune se sumerge",
+	Emerged			= "Mostrar aviso cuando Ahune emerge",
+	specWarnAttack	= "Mostrar aviso especial cuando Ahune es vulnerable",
+	SubmergTimer	= "Mostrar tiempo para sumersión",
+	EmergeTimer		= "Mostrar tiempo para emersión",
+	TimerCombat		= "Mostrar tiempo para inicio del combate",
 })
 
 L:SetMiscLocalization({
 	Pull			= "¡La piedra de hielo se ha derretido!"
-})
-
----------------------------
--- Coren Cerveza Temible --
----------------------------
-L = DBM:GetModLocalization("CorenDirebrew")
-
-L:SetWarningLocalization({
-	specWarnBrew		= "¡Bebe la cerveza antes de que te lance otra!",
-	specWarnBrewStun	= "SUGERENCIA: ¡Te han dado! ¡No te olvides de beber la cerveza!"
-})
-
-L:SetOptionLocalization({
-	specWarnBrew		= "Mostrar aviso especial para $spell:47376",
-	specWarnBrewStun	= "Mostrar aviso especial para $spell:47340"
-})
-
-L:SetMiscLocalization({
-	YellBarrel			= "¡Tengo el barril!"
-})
-
---------------------------
--- El Jinete decapitado --
---------------------------
-L = DBM:GetModLocalization("HeadlessHorseman")
-
-L:SetWarningLocalization({
-	WarnPhase				= "Fase %d",
-	warnHorsemanSoldiers	= "Calabazas con pulso",
-	warnHorsemanHead		= "Cabeza de El jinete decapitado"
-})
-
-L:SetOptionLocalization({
-	WarnPhase				= "Mostrar aviso para cambios de fase",
-	warnHorsemanSoldiers	= "Mostrar aviso cuando aparezcan Cabalazas con pulso",
-	warnHorsemanHead		= "Mostrar aviso cuando aparezca la Cabeza de El jinete decapitado"
-})
-
-L:SetMiscLocalization({
-	HorsemanSummon			= "Jinete álzate...",
-	HorsemanSoldiers		= "Soldados, alzaos y luchad, tomad vuestro acero. Dad la victoria a este deshonrado caballero."
 })

@@ -1,55 +1,68 @@
 local mod	= DBM:NewMod("Marli", "DBM-ZG", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(14510)
-
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 24111 24300 24109",
-	"SPELL_AURA_REMOVED 24111 24300",
-	"SPELL_CAST_SUCCESS 24083"
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED"
 )
 
---TODO, enlarge dispel warning valid?
-local warnSpiders		= mod:NewSpellAnnounce(24083, 2)
-local warnDrain			= mod:NewTargetNoFilterAnnounce(24300, 2, nil, "RemoveMagic|Healer")
-local warnCorrosive		= mod:NewTargetNoFilterAnnounce(24111, 2, nil, "RemovePoison")
-local warnEnlarge		= mod:NewTargetNoFilterAnnounce(24109, 3)
+local warnSpiders			= mod:NewSpellAnnounce(24083)
+local timerSpiders			= mod:NewNextTimer(30, 24083)
 
-local specWarnEnlarge	= mod:NewSpecialWarningDispel(24109, "MagicDispeller", nil, nil, 1, 2)
+-- local warnCorrosive	= mod:NewTargetAnnounce(24111)
+-- local timerCorrosive	= mod:NewTargetTimer(30, 24111)
 
-local timerDrain		= mod:NewTargetTimer(7, 24300, nil, "RemoveMagic|Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)
-local timerCorrosive	= mod:NewTargetTimer(30, 24111, nil, "RemovePoison", nil, 5, nil, DBM_COMMON_L.POISON_ICON)
+local warnEnveloping		= mod:NewSpellAnnounce(24110)
+local timerEnveloping		= mod:NewNextTimer(30, 24110)
+
+local warnDrain				= mod:NewTargetAnnounce(24300)
+local timerDrain			= mod:NewTargetTimer(8, 24300)
+
+local warnEnlarge			= mod:NewSpellAnnounce(24109)
+
+function mod:OnCombatStart(delay)
+	timerSpiders:Start(20-delay)
+	self:ScheduleMethod(20, "spiderSpawn")
+end
+
+function mod:spiderSpawn()
+	self:UnscheduleMethod("spiderSpawn")
+	warnSpiders:Show()
+	timerSpiders:Start()
+	self:ScheduleMethod(30, "spiderSpawn")
+end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 24111 then
-		warnCorrosive:Show(args.destName)
-		timerCorrosive:Start(args.destName)
-	elseif args.spellId == 24300 and args:IsDestTypePlayer() then
+	-- if args:IsSpellID(24111) then
+	-- 	-- warnCorrosive:Show(args.destName)
+	-- 	-- timerCorrosive:Start(args.destName)
+	-- else
+	if args:IsSpellID(24300, 350036) then
 		warnDrain:Show(args.destName)
 		timerDrain:Start(args.destName)
-	elseif args.spellId == 24109 then
-		if self.Options.SpecWarn24109dispel then
-			specWarnEnlarge:Show(args.destName)
-			specWarnEnlarge:Play("dispelboss")
-		else
-			warnEnlarge:Show(args.destName)
-		end
+	elseif args:IsSpellID(24110) then
+		warnEnveloping:Show()
+		timerEnveloping:Start()
+	elseif args:IsSpellID(24109) then
+		warnEnlarge:Show()
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 24111 then
-		timerCorrosive:Stop(args.destName)
-	elseif args.spellId == 24300 and args:IsDestTypePlayer() then
-		timerDrain:Stop(args.destName)
+	-- if args:IsSpellID(24111) then
+	-- 	timerCorrosive:Cancel(args.destName)
+	-- else
+	if args:IsSpellID(24300, 350036) then
+		timerDrain:Cancel(args.destName)
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 24083 then
-		warnSpiders:Show()
-	end
-end
+-- function mod:SPELL_CAST_SUCCESS(args)
+-- 	if args:IsSpellID(24083) then
+-- 		warnSpiders:Show()
+-- 	end
+-- end

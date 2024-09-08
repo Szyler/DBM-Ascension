@@ -1,70 +1,118 @@
-local mod	= DBM:NewMod("RomuloAndJulianne", "DBM-Karazhan")
+﻿local mod	= DBM:NewMod("RomuloAndJulianne", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
-mod:SetCreatureID(17534, 17533, 99999)--99999 bogus creature id to keep mod from pre mature combat end.
---
-mod:SetModelID(17068)
+mod:SetRevision(("$Revision: 175 $"):sub(12, -3))
+mod:SetCreatureID(17534, 17533)
+
 mod:RegisterCombat("yell", L.RJ_Pull)
+mod:RegisterKill("yell", L.Bogus)--there isn't actually a yell, but we use this to prevent mod from ending combat early using UNIT_DIED after they both die once.
 mod:SetWipeTime(25)--guesswork
 
 mod:RegisterEvents(
-	"CHAT_MSG_MONSTER_YELL"
-)
-
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 30878",
-	"SPELL_AURA_APPLIED 30822 30830 30841 30887",
-	"SPELL_AURA_APPLIED_DOSE 30830",
-	"SPELL_AURA_REMOVED 30841 30887",
-	"UNIT_DIED"
+	"SPELL_CAST_START",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
+	"CHAT_MSG_MONSTER_YELL",
+	"UNIT_DIED",
+	"CHAT_MSG_RAID_WARNING"
 )
 
 local warnPhase2		= mod:NewPhaseAnnounce(2)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
-local warningHeal		= mod:NewCastAnnounce(30878, 3)
-local warningDaring		= mod:NewTargetNoFilterAnnounce(30841, 3, nil, "Tank|MagicDispeller", 2)
-local warningDevotion	= mod:NewTargetNoFilterAnnounce(30887, 3, nil, "Tank|MagicDispeller", 2)
-local warningPoison		= mod:NewStackAnnounce(30830, 2, nil, "Tank|Healer")
+local warningHeal		= mod:NewCastAnnounce(30878, 4)
+local warningDaring		= mod:NewTargetAnnounce(30841, 3)
+local warningDevotion	= mod:NewTargetAnnounce(30887, 3)
+local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer() or mod:IsTank())
 
-local timerHeal			= mod:NewCastTimer(2.5, 30878)
-local timerDaring		= mod:NewTargetTimer(8, 30841, nil, "Tank|MagicDispeller", 2, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
-local timerDevotion		= mod:NewTargetTimer(10, 30887, nil, "Tank|MagicDispeller", 2, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
-local timerCombatStart	= mod:NewCombatTimer(55)
+-- Heroic
+local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
+local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
 
-mod.vb.JulianneDied = 0
-mod.vb.RomuloDied = 0
+local timerHeal				= mod:NewCastTimer(5, 30878)
+local timerDaring			= mod:NewTargetTimer(8, 30841)
+local timerDevotion			= mod:NewTargetTimer(10, 30887)
+local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
+local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
-function mod:OnCombatStart()
-	self.vb.JulianneDied = 0
-	self.vb.RomuloDied = 0
-	self:SetStage(1)
+mod:AddBoolOption("HealthFrame", true)
+
+local phases = {}
+local JulianneDied = 0
+local RomuloDied = 0
+local LoversSpam = 0
+local heartbrokenStacks = 0
+
+local function updateHealthFrame(phase)--WIP
+	if phases[phase] then
+		return
+	end
+	phases[phase] = true
+	if phase == 1 then
+		DBM.BossHealth:Clear()
+		DBM.BossHealth:AddBoss(17534, L.Julianne)
+	elseif phase == 2 then--UNIT_DIED event triggers not tested yet
+		DBM.BossHealth:AddBoss(17533, L.Romulo)
+		warnPhase2:Show()
+	elseif phase == 3 then
+		DBM.BossHealth:AddBoss(17534, L.Julianne)
+		DBM.BossHealth:AddBoss(17533, L.Romulo)
+	end
+end
+
+function mod:OnCombatStart(delay)
+	updateHealthFrame(1)
+	JulianneDied = 0
+	RomuloDied = 0
+	timerNextSpotlight:Start(20-delay)
+	self.vb.phase = 1
+	heartbrokenStacks = 0
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 30878 then
+	if args:IsSpellID(30878) then
 		warningHeal:Show()
-		timerHeal:Start()
+		if mod:IsDifficulty("normal25", "heroic10", "heroic25") then
+			timerHeal:Start()
+		else
+			timerHeal:Start(2)
+		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30822, 30830) then
-		warningPoison:Show(args.destName, args.amount or 1)
-	elseif args.spellId == 30841 then
+		warningPosion:Show(args.spellName, args.destName, args.amount or 1)
+	elseif args:IsSpellID(30841) then
 		warningDaring:Show(args.destName)
 		timerDaring:Start(args.destName)
-	elseif args.spellId == 30887 then
+	elseif args:IsSpellID(30887) then
 		warningDevotion:Show(args.destName)
 		timerDevotion:Start(args.destName)
+	elseif args:IsSpellID(85237) then  -- Heartbroken
+		heartbrokenStacks = args.amount
+		if args.amount and (GetTime() - LoversSpam) > 5 and args.amount >= 10 and args.amount % 5 == 0 then
+			LoversSpam = GetTime()
+			WarnHeartbroken:Show(args.amount, args.spellName)
+		end
+	elseif args:IsSpellID(85236) then
+		if heartbrokenStacks > 0 then
+			heartbrokenStacks = heartbrokenStacks - 0.5
+		end
+
+		if args.amount and (GetTime() - LoversSpam) > 5 and heartbrokenStacks <= 5 and args.amount % 5 == 0 and args.amount >= 15 then -- The Power of Love
+			LoversSpam = GetTime()
+			WarnLove:Show(args.amount, args.spellName)
+		end 
 	end
 end
+
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 30841 then
+	if args:IsSpellID(30841) then
 		timerDaring:Cancel(args.destName)
-	elseif args.spellId == 30887 then
+	elseif args:IsSpellID(30887) then
 		timerDevotion:Cancel(args.destName)
 	end
 end
@@ -72,7 +120,8 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.DBM_RJ_PHASE2_YELL or msg:find(L.DBM_RJ_PHASE2_YELL) then
 		warnPhase3:Show()
-		self:SetStage(3)
+		updateHealthFrame(3)
+		self.vb.phase = 3
 	elseif msg == L.Event or msg:find(L.Event) then
 		timerCombatStart:Start()
 	end
@@ -81,22 +130,25 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 17534 and self:IsInCombat() then
-		if self.vb.phase == 3 then--kill only in phase 3.
-			self.vb.JulianneDied = GetTime()
-			if (GetTime() - self.vb.RomuloDied) < 10 then
-				DBM:EndCombat(self)
+	if cid == 17534 then
+		if phase == 3 then--Only want to remove from boss health frame first time they die, and kill only in phase 3.
+			JulianneDied = GetTime()
+			if (GetTime() - RomuloDied) < 10 then
+				mod:EndCombat()
 			end
 		else
-			warnPhase2:Show()
-			self:SetStage(2)
+			DBM.BossHealth:RemoveBoss(cid)
+			updateHealthFrame(2)
+			self.vb.phase = 2
 		end
-	elseif cid == 17533 and self:IsInCombat() then
-		if self.vb.phase == 3 then--kill only in phase 3.
-			self.vb.RomuloDied = GetTime()
-			if (GetTime() - self.vb.JulianneDied) < 10 then
-				DBM:EndCombat(self)
+	elseif cid == 17533 then
+		if phase == 3 then--Only want to remove from boss health frame first time they die, and kill only in phase 3.
+			RomuloDied = GetTime()
+			if (GetTime() - JulianneDied) < 10 then
+				mod:EndCombat()
 			end
+		else
+			DBM.BossHealth:RemoveBoss(cid)
 		end
 	end
 end

@@ -1,54 +1,37 @@
 local mod	= DBM:NewMod("Majordomo", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
 mod:SetCreatureID(12018, 11663, 11664)
-
-mod:SetModelID(12029)
-
 mod:RegisterCombat("combat")
---mod:RegisterKill("yell", L.Kill)
+mod:RegisterKill("yell", L.Kill)
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 20619 21075 20534"
+mod:RegisterEvents(
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
---[[
-(ability.id = 20619 or ability.id = 21075 or ability.id = 20534) and type = "cast"
---]]
-local warnTeleport			= mod:NewTargetNoFilterAnnounce(20534)
-local warnDamageShield		= mod:NewSpellAnnounce(21075, 2)
+local warnMagicReflect	= mod:NewSpellAnnounce(20619)
+local warnDamageShield	= mod:NewSpellAnnounce(21075)
+local warnTeleport		= mod:NewTargetAnnounce(20534)
 
-local specWarnMagicReflect	= mod:NewSpecialWarningReflect(20619, "CasterDps", nil, 2, 1, 2)
-local specWarnDamageShield	= mod:NewSpecialWarningReflect(21075, false, nil, 2, 1, 2)
+local specWarnMagicReflect		= mod:NewSpecialWarningSpell(20619, not mod:IsMelee())
 
-local timerMagicReflect		= mod:NewBuffActiveTimer(10, 20619, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerDamageShield		= mod:NewBuffActiveTimer(10, 21075, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerTeleportCD		= mod:NewCDTimer(25, 20534, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--25-30
-local timerShieldCD			= mod:NewTimer(30.3, "timerShieldCD", nil, nil, nil, 6, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerMagicReflect	= mod:NewBuffActiveTimer(10, 20619)
+local timerDamageShield	= mod:NewBuffActiveTimer(10, 21075)
 
 function mod:OnCombatStart(delay)
-	timerTeleportCD:Start(19.4-delay)
-	timerShieldCD:Start(27.8-delay)--27-30
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 20619 then
-		specWarnMagicReflect:Show(BOSS)--Always a threat to casters
-		specWarnMagicReflect:Play("stopattack")
+	if args:IsSpellID(20619) then
+		warnMagicReflect:Show()
+		specWarnMagicReflect:Show()
 		timerMagicReflect:Start()
-		timerShieldCD:Start()
-	elseif args.spellId == 21075 then
-		if self.Options.SpecWarn21075reflect and not self:IsTrivial() then--Not a threat to high level melee
-			specWarnDamageShield:Show(BOSS)
-			specWarnDamageShield:Play("stopattack")
-		else
-			warnDamageShield:Show()
-		end
+	elseif args:IsSpellID(21075) then
+		warnDamageShield:Show()
 		timerDamageShield:Start()
-		timerShieldCD:Start()
-	elseif args.spellId == 20534 then
+	elseif args:IsSpellID(20534) then
 		warnTeleport:Show(args.destName)
-		timerTeleportCD:Start()
 	end
 end

@@ -1,68 +1,84 @@
 local mod	= DBM:NewMod("Shazzrah", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 132 $"):sub(12, -3))
 mod:SetCreatureID(12264)
-
-mod:SetModelID(13032)
-
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 19714",
-	"SPELL_AURA_REMOVED 19714",
-	"SPELL_CAST_SUCCESS 19713 19715 23138"
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_INTERRUPT",
+	"SPELL_CAST_START"
 )
 
---[[
-(ability.id = 19713 or ability.id = 19715 or ability.id = 23138 or ability.id = 19714) and type = "cast"
---]]
-local warnCurse				= mod:NewSpellAnnounce(19713, 4)
-local warnDeadenMagic		= mod:NewTargetNoFilterAnnounce(19714, 2, nil, false, 2)
-local warnCntrSpell			= mod:NewSpellAnnounce(19715, 3, nil, "SpellCaster", 2)
+local warnDampen			= mod:NewSpellAnnounce(2105089)
+local warnSoonCounter		= mod:NewSoonAnnounce(2105095)
+local warnCastExplo			= mod:NewCastAnnounce(2105085)
+-- local warnCurse			= mod:NewSpellAnnounce(19713)
+-- local warnGrounding		= mod:NewSpellAnnounce(19714, 2, nil, false)
+-- local warnCntrSpell		= mod:NewSpellAnnounce(19715)
+-- local warnBlink			= mod:NewSpellAnnounce(21655)
 
-local specWarnDeadenMagic	= mod:NewSpecialWarningDispel(19714, false, nil, 2, 1, 2)
-local specWarnGate			= mod:NewSpecialWarningTaunt(23138, "Tank", nil, nil, 1, 2)--aggro wipe, needs fresh taunt
+-- local timerCurseCD		= mod:NewNextTimer(20, 19713)
+-- local timerGrounding	= mod:NewBuffActiveTimer(30, 19714, nil, false)
+-- local timerBlinkCD		= mod:NewNextTimer(30, 21655)
+local timerBomb				= mod:NewTargetTimer(8, 2105097)
 
-local timerCurseCD			= mod:NewCDTimer(22, 19713, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)--22-25.5 (20-25?)
-local timerDeadenMagic		= mod:NewBuffActiveTimer(30, 19714, nil, false, 3, 5, nil, DBM_COMMON_L.MAGIC_ICON)
-local timerGateCD			= mod:NewCDTimer(41.3, 23138, nil, "Tank", 2, 5, nil, DBM_COMMON_L.TANK_ICON)--41-50
-local timerCounterSpellCD	= mod:NewCDTimer(15, 19715, nil, "SpellCaster", nil, 3)--15-19
+local timerExplo			= mod:NewCastTimer(10, 2105085)
+
+local timerNextBomb			= mod:NewNextTimer(16, 2105097)
+local timerNextCounter		= mod:NewNextTimer(26, 2105095)
+local timerNextDampen		= mod:NewNextTimer(45, 2105089)
+local timerNextExplo		= mod:NewNextTimer(75, 2105085)
 
 function mod:OnCombatStart(delay)
-	timerCurseCD:Start(6-delay)--6-10
-	timerCounterSpellCD:Start(9.6-delay)
-	timerGateCD:Start(30-delay)--30-31
+	timerNextExplo:Start(30-delay)
+	timerNextCounter:Start(25-delay)
+	timerNextDampen:Start(10-delay)
+	self:ScheduleMethod(25, "CounterSpell")
+end
+
+function mod:CounterSpell()
+	self:UnscheduleMethod("CounterSpell")
+	timerNextCounter:Start()
+	warnSoonCounter:Schedule(23)
+	self:ScheduleMethod(26, "CounterSpell")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 19714 and not args:IsDestTypePlayer() then
-		if self.Options.SpecWarn19714dispel then
-			specWarnDeadenMagic:Show(args.destName)
-			specWarnDeadenMagic:Play("dispelboss")
-		else
-			warnDeadenMagic:Show(args.destName)
-		end
-		timerDeadenMagic:Start()
+	if args:IsSpellID(2105089) then
+		warnDampen:Show(args.destName)
+		timerNextDampen:Start()
+	elseif args:IsSpellID(2105097) then
+		timerBomb:Start(args.destName)
+		timerNextBomb:Start()
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 19714 then
-		timerDeadenMagic:Stop()
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2105085, 2105086) or args:IsSpellID(2105087, 2105088) then
+		timerNextExplo:Start()
+		warnCastExplo:Show()
+		timerExplo:Start()
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 19713 then
-		warnCurse:Show()
-		timerCurseCD:Start()
-	elseif args.spellId == 19715 then
-		warnCntrSpell:Show()
-		timerCounterSpellCD:Start()
-	elseif args.spellId == 23138 then
-		specWarnGate:Show(args.sourceName)
-		specWarnGate:Play("tauntboss")
-		timerGateCD:Start()
-	end
-end
+-- function mod:SPELL_AURA_REMOVED(args)
+-- 	if args:IsSpellID(19714) then
+-- 		timerGrounding:Cancel()
+-- 	end
+-- end
+
+-- function mod:SPELL_CAST_SUCCESS(args)
+-- 	if args:IsSpellID(19713) and self:IsInCombat() then
+-- 		warnCurse:Show()
+-- 		timerCurseCD:Start()
+-- 	elseif args:IsSpellID(19715) and self:IsInCombat() then
+-- 		warnCntrSpell:Show()
+-- 	elseif args:IsSpellID(21655) and self:IsInCombat() then
+-- 		warnBlink:Show()
+-- 		timerBlinkCD:Start()
+-- 	end
+-- end

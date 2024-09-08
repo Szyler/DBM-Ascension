@@ -5,47 +5,50 @@ local L
 -------------------
 --  Anub'Rekhan  --
 -------------------
-L = DBM:GetModLocalization("Anub'Rekhan-Vanilla")
+L = DBM:GetModLocalization("Anub'Rekhan")
 
 L:SetGeneralLocalization({
 	name = "Anub'Rekhan"
 })
 
+L:SetWarningLocalization({
+	SpecialLocust		= "Nuée de sauterelles!",
+	WarningLocustFaded	= "Fin de la nuée de sauterelles"
+})
+
 L:SetOptionLocalization({
-	ArachnophobiaTimer	= "Activer le timer pour l'arachnophobie (HAUT-FAIT)"
+	SpecialLocust		= "Activer l'avertissement special pour la Nuée de sauterelles",
+	WarningLocustFaded	= "Avertir à la fin de la Nuée de sauterelles",
+	TimerLocustFade 	= "Afficher le timer pour la fin de la Nuée de sauterelles"
 })
 
 L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Arachnophobie",
-	Pull1				= "Oui, courez ! Faites circuler le sang !",
-	Pull2				= "Rien qu'une petite bouchée…"
+	ArachnophobiaTimer	= "Arachnophobia"
 })
 
 ----------------------------
 --  Grand Widow Faerlina  --
 ----------------------------
-L = DBM:GetModLocalization("Faerlina-Vanilla")
+L = DBM:GetModLocalization("Faerlina")
 
 L:SetGeneralLocalization({
 	name = "Grande Veuve Faerlina"
 })
 
 L:SetWarningLocalization({
-	WarningEmbraceExpire	= "Fin du baisé de la veuve dans 5 sec"
+	WarningEmbraceExpire	= "Fin du baisé de la veuve dans 5 sec",
+	WarningEmbraceExpired	= "Baisé de la veuve terminé"
 })
 
 L:SetOptionLocalization({
-	WarningEmbraceExpire	= "Activer l'avertissement de fin du baisé de la veuve"
-})
-
-L:SetMiscLocalization({
-	Pull					= "À genoux, vermisseau !"--Not actually pull trigger, but often said on pull
+	WarningEmbraceExpire	= "Activer l'avertissement de fin du baisé de la veuve",
+	WarningEmbraceExpired	= "Afficher un avertissement quand le baisé de la veuve va se terminer"
 })
 
 ---------------
 --  Maexxna  --
 ---------------
-L = DBM:GetModLocalization("Maexxna-Vanilla")
+L = DBM:GetModLocalization("Maexxna")
 
 L:SetGeneralLocalization({
 	name = "Maexxna"
@@ -67,13 +70,14 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Arachnophobie"
+	YellWebWrap			= "Je suis dans un cocon! Aidez-moi!",
+	ArachnophobiaTimer	= "Arachnophobia"
 })
 
 ------------------------------
 --  Noth the Plaguebringer  --
 ------------------------------
-L = DBM:GetModLocalization("Noth-Vanilla")
+L = DBM:GetModLocalization("Noth")
 
 L:SetGeneralLocalization({
 	name = "Noth le Porte-peste"
@@ -81,7 +85,7 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow		= "Téléportation!",
-	WarningTeleportSoon		= "Téléportation dans in 10 sec"
+	WarningTeleportSoon		= "Téléportation dans in 20 sec"
 })
 
 L:SetTimerLocalization({
@@ -96,16 +100,10 @@ L:SetOptionLocalization({
 	TimerTeleportBack		= "Activer le timer pour le retour de North"
 })
 
-L:SetMiscLocalization({
-	Pull				= "Mourez, intrus !",
-	Adds				= "invoque des guerriers squelettes !",
-	AddsTwo				= "lève encore d'autres squelettes !"
-})
-
 --------------------------
 --  Heigan the Unclean  --
 --------------------------
-L = DBM:GetModLocalization("Heigan-Vanilla")
+L = DBM:GetModLocalization("Heigan")
 
 L:SetGeneralLocalization({
 	name = "Heigan l'Impur"
@@ -126,14 +124,10 @@ L:SetOptionLocalization({
 	TimerTeleport			= "Activer le timer pour la Téléporation"
 })
 
-L:SetMiscLocalization({
-	Pull					= "Vous êtes à moi, maintenant."
-})
-
----------------
---  Loatheb  --
----------------
-L = DBM:GetModLocalization("Loatheb-Vanilla")
+----------------
+--  Lolotheb  --
+----------------
+L = DBM:GetModLocalization("Loatheb")
 
 L:SetGeneralLocalization({
 	name = "Horreb"
@@ -146,45 +140,52 @@ L:SetWarningLocalization({
 
 L:SetOptionLocalization({
 	WarningHealSoon		= "Activer l'avertissement \"Soins dans 3 sec\" ",
-	WarningHealNow		= "Activer l'avertissement \"SOIGNEZ MAINTENANT\" ",
-	SporeDamageAlert	= "Envoyer un murmure et annoncer aux joueurs de raid qui endommagent les spores\n(nécessite que l'annonce soit activée et le statut de leader/promu)",
-	CorruptedSorting	= "Set infoframe sorting behaviour for $spell:55593", -- translation missing
-	Alphabetical		= "Sort in alphabetical order", -- translation missing
-	Duration			= "Sort by duration" -- translation missing
+	WarningHealNow		= "Activer l'avertissement \"SOIGNEZ MAINTENANT\" "
 })
 
 -----------------
 --  Patchwerk  --
 -----------------
-L = DBM:GetModLocalization("Patchwerk-Vanilla")
+L = DBM:GetModLocalization("Patchwerk")
 
 L:SetGeneralLocalization({
 	name = "Le recousu"
 })
 
 L:SetOptionLocalization({
-	WarningHateful	= "Annoncer les Frappes Haineuses au raid\n(vous devez être promote ou le raid leader pour le faire)"
+	WarningHateful 	= "Annoncer les Frappes Haineuses au raid\n(vous devez être promote ou le raid leader pour le faire)"
 })
 
 L:SetMiscLocalization({
-	yell1			= "R'cousu veut jouer !",
-	yell2			= "R'cousu avatar de guerre pour Kel'Thuzad !",
-	HatefulStrike	= "Frappe Haineuse --> %s [%s]"
+	yell1 		     	= "R'cousu veut jouer !",
+	yell2 		     	= "R'cousu avatar de guerre pour Kel'Thuzad !",
+	HatefulStrike 	= "Frappe Haineuse --> %s [%s]"
 })
 
 -----------------
 --  Grobbulus  --
 -----------------
-L = DBM:GetModLocalization("Grobbulus-Vanilla")
+L = DBM:GetModLocalization("Grobbulus")
 
 L:SetGeneralLocalization({
 	name = "Grobbulus"
 })
 
+L:SetOptionLocalization({
+	SpecialWarningInjection	= "Activer l'avertissement spécial quand vous êtes affecté par l'Injection mutante"
+})
+
+L:SetWarningLocalization({
+	SpecialWarningInjection	= "Injection mutante sur toi!"
+})
+
+L:SetTimerLocalization({
+})
+
 -------------
 --  Gluth  --
 -------------
-L = DBM:GetModLocalization("Gluth-Vanilla")
+L = DBM:GetModLocalization("Gluth")
 
 L:SetGeneralLocalization({
 	name = "Gluth"
@@ -193,15 +194,20 @@ L:SetGeneralLocalization({
 ----------------
 --  Thaddius  --
 ----------------
-L = DBM:GetModLocalization("Thaddius-Vanilla")
+L = DBM:GetModLocalization("Thaddius")
 
 L:SetGeneralLocalization({
 	name = "Thaddius"
 })
 
-L:SetWarningLocalization({
-	WarningChargeChanged	= "Polarité changée : %s",
-	WarningChargeNotChanged	= "Même polarité"
+L:SetMiscLocalization({
+	Yell					= "Stalagg écraser toi !",
+	Emote					= "%s entre en surcharge !",
+	Emote2					= "Bobine de Tesla entre en surcharge !",
+	Boss1 					= "Feugen",
+	Boss2 					= "Stalagg",
+	Charge1 				= "négative",
+	Charge2 				= "positive"
 })
 
 L:SetOptionLocalization({
@@ -213,60 +219,46 @@ L:SetOptionLocalization({
 	ArrowsInverse			= "Inverser la statégie \"4 camps\" (afficher la flèche droite si la polarité a changé et la gauche sinon)"
 })
 
-L:SetMiscLocalization({
-	Yell					= "Stalagg écraser toi !",
-	Emote					= "%s entre en surcharge !",
-	Emote2					= "Bobine de Tesla entre en surcharge !",
-	Boss1					= "Feugen",
-	Boss2					= "Stalagg",
-	Charge1					= "négative",
-	Charge2					= "positive"
+L:SetWarningLocalization({
+	WarningChargeChanged	= "Polarité changée : %s",
+	WarningChargeNotChanged	= "Même polarité"
+})
+
+L:SetOptionCatLocalization({
+	Arrows					= "Flèches"
 })
 
 -----------------
 --  Razuvious  --
 -----------------
-L = DBM:GetModLocalization("Razuvious-Vanilla")
+L = DBM:GetModLocalization("Razuvious")
 
 L:SetGeneralLocalization({
 	name = "Razuvious"
 })
 
-L:SetWarningLocalization({
-	WarningShieldWallSoon	= "Mur de Bouclier expire dans 5 sec"
+L:SetMiscLocalization({
+	Yell1 					= "Pas de quartier !",
+	Yell2 					= "Les cours sont terminés ! Montrez-moi ce que vous avez appris !",
+	Yell3 					= "Faites ce que vous ai appris !",
+	Yell4 					= "Frappe-le à la jambe"
 })
 
 L:SetOptionLocalization({
 	WarningShieldWallSoon	= "Activer l'avertissement du Mur de Bouclier"
 })
 
-L:SetMiscLocalization({
-	Yell1					= "Pas de quartier !",
-	Yell2					= "Les cours sont terminés ! Montrez-moi ce que vous avez appris !",
-	Yell3					= "Faites ce que vous ai appris !",
-	Yell4					= "Frappe-le à la jambe"
+L:SetWarningLocalization({
+	WarningShieldWallSoon	= "Mur de Bouclier expire dans 5 sec"
 })
 
 --------------
 --  Gothik  --
 --------------
-L = DBM:GetModLocalization("Gothik-Vanilla")
+L = DBM:GetModLocalization("Gothik")
 
 L:SetGeneralLocalization({
 	name = "Gothik"
-})
-
-L:SetWarningLocalization({
-	WarningWaveSoon		= "Vague %d: %s dans 3 sec",
-	WarningWaveSpawned	= "Vague %d: %s arrivée",
-	WarningRiderDown	= "Cavalier down",
-	WarningKnightDown	= "Chevalier down",
-	WarningPhase2		= "Phase 2"
-})
-
-L:SetTimerLocalization({
-	TimerWave			= "Vague #%d",
-	TimerPhase2			= "Phase 2"
 })
 
 L:SetOptionLocalization({
@@ -277,6 +269,19 @@ L:SetOptionLocalization({
 	WarningRiderDown	= "Avertir quand un Cavalier meurt",
 	WarningKnightDown	= "Avertir quand un Chevalier meurt",
 	WarningPhase2		= "Activer l'avertissement pour la Phase 2"
+})
+
+L:SetTimerLocalization({
+	TimerWave			= "Vague #%d",
+	TimerPhase2			= "Phase 2"
+})
+
+L:SetWarningLocalization({
+	WarningWaveSoon		= "Vague %d: %s dans 3 sec",
+	WarningWaveSpawned	= "Vague %d: %s arrivée",
+	WarningRiderDown	= "Cavalier down",
+	WarningKnightDown	= "Chevalier down",
+	WarningPhase2		= "Phase 2"
 })
 
 L:SetMiscLocalization({
@@ -292,20 +297,27 @@ L:SetMiscLocalization({
 ----------------
 --  Horsemen  --
 ----------------
-L = DBM:GetModLocalization("Horsemen-Vanilla")
+L = DBM:GetModLocalization("Horsemen")
 
 L:SetGeneralLocalization({
 	name = "Les quatre Cavaliers"
 })
 
-L:SetWarningLocalization({
-	WarningMarkSoon				= "Marque %d dans 3 sec",
-	SpecialWarningMarkOnPlayer	= "%s: %s"
+L:SetOptionLocalization({
+	TimerMark					= "Afficher le timer des Marques",
+	WarningMarkSoon				= "Activer le pré-avertissement des Marques",
+	WarningMarkNow				= "Activer l'avertissement des Marques",
+	SpecialWarningMarkOnPlayer	= "Avertissement spécial quand vous avez plus de 4 marques sur vous"
 })
 
-L:SetOptionLocalization({
-	WarningMarkSoon				= "Activer le pré-avertissement des Marques",
-	SpecialWarningMarkOnPlayer	= "Avertissement spécial quand vous avez plus de 4 marques sur vous"
+L:SetTimerLocalization({
+	TimerMark 					= "Marque %d"
+})
+
+L:SetWarningLocalization({
+	WarningMarkSoon				= "Marque %d dans 3 sec",
+	WarningMarkNow				= "Marque %d!",
+	SpecialWarningMarkOnPlayer	= "%s: %s"
 })
 
 L:SetMiscLocalization({
@@ -318,55 +330,63 @@ L:SetMiscLocalization({
 -----------------
 --  Sapphiron  --
 -----------------
-L = DBM:GetModLocalization("Sapphiron-Vanilla")
+L = DBM:GetModLocalization("Sapphiron")
 
 L:SetGeneralLocalization({
 	name = "Sapphiron"
 })
 
-L:SetWarningLocalization({
-	WarningAirPhaseSoon	= "Envol dans 10 sec",
-	WarningAirPhaseNow	= "Dans les airs",
-	WarningLanded		= "Atterrissage de Sapphiron",
-	WarningDeepBreath	= "Souffle de givre !",
-	SpecWarnSapphLow	= "Sapphiron ne peut pas voler !"
-})
-
-L:SetTimerLocalization({
-	TimerAir			= "Envol",
-	TimerLanding		= "Atterrissage dans",
-	TimerIceBlast		= "Souffle de givre"
-})
-
 L:SetOptionLocalization({
 	WarningAirPhaseSoon	= "Activer le pré-avertissement de la phase en vol",
 	WarningAirPhaseNow	= "Activer l'avertissement de la phase en vol",
-	WarningLanded		= "Activer l'avertissement pour la phase au sol",
-	TimerAir			= "Afficher le timer de la phase en vol",
-	TimerLanding		= "Afficher le timer de l'atterrissage",
-	TimerIceBlast		= "Afficher le timer du Souffle de givre",
-	WarningDeepBreath	= "Activer l'avertissement spécial pour le Souffle de givre",
-	SpecWarnSapphLow	= "Avertissement spécial pour la phase d'exécution à 10 % (annulation de la phase d'air)"
+	WarningLanded		    = "Activer l'avertissement pour la phase au sol",
+	TimerAir			    	= "Afficher le timer de la phase en vol",
+	TimerLanding		   	= "Afficher le timer de l'atterrissage",
+	TimerIceBlast		   	= "Afficher le timer du Souffle de givre",
+	WarningDeepBreath		= "Activer l'avertissement spécial pour le Souffle de givre",
+	WarningIceblock			= "Crie dans un glaçon"
 })
 
 L:SetMiscLocalization({
-	EmoteBreath			= "prend une grande inspiration",
-	AirPhase			= "Saphiron s'envole !",
-	LandingPhase		= "Saphiron reprend ses attaques !"
+	EmoteBreath			    = "prend une grande inspiration",
+	WarningYellIceblock	= "Je suis un bloc de glace !"
+})
+
+L:SetWarningLocalization({
+	WarningAirPhaseSoon	= "Envol dans 10 sec",
+	WarningAirPhaseNow	= "Dans les airs",
+	WarningLanded		    = "Atterrissage de Sapphiron",
+	WarningDeepBreath	  = "Souffle de givre !"
+})
+
+L:SetTimerLocalization({
+	TimerAir		   		  = "Envol",
+	TimerLanding			  = "Atterrissage dans",
+	TimerIceBlast			  = "Souffle de givre"	
 })
 
 ------------------
 --  Kel'thuzad  --
 ------------------
-L = DBM:GetModLocalization("Kel'Thuzad-Vanilla")
+
+L = DBM:GetModLocalization("Kel'Thuzad")
 
 L:SetGeneralLocalization({
 	name = "Kel'Thuzad"
 })
 
+L:SetOptionLocalization({
+	TimerPhase2				= "Afficher le timer pour la Phase 2",
+	specwarnP2Soon 			= "Montre un timer pour prévenir 10 secondes avant l'arrivée de Kel'Thuzad",
+	ShowRange				= "Active l'indicateur de portée quand la phase 2 débute"
+})
+
+L:SetMiscLocalization({
+	Yell 					= "Serviteurs, valets et soldats des ténèbres glaciales ! Répondez à l'appel de Kel'Thuzad !"
+})
+
 L:SetWarningLocalization({
-	specwarnP2Soon		= "Kel'Thuzad sera actif dans 10 secondes",
-	WeaponsStatus		= "Auto-déséquipement activé: %s (%s - %s)"
+	specwarnP2Soon  		= "Kel'Thuzad sera actif dans 10 secondes"
 })
 
 L:SetTimerLocalization({
@@ -374,26 +394,3 @@ L:SetTimerLocalization({
 	BlastTimer				= "Heal Maintenant !"
 })
 
-L:SetOptionLocalization({
-	TimerPhase2			= "Afficher le timer pour la Phase 2",
-	specwarnP2Soon		= "Montre un timer pour prévenir 10 secondes avant l'arrivée de Kel'Thuzad",
-	WeaponsStatus		= "Alerte spéciale si la fonction de déséquipement n'est pas active au début du combat",
-	EqUneqWeaponsKT		= "Déséquipez et équipez automatiquement les armes avant et après $spell:28410. Nécessite un ensemble d'équipement nommé \"pve\"",
-	EqUneqWeaponsKT2	= "Déséquiper et équiper automatiquement les armes lorsque $spell:28410 est lancé sur VOUS. Nécessite un ensemble d'équipement nommé \"pve\"",
-	RemoveBuffsOnMC		= "Retirez les buffs lorsque $spell:28410 est lancé sur vous. Chaque option est cumulative.",
-	Gift				= "Supprimer $spell:48469 / $spell:48470. Approche minimale pour éviter $spell:33786 résistances.",
-	CCFree				= "+ Supprimer $spell:48169 / $spell:48170. Tient compte des résistances des sorts de l'école de l'ombre.",
-	ShortOffensiveProcs	= "+ Supprimer les procs offensifs qui ont une faible durée. Recommandé pour la sécurité du raid sans compromettre les dégâts du raid.",
-	MostOffensiveBuffs	= "+ Supprimer la plupart des buffs offensifs (principalement pour les Casters et les |cFFFF7C0AFarouche Druide|r). Sécurité maximale pour les raids avec une perte de dégâts et la nécessité de s'auto-rebuffer/shapeshift!"
-})
-
-L:SetMiscLocalization({
-	Yell		= "Serviteurs, valets et soldats des ténèbres glaciales ! Répondez à l'appel de Kel'Thuzad !",
-	Yell1Phase2	= "Faites vos prières !", -- 12995
-	Yell2Phase2	= "Hurlez et expirez !", -- 12996
-	Yell3Phase2	= "Votre fin est proche !", -- 12997
-	YellPhase3	= "Maître, j'ai besoin d'aide !", -- 12998
-	YellGuardians	= "Très bien. Guerriers des terres gelées, relevez-vous ! Je vous ordonne de combattre, de tuer et de mourir pour votre maître ! N'épargnez personne !", -- 12994
-	setMissing	= "ATTENTION! DBM auto-déséquipement d'arme ne fonctionnera pas tant que vous n'aurez pas créer un set apellé pve",
-	EqUneqLineDescription	= "Équiper/Déséquiper automatiquement"
-})

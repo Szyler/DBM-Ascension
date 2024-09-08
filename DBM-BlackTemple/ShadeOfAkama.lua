@@ -1,129 +1,124 @@
 local mod	= DBM:NewMod("Akama", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
-mod:SetCreatureID(22841)
-
-mod:SetModelID(21357)
-
-mod:RegisterCombat("combat")
-mod:SetWipeTime(50)--Adds come about every 50 seconds, so require at least this long to wipe combat if they die instantly
+mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
+mod:SetCreatureID(23421)
+mod:RegisterCombat("combat", 22841)
+mod:SetBossHealthInfo(
+	23421, "Shade of Akama"
+)
+-- Akama:SetMinCombatTime(60)
 
 mod:RegisterEventsInCombat(
-	"UNIT_DIED"
+	"UNIT_DIED",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_AURA_REMOVED",
+	"SPELL_HEAL"
 )
 
-mod:RegisterEvents(
-	"SPELL_AURA_REMOVED 34189"
-)
+local timerNextGroup				= mod:NewNextTimer(35, 2142687)
+local timerNextSorcerer				= mod:NewNextTimer(30, 2142602)
+local timerSoulDomination       	= mod:NewCastTimer(300, 2142603)
 
-local warnPhase2		= mod:NewPhaseAnnounce(2)
-local warnDefender		= mod:NewAnnounce("warnAshtongueDefender", 2, 41180)
-local warnSorc			= mod:NewAnnounce("warnAshtongueSorcerer", 2, 40520)
+local warnSorcerer					= mod:NewSpellAnnounce(2142602, 2)
+local warnSoulDomination			= mod:NewSpellAnnounce(2142603, 2)
+local warnDeadlyPoison				= mod:NewTargetAnnounce(2142657, 2)
+local warnPoisonedShiv				= mod:NewTargetAnnounce(2142653, 2)
 
-local specWarnAdds		= mod:NewSpecialWarningAddsCustom(42035, "-Healer", nil, nil, 1, 2)
+local warnHealingStream				= mod:NewSpellAnnounce(2142677, 2)
+local warnRiptide					= mod:NewSpellAnnounce(2142680, 2) --Might be useful to warn if this is cast on shade of akama
+local warnVigilance					= mod:NewSpellAnnounce(2142686, 2) --Might be useful to warn if this is cast on shade of akama
 
-local timerCombatStart	= mod:NewCombatTimer(12)
-local timerAddsCD		= mod:NewAddsCustomTimer(25, 42035)--NewAddsCustomTimer
-local timerDefenderCD	= mod:NewTimer(25, "timerAshtongueDefender", 41180, nil, nil, 1)
-local timerSorcCD		= mod:NewTimer(25, "timerAshtongueSorcerer", 40520, nil, nil, 1)
+local fightStarted = false
+local akama = false
 
-mod.vb.AddsWestCount = 0
-
-local function addsWestLoop(self)
-	self.vb.AddsWestCount = self.vb.AddsWestCount + 1
-	specWarnAdds:Show(DBM_COMMON_L.WEST)
-	specWarnAdds:Play("killmob")
-	specWarnAdds:ScheduleVoice(1, "west")
-	if self.vb.AddsWestCount == 2 then--Special
-		self:Schedule(51, addsWestLoop, self)
-		timerAddsCD:Start(51, DBM_COMMON_L.WEST)
-	else
-		self:Schedule(47, addsWestLoop, self)
-		timerAddsCD:Start(47, DBM_COMMON_L.WEST)
-	end
-end
-
-local function addsEastLoop(self)
-	specWarnAdds:Show(DBM_COMMON_L.EAST)
-	specWarnAdds:Play("killmob")
-	specWarnAdds:ScheduleVoice(1, "east")
-	self:Schedule(51, addsEastLoop, self)
-	timerAddsCD:Start(51, DBM_COMMON_L.EAST)
-end
-
-local function sorcLoop(self)
-	warnSorc:Show()
-	self:Schedule(25, sorcLoop, self)
-	timerSorcCD:Start(25)
-end
-
-local function defenderLoop(self)
-	warnDefender:Show()
-	self:Schedule(30, defenderLoop, self)
-	timerDefenderCD:Start(30)
-end
-
-function mod:OnCombatStart()
-	self:SetStage(1)
-	self.vb.AddsWestCount = 0
-	self:RegisterShortTermEvents(
-		"SWING_DAMAGE",
-		"SWING_MISSED",
-		"UNIT_SPELLCAST_SUCCEEDED"
-	)
-	self:Schedule(1, defenderLoop, self)
-	self:Schedule(1, sorcLoop, self)
-	self:Schedule(1, addsWestLoop, self)
-	self:Schedule(18, addsEastLoop, self)
-	timerAddsCD:Start(18, DBM_COMMON_L.EAST or "East")
+function mod:OnCombatStart(delay)
+	akama = true
+	timerNextGroup:Start(5-delay)
+	self:ScheduleMethod(5-delay, "NewGroup")
+	timerNextSorcerer:Start(60-delay)
+	self:ScheduleMethod(60-delay, "NewSorcerer")
+	fightStarted = true
 end
 
 function mod:OnCombatEnd()
-	self:UnregisterShortTermEvents()
+	DBM.RangeCheck:Hide()
+	akama = false
 end
 
+function mod:NewGroup()
+	self:UnscheduleMethod("NewGroup")
+	timerNextGroup:Start()
+	self:ScheduleMethod(35, "NewGroup")
+end
+
+function mod:NewSorcerer()
+	self:UnscheduleMethod("NewSorcerer")
+	warnSorcerer:Show()
+	timerNextSorcerer:Start()
+	self:ScheduleMethod(30, "NewSorcerer")
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if akama == true then
+	if args:IsSpellID(2142603) and fightStarted == true then
+		warnSoulDomination:Show()
+		timerSoulDomination:Start()
+	elseif args:IsSpellID(2142657) and args.amount and args.amount >= 2 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warnDeadlyPoison:Show(args.destName)
+	elseif args:IsSpellID(2142653) and args.amount and args.amount >= 2 and args.amount % 2 == 0 and DBM:AntiSpam(5, 1) then
+		warnPoisonedShiv:Show(args.destName)
+	elseif args:IsSpellID(2142686) and self:GetCIDFromGUID(args.destGUID) == 22841 then
+		warnVigilance:Show()
+	elseif args:IsSpellID(2142680) and args:GetDestCreatureID() == 22841 then --not sure if this check works
+		warnRiptide:Show()
+	end
+end
+end
+
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED -- Hack to include applied_dose as well without more code
 
 function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 34189 and args:GetDestCreatureID() == 23191 then--Coming out of stealth (he's been activated)
-		timerCombatStart:Start()
+	if akama == true then
+	if args:IsSpellID(2142603) then
+		-- warnSoulDomination:Hide()
+		timerSoulDomination:Stop()
 	end
+end
 end
 
-function mod:SWING_DAMAGE(_, sourceName)
-	if sourceName == L.name and self.vb.phase == 1 then
-		self:UnregisterShortTermEvents()
-		self:SetStage(2)
-		warnPhase2:Show()
-		timerAddsCD:Stop()
-		timerDefenderCD:Stop()
-		timerSorcCD:Stop()
-		self:Unschedule(addsWestLoop)
-		self:Unschedule(addsEastLoop)
-		self:Unschedule(sorcLoop)
-		self:Unschedule(defenderLoop)
+function mod:SPELL_HEAL(args)
+	if akama == true then
+	if args:IsSpellID(2142677) and DBM:AntiSpam(5) then
+		warnHealingStream:Show()
 	end
 end
-mod.SWING_MISSED = mod.SWING_DAMAGE
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(_, spellName)
-	if (spellName == GetSpellInfo(40607) or spellName == GetSpellInfo(40955)) and self.vb.phase == 1 and self:AntiSpam(3, 1) then--Fixate/Summon Shade of Akama Trigger
-		self:UnregisterShortTermEvents()
-		self:SetStage(2)
-		warnPhase2:Show()
-		timerAddsCD:Stop()
-		timerDefenderCD:Stop()
-		timerSorcCD:Stop()
-		self:Unschedule(addsWestLoop)
-		self:Unschedule(addsEastLoop)
-		self:Unschedule(sorcLoop)
-		self:Unschedule(defenderLoop)
-	end
 end
 
-function mod:UNIT_DIED(args)
-	if self:GetCIDFromGUID(args.destGUID) == 22841 then
-		DBM:EndCombat(self)
-	end
-end
+-- local channelersDown = 0
+-- local sorcerersDown = 0
+-- channelersDown = 0
+-- sorcerersDown = 0
+
+
+-- function Akama:OnEvent(event, arg1)
+-- 	if event == "UNIT_DIED" then
+-- 		if arg1.destName == DBM_AKAMA_MOB_CHANNELER then
+-- 			self:SendSync("Channeler")
+-- 		elseif arg1.destName == DBM_AKAMA_MOB_SORCERER then
+-- 			self:SendSync("Sorcerer")
+-- 		end
+-- 	end
+-- end
+
+-- function Akama:OnSync(msg)
+-- 	if msg == "Channeler" then
+-- 		channelersDown = channelersDown + 1
+-- 		self:Announce(DBM_AKAMA_WARN_CHANNELER_DOWN:format(channelersDown), 2)
+-- 	elseif msg == "Sorcerer" then
+-- 		sorcerersDown = sorcerersDown + 1
+-- 		self:Announce(DBM_AKAMA_WARN_SORCERER_DOWN:format(sorcerersDown), 2)
+-- 	end
+-- end
+

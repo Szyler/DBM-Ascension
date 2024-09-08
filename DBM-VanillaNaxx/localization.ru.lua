@@ -1,47 +1,54 @@
-if GetLocale() ~= "ruRU" then return end
+﻿if GetLocale() ~= "ruRU" then return end
 
 local L
 
 -------------------
 --  Anub'Rekhan  --
 -------------------
-L = DBM:GetModLocalization("Anub'Rekhan-Vanilla")
+L = DBM:GetModLocalization("Anub'Rekhan")
 
 L:SetGeneralLocalization({
 	name = "Ануб'Рекан"
 })
 
+L:SetWarningLocalization({
+	SpecialLocust		= "Жуки-трупоеды",
+	WarningLocustFaded	= "Жуки-трупоеды исчезают"
+})
+
 L:SetOptionLocalization({
+	SpecialLocust		= "Cпец-предупреждение для Жуков-трупоедов",
+	WarningLocustFaded	= "Предупреждение для исчезновения Жуков-трупоедов",
 	ArachnophobiaTimer	= "Отсчет времени для Арахнофобия (достижение)"
 })
 
 L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Арахнофобия",
-	Pull1				= "Бегите, бегите! Я люблю горячую кровь!",
-	Pull2				= "Посмотрим, какие вы на вкус!"
+	ArachnophobiaTimer	= "Арахнофобия"
 })
 
 ----------------------------
 --  Grand Widow Faerlina  --
 ----------------------------
-L = DBM:GetModLocalization("Faerlina-Vanilla")
+L = DBM:GetModLocalization("Faerlina")
 
 L:SetGeneralLocalization({
 	name = "Великая вдова Фарлина"
 })
 
 L:SetWarningLocalization({
-	WarningEmbraceExpire	= "Объятие Вдовы через 5 секунд"
+	WarningEmbraceExpire	= "Объятие Вдовы через 5 секунд",
+	WarningEmbraceExpired	= "Объятие Вдовы исчезает"
 })
 
 L:SetOptionLocalization({
-	WarningEmbraceExpire	= "Предупреждение, когда Объятие Вдовы исчезает"
+	WarningEmbraceExpire	= "Предупреждение, когда Объятие Вдовы исчезает",
+	WarningEmbraceExpired	= "Предупреждение, когда Объятие Вдовы закончится"
 })
 
 ---------------
 --  Maexxna  --
 ---------------
-L = DBM:GetModLocalization("Maexxna-Vanilla")
+L = DBM:GetModLocalization("Maexxna")
 
 L:SetGeneralLocalization({
 	name = "Мексна"
@@ -63,13 +70,14 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
+	YellWebWrap	= "Я в коконе! Помогите!",
 	ArachnophobiaTimer	= "Арахнофобия"
 })
 
 ------------------------------
 --  Noth the Plaguebringer  --
 ------------------------------
-L = DBM:GetModLocalization("Noth-Vanilla")
+L = DBM:GetModLocalization("Noth")
 
 L:SetGeneralLocalization({
 	name = "Нот Чумной"
@@ -77,7 +85,7 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Телепортация",
-	WarningTeleportSoon	= "Телепортация через 10 секунд"
+	WarningTeleportSoon	= "Телепортация через 20 секунд"
 })
 
 L:SetTimerLocalization({
@@ -92,16 +100,10 @@ L:SetOptionLocalization({
 	TimerTeleportBack	= "Отсчет времени до обратной телепортации"
 })
 
-L:SetMiscLocalization({
-	Pull				= "Смерть чужакам!",
-	Adds				= "призывает скелетов-воинов!",
-	AddsTwo				= "поднимает новых скелетов!"
-})
-
 --------------------------
 --  Heigan the Unclean  --
 --------------------------
-L = DBM:GetModLocalization("Heigan-Vanilla")
+L = DBM:GetModLocalization("Heigan")
 
 L:SetGeneralLocalization({
 	name = "Хейган Нечестивый"
@@ -113,7 +115,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	TimerTeleport	= "Телепортация"
+	TimerTeleport	= "Телепортация",
 })
 
 L:SetOptionLocalization({
@@ -122,37 +124,30 @@ L:SetOptionLocalization({
 	TimerTeleport		= "Отсчет времени до телепортации"
 })
 
-L:SetMiscLocalization({
-	Pull				= "Теперь вы принадлежите мне!"
-})
-
 ---------------
 --  Loatheb  --
 ---------------
-L = DBM:GetModLocalization("Loatheb-Vanilla")
+L = DBM:GetModLocalization("Loatheb")
 
 L:SetGeneralLocalization({
 	name = "Лотхиб"
 })
 
 L:SetWarningLocalization({
-	WarningHealSoon	= "Можно исцелять через 3 секунды",
-	WarningHealNow	= "Исцеляйте сейчас"
+	WarningHealSoon	= "Исцеление через 3 секунды",
+	WarningHealNow	= "Исцеление"
 })
 
 L:SetOptionLocalization({
-	WarningHealSoon		= "Предупреждать заранее перед 3-х секундным окном исцеления",
-	WarningHealNow		= "Предупреждение для 3-х секундного окна исцеления",
-	SporeDamageAlert	= "Сообщать шепотом и объявлять в рейд игроков, наносящих урон спорам\n(требуются права лидера или помощника)",
-	CorruptedSorting	= "Set infoframe sorting behaviour for $spell:55593", -- translation missing
-	Alphabetical		= "Sort in alphabetical order", -- translation missing
-	Duration			= "Sort by duration" -- translation missing
+	WarningHealSoon		= "Предупреждать перед следующим исцелением",
+	WarningHealNow		= "Предупреждение для исцеления",
+	SporeDamageAlert	= "Сообщать шепотом и объявлять в рейд игроков, наносящих урон спорам\n(требуются права лидера или помощника)"
 })
 
 -----------------
 --  Patchwerk  --
 -----------------
-L = DBM:GetModLocalization("Patchwerk-Vanilla")
+L = DBM:GetModLocalization("Patchwerk")
 
 L:SetGeneralLocalization({
 	name = "Лоскутик"
@@ -171,16 +166,28 @@ L:SetMiscLocalization({
 -----------------
 --  Grobbulus  --
 -----------------
-L = DBM:GetModLocalization("Grobbulus-Vanilla")
+L = DBM:GetModLocalization("Grobbulus")
 
 L:SetGeneralLocalization({
 	name = "Гроббулус"
 })
 
+L:SetOptionLocalization({
+	SpecialWarningInjection		= "Cпец-предупреждение для Мутагенного укола",
+	SetIconOnInjectionTarget	= "Устанавливать метки на цели заклинания Мутагенный укол"
+})
+
+L:SetWarningLocalization({
+	SpecialWarningInjection	= "Вам сделали мутагенный укол."
+})
+
+L:SetTimerLocalization({
+})
+
 -------------
 --  Gluth  --
 -------------
-L = DBM:GetModLocalization("Gluth-Vanilla")
+L = DBM:GetModLocalization("Gluth")
 
 L:SetGeneralLocalization({
 	name = "Глут"
@@ -189,15 +196,20 @@ L:SetGeneralLocalization({
 ----------------
 --  Thaddius  --
 ----------------
-L = DBM:GetModLocalization("Thaddius-Vanilla")
+L = DBM:GetModLocalization("Thaddius")
 
 L:SetGeneralLocalization({
 	name = "Таддиус"
 })
 
-L:SetWarningLocalization({
-	WarningChargeChanged	= "Полярность изменена на %s",
-	WarningChargeNotChanged	= "Полярность не изменена"
+L:SetMiscLocalization({
+	Yell	= "Сталагг сокрушит вас!",
+	Emote	= "Катушка Теслы перезагружается!",
+	Emote2	= "Катушка Теслы теряет связь!",
+	Boss1	= "Фойген",
+	Boss2	= "Сталагг",
+	Charge1 = "отрицательную",
+	Charge2 = "положительную"
 })
 
 L:SetOptionLocalization({
@@ -208,31 +220,22 @@ L:SetOptionLocalization({
 	ArrowsInverse			= "Обратная \"4-сторонняя\" стратегия (вправо, если полярность изменена, влево, если нет)"
 })
 
-L:SetMiscLocalization({
-	Yell	= "Сталагг сокрушить вас!",
-	Emote	= "%s перезагружается!",
-	Emote2	= "Катушка Теслы перезагружается!",
-	Boss1	= "Фойген",
-	Boss2	= "Сталагг",
-	Charge1 = "отрицательную",
-	Charge2 = "положительную"
+L:SetWarningLocalization({
+	WarningChargeChanged	= "Полярность изменена на %s",
+	WarningChargeNotChanged	= "Полярность не изменена"
+})
+
+L:SetOptionCatLocalization({
+	Arrows	= "Стрелки"
 })
 
 ----------------------------
 --  Instructor Razuvious  --
 ----------------------------
-L = DBM:GetModLocalization("Razuvious-Vanilla")
+L = DBM:GetModLocalization("Razuvious")
 
 L:SetGeneralLocalization({
 	name = "Инструктор Разувий"
-})
-
-L:SetWarningLocalization({
-	WarningShieldWallSoon	= "Стена костей закончится через 5 секунд"
-})
-
-L:SetOptionLocalization({
-	WarningShieldWallSoon	= "Предупреждать о скором исчезновении Стены костей"
 })
 
 L:SetMiscLocalization({
@@ -242,26 +245,21 @@ L:SetMiscLocalization({
 	Yell4 = "Выше ногу! Или у тебя с этим проблемы?"
 })
 
-----------------------------
---  Gothik the Harvester  --
-----------------------------
-L = DBM:GetModLocalization("Gothik-Vanilla")
-
-L:SetGeneralLocalization({
-	name = "Готик Жнец"
+L:SetOptionLocalization({
+	WarningShieldWallSoon	= "Предупреждать о скором исчезновении Стены костей"
 })
 
 L:SetWarningLocalization({
-	WarningWaveSoon		= "Волна %d: %s через 3 секунды",
-	WarningWaveSpawned	= "Волна %d: %s призван",
-	WarningRiderDown	= "Всадник мертв",
-	WarningKnightDown	= "Рыцарь мертв",
-	WarningPhase2		= "Фаза 2"
+	WarningShieldWallSoon	= "Стена костей закончится через 5 секунд"
 })
 
-L:SetTimerLocalization({
-	TimerWave	= "Волна %d",
-	TimerPhase2	= "Фаза 2"
+----------------------------
+--  Gothik the Harvester  --
+----------------------------
+L = DBM:GetModLocalization("Gothik")
+
+L:SetGeneralLocalization({
+	name = "Готик Жнец"
 })
 
 L:SetOptionLocalization({
@@ -273,6 +271,19 @@ L:SetOptionLocalization({
 	WarningKnightDown	= "Предупреждение, когда рыцарь мертв"
 })
 
+L:SetTimerLocalization({
+	TimerWave	= "Волна %d",
+	TimerPhase2	= "Фаза 2"
+})
+
+L:SetWarningLocalization({
+	WarningWaveSoon		= "Волна %d: %s через 3 секунды",
+	WarningWaveSpawned	= "Волна %d: %s призван",
+	WarningRiderDown	= "Всадник мертв",
+	WarningKnightDown	= "Рыцарь мертв",
+	WarningPhase2		= "Фаза 2"
+})
+
 L:SetMiscLocalization({
 	yell			= "Глупо было искать свою смерть.",
 	WarningWave1	= "%d %s",
@@ -280,26 +291,31 @@ L:SetMiscLocalization({
 	WarningWave3	= "%d %s, %d %s и %d %s",
 	Trainee			= "Ученика",
 	Knight			= "Рыцаря",
-	Rider			= "Всадника"
+	Rider			= "Всадника",
 })
 
 ---------------------
 --  Four Horsemen  --
 ---------------------
-L = DBM:GetModLocalization("Horsemen-Vanilla")
+L = DBM:GetModLocalization("Horsemen")
 
 L:SetGeneralLocalization({
 	name = "Четыре Всадника"
 })
 
-L:SetWarningLocalization({
-	WarningMarkSoon				= "Знак %d через 3 секунды",
-	SpecialWarningMarkOnPlayer	= "%s: %s"
-})
-
 L:SetOptionLocalization({
 	WarningMarkSoon				= "Предупреждать перед следующими знаками",
+	WarningMarkNow				= "Предупреждение для знаков",
 	SpecialWarningMarkOnPlayer	= "Спец-предупреждение, когда >4 знаков на вас"
+})
+
+L:SetTimerLocalization({
+})
+
+L:SetWarningLocalization({
+	WarningMarkSoon				= "Знак %d через 3 секунды",
+	WarningMarkNow				= "Знак %d",
+	SpecialWarningMarkOnPlayer	= "%s: %s"
 })
 
 L:SetMiscLocalization({
@@ -312,24 +328,10 @@ L:SetMiscLocalization({
 -----------------
 --  Sapphiron  --
 -----------------
-L = DBM:GetModLocalization("Sapphiron-Vanilla")
+L = DBM:GetModLocalization("Sapphiron")
 
 L:SetGeneralLocalization({
 	name = "Сапфирон"
-})
-
-L:SetWarningLocalization({
-	WarningAirPhaseSoon	= "Воздушная фаза через 10 секунд",
-	WarningAirPhaseNow	= "Воздушная фаза",
-	WarningLanded		= "Сапфирон приземляется",
-	WarningDeepBreath	= "Ледяное дыхание",
-	SpecWarnSapphLow	= "У Сапфирона нет сил взлететь"
-})
-
-L:SetTimerLocalization({
-	TimerAir		= "Воздушная фаза",
-	TimerLanding	= "Приземление",
-	TimerIceBlast	= "Ледяное дыхание"
 })
 
 L:SetOptionLocalization({
@@ -340,57 +342,55 @@ L:SetOptionLocalization({
 	TimerLanding		= "Отсчет времени до приземления",
 	TimerIceBlast		= "Отсчет времени до Ледяного дыхания",
 	WarningDeepBreath	= "Специальное объявление Ледяного Дыхания",
-	SpecWarnSapphLow	= "Спец-предупреждения для 10% босса(отмена воздушной фазы)"
+	WarningIceblock		= "Кричать, когда вы в Ледяной глыбе"
 })
 
 L:SetMiscLocalization({
-	EmoteBreath			= "%s глубоко вдыхает.",
-	AirPhase			= "Сапфирон взмывает в воздух!",
-	LandingPhase		= "Сапфирон возобновляет свою атаку!"
+	EmoteBreath			= "%s делает глубокий вдох.",
+	WarningYellIceblock	= "Я в Ледяной глыбе!"
+})
+
+L:SetWarningLocalization({
+	WarningAirPhaseSoon	= "Воздушная фаза через 10 секунд",
+	WarningAirPhaseNow	= "Воздушная фаза",
+	WarningLanded		= "Сапфирон приземляется",
+	WarningDeepBreath	= "Ледяное дыхание"
+})
+
+L:SetTimerLocalization({
+	TimerAir		= "Воздушная фаза",
+	TimerLanding	= "Приземление",
+	TimerIceBlast	= "Ледяное дыхание"	
 })
 
 ------------------
 --  Kel'Thuzad  --
 ------------------
-L = DBM:GetModLocalization("Kel'Thuzad-Vanilla")
+
+L = DBM:GetModLocalization("Kel'Thuzad")
 
 L:SetGeneralLocalization({
 	name = "Кел'Тузад"
 })
 
+L:SetOptionLocalization({
+	TimerPhase2		= "Отсчет времени до фазы 2",
+	specwarnP2Soon	= "Спец-предупреждение за 10 секунд до вступления Кел'Тузада в бой",
+	warnAddsSoon	= "Предупреждать заранее о Стражах Ледяной Короны",
+	BlastAlarm		= "Воспроизводить специальный звук сирены при применении Ледяного взрыва",
+	ShowRange		= "Показывать окно проверки дистанции в фазе 2"
+})
+
+L:SetMiscLocalization({
+	Yell = "Соратники, слуги, солдаты холодной тьмы! Повинуйтесь зову Кел'Тузада!"
+})
+
 L:SetWarningLocalization({
 	specwarnP2Soon	= "Кел'Тузад вступает в бой через 10 секунд",
-	warnAddsSoon	= "Скоро прибытие Стражей Ледяной Короны",
-	WeaponsStatus	= "Cнятие оружий включено: %s (%s - %s)"
+	warnAddsSoon	= "Скоро прибытие Стражей Ледяной Короны"
 })
 
 L:SetTimerLocalization({
 	TimerPhase2	= "Фаза 2"
 })
 
-L:SetOptionLocalization({
-	TimerPhase2			= "Отсчет времени до фазы 2",
-	specwarnP2Soon		= "Спец-предупреждение за 10 секунд до вступления Кел'Тузада в бой",
-	warnAddsSoon		= "Предупреждать заранее о Стражах Ледяной Короны",
-	WeaponsStatus		= "Спец-предупреждение в начале боя если включена функция снятия/надевания оружий",
-	EqUneqWeaponsKT		= "Снимать/надевать оружия перед/после контроля по таймеру. Для надевания создайте компл. экип. \"pve\". Для снятия не нужен.",
-	EqUneqWeaponsKT2	= "Снимать/надевать оружия когда контроль кастуется в вас. Для надевания создайте компл. экип. \"pve\". Для снятия не нужен.",
-	RemoveBuffsOnMC		= "Снимать баффы, когда на вас наложено заклинание $spell:28410. Каждый вариант является кумулятивным.",
-	Gift				= "Снять $spell:48469 / $spell:48470. Минимальный подход для предотвращения сопротивления $spell:33786.",
-	CCFree				= "+ Убрать $spell:48169 / $spell:48170. Учет сопротивлений заклинаний школы Теней.",
-	ShortOffensiveProcs	= "+ Удалите атакующие заклинания с малой продолжительностью. Рекомендуется для безопасности рейда без ущерба для урона рейда.",
-	MostOffensiveBuffs	= "+ Уберите большинство атакующих баффов (в основном для кастеров и |cFFFF7C0AСила зверя Друид|r). Максимальная безопасность рейда с потерей урона и необходимостью самовосстановления/перемещения!"
-})
-
-L:SetMiscLocalization({
-	Yell		= "Соратники, слуги, солдаты холодной тьмы! Повинуйтесь зову Кел'Тузада!",
---	YellMC1		= "Теперь твоя душа связана с моей!",
---	YellMC2		= "Тебе не уйти!",
-	Yell1Phase2	= "Молите о пощаде!", -- 12995
-	Yell2Phase2	= "Кричите! Кричите изо всех сил!", -- 12996
-	Yell3Phase2	= "Вы уже мертвы!", -- 12997
-	YellPhase3	= "Господин, мне нужна помощь!", -- 12998
-	YellGuardians	= "Хорошо. Воины ледяных пустошей, восстаньте! Повелеваю вам сражаться, убивать и умирать во имя своего повелителя! Не щадить никого!", -- 12994
-	setMissing	= "ВНИМАНИЕ! DBM: автоматическое снимание/надевание оружия не будет работать пока вы не создадите набор экипировки pve",
-	EqUneqLineDescription	= "Автоматическое оснащение/снятие оборудования"
-})

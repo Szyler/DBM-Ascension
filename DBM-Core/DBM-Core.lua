@@ -2436,8 +2436,8 @@ function DBM:LoadModOptions(modId, inCombat, first, profileName, profileID)
 			for option, optionValue in pairs(mod.DefaultOptions) do
 				if type(optionValue) == "table" then
 					optionValue = optionValue.value
-				elseif type(optionValue) == "string" then
-					optionValue = mod:GetRoleFlagValue(optionValue)
+--				elseif type(optionValue) == "string" then
+--					optionValue = mod:GetRoleFlagValue(optionValue)
 				end
 				defaultOptions[option] = optionValue
 			end
@@ -2449,8 +2449,8 @@ function DBM:LoadModOptions(modId, inCombat, first, profileName, profileID)
 				if savedOptions[id][profileNum][option] == nil then
 					if type(optionValue) == "table" then
 						optionValue = optionValue.value
-					elseif type(optionValue) == "string" then
-						optionValue = mod:GetRoleFlagValue(optionValue)
+--					elseif type(optionValue) == "string" then
+--						optionValue = mod:GetRoleFlagValue(optionValue)
 					end
 					savedOptions[id][profileNum][option] = optionValue
 				end
@@ -2572,8 +2572,8 @@ function DBM:LoadAllModDefaultOption(modId)
 		for option, optionValue in pairs(mod.DefaultOptions) do
 			if type(optionValue) == "table" then
 				optionValue = optionValue.value
-			elseif type(optionValue) == "string" then
-				optionValue = mod:GetRoleFlagValue(optionValue)
+--			elseif type(optionValue) == "string" then
+--				optionValue = mod:GetRoleFlagValue(optionValue)
 			end
 			defaultOptions[option] = optionValue
 		end
@@ -2610,8 +2610,8 @@ function DBM:LoadModDefaultOption(mod)
 	for option, optionValue in pairs(mod.DefaultOptions) do
 		if type(optionValue) == "table" then
 			optionValue = optionValue.value
-		elseif type(optionValue) == "string" then
-			optionValue = mod:GetRoleFlagValue(optionValue)
+--		elseif type(optionValue) == "string" then
+--			optionValue = mod:GetRoleFlagValue(optionValue)
 		end
 		defaultOptions[option] = optionValue
 	end
@@ -7087,144 +7087,144 @@ do
 
 	--to check flag is correct, remove comment block specFlags table and GetRoleFlagValue function, change this to GetRoleFlagValue2
 	--disable flag check normally because double flag check comsumes more cpu on mod load.
-	function bossModPrototype:GetRoleFlagValue(flag)
-		if not flag then return false end
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		local flags = {strsplit("|", flag)}
-		for i = 1, #flags do
-			local flagText = flags[i]
-			if flagText:match("^-") then
-				flagText = flagText:gsub("-", "")
-				if not private.specRoleTable[currentSpecID][flagText] then
-					return true
-				end
-			elseif private.specRoleTable[currentSpecID][flagText] then
-				return true
-			end
-		end
-		return false
-	end
+--	function bossModPrototype:GetRoleFlagValue(flag)
+--		if not flag then return false end
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		local flags = {strsplit("|", flag)}
+--		for i = 1, #flags do
+--			local flagText = flags[i]
+--			if flagText:match("^-") then
+--				flagText = flagText:gsub("-", "")
+--				if not private.specRoleTable[currentSpecID][flagText] then
+--					return true
+--				end
+--			elseif private.specRoleTable[currentSpecID][flagText] then
+--				return true
+--			end
+--		end
+--		return false
+--	end
 
-	function bossModPrototype:IsMeleeDps(uId)
-		if uId then--This version includes ONLY melee dps
-			local name = GetUnitName(uId, true)
-			--First we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
-			if raid[name].specID then--We know their specId
-				local specID = raid[name].specID
-				return private.specRoleTable[specID]["MeleeDps"]
-			else
-				--Role checks are second best thing
-				local isTank, isHealer = UnitGroupRolesAssigned(uId)
-				if (isHealer or isTank) or GetPartyAssignment("MAINTANK", uId, 1) then--Auto filter healer/tank from dps check, can't filter healers in classic
-					return false
-				end
-				--Class checks for things that are a sure thing anyways
-				local _, class = UnitClass(uId)
-				if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" then
-					return true
-				end
-				--Now we do the ugly checks thanks to Inspect throttle
-				if class == "DRUID" or class == "SHAMAN" or class == "PALADIN" then
-					local unitMaxPower = UnitPowerMax(uId)
-					if unitMaxPower < 7500 then
-						return true
-					end
-				end
-			end
-			return false
-		end
-		--Personal check Only
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		return private.specRoleTable[currentSpecID]["MeleeDps"]
-	end
-
-	function DBM:IsMelee(uId, mechanical)--mechanical arg means the check is asking if boss mechanics consider them melee (even if they aren't, such as holy paladin/mistweaver monks)
-		if uId then--This version includes monk healers as melee and tanks as melee
-			--Class checks performed first due to mechanical check needing to be broader than a specID check
-			local _, class = UnitClass(uId)
-			--In mechanical check, ALL paladins are melee so don't need anything fancy, as for rest of classes here, same deal
-			if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" or (mechanical and class == "PALADIN") then
-				return true
-			end
-			--Now we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
-			local name = GetUnitName(uId, true)
-			if raid[name].specID then--We know their specId
-				local specID = raid[name].specID
-				return private.specRoleTable[specID]["Melee"]
-			else
-				--Now we do the ugly checks thanks to Inspect throttle
-				if (class == "DRUID" or class == "SHAMAN" or class == "PALADIN") then
-					local unitMaxPower = UnitPowerMax(uId)
-					if unitMaxPower < 7500 then
-						return true
-					end
-				end
-			end
-			return false
-		end
-		--Personal check Only
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		return private.specRoleTable[currentSpecID]["Melee"]
-	end
-	bossModPrototype.IsMelee = DBM.IsMelee
-
-	function DBM:IsRanged(uId)
-		if uId then
-			local name = GetUnitName(uId, true)
-			if raid[name].specID then--We know their specId
-				local specID = raid[name].specID
-				return private.specRoleTable[specID]["Ranged"]
-			else
-				print("bossModPrototype:IsRanged should not be called on external units if specID is unavailable, report this message")
-			end
-		end
-		--Personal check Only
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		return private.specRoleTable[currentSpecID]["Ranged"]
-	end
-	bossModPrototype.IsRanged = DBM.IsRanged
-
-	function bossModPrototype:IsSpellCaster(uId)
-		if uId then
-			local name = GetUnitName(uId, true)
-			if raid[name].specID then--We know their specId
-				local specID = raid[name].specID
-				return private.specRoleTable[specID]["SpellCaster"]
-			else
-				print("bossModPrototype:IsSpellCaster should not be called on external units if specID is unavailable, report this message")
-			end
-		end
-		--Personal check Only
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		return private.specRoleTable[currentSpecID]["SpellCaster"]
-	end
-
-	function bossModPrototype:IsMagicDispeller(uId)
-		if uId then
-			local name = GetUnitName(uId, true)
-			if raid[name].specID then--We know their specId
-				local specID = raid[name].specID
-				return private.specRoleTable[specID]["MagicDispeller"]
-			else
-				print("bossModPrototype:IsMagicDispeller should not be called on external units if specID is unavailable, report this message")
-			end
-		end
-		--Personal check Only
-		if not currentSpecID then
-			DBM:SetCurrentSpecInfo()
-		end
-		return private.specRoleTable[currentSpecID]["MagicDispeller"]
-	end
+--	function bossModPrototype:IsMeleeDps(uId)
+--		if uId then--This version includes ONLY melee dps
+--			local name = GetUnitName(uId, true)
+--			--First we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
+--			if raid[name].specID then--We know their specId
+--				local specID = raid[name].specID
+--				return private.specRoleTable[specID]["MeleeDps"]
+--			else
+--				--Role checks are second best thing
+--				local isTank, isHealer = UnitGroupRolesAssigned(uId)
+--				if (isHealer or isTank) or GetPartyAssignment("MAINTANK", uId, 1) then--Auto filter healer/tank from dps check, can't filter healers in classic
+--					return false
+--				end
+--				--Class checks for things that are a sure thing anyways
+--				local _, class = UnitClass(uId)
+--				if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" then
+--					return true
+--				end
+--				--Now we do the ugly checks thanks to Inspect throttle
+--				if class == "DRUID" or class == "SHAMAN" or class == "PALADIN" then
+--					local unitMaxPower = UnitPowerMax(uId)
+--					if unitMaxPower < 7500 then
+--						return true
+--					end
+--				end
+--			end
+--			return false
+--		end
+--		--Personal check Only
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		return private.specRoleTable[currentSpecID]["MeleeDps"]
+--	end
+--
+--	function DBM:IsMelee(uId, mechanical)--mechanical arg means the check is asking if boss mechanics consider them melee (even if they aren't, such as holy paladin/mistweaver monks)
+--		if uId then--This version includes monk healers as melee and tanks as melee
+--			--Class checks performed first due to mechanical check needing to be broader than a specID check
+--			local _, class = UnitClass(uId)
+--			--In mechanical check, ALL paladins are melee so don't need anything fancy, as for rest of classes here, same deal
+--			if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" or (mechanical and class == "PALADIN") then
+--				return true
+--			end
+--			--Now we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
+--			local name = GetUnitName(uId, true)
+--			if raid[name].specID then--We know their specId
+--				local specID = raid[name].specID
+--				return private.specRoleTable[specID]["Melee"]
+--			else
+--				--Now we do the ugly checks thanks to Inspect throttle
+--				if (class == "DRUID" or class == "SHAMAN" or class == "PALADIN") then
+--					local unitMaxPower = UnitPowerMax(uId)
+--					if unitMaxPower < 7500 then
+--						return true
+--					end
+--				end
+--			end
+--			return false
+--		end
+--		--Personal check Only
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		return private.specRoleTable[currentSpecID]["Melee"]
+--	end
+--	bossModPrototype.IsMelee = DBM.IsMelee
+--
+--	function DBM:IsRanged(uId)
+--		if uId then
+--			local name = GetUnitName(uId, true)
+--			if raid[name].specID then--We know their specId
+--				local specID = raid[name].specID
+--				return private.specRoleTable[specID]["Ranged"]
+--			else
+--				print("bossModPrototype:IsRanged should not be called on external units if specID is unavailable, report this message")
+--			end
+--		end
+--		--Personal check Only
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		return private.specRoleTable[currentSpecID]["Ranged"]
+--	end
+--	bossModPrototype.IsRanged = DBM.IsRanged
+--
+--	function bossModPrototype:IsSpellCaster(uId)
+--		if uId then
+--			local name = GetUnitName(uId, true)
+--			if raid[name].specID then--We know their specId
+--				local specID = raid[name].specID
+--				return private.specRoleTable[specID]["SpellCaster"]
+--			else
+--				print("bossModPrototype:IsSpellCaster should not be called on external units if specID is unavailable, report this message")
+--			end
+--		end
+--		--Personal check Only
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		return private.specRoleTable[currentSpecID]["SpellCaster"]
+--	end
+--
+--	function bossModPrototype:IsMagicDispeller(uId)
+--		if uId then
+--			local name = GetUnitName(uId, true)
+--			if raid[name].specID then--We know their specId
+--				local specID = raid[name].specID
+--				return private.specRoleTable[specID]["MagicDispeller"]
+--			else
+--				print("bossModPrototype:IsMagicDispeller should not be called on external units if specID is unavailable, report this message")
+--			end
+--		end
+--		--Personal check Only
+--		if not currentSpecID then
+--			DBM:SetCurrentSpecInfo()
+--		end
+--		return private.specRoleTable[currentSpecID]["MagicDispeller"]
+--	end
 
 	---------------------
 	--  Sort Methods  --
@@ -7318,54 +7318,54 @@ do
 	end
 end
 
-function bossModPrototype:UnitClass(uId)
-	if uId then--Return unit requested
-		local _, class = UnitClass(uId)
-		return class
-	end
-	return playerClass--else return "player"
-end
+--function bossModPrototype:UnitClass(uId)
+--	if uId then--Return unit requested
+--		local _, class = UnitClass(uId)
+--		return class
+--	end
+--	return playerClass--else return "player"
+--end
 
-function bossModPrototype:IsTank()
-	--IsTanking already handles external calls, no need here.
-	if not currentSpecID then
-		DBM:SetCurrentSpecInfo()
-	end
-	return private.specRoleTable[currentSpecID]["Tank"]
-end
+--function bossModPrototype:IsTank()
+--	--IsTanking already handles external calls, no need here.
+--	if not currentSpecID then
+--		DBM:SetCurrentSpecInfo()
+--	end
+--	return private.specRoleTable[currentSpecID]["Tank"]
+--end
 
-function bossModPrototype:IsDps(uId)
-	if uId then--External unit call.
-		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
-		if IsPartyLFG() then -- On WotLK, Role API only works on LFG
-			local _, _, isDamager = UnitGroupRolesAssigned(uId)
-			return isDamager -- or not GetPartyAssignment("MAINTANK", uId, 1) -- Using this GetPartyAssignment API here makes no sense, since it being a non MAINTANK could be a healer...
-		else
-			return DBM:GetUnitRole(uId) == "DAMAGER"
-		end
-	end
-	if not currentSpecID then
-		DBM:SetCurrentSpecInfo()
-	end
-	return private.specRoleTable[currentSpecID]["Dps"]
-end
+--function bossModPrototype:IsDps(uId)
+--	if uId then--External unit call.
+--		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
+--		if IsPartyLFG() then -- On WotLK, Role API only works on LFG
+--			local _, _, isDamager = UnitGroupRolesAssigned(uId)
+--			return isDamager -- or not GetPartyAssignment("MAINTANK", uId, 1) -- Using this GetPartyAssignment API here makes no sense, since it being a non MAINTANK could be a healer...
+--		else
+--			return DBM:GetUnitRole(uId) == "DAMAGER"
+--		end
+--	end
+--	if not currentSpecID then
+--		DBM:SetCurrentSpecInfo()
+--	end
+--	return private.specRoleTable[currentSpecID]["Dps"]
+--end
 
-function DBM:IsHealer(uId)
-	if uId then--External unit call.
-		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
-		if IsPartyLFG() then -- On WotLK, Role API only works on LFG
-			local _, isHealer = UnitGroupRolesAssigned(uId)
-			return isHealer
-		else
-			return DBM:GetUnitRole(uId) == "HEALER"
-		end
-	end
-	if not currentSpecID then
-		DBM:SetCurrentSpecInfo()
-	end
-	return private.specRoleTable[currentSpecID]["Healer"]
-end
-bossModPrototype.IsHealer = DBM.IsHealer
+--function DBM:IsHealer(uId)
+--	if uId then--External unit call.
+--		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
+--		if IsPartyLFG() then -- On WotLK, Role API only works on LFG
+--			local _, isHealer = UnitGroupRolesAssigned(uId)
+--			return isHealer
+--		else
+--			return DBM:GetUnitRole(uId) == "HEALER"
+--		end
+--	end
+--	if not currentSpecID then
+--		DBM:SetCurrentSpecInfo()
+--	end
+--	return private.specRoleTable[currentSpecID]["Healer"]
+--end
+--bossModPrototype.IsHealer = DBM.IsHealer
 
 function DBM:IsTanking(playerUnitID, enemyUnitID, isName, onlyRequested, enemyGUID, includeTarget, onlyS3)
 	--Didn't have playerUnitID so combat log name was passed
@@ -7519,57 +7519,57 @@ end
 
 do
 	--lazyCheck mostly for migration, doesn't distinguish dispel types
-	local lazyCheck = {
-		[2782] = true,--Druid: Remove Curse (Curse and Poison)
-		[2893] = true,--Druid: Abolish Poison (Poison)
-		[8946] = true,--Druid: Cure Poison (Poison)
-		[527] = true,--Priest: Dispel Magic (Magic and Disease)
-		[528] = true,--Priest: Cure Disease (Disease)
-		[552] = true,--Priest: Abolish Disease (Disease)
-		[32375] = true,--Priest: Mass Dispel (Magic and Disease)
-		[1022] = true,--Paladin: Hand of Protection (Bleed)
-		[1152] = true,--Paladin: Purify (Poison and Disease)
-		[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
-		[526] = true,--Shaman: Cure Toxins (Poison and Disease)
-		[51886] = true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
-		[475] = true,--Mage: Remove Curse (Curse)
-	}
+--	local lazyCheck = {
+--		[2782] = true,--Druid: Remove Curse (Curse and Poison)
+--		[2893] = true,--Druid: Abolish Poison (Poison)
+--		[8946] = true,--Druid: Cure Poison (Poison)
+--		[527] = true,--Priest: Dispel Magic (Magic and Disease)
+--		[528] = true,--Priest: Cure Disease (Disease)
+--		[552] = true,--Priest: Abolish Disease (Disease)
+--		[32375] = true,--Priest: Mass Dispel (Magic and Disease)
+--		[1022] = true,--Paladin: Hand of Protection (Bleed)
+--		[1152] = true,--Paladin: Purify (Poison and Disease)
+--		[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
+--		[526] = true,--Shaman: Cure Toxins (Poison and Disease)
+--		[51886] = true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
+--		[475] = true,--Mage: Remove Curse (Curse)
+--	}
 	--Obviously only checks spells relevant for the dispel type
-	local typeCheck = {
-		["magic"] = {
-			[527] = true,--Priest: Dispel Magic (Magic and Disease)
-			[32375] = true,--Priest: Mass Dispel (Magic and Disease)
-			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
-			[77130] = true,--Shaman: Purify Spirit (Magic and Curse)
-		},
-		["curse"] = {
-			[2782] = true,--Druid: Remove Curse (Curse and Poison)
-			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
-			[475] = true,--Mage: Remove Curse (Curse)
-		},
-		["poison"] = {
-			[2782] = true,--Druid: Remove Corruption (Curse and Poison)
-			[2893] = true,--Druid: Abolish Poison (Poison)
-			[8946] = true,--Druid: Cure Poison (Poison)
-			[1152] = true,--Paladin: Purify (Poison and Disease)
-			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
-			[526] = true,--Shaman: Cure Toxins (Poison and Disease)
-			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
-		},
-		["disease"] = {
-			[527] = true,--Priest: Dispel Magic (Magic and Disease)
-			[528] = true,--Priest: Cure Disease (Disease)
-			[552] = true,--Priest: Abolish Disease (Disease)
-			[32375] = true,--Priest: Mass Dispel (Magic and Disease)
-			[1152] = true,--Paladin: Purify (Poison and Disease)
-			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
-			[526] = true,--Shaman: Cure Toxins (Poison and Disease)
-			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
-		},
-		["bleed"] = {
-			[1022] = true,--Paladin: Hand of Protection (Bleed)
-		},
-	}
+--	local typeCheck = {
+--		["magic"] = {
+--			[527] = true,--Priest: Dispel Magic (Magic and Disease)
+--			[32375] = true,--Priest: Mass Dispel (Magic and Disease)
+--			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
+--			[77130] = true,--Shaman: Purify Spirit (Magic and Curse)
+--		},
+--		["curse"] = {
+--			[2782] = true,--Druid: Remove Curse (Curse and Poison)
+--			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
+--			[475] = true,--Mage: Remove Curse (Curse)
+--		},
+--		["poison"] = {
+--			[2782] = true,--Druid: Remove Corruption (Curse and Poison)
+--			[2893] = true,--Druid: Abolish Poison (Poison)
+--			[8946] = true,--Druid: Cure Poison (Poison)
+--			[1152] = true,--Paladin: Purify (Poison and Disease)
+--			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
+--			[526] = true,--Shaman: Cure Toxins (Poison and Disease)
+--			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
+--		},
+--		["disease"] = {
+--			[527] = true,--Priest: Dispel Magic (Magic and Disease)
+--			[528] = true,--Priest: Cure Disease (Disease)
+--			[552] = true,--Priest: Abolish Disease (Disease)
+--			[32375] = true,--Priest: Mass Dispel (Magic and Disease)
+--			[1152] = true,--Paladin: Purify (Poison and Disease)
+--			[4987] = true,--Paladin: Cleanse (Magic, Poison and Disease)
+--			[526] = true,--Shaman: Cure Toxins (Poison and Disease)
+--			[51886] = DBM:IsHealer() and true,--Shaman: Cleanse Spirit (Curse, Poison and Disease)
+--		},
+--		["bleed"] = {
+--			[1022] = true,--Paladin: Hand of Protection (Bleed)
+--		},
+--	}
 	local lastCheck, lastReturn = 0, true
 	function bossModPrototype:CheckDispelFilter(dispelType)
 		if not DBM.Options.FilterDispel then return true end
@@ -10812,9 +10812,9 @@ function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, e
 		self.DefaultOptions[name.."TColor"] = extraOption or 0
 		self.DefaultOptions[name.."CVoice"] = extraOptionTwo or 0
 	end
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options[name] = (default == nil) or default
 	if cat == "timer" then
 		self.Options[name.."TColor"] = extraOption or 0
@@ -10843,9 +10843,9 @@ function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, c
 	self.DefaultOptions[name] = (default == nil) or default
 	self.DefaultOptions[name.."SWSound"] = defaultSound or 1
 	self.DefaultOptions[name.."SWNote"] = true
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options[name] = (default == nil) or default
 	self.Options[name.."SWSound"] = defaultSound or 1
 	self.Options[name.."SWNote"] = true
@@ -10907,9 +10907,8 @@ end
 --If extended icons are disabled, then on mod load, users option is reset to default (off) to prevent their mod from still executing SetIcon functions (this is because even if it's hidden from GUI, if option was created and enabled, it'd still run)
 function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, iconsUsed, conflictWarning)
 	self.DefaultOptions[name] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+	--if default and type(default) == "string" then
+	--	default = self:GetRoleFlagValue(default)
 	self.Options[name] = (default == nil) or default
 	if spellId and not DBM.Options.GroupOptionsExcludeIcon then
 		self:GroupSpells(spellId, name)
@@ -10974,9 +10973,9 @@ end
 function bossModPrototype:AddArrowOption(name, spellId, default, isRunTo)
 	if isRunTo == true then isRunTo = 2 end--Support legacy
 	self.DefaultOptions[name] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options[name] = (default == nil) or default
 	self:GroupSpells(spellId, name)
 	self:SetOptionCategory(name, "misc")
@@ -10991,9 +10990,9 @@ end
 
 function bossModPrototype:AddRangeFrameOption(range, spellId, default)
 	self.DefaultOptions["RangeFrame"] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options["RangeFrame"] = (default == nil) or default
 	if spellId then
 		self:GroupSpells(spellId, "RangeFrame")
@@ -11006,9 +11005,9 @@ end
 
 function bossModPrototype:AddHudMapOption(name, spellId, default)
 	self.DefaultOptions[name] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options[name] = (default == nil) or default
 	if spellId then
 		self:GroupSpells(spellId, name)
@@ -11024,9 +11023,9 @@ function bossModPrototype:AddNamePlateOption(name, spellId, default, forceDBM)
 		error("AddNamePlateOption must provide valid spellId", 2)
 	end
 	self.DefaultOptions[name] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options[name] = (default == nil) or default
 	self:GroupSpells(spellId, name)
 	self:SetOptionCategory(name, "nameplate")
@@ -11039,9 +11038,9 @@ function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion, op
 		oVersion = tostring(optionVersion)
 	end
 	self.DefaultOptions["InfoFrame"..oVersion] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options["InfoFrame"..oVersion] = (default == nil) or default
 	if spellId then
 		self:GroupSpells(spellId, "InfoFrame" .. oVersion)
@@ -11060,9 +11059,9 @@ function bossModPrototype:AddReadyCheckOption(questId, default, maxLevel)
 	self.readyCheckQuestId = questId
 	self.readyCheckMaxLevel = maxLevel or 999
 	self.DefaultOptions["ReadyCheck"] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options["ReadyCheck"] = (default == nil) or default
 	self.localization.options["ReadyCheck"] = L.AUTO_READY_CHECK_OPTION_TEXT
 	self:SetOptionCategory("ReadyCheck", "misc")
@@ -11070,9 +11069,9 @@ end
 
 function bossModPrototype:AddSpeedClearOption(name, default)
 	self.DefaultOptions["SpeedClearTimer"] = (default == nil) or default
-	if default and type(default) == "string" then
-		default = self:GetRoleFlagValue(default)
-	end
+--	if default and type(default) == "string" then
+--		default = self:GetRoleFlagValue(default)
+--	end
 	self.Options["SpeedClearTimer"] = (default == nil) or default
 	self:SetOptionCategory("SpeedClearTimer", "timer")
 	self.localization.options["SpeedClearTimer"] = L.AUTO_SPEEDCLEAR_OPTION_TEXT:format(name)

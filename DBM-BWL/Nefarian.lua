@@ -1,171 +1,106 @@
-local mod	= DBM:NewMod("Nefarian-Classic", "DBM-BWL", 1)
+local mod	= DBM:NewMod("Nefarian", "DBM-BWL", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240208235105")
+mod:SetRevision(("$Revision: 188 $"):sub(12, -3))
 mod:SetCreatureID(11583)
-mod:SetModelID(11380)
-mod:RegisterCombat("combat_yell", L.YellP1)--ENCOUNTER_START appears to fire when he lands, so start of phase 2, ignoring all of phase 1
-mod:SetWipeTime(50)--guesswork
-mod:SetHotfixNoticeRev(20240208000000)
+mod:RegisterCombat("yell", L.YellPull)
+mod:SetWipeTime(25)--guesswork
 
 mod:RegisterEvents(
+	"SPELL_CAST_START",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"UNIT_HEALTH",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 22539 22686",
-	"SPELL_AURA_APPLIED 22687 22667",
-	"UNIT_DIED",
-	"UNIT_HEALTH boss1 mouseover target"
-)
+local warnClassCallSoon	= mod:NewAnnounce("WarnClassCallSoon", 2)
+local warnClassCall		= mod:NewAnnounce("WarnClassCall", 3)
+local warnPhaseSoon		= mod:NewAnnounce("WarnPhaseSoon", 2)
+local warnPhase			= mod:NewAnnounce("WarnPhase", 3)
+local warnShadowFlame	= mod:NewCastAnnounce(22539, 2)
+local warnFear			= mod:NewCastAnnounce(22686, 2)
+local warnVeilShadow	= mod:NewTargetAnnounce(22687, 3)
+local warnMC			= mod:NewTargetAnnounce(22667, 4)
 
-local WarnAddsLeft			= mod:NewAnnounce("WarnAddsLeft", 2, "136116")
-local warnClassCall			= mod:NewAnnounce("WarnClassCall", 3, "136116")
-local warnPhase				= mod:NewPhaseChangeAnnounce()
-local warnPhase3Soon		= mod:NewPrePhaseAnnounce(3)
-local warnShadowFlame		= mod:NewCastAnnounce(22539, 2)
-local warnFear				= mod:NewCastAnnounce(22686, 2)
+local timerClassCall	= mod:NewTimer(30, "TimerClassCall")
+local timerShadowFlame	= mod:NewCastTimer(2, 22539)
+local timerFearNext		= mod:NewNextTimer(30, 22686)
+local timerVeilShadow	= mod:NewTargetTimer(6, 22687)
+local timerMC			= mod:NewTargetTimer(15, 22667)
 
-local specwarnShadowCommand	= mod:NewSpecialWarningTarget(22667, nil, nil, 2, 1, 2)
-local specwarnVeilShadow	= mod:NewSpecialWarningDispel(22687, "RemoveCurse", nil, nil, 1, 2)
-local specwarnClassCall		= mod:NewSpecialWarning("specwarnClassCall", nil, nil, nil, 1, 2)
-
-local timerPhase			= mod:NewPhaseTimer(15)
-local timerClassCall		= mod:NewTimer(30, "TimerClassCall", "136116", nil, nil, 5)
-local timerFearNext			= mod:NewCDTimer(26.7, 22686, nil, nil, nil, 2)--26-42.5
-
-mod.vb.addLeft = 42
-local addsGuidCheck = {}
-local firstBossMod = DBM:GetModByName("Razorgore")
-
-function mod:OnCombatStart()
-	table.wipe(addsGuidCheck)
-	self.vb.addLeft = 42
-	self:SetStage(1)
-end
-
-function mod:OnCombatEnd(wipe)
-	if not wipe then
-		DBT:CancelBar(DBM_CORE_L.SPEED_CLEAR_TIMER_TEXT)
-		if firstBossMod.vb.firstEngageTime then
-			local thisTime = time() - firstBossMod.vb.firstEngageTime
-			if thisTime and thisTime > 0 then
-				if not firstBossMod.Options.FastestClear then
-					--First clear, just show current clear time
-					DBM:AddMsg(DBM_CORE_L.RAID_DOWN:format("BWL", DBM:strFromTime(thisTime)))
-					firstBossMod.Options.FastestClear = thisTime
-				elseif (firstBossMod.Options.FastestClear > thisTime) then
-					--Update record time if this clear shorter than current saved record time and show users new time, compared to old time
-					DBM:AddMsg(DBM_CORE_L.RAID_DOWN_NR:format("BWL", DBM:strFromTime(thisTime), DBM:strFromTime(firstBossMod.Options.FastestClear)))
-					firstBossMod.Options.FastestClear = thisTime
-				else
-					--Just show this clear time, and current record time (that you did NOT beat)
-					DBM:AddMsg(DBM_CORE_L.RAID_DOWN_L:format("BWL", DBM:strFromTime(thisTime), DBM:strFromTime(firstBossMod.Options.FastestClear)))
-				end
-			end
-			firstBossMod.vb.firstEngageTime = nil
-		end
-	end
+local prewarn_P3
+function mod:OnCombatStart(delay)
+	prewarn_P3 = false
 end
 
 function mod:SPELL_CAST_START(args)
-	local spellId = args.spellId
-	if spellId == 22539 then
+	if args:IsSpellID(22539) and self:IsInCombat() then
 		warnShadowFlame:Show()
-	elseif spellId == 22686 then
+		timerShadowFlame:Start()
+	elseif args:IsSpellID(22686) and self:IsInCombat() then
 		warnFear:Show()
 		timerFearNext:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 22687 then
-		if self:CheckDispelFilter("curse") then
-			specwarnVeilShadow:Show(args.destName)
-			specwarnVeilShadow:Play("dispelnow")
-		end
-	elseif spellId == 22667 then
-		specwarnShadowCommand:Show(args.destName)
-		specwarnShadowCommand:Play("findmc")
+	if args:IsSpellID(22687) then
+		warnVeilShadow:Show(args.destName)
+		timerVeilShadow:Start(args.destName)
+	elseif args:IsSpellID(22667) then
+		warnMC:Show(args.destName)
+		timerMC:Start(args.destName)
 	end
 end
 
-function mod:UNIT_DIED(args)
-	local guid = args.destGUID
-	local cid = self:GetCIDFromGUID(guid)
-	if cid == 14264 or cid == 14263 or cid == 14261 or cid == 14265 or cid == 14262 or cid == 14302 then--Red, Bronze, Blue, Black, Green, Chromatic
-		if not addsGuidCheck[guid] then
-			addsGuidCheck[guid] = true
-			self.vb.addLeft = self.vb.addLeft - 1
-			--40, 35, 30, 25, 20, 15, 12, 9, 6, 3
-			if self.vb.addLeft >= 15 and (self.vb.addLeft % 5 == 0) or self.vb.addLeft >= 1 and (self.vb.addLeft % 3 == 0) then
-				WarnAddsLeft:Show(self.vb.addLeft)
-			end
-		end
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(22687) then
+		timerVeilShadow:Cancel(args.destName)
 	end
 end
 
 function mod:UNIT_HEALTH(uId)
-	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.25 and self:GetUnitCreatureId(uId) == 11583 and self.vb.phase < 2.5 then
-		warnPhase3Soon:Show()
-		self:SetStage(2.5)
+	if UnitHealth(uId) / UnitHealthMax(uId) <= 0.25 and self:GetUnitCreatureId(uId) == 11583 and not prewarn_P3 then
+		warnPhaseSoon:Show("3")
+		prewarn_P3 = true
 	end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.YellDK or msg:find(L.YellDK) then
-		self:SendSync("ClassCall", "DEATHKNIGHT")
-	elseif msg == L.YellDruid or msg:find(L.YellDruid) then
-		self:SendSync("ClassCall", "DRUID")
-	elseif msg == L.YellHunter or msg:find(L.YellHunter) then
-		self:SendSync("ClassCall", "HUNTER")
-	elseif msg == L.YellWarlock or msg:find(L.YellWarlock) then
-		self:SendSync("ClassCall", "WARLOCK")
-	elseif msg == L.YellMage or msg:find(L.YellMage) then
-		self:SendSync("ClassCall", "MAGE")
-	elseif msg == L.YellPaladin or msg:find(L.YellPaladin) then
-		self:SendSync("ClassCall", "PALADIN")
-	elseif msg == L.YellPriest or msg:find(L.YellPriest) then
-		self:SendSync("ClassCall", "PRIEST")
-	elseif msg == L.YellRogue or msg:find(L.YellRogue) then
-		self:SendSync("ClassCall", "ROGUE")
-	elseif msg == L.YellShaman or msg:find(L.YellShaman) then
-		self:SendSync("ClassCall", "SHAMAN")
-	elseif msg == L.YellWarrior or msg:find(L.YellWarrior) then
-		self:SendSync("ClassCall", "WARRIOR")
-	elseif msg == L.YellP2 or msg:find(L.YellP2) then
+	if msg == L.YellDK then
+		self:SendSync("ClassCall", "DK")
+	elseif msg == L.YellDruid then
+		self:SendSync("ClassCall", "Druid")
+	elseif msg == L.YellHunter then
+		self:SendSync("ClassCall", "Hunter")
+	elseif msg == L.YellMage then
+		self:SendSync("ClassCall", "Mage")
+	elseif msg == L.YellPaladin then
+		self:SendSync("ClassCall", "Paladin")
+	elseif msg == L.YellPriest then
+		self:SendSync("ClassCall", "Priest")
+	elseif msg == L.YellRogue then
+		self:SendSync("ClassCall", "Rogue")
+	elseif msg == L.YellShaman then
+		self:SendSync("ClassCall", "Shaman")
+	elseif msg == L.YellWarlock then
+		self:SendSync("ClassCall", "Warlock")
+	elseif msg == L.YellWarrior then
+		self:SendSync("ClassCall", "Warrior")
+	elseif msg == L.YellPhase2 then
 		self:SendSync("Phase", 2)
-	elseif msg == L.YellP3 or msg:find(L.YellP3) then
+	elseif msg == L.YellPhase3 then
 		self:SendSync("Phase", 3)
 	end
 end
 
-do
-	local playerClass = UnitClass("player")
-
-	function mod:OnSync(msg, arg, sender)
-		if msg == "Phase" and sender then
-			local phase = tonumber(arg) or 0
-			if phase == 2 then
-				self:SetStage(2)
-				timerPhase:Start(15)--15 til encounter start fires, not til actual land?
-				--timerFearNext:Start(46.6)
-			elseif phase == 3 then
-				self:SetStage(3)
-			end
-			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(arg))
-		end
-		if not self:IsInCombat() then return end
-		if msg == "ClassCall" and sender then
-			local className = LOCALIZED_CLASS_NAMES_MALE[arg]
-			if playerClass == className then
-				specwarnClassCall:Show()
-				specwarnClassCall:Play("targetyou")
-			else
-				warnClassCall:Show(className)
-			end
-			timerClassCall:Start(30, className)
-		end
+function mod:OnSync(msg, arg)
+	if msg == "ClassCall" then
+		warnClassCallSoon:Schedule(25)
+		warnClassCall:Show(arg)
+		timerClassCall:Start(arg)
+	elseif msg == "Phase" then
+		warnPhase:Show(arg)
 	end
 end

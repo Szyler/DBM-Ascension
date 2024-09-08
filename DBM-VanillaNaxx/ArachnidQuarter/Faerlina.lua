@@ -1,79 +1,140 @@
-local mod	= DBM:NewMod("Faerlina-Vanilla", "DBM-VanillaNaxx", 1)
+local mod	= DBM:NewMod("Faerlina", "DBM-Naxx", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240714153159")
-mod:SetCreatureID(15953)
-
-mod:RegisterCombat("combat_yell", L.Pull)
-
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 28798 54100 28732 54097 28794 54099",
-	"SPELL_CAST_SUCCESS 28796 54098",
-	"UNIT_DIED"
+mod:SetRevision(("$Revision: 2248 $"):sub(12, -3))
+mod:SetCreatureID(15953, 16506)
+mod:RegisterCombat("combat")
+mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED_DOSE",
+	"SPELL_PERIODIC_DAMAGE",
+	"PLAYER_ALIVE",
+	"UNIT_DIED",
+	"SPELL_AURA_REFRESH"
 )
 
-local warnEmbraceActive		= mod:NewSpellAnnounce(28732, 1)
-local warnEmbraceExpire		= mod:NewAnnounce("WarningEmbraceExpire", 2, 28732, nil, nil, nil, 28732)
-local warnEmbraceExpired	= mod:NewFadesAnnounce(28732, 3)
-local warnEnrageSoon		= mod:NewSoonAnnounce(28131, 3)
-local warnEnrageNow			= mod:NewSpellAnnounce(28131, 4)
+-----ENRAGE-----
+-- local warnEnrageSoon			= mod:NewSoonAnnounce(28798, 3)
+-----Frenzy-----
+-- local warnFrenzyNow				= mod:NewSpellAnnounce(28798, 4)
+local timerSadism				= mod:NewNextTimer(30, 2123101)
+local timerBloodBath			= mod:NewBuffActiveTimer(45, 2123102)
+local warnBloodBathSoon			= mod:NewAnnounce("Faerlina is getting hungry for blood!", 2, 2123102)
+local warnSadism				= mod:NewSpellAnnounce(2123101, 3)
+-----EMBRACE-----
+local warnEmbraceActive			= mod:NewSpellAnnounce(28732, 1)
+local timerEmbrace				= mod:NewBuffActiveTimer(20, 28732)
+-----RAIN OF FIRE-----
+local specWarnRainOfFire		= mod:NewSpecialWarningMove(1003054, true, nil, true)
+-----POISON-----
+local specWarnPoisonPool		= mod:NewSpecialWarningMove(869762, true, nil, true)
+local specWarnClingingPoison	= mod:NewSpecialWarningMove(1003060, true, nil, true)
+-----Malicious Strike-----
+local warnMalicious				= mod:NewAnnounce(L.FaerlinaMalicious, 2, 350250)
+-----MISC-----
+local berserkTimer				= mod:NewBerserkTimer(600)
+-- local embraceSpam = 0
+-- local enraged = false
 
-local specWarnEnrage		= mod:NewSpecialWarningDefensive(28131, nil, nil, nil, 3, 2)
-local specWarnGTFO			= mod:NewSpecialWarningGTFO(28794, nil, nil, nil, 1, 8)
-
-local timerEmbrace			= mod:NewBuffActiveTimer(30, 28732, nil, nil, nil, 6)
-local timerEnrage			= mod:NewCDTimer(63.26, 28131, nil, nil, nil, 6)
-local timerPoisonVolleyCD	= mod:NewCDTimer(8.13, 28796, nil, nil, nil, 5) -- ~2s variance [8.13-9.96] (Onyxia: [2024-07-08]@[19:04:03] || [2024-07-13]@[13:46:21]) - "Poison Bolt Volley-28796-npc:15953-798 = pull:13.51, 8.13, 9.58, 8.98, 8.84, 9.50, 8.88, 8.26, 9.01" || "Poison Bolt Volley-28796-npc:15953-798 = pull:13.80, 9.30, 9.96, 9.83, 9.44, 9.89, 9.76, 8.58, 8.41"
-
-mod.vb.enraged = false
-
+-----BOSS FUNCTIONS-----
 function mod:OnCombatStart(delay)
-	timerEnrage:Start(-delay)
-	warnEnrageSoon:Schedule(55 - delay)
-	timerPoisonVolleyCD:Start(13.51-delay) -- REVIEW! variance?
-	self.vb.enraged = false
+	berserkTimer:Start(-delay)
+	timerSadism:Start(60-delay)
+	-- timer = 60
+	-- timerEnrage:Start(timer - delay)
+	-- warnEnrageSoon:Schedule(timer - 5 - delay)
+	-- enraged = false
 end
 
+-- function mod:SPELL_CAST_SUCCESS(args)
+-- 	if args:IsSpellID(28732, 54097)				-- Widow's Embrace
+-- 	and (GetTime() - embraceSpam) > 5 then  -- This spell is casted twice in Naxx 25 (bug?)
+-- 		embraceSpam = GetTime()
+-- 		-- warnEnrageSoon:Cancel()
+-- 		timerEnrage:Stop()
+-- 		if enraged then
+-- 			timer = 55
+-- 			timerEnrage:Start(timer)
+-- 			-- warnEnrageSoon:Schedule(timer)
+-- 		end
+-- 		timer = 20
+-- 		timerEmbrace:Start(timer)
+-- 		warnEmbraceActive:Show()
+-- 		enraged = false
+-- 	end
+-- end
+
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(28798, 54100) then			-- Frenzy
-		self.vb.enraged = true
-		if self:IsTanking("player", "boss1", nil, true) then
-			specWarnEnrage:Show()
-			specWarnEnrage:Play("defensive")
-		else
-			warnEnrageNow:Show()
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start(30)
+	elseif args:IsSpellID(2123102) then
+		timerSadism:Stop()
+		timerBloodBath:Start()
+		warnBloodBathSoon:Schedule(40)
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
+		if args:IsPlayer() then
+			specWarnRainOfFire:Show();
 		end
-	elseif args:IsSpellID(28732, 54097)	and args:GetDestCreatureID() == 15953 and self:AntiSpam(5, 2) then	-- Widow's Embrace
-		warnEmbraceExpire:Cancel()
-		warnEmbraceExpired:Cancel()
-		warnEnrageSoon:Cancel()
-		timerEnrage:Stop()
-		if self.vb.enraged then
-			timerEnrage:Start()
-			warnEnrageSoon:Schedule(45)
+	elseif args:IsSpellID(869762, 350284) then 
+		if args:IsPlayer() then
+			specWarnPoisonPool:Show();
 		end
-		timerEmbrace:Start()
-		warnEmbraceActive:Show()
-		warnEmbraceExpire:Schedule(25)
-		warnEmbraceExpired:Schedule(30)
-		self.vb.enraged = false
-	elseif args:IsSpellID(28794, 54099) and args:IsPlayer() then
-		specWarnGTFO:Show(args.spellName)
-		specWarnGTFO:Play("watchfeet")
+	elseif args:IsSpellID(1003060) then 
+		if args:IsPlayer() then
+			specWarnClingingPoison:Show();
+		end
+	elseif args:IsSpellID(350250) then
+		warnMalicious:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(28796, 54098) then -- Poison Bolt Volley
-		timerPoisonVolleyCD:Start()
+function mod:SPELL_AURA_REFRESH(args)
+	if args:IsSpellID(2123102) then
+		timerSadism:Stop()
+		timerBloodBath:Start()
+		warnBloodBathSoon:Cancel()
+		warnBloodBathSoon:Schedule(40)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	if args:IsSpellID(2123101) then
+		warnSadism:Show(args.spellName, args.destName, args.amount or 1)
+		timerSadism:Start()
+	elseif args:IsSpellID(2123107,2123108,2123109,2123110) then 
+		if args:IsPlayer() then
+			specWarnRainOfFire:Show();
+		end
+	elseif args:IsSpellID(2123115,2123116,2123117,2123118) then 
+		if args:IsPlayer() then
+			specWarnPoisonPool:Show();
+		end
+	elseif args:IsSpellID(1003060) then 
+		if args:IsPlayer() then
+			specWarnClingingPoison:Show();
+		end
+	elseif args:IsSpellID(350250) then
+		warnMalicious:Show(args.spellName, args.destName, args.amount or 1)
+	end
+end
+
+function mod:SPELL_PERIODIC_DAMAGE(args)
+	if args:IsSpellID(2123107,2123108,2123109,2123110) then
+		if args:IsPlayer() then
+			specWarnRainOfFire:Show()
+		end
 	end
 end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 15953 then
-		warnEnrageSoon:Cancel()
-		warnEmbraceExpire:Cancel()
-		warnEmbraceExpired:Cancel()
+	if cid == 15956 or cid == 26615 then
+		timerSadism:Stop()
 	end
+end
+
+function mod:OnCombatEnd()
+	timerSadism:Stop()
 end

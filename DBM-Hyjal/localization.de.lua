@@ -6,70 +6,66 @@ local L
 ------------------------
 L = DBM:GetModLocalization("Rage")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Furor Winterfrost"
-})
+}
 
 -----------------
 --  Anetheron  --
 -----------------
 L = DBM:GetModLocalization("Anetheron")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Anetheron"
-})
+}
 
 ----------------
 --  Kazrogal  --
 ----------------
 L = DBM:GetModLocalization("Kazrogal")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Kaz'rogal"
-})
+}
 
 ---------------
 --  Azgalor  --
 ---------------
 L = DBM:GetModLocalization("Azgalor")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Azgalor"
-})
+}
 
 ------------------
 --  Archimonde  --
 ------------------
 L = DBM:GetModLocalization("Archimonde")
 
-L:SetGeneralLocalization({
+L:SetGeneralLocalization{
 	name = "Archimonde"
-})
+}
 
 ----------------
 -- WaveTimers --
 ----------------
 L = DBM:GetModLocalization("HyjalWaveTimers")
 
-L:SetGeneralLocalization({
-	name		= "Wellen (HdZ 3)"
-})
-
-L:SetWarningLocalization({
+L:SetGeneralLocalization{
+	name 		= "Wellen (HdZ 3)"
+}
+L:SetWarningLocalization{
 	WarnWave	= "%s",
-})
-
-L:SetTimerLocalization({
+}
+L:SetTimerLocalization{
 	TimerWave	= "Nächste Welle"
-})
-
-L:SetOptionLocalization({
+}
+L:SetOptionLocalization{
 	WarnWave		= "Warne, wenn eine neue Welle kommt",
 	DetailedWave	= "Detaillierte Warnung, wenn eine neue Welle kommt (welche Mobs)",
 	TimerWave		= "Zeige Zeit bis nächste Welle"
-})
-
-L:SetMiscLocalization({
+}
+L:SetMiscLocalization{
 	HyjalZoneName	= "Hyjalgipfel",
 	Thrall			= "Thrall",
 	Jaina			= "Lady Jaina Prachtmeer",
@@ -78,7 +74,6 @@ L:SetMiscLocalization({
 	Anetheron		= "Anetheron kommt",
 	Kazrogal		= "Kaz'rogal kommt",
 	Azgalor			= "Azgalor kommt",
-	WaveCheck		= "Derzeitige Welle = (%d+) von 8",
 	WarnWave_0		= "Welle %s/8",
 	WarnWave_1		= "Welle %s/8 - %s %s",
 	WarnWave_2		= "Welle %s/8 - %s %s und %s %s",
@@ -98,4 +93,4 @@ L:SetMiscLocalization({
 	Wyrm			= "Frostwyrm",
 	Stalker			= "Teufelspirscher",
 	Infernal		= "Höllenbestien"
-})
+}

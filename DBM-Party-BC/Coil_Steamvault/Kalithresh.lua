@@ -1,36 +1,61 @@
-local mod	= DBM:NewMod(575, "DBM-Party-BC", 6, 261)
+local mod	= DBM:NewMod("Kalithresh", "DBM-Party-BC", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,mythic"
-
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
 mod:SetCreatureID(17798)
 
-mod:SetModelID(20235)
-mod:SetModelScale(0.95)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 31543",
-	"SPELL_AURA_APPLIED 31534"
+mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
-local WarnChannel		= mod:NewSpellAnnounce(31543, 2)
+local WarnChannel   			= mod:NewAnnounce("Kill Distiller")
+local WarnReflect   			= mod:NewSpellAnnounce(31534)
+local timerReflect  			= mod:NewBuffActiveTimer(8, 31534)
+local timerNextReflect			= mod:NewNextTimer(20, 31534)
+local WarnImpale   				= mod:NewSpellAnnounce(839061)
+local timerImpale  				= mod:NewBuffActiveTimer(12, 839061)
+local timerNextImpale			= mod:NewNextTimer(60, 839061)
+local WarnCrack   				= mod:NewSpellAnnounce(16172)
+local timerCrack  				= mod:NewBuffActiveTimer(12, 16172)
+local timerNextCrack			= mod:NewNextTimer(60, 16172)
+local timerNextDistiller		= mod:NewNextTimer(30, 31543)
 
-local specWarnReflect	= mod:NewSpecialWarningReflect(31534, "-Melee", nil, nil, 1, 2)--CasterDps after new core
-
-local timerReflect		= mod:NewBuffActiveTimer(8, 31534, nil, nil, nil, 5)
+function mod:OnCombatStart(delay)
+	timerNextDistiller:Start(15-delay)
+end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31543 then
+	if args:IsSpellID(31543) then
 		WarnChannel:Show()
+		timerNextDistiller:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 31534 then
+	if args:IsSpellID(31534) then
+		WarnReflect:Show(args.destName)
 		timerReflect:Start(args.destName)
-		specWarnReflect:Show(args.destName)
-		specWarnReflect:Play("stopattack")
+		timerNextReflect:Start()
+	elseif args:IsSpellID(839061) then
+		WarnImpale:Show(args.destName)
+		timerImpale:Start(args.destName)
+		timerNextImpale:Start()
+	elseif args:IsSpellID(16172) then
+		WarnCrack:Show(args.destName)
+		timerCrack:Start(args.destName)
+		timerNextCrack:Start()
 	end
 end
+
+-- function IsleOfConquest:UNIT_DIED(args)
+-- 	local cid = self:GetCIDFromGUID(args.destGUID)
+-- 	if cid == 17954 then
+-- 		timerNextDistiller:Start()
+-- 	end
+-- end
+
+-- 839061 - Impale
+-- 16172 - Head Crack

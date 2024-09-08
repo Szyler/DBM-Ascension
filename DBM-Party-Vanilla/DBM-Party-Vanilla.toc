@@ -1,0 +1,126 @@
+## Interface: 30300
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Party-Vanilla|r
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariablesPerCharacter: DBMPartyVanilla_SavedVars, DBMPartyVanilla_SavedStats
+
+
+## X-DBM-Mod: 1
+## X-DBM-Mod-Category: Vanilla
+## X-DBM-Mod-Has-Heroic-Mode: 0
+## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme
+## X-DBM-Mod-Name: Party-Vanilla
+## X-DBM-Mod-Sort: 125
+## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme
+
+localization.en.lua
+Scholomance\BloodSteward.lua
+Scholomance\Kirtonos.lua
+Scholomance\JandiceBarov.lua
+Scholomance\Rattlegore.lua
+Scholomance\DKDarkreaver.lua
+Scholomance\MBlackpool.lua
+Scholomance\Vectus.lua
+Scholomance\RFrostwhisper.lua
+Scholomance\Kormok.lua
+Scholomance\IMalicia.lua
+Scholomance\FTKrastinov.lua
+Scholomance\LKPolkelt.lua
+Scholomance\Ravenian.lua
+Scholomance\Alexei.lua
+Scholomance\Illucia.lua
+Scholomance\Darkmaster.lua
+Stratholme\Stonespine.lua
+Stratholme\Swordsmith.lua
+Stratholme\Timmy.lua
+Stratholme\Unforgiven.lua
+Stratholme\Willey.lua
+Stratholme\Anastari.lua
+Stratholme\Atiesh.lua
+Stratholme\Balnazzar.lua
+Stratholme\Barthilas.lua
+Stratholme\Forresten.lua
+Stratholme\Galford.lua
+Stratholme\Hammersmith.lua
+Stratholme\Maleki.lua
+Stratholme\Nerubenkan.lua
+Stratholme\Ramstein.lua
+Stratholme\Rivendare.lua
+Stratholme\Siabi.lua
+Stratholme\Skul.lua
+Stratholme\SothosandJarien.lua
+Blackrock Depths\Roccor.lua
+Blackrock Depths\Summonerstomb.lua
+Blackrock Depths\Angerforge.lua
+Blackrock Depths\Anubshiah.lua
+Blackrock Depths\Argelmach.lua
+Blackrock Depths\Baelgar.lua
+Blackrock Depths\Coren.lua
+Blackrock Depths\Darkvire.lua
+Blackrock Depths\Emperor.lua
+Blackrock Depths\Eviscerator.lua
+Blackrock Depths\Flamelash.lua
+Blackrock Depths\Gerstahn.lua
+Blackrock Depths\Gorrosh.lua
+Blackrock Depths\Grebmar.lua
+Blackrock Depths\Grizzle.lua
+Blackrock Depths\Hedrum.lua
+Blackrock Depths\Hurley.lua
+Blackrock Depths\Incendius.lua
+Blackrock Depths\Magmus.lua
+Blackrock Depths\Okthor.lua
+Blackrock Depths\Panzor.lua
+Blackrock Depths\Phalanx.lua
+Blackrock Depths\Plugger.lua
+Blackrock Depths\Princess.lua
+Blackrock Depths\Ribbly.lua
+Blackrock Depths\Stilgiss.lua
+Blackrock Depths\Theldren.lua
+Blackrock Depths\Verek.lua
+Blackrock Spire\ButcherS.lua
+Blackrock Spire\Anvilcrack.lua
+Blackrock Spire\Bashguud.lua
+Blackrock Spire\Battlelord.lua
+Blackrock Spire\Beast.lua
+Blackrock Spire\Blackhand.lua
+Blackrock Spire\Crystalfang.lua
+Blackrock Spire\Doomhowl.lua
+Blackrock Spire\Drakkisath.lua
+Blackrock Spire\Felguard.lua
+Blackrock Spire\Gizrul.lua
+Blackrock Spire\Grayhoof.lua
+Blackrock Spire\Grimaxe.lua
+Blackrock Spire\Gyth.lua
+Blackrock Spire\Halycon.lua
+Blackrock Spire\Lordmagus.lua
+Blackrock Spire\Omokk.lua
+Blackrock Spire\Pyroguard.lua
+Blackrock Spire\Runewatcher.lua
+Blackrock Spire\Smolderweb.lua
+Blackrock Spire\Solakar.lua
+Blackrock Spire\Valthalak.lua
+Blackrock Spire\Voone.lua
+Blackrock Spire\Voshgajin.lua
+Blackrock Spire\Wyrmthalak.lua
+Blackrock Spire\Zigris.lua
+Dire Maul\Alzzin.lua
+Dire Maul\Fengus.lua
+Dire Maul\Gordok.lua
+Dire Maul\Helnurath.lua
+Dire Maul\Hydrospawn.lua
+Dire Maul\Illyanna.lua
+Dire Maul\Immolthar.lua
+Dire Maul\Isalien.lua
+Dire Maul\Kalendris.lua
+Dire Maul\Kreeg.lua
+Dire Maul\Kromcrush.lua
+Dire Maul\Lethtendris.lua
+Dire Maul\Moldar.lua
+Dire Maul\Pimgib.lua
+Dire Maul\Princet.lua
+Dire Maul\Pusillin.lua
+Dire Maul\Slipkik.lua
+Dire Maul\Tendris.lua
+Dire Maul\Thimblejack.lua
+Dire Maul\Tsuzee.lua
+Dire Maul\Zevrim.lua

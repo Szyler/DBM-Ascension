@@ -1,31 +1,28 @@
-local mod	= DBM:NewMod(554, "DBM-Party-BC", 12, 255)
+local mod	= DBM:NewMod("Aeonus", "DBM-Party-BC", 12)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
 mod:SetCreatureID(17881)
 
-mod:SetModelID(20510)
-mod:SetModelScale(0.2)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 37605",
-	"SPELL_CAST_SUCCESS 31422"
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_EMOTE",
+	"SPELL_CAST_SUCCESS"
 )
 
-local warnFrenzy		= mod:NewSpellAnnounce(37605, 3)
-local warnTimeStop		= mod:NewSpellAnnounce(31422, 3)
+local warnFrenzy		= mod:NewAnnounce("warnFrenzy", 3)
+local warnTimeStop		= mod:NewSpellAnnounce(31422)
+local timerTimeStop		= mod:NewBuffActiveTimer(4, 31422)
 
-local timerTimeStop		= mod:NewBuffActiveTimer(4, 31422, nil, nil, nil, 3)
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 37605 then
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	if msg == L.AeonusFrenzy and self:IsInCombat() then		-- Frenzy
 		warnFrenzy:Show()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 31422 then
+	if args.spellId == 31422 then     --Time Stop
 		warnTimeStop:Show()
 		timerTimeStop:Start()
 	end

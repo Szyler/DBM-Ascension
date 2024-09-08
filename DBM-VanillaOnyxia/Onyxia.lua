@@ -1,193 +1,185 @@
-local mod	= DBM:NewMod("Onyxia-Vanilla", "DBM-VanillaOnyxia")
+local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231219231417")
+mod:SetRevision(("$Revision: 3763 $"):sub(12, -3))
 mod:SetCreatureID(10184)
 
 mod:RegisterCombat("combat")
 
---[[mod:RegisterEvents(
-	"CHAT_MSG_MONSTER_YELL"
-)]]
-
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68970 18431 18500 18392 68926",
-	"SPELL_CAST_SUCCESS 68959 68963",
-	"SPELL_DAMAGE 68867 69286",
+mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"SPELL_CAST_START",
 	"UNIT_DIED",
-	"UNIT_HEALTH boss1"
+	"UNIT_HEALTH",
+	"PLAYER_ALIVE"
 )
 
--- General
-mod:AddBoolOption("SoundWTF3", false, "sound")
-
--- Stage One (100% – 65%)
-mod:AddTimerLine(DBM_CORE_L.SCENARIO_STAGE:format(1)..": 100% – 65%")
-local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
-local warnWingBuffet		= mod:NewSpellAnnounce(18500, 2, nil, "Tank")
-
-local timerNextFlameBreath	= mod:NewCDTimer(13.3, 18435, nil, "Tank", 2, 5, nil, nil, true) -- Breath she does on ground in frontal cone. REVIEW! ~7s variance [13.3-20]. Added "keep" arg (25N Lordaeron 2022/10/13) - 13.3, 18.8, 16.3, 13.6
-
--- Stage Two (65% – 40%)
-mod:AddTimerLine(DBM_CORE_L.SCENARIO_STAGE:format(2)..": 65% – 40%")
 local warnPhase2			= mod:NewPhaseAnnounce(2)
-local warnPhase3Soon		= mod:NewPrePhaseAnnounce(3)
-local warnFireball			= mod:NewTargetNoFilterAnnounce(18392, 2, nil, false)
-local warnWhelpsSoon		= mod:NewSoonAnnounce(17646, 1, 69004)
---local preWarnDeepBreath	 = mod:NewSoonAnnounce(17086, 2)--Experimental, if it is off please let me know.
-
-local yellFireball			= mod:NewYell(18392)
-local specWarnBreath		= mod:NewSpecialWarningSpell(18584, nil, nil, nil, 2, 2)
-local specWarnAdds			= mod:NewSpecialWarningAdds(68959, "-Healer", nil, nil, 1, 2)
-local specWarnBlastNova		= mod:NewSpecialWarningRun(68958, "Melee", nil, nil, 4, 2) -- from Onyxian Lair Guard
-
-local timerBreathCast		= mod:NewCastTimer(8, 18584, nil, nil, nil, 3)
-local timerNextDeepBreath	= mod:NewCDTimer(35, 18584, nil, nil, nil, 3)--Range from 35-60seconds in between based on where she moves to.
-local timerWhelps			= mod:NewNextTimer(105, 17646, nil, nil, nil, 1, 69004)
-local timerBigAddCD			= mod:NewNextTimer(44.9, 68959, nil, "-Healer", nil, 1, 10697) -- Ignite Weapon for Onyxian Lair Guard
-
--- Stage Three (40% – 0%)
-mod:AddTimerLine(DBM_CORE_L.SCENARIO_STAGE:format(3)..": 40% – 0%")
 local warnPhase3			= mod:NewPhaseAnnounce(3)
+local warnPhase2Soon		= mod:NewAnnounce("Phase 2 Soon", 1)
+local warnPhase3Soon		= mod:NewAnnounce("Phase 3 Soon", 1)
+local warnFireball			= mod:NewTargetAnnounce(2108300, 3)
+local warnBlastNova	 		= mod:NewCastAnnounce(2108401, 2)
+local WarnWhelpsSoon		= mod:NewAnnounce("Onyxian Whelps soon", 1)
+local WarnSpearTarget		= mod:NewTimer(30, "%s", 2108415)
 
-local specWarnBellowingRoar	= mod:NewSpecialWarningSpell(18431, nil, nil, nil, 2, 2)
+local specWarnDeepBreath	= mod:NewSpecialWarningMove(18609, 2)
+local specWarnFireballYou	= mod:NewSpecialWarningYou(2108300, 2)
 
-mod.vb.warned_preP2 = false
-mod.vb.warned_preP3 = false
-mod.vb.whelpsCount = 0
+local timerFlameBreath		= mod:NewCastTimer(2, 2108321) 
+local timerBreath			= mod:NewCastTimer(8, 17086)
+local timerBlastNova		= mod:NewCastTimer(4, 2108401)
+local timerBellowingRoar	= mod:NewCastTimer(5, 2108326)
+local timerFireball			= mod:NewTargetTimer(4, 2108300)
+local timerIntBlastNova		= mod:NewCDTimer(40, 2108401)-- Internal CD for a Guard to cast Blast Nova twice
+local timerWhelps			= mod:NewTimer(95, "Onyxian Whelps", "Interface\\Icons\\INV_Misc_Head_Dragon_Red")
 
-local function Whelps(self)
-	if self:IsInCombat() then
-		self.vb.whelpsCount = self.vb.whelpsCount + 1
-		timerWhelps:Start()
-		warnWhelpsSoon:Schedule(95)
-		self:Schedule(105, Whelps, self)
-	end
+local timerNextFlameBreath	= mod:NewNextTimer(20, 2108321) 
+local timerNextDeepBreath	= mod:NewCDTimer(75, 17086)--Range from 75-80 seconds in between based on where she moves to.
+local timerNextBellowingRoar= mod:NewCDTimer(45, 2108326)
+local timerNextBlastNova	= mod:NewCDTimer(40, 2108401)
+local timerNextSecondNova	= mod:NewCDTimer(30, 2108401)
+local timerNextTailSwipe	= mod:NewNextTimer(22, 2108312)
+-- local timerIntBlastNova2	= mod:NewCDTimer(40, 2108401)-- second one for secondary add
+
+local lastBlastNova = 0
+
+local prewarnP2
+local warnP2
+local prewarnP3
+local warnP3
+local lastTargetGUID
+
+mod:AddBoolOption(L.FireballMark)
+
+function mod:preP2()
+	warnPhase2Soon:Show()
 end
 
-function mod:FireballTarget(targetname)
-	if not targetname then return end
-	warnFireball:Show(targetname)
-	if targetname == UnitName("player") then
-		yellFireball:Yell()
-	end
+function mod:alertP2()
+	warnPhase2:Show()
+end
+
+function mod:preP3()
+	warnPhase3Soon:Show()
+end
+
+function mod:alertP3()
+	warnPhase3:Show()
+end
+
+function mod:WhelpsSpawn()
+	self:UnscheduleMethod("WhelpsSpawn")
+	WarnWhelpsSoon:Show()
+	timerWhelps:Start()
+	self:ScheduleMethod(95,"WhelpsSpawn")
 end
 
 function mod:OnCombatStart(delay)
-	self:SetStage(1)
-	self.vb.whelpsCount = 0
-	self.vb.warned_preP2 = false
-	self.vb.warned_preP3 = false
-	timerNextFlameBreath:Start(12.1-delay) -- REVIEW! variance? (25N Lordaeron 2022/10/13) - 12.1
-	if self.Options.SoundWTF3 then
-		DBM:PlaySoundFile("Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\dps-very-very-slowly.ogg")
-		self:Schedule(20, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-		self:Schedule(30, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
+	prewarnP2 = 0
+	warnP2 = 0
+	prewarnP3 = 0
+	warnP3 = 0
+	lastTargetGUID = 0
+	timerFlameBreath:Start()
+	timerNextTailSwipe:Start()
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.YellP2 or msg:find(L.YellP2) then
+		timerNextDeepBreath:Start(77)
+		timerNextBlastNova:Start()
+		self:ScheduleMethod(2,"WhelpsSpawn")
+	elseif msg == L.YellP3 or msg:find(L.YellP3) then
+		timerNextDeepBreath:Stop()
+		timerNextBlastNova:Stop()
+		timerIntBlastNova:Stop()
+		self:UnscheduleMethod("WhelpsSpawn")
+		self:ScheduleMethod(2,"WhelpsSpawn")
+		timerNextBellowingRoar:Start(8)
+	end
+end
+
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg == L.EmoteDeepBreath or msg:find(L.EmoteDeepBreath) then
+		specWarnDeepBreath:Show()
+		timerBreath:Start()
+		timerNextDeepBreath:Stop()
+		timerNextDeepBreath:Start()
+	elseif msg:find(L.EmoteSpear) then
+		name = string.match(msg, "is picked up by (.*)")
+		--"A scream releases as the spear is picked up by XXX!"
+		WarnSpearTarget:Show(name);		
+	end
+end
+
+function mod:MassiveFireball()
+	local target = nil
+	target = mod:GetBossTarget(10184)
+	local myName = UnitName("player")
+	if target == myName then
+		specWarnFireballYou:Show()
+		SendChatMessage("Fireball on "..UnitName("player"), "YELL")
+	else
+		warnFireball:Show(target)
+	end
+	timerFireball:Start(target)
+	if self.Options.FireballMark then
+		self:SetIcon(target, 8, 3)
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	local spellId = args.spellId
-	if spellId == 68958 then -- Blast Nova (from Onyxian Lair Guard)
-		specWarnBlastNova:Show()
-	elseif args:IsSpellID(17086, 18351, 18564, 18576) or args:IsSpellID(18584, 18596, 18609, 18617) then	-- 1 ID for each direction
-		specWarnBreath:Show()
-		timerBreathCast:Start()
-		timerNextDeepBreath:Start()
---		preWarnDeepBreath:Schedule(35)			  -- Pre-Warn Deep Breath
-	elseif args:IsSpellID(18435, 68970) then		-- Flame Breath (Ground phases)
-		timerNextFlameBreath:Start()
-	elseif spellId == 18431 then
-		specWarnBellowingRoar:Show()
-		specWarnBellowingRoar:Play("fearsoon")
-	elseif args:IsSpellID(18500, 69293) then -- Wing Buffet
-		warnWingBuffet:Show()
-	elseif args:IsSpellID(18392, 68926) then -- Fireball
-		self:BossTargetScanner(args.sourceGUID, "FireballTarget", 0.15, 12)
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(68959, 68963) then--Ignite Weapon (Onyxian Lair Guard spawn)
-		specWarnAdds:Show()
-		specWarnAdds:Play("bigmob")
-		timerBigAddCD:Start()
-	end
-end
-
-function mod:SPELL_DAMAGE(_, _, _, destGUID, _, _, spellId)
-	if (spellId == 68867 or spellId == 69286) and destGUID == UnitGUID("player") and self.Options.SoundWTF3 then		-- Tail Sweep
-		DBM:PlaySoundFile("Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\watch-the-tail.ogg")
-	end
-end
-
-function mod:CHAT_MSG_MONSTER_YELL(msg)
---	if msg == L.YellPull and not self:IsInCombat() then
---		DBM:StartCombat(self, 0)
-	if msg == L.YellP2 or msg:find(L.YellP2) then
-		self:SendSync("Phase2")
-	elseif msg == L.YellP3 or msg:find(L.YellP3) then
-		self:SendSync("Phase3")
-	end
-end
-
-function mod:UNIT_DIED(args)
-	if self:IsInCombat() and args:IsPlayer() and self.Options.SoundWTF3 then
-		DBM:PlaySoundFile("Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\thats-a-fucking-fifty-dkp-minus.ogg")
+	if args:IsSpellID(2108300, 2108301, 2108302, 2108303) then
+		self:ScheduleMethod(0.4, "MassiveFireball")
+	elseif args:IsSpellID(2108401, 2108402, 2108403, 2108404) then
+		if args.sourceGUID ~= lastTargetGUID then
+			warnBlastNova:Show()
+			timerBlastNova:Start()
+			timerNextSecondNova:Start()
+			timerNextBlastNova:Start()
+			lastTargetGUID = args.sourceGUIDs
+		end
+		-- if GetTime() - lastBlastNova > 20  then --Trying it to only trigger from new Add Blast Nova.
+		-- 	timerIntBlastNova:Start()
+		-- end
+		-- lastBlastNova = GetTime()
+	elseif args:IsSpellID(2108326) then --18431
+		timerBellowingRoar:Start()
+		timerNextBellowingRoar:Stop()
+		timerNextBellowingRoar:Start()
+		--if args:IsSpellID(17086, 18351, 18564, 18576) or args:IsSpellID(18584, 18596, 18609, 18617) then	-- 1 ID for each direction
+	--	specWarnDeepBreath:Show() -- potentially deprecated because all new spell IDs
+	--	timerBreath:Start()
+	--	timerNextDeepBreath:Stop()
+	--	timerNextDeepBreath:Start()
+	--end
 	end
 end
 
 function mod:UNIT_HEALTH(uId)
-	if self.vb.phase == 1 and not self.vb.warned_preP2 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.70 then
-		self.vb.warned_preP2 = true
-		warnPhase2Soon:Show()
-	elseif self.vb.phase == 2 and not self.vb.warned_preP3 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 then
-		self.vb.warned_preP3 = true
-		warnPhase3Soon:Show()
-		if self.Options.SoundWTF3 then
-			self:Unschedule(DBM.PlaySoundFile, DBM)
-		end
+	if self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.90 and prewarnP2 == 0 then
+		prewarnP2 = 1
+		self:ScheduleMethod(0, "preP2")		
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.85 and warnP2 == 0 then
+		warnP2 = 1
+		self:ScheduleMethod(0, "alertP2")
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.40 and prewarnP3 == 0 then
+		prewarnP3 = 1
+		self:ScheduleMethod(0, "preP3")
+	elseif self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.35 and warnP3 == 0 then
+		warnP3 = 1
+		self:ScheduleMethod(0, "alertP3")
 	end
 end
 
-function mod:OnSync(msg)
-	if not self:IsInCombat() then return end
-	if msg == "Phase2" then
-		self:SetStage(2)
-		self.vb.whelpsCount = 0
-		warnPhase2:Show()
-		timerBigAddCD:Start(20) -- (25N Lordaeron 2022/10/13) - Stage 2/20.0
---		preWarnDeepBreath:Schedule(72)	-- Pre-Warn Deep Breath
-		timerNextDeepBreath:Start(75.5) -- Breath-17086. REVIEW! variance? (25N Lordaeron 2022/10/13) - 75.5
-		timerNextFlameBreath:Cancel()
-		self:Schedule(5, Whelps, self)
-		if self.Options.SoundWTF3 then
-			self:Unschedule(DBM.PlaySoundFile, DBM)
-			DBM:PlaySoundFile("Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\i-dont-see-enough-dots.ogg")
-			self:Schedule(10, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\throw-more-dots.ogg")
-			self:Schedule(17, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg") -- 18
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(8)
-		end
-	elseif msg == "Phase3" then
-		self:SetStage(3)
-		warnPhase3:Show()
-		self:Unschedule(Whelps)
-		timerWhelps:Stop()
-		timerNextDeepBreath:Stop()
-		timerBigAddCD:Stop()
-		warnWhelpsSoon:Cancel()
---		preWarnDeepBreath:Cancel()
-		if self.Options.SoundWTF3 then
-			self:Unschedule(DBM.PlaySoundFile, DBM)
-			self:Schedule(15, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\dps-very-very-slowly.ogg")
-			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-			self:Schedule(45, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-VanillaOnyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
+function mod:UNIT_DIED(args)
+	if args.destGUID == lastTargetGUID then
+		timerNextSecondNova:Cancel()
+		lastTargetGUID = 0
 	end
 end
+
+--429201 item of spear
+

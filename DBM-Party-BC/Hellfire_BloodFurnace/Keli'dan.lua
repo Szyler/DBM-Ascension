@@ -1,12 +1,11 @@
-local mod	= DBM:NewMod(557, "DBM-Party-BC", 2, 256)
+local mod	= DBM:NewMod("Keli'dan", "DBM-Party-BC", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
-mod:SetCreatureID(17377)--17377 is boss, 17653 are channelers that just pull with him.
+mod:SetRevision(("$Revision: 183 $"):sub(12, -3))
+mod:SetCreatureID(17377, 17653)--Might need work.
 
-mod:SetModelID(17153)
-mod:SetModelOffset(0, 0, -0.1)
-mod:RegisterCombat("combat")
+mod:RegisterCombat("combat", 17377)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
+	"SPELL_AURA_APPLIED"
 )

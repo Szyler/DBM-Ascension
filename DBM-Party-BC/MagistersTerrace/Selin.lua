@@ -1,30 +1,19 @@
-local mod = DBM:NewMod(530, "DBM-Party-BC", 16, 249)
+local mod = DBM:NewMod("Selin", "DBM-Party-BC", 16)
 local L = mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,mythic"
+mod:SetRevision(("$Revision: 128 $"):sub(12, -3))
 
-mod:SetRevision("20220518110528")
 mod:SetCreatureID(24723)
-
-mod:SetModelID(22731)
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 44320"
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_EMOTE"
 )
 
-local specWarnChannel		= mod:NewSpecialWarning("warningFelCrystal", "-Healer", nil, nil, 1, 2)
+local warnChanneling		= mod:NewAnnounce("warnChanneling")
 
-local timerChannelCD		= mod:NewTimer(47, "timerFelCrystal", 44320, nil, nil, 1)
-
-function mod:OnCombatStart(delay)
-	timerChannelCD:Start(15-delay)
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 44320 then--Mana Rage, triggers right before CHAT_MSG_RAID_BOSS_EMOTE
-		specWarnChannel:Show()
-		specWarnChannel:Play("targetchange")
-		timerChannelCD:Start()
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	if msg == L.ChannelCrystal then
+        warnChanneling:Show()
 	end
 end

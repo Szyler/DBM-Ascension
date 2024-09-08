@@ -1,110 +1,224 @@
 local mod	= DBM:NewMod("Council", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220518110528")
+mod:SetRevision(("$Revision: 5019 $"):sub(12, -3))
 mod:SetCreatureID(22949, 22950, 22951, 22952)
-
-mod:SetModelID(21416)
-mod:SetUsedIcons(1)
-
-mod:RegisterCombat("combat")
+mod:RegisterCombat("combat", 22949, 22950, 22951, 22952)
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 41455",
-	"SPELL_CAST_SUCCESS 41455",
-	"SPELL_AURA_APPLIED 41485 41481 41482 41541 41476 41475 41452 41453 41450 41451",
-	"SPELL_AURA_REMOVED 41479 41485"
+	"SPELL_CAST_START",
+	"SPELL_HEAL",
+	"SPELL_INTERRUPT",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"UNIT_DIED"
 )
 
-local warnPoison			= mod:NewTargetNoFilterAnnounce(41485, 3, nil, "Healer", 3)
-local warnVanish			= mod:NewTargetNoFilterAnnounce(41476, 3)
-local warnVanishEnd			= mod:NewEndAnnounce(41476, 3)
-local warnDevAura			= mod:NewSpellAnnounce(41452, 3, nil, "Physical", 2)
-local warnResAura			= mod:NewSpellAnnounce(41453, 3, nil, "-Physical", 2)
+--Lady Malande
+local warnPaintoPleasure			= mod:NewSpellAnnounce(2144463, 3)
+local timerNextPaintoPleasure		= mod:NewNextTimer(15, 2144463)
+local timerPaintoPleasure			= mod:NewCastTimer(1.5, 2144463)
 
-local specWarnShield		= mod:NewSpecialWarningReflect(41475, "Dps", nil, nil, 1, 2)
-local specWarnFlame			= mod:NewSpecialWarningMove(41481, nil, nil, nil, 1, 2)
-local specWarnBlizzard		= mod:NewSpecialWarningMove(41482, nil, nil, nil, 1, 2)
-local specWarnConsecration	= mod:NewSpecialWarningMove(41541, nil, nil, nil, 1, 2)
-local specWarnCoH			= mod:NewSpecialWarningInterrupt(41455, "HasInterrupt", nil, 2, 1, 2)
-local specWarnImmune		= mod:NewSpecialWarning("Immune", false)
+local warnSadism					= mod:NewSpellAnnounce(2144464, 3)
+local timerNextSadism				= mod:NewNextTimer(45, 2144464)
+local timerSadism					= mod:NewCastTimer(3.5, 2144464)
 
-local timerVanish			= mod:NewBuffActiveTimer(31, 41476, nil, nil, nil, 6)
-local timerShield			= mod:NewBuffActiveTimer(20, 41475, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON..DBM_COMMON_L.DAMAGE_ICON)
-local timerMeleeImmune		= mod:NewTargetTimer(15, 41450, nil, "Physical", 2, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerSpellImmune		= mod:NewTargetTimer(15, 41451, nil, "-Physical", 2, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerDevAura			= mod:NewBuffActiveTimer(30, 41452, nil, "Physical", 2, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerResAura			= mod:NewBuffActiveTimer(30, 41453, nil, "-Physical", 2, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerNextCoH			= mod:NewCDTimer(14, 41455, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+--- Mythic/Ascended
+local specWarnEmpoweredSadism		= mod:NewSpecialWarning("Empowered Sadism", 2144514, 3)
+local timerCastEmpoweredSadism		= mod:NewCastTimer(3.5, 2144514)
 
-local berserkTimer			= mod:NewBerserkTimer(900)
 
-mod:AddSetIconOption("PoisonIcon", 41485)
+--Veras Darkshadow
+local warnSmokeBomb					= mod:NewSpellAnnounce(2144560, 3)
+local timerNextSmokeBomb			= mod:NewNextTimer(60, 2144560)
+
+--Gathios the Shatterer
+local warnDeathSentence 			= mod:NewAnnounce("Death Sentence on %s", 3, 2144260)
+local warnEmpoweredDeathSentence	= mod:NewAnnounce("Empowered Death Sentence on %s", 3, 214431)
+local specWarnDeathSentence			= mod:NewSpecialWarningYou(2144260)
+local specWarnEmpoweredDeathSentence= mod:NewSpecialWarning("Empowered Death Sentence on you", 3, 214431)
+
+local timerNextDeathSentence		= mod:NewNextTimer(60, 2144260)
+local timerDeathSentence			= mod:NewTargetTimer(10, 2144260)
+local timerNextConsecrate			= mod:NewNextTimer(15, 2144256, nil, false)
+
+--High Nethermancer Zerevor
+local timerNextRuneofPower			= mod:NewNextTimer(60, 2144368)
+local warnNetherprotection			= mod:NewSpellAnnounce(2144351, 3)
+local timerNextNetherProtection		= mod:NewNextTimer(30, 2144351)
+
+--Authority
+local timerCrownofCommand			= mod:NewTimer(18, "Crown of Command on %s", 2144201)
+local warnCrownofCommand			= mod:NewAnnounce("Crown of Command on %s", 3, 2144201)
+local councilDeath = 0
+
+local council = false
 
 function mod:OnCombatStart(delay)
-	berserkTimer:Start(-delay)
+	council = true
+	councilDeath = 0
+	timerNextPaintoPleasure:Start(25-delay)
+	timerNextSmokeBomb:Start(33-delay)
+	timerNextDeathSentence:Start(15-delay)
+	timerNextConsecrate:Start(10-delay)
+	timerNextRuneofPower:Start(45-delay)
+	timerNextSadism:Start(60-delay)
+	self:ScheduleMethod(33-delay,"SmokeBomb")
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 41485 then
-		warnPoison:Show(args.destName)
-		if self.Options.PoisonIcon then
-			self:SetIcon(args.destName, 1)
-		end
-	elseif spellId == 41481 and args:IsPlayer() and self:AntiSpam(3, 1) and not self:IsTrivial() then
-		 specWarnFlame:Show()
-		 specWarnFlame:Play("runaway")
-	elseif spellId == 41482 and args:IsPlayer() and self:AntiSpam(3, 2) and not self:IsTrivial() then
-		 specWarnBlizzard:Show()
-		 specWarnBlizzard:Play("runaway")
-	elseif spellId == 41541 and args:IsPlayer() and self:AntiSpam(3, 3) and not self:IsTrivial() then
-		 specWarnConsecration:Show()
-		 specWarnConsecration:Play("runaway")
-	elseif spellId == 41476 then
-		warnVanish:Show(args.destName)
-		timerVanish:Start(args.destName)
-	elseif spellId == 41475 and not self:IsTrivial() then
-		specWarnShield:Show(args.destName)
-		specWarnShield:Play("stopattack")
-		timerShield:Start(args.destName)
-	elseif spellId == 41452 and self:GetCIDFromGUID(args.destGUID) == 22949 then
-		warnDevAura:Show()
-		timerDevAura:Start()
-	elseif spellId == 41453 and self:GetCIDFromGUID(args.destGUID) == 22949 then
-		warnResAura:Show()
-		timerResAura:Start()
-	elseif spellId == 41450 and self:GetCIDFromGUID(args.destGUID) == 22951 then
-		timerMeleeImmune:Start(args.destName)
-		specWarnImmune:Show(L.Melee)
-	elseif spellId == 41451 and self:GetCIDFromGUID(args.destGUID) == 22951 then
-		timerSpellImmune:Start(args.destName)
-		specWarnImmune:Show(L.Spell)
+function mod:SmokeBomb()
+	warnSmokeBomb:Show()
+	timerNextSmokeBomb:cancel()
+	if councilDeath == 0 then
+		timerNextSmokeBomb:start(60)
+	elseif councilDeath == 1 then
+		timerNextSmokeBomb:start(45)
+	elseif councilDeath == 2 then
+		timerNextSmokeBomb:start(30)
+	elseif councilDeath == 3 then
+		timerNextSmokeBomb:start(15)
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 41479 then
-		warnVanishEnd:Show()
-	elseif spellId == 41485 then
-		if self.Options.PoisonIcon then
-			self:SetIcon(args.destName, 0)
+function mod:SPELL_AURA_APPLIED(args)
+	if council == true then
+	if args:IsSpellID(2144560, 2144610) and DBM:AntiSpam(16, 1) then
+		warnSmokeBomb:Show()
+		if councilDeath == 0 then
+			timerNextSmokeBomb:Start(60)
+		elseif councilDeath == 1 then
+			timerNextSmokeBomb:Start(45)
+		elseif councilDeath == 2 then
+			timerNextSmokeBomb:Start(30)
+		elseif councilDeath == 3 then
+			timerNextSmokeBomb:Start(15)
 		end
+	elseif args:IsSpellID(2144260) then
+		if args:IsPlayer() then
+			specWarnDeathSentence:Show();
+		else
+			warnDeathSentence:Show(args.destName)
+		end
+		timerDeathSentence:Start(args.destName)
+		self:SetIcon(args.destName, 8, 15)
+		if DBM:AntiSpam(2,5) then
+			if councilDeath == 0 then
+				timerNextDeathSentence:Start(60)
+			elseif councilDeath == 1 then
+				timerNextDeathSentence:Start(45)
+			elseif councilDeath == 2 then
+				timerNextDeathSentence:Start(30)
+			elseif councilDeath == 3 then
+				timerNextDeathSentence:Start(15)
+			end
+		end
+	elseif args:IsSpellID(2144310) then
+		if args:IsPlayer() then
+				specWarnEmpoweredDeathSentence:Show();
+		else
+		warnEmpoweredDeathSentence:Show(args.destName)
+		end
+		timerDeathSentence:Start(args.destName)
+			self:SetIcon(args.destName, 8, 15)
+			if DBM:AntiSpam(2,4) then
+				if councilDeath == 0 then
+					timerNextDeathSentence:Start(60)
+				elseif councilDeath == 1 then
+					timerNextDeathSentence:Start(45)
+				elseif councilDeath == 2 then
+					timerNextDeathSentence:Start(30)
+				elseif councilDeath == 3 then
+					timerNextDeathSentence:Start(15)
+				end
+			end
+	elseif args:IsSpellID(2144256) then
+		timerNextConsecrate:Start()
+	elseif args:IsSpellID(2144368, 2144418) and DBM:AntiSpam(20, 2) then
+		timerNextRuneofPower:Start()
+	elseif args:IsSpellID(2144351, 2144401) then
+		warnNetherprotection:Show()
+	end
+	if args:IsSpellID(2144201) then
+		timerCrownofCommand:Start(args.destName)
+		warnCrownofCommand:Show(args.destName)
+	end
+	if args:IsSpellID(2144559) and args.sourceName == "Veras DarkShadow" and DBM:AntiSpam(14,3) then
+		self:ScheduleMethod(2,"SmokeBomb")
+	end
+end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2144351, 2144401) then
+		timerNextNetherProtection:Start()
 	end
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 41455 then
-		if self:CheckInterruptFilter(args.sourceGUID) then
-			specWarnCoH:Show(args.sourceName)
-			specWarnCoH:Play("kickcast")
+	if council == true then
+	if args:IsSpellID(2144462, 2144463, 2144512, 2144513) then
+		warnPaintoPleasure:Show()
+		timerNextPaintoPleasure:Start()
+		timerPaintoPleasure:Start()
+		--when rogue splits, 22951 is fake 22952 is real.
+	elseif args:IsSpellID(2144464, 2144465, 2144466, 2144467) then
+		warnSadism:Show()
+		timerSadism:Start()
+		if councilDeath == 0 then
+			timerNextSadism:Start(60)
+		elseif councilDeath == 1 then
+			timerNextSadism:Start(45)
+		elseif councilDeath == 2 then
+			timerNextSadism:Start(30)
+		elseif councilDeath == 3 then
+			timerNextSadism:Start(15)
+		end
+	elseif args:IsSpellID(2144514, 2144515, 2144516, 2144517) then
+		specWarnEmpoweredSadism:Show()
+		timerCastEmpoweredSadism:Start()
+		if councilDeath == 0 then
+			timerNextSadism:Start(60)
+		elseif councilDeath == 1 then
+			timerNextSadism:Start(45)
+		elseif councilDeath == 2 then
+			timerNextSadism:Start(30)
+		elseif councilDeath == 3 then
+			timerNextSadism:Start(15)
 		end
 	end
 end
+end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 41455 then
-		timerNextCoH:Start(13.3)
+function mod:SPELL_INTERRUPT(args)
+	if council == true then
+	if args:IsSpellID(2144462, 2144463, 2144512, 2144513) then
+		timerPaintoPleasure:Cancel()
 	end
+end
+end
+
+function mod:UNIT_DIED(args)
+	if council == true then
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 22952 and DBM:AntiSpam(2,8) then
+		self:UnscheduleMethod("SmokeBomb")
+		councilDeath = councilDeath + 1
+	end
+	if  args.destName =="Lady Malande" and DBM:AntiSpam(2,5) then
+		councilDeath = councilDeath + 1
+		timerNextSadism:Cancel()
+	end
+	if  args.destName =="High Nethermancer Zerevor" and DBM:AntiSpam(2,6) then
+		councilDeath = councilDeath + 1
+		timerNextRuneofPower:Cancel()
+	end
+	if  args.destName =="Gathios the Shatterer" and DBM:AntiSpam(2,7) then
+		councilDeath = councilDeath + 1
+		timerNextDeathSentence:Cancel()
+	end
+end
+end
+
+function mod:OnCombatEnd()
+	council = false
 end

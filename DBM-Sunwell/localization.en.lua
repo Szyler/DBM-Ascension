@@ -10,35 +10,15 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	WarnPortal			= "Portal #%d : >%s< (Group %d)",
-	SpecWarnWildMagic	= "Wild Magic - %s!"
+
 })
 
 L:SetOptionLocalization({
-	WarnPortal			= "Show warning for $spell:46021 target",
-	SpecWarnWildMagic	= "Show special warning for Wild Magic",
-	ShowRespawn			= "Show boss respawn timer after a wipe",
-	ShowFrame			= "Show Spectral Realm frame" ,
-	FrameClassColor		= "Use class colors in Spectral Realm frame",
-	FrameUpwards		= "Expand Spectral Realm frame upwards",
-	FrameLocked			= "Set Spectral Realm frame not movable"
+
 })
 
 L:SetMiscLocalization({
 	Demon				= "Sathrovarr the Corruptor",
-	Heal				= "Healing + 100%",
-	Haste				= "Spell Haste + 100%",
-	Hit					= "Melee Hit - 50%",
-	Crit				= "Crit Damage + 100%",
-	Aggro				= "AGGRO + 100%",
-	Mana				= "Cost Reduce 50%",
-	FrameTitle			= "Spectral Realm",
-	FrameLock			= "Frame Lock",
-	FrameClassColor		= "Use Class Colors",
-	FrameOrientation	= "Expand upwards",
-	FrameHide			= "Hide Frame",
-	FrameClose			= "Close",
-	FrameGUIMoveMe		= "Move me"
 })
 
 ----------------
@@ -51,9 +31,7 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	RangeFrameActivation= "Range frame activation",
-	AlwaysOn			= "On encounter start. Ignores filter",
-	OnDebuff			= "On debuff. Applies debuff filter"
+
 })
 
 L:SetMiscLocalization({
@@ -87,6 +65,31 @@ L:SetMiscLocalization({
 	Ground			= "Ground",
 	AirPhase		= "I am stronger than ever before!",
 	Breath			= "%s takes a deep breath."
+})
+
+--------------
+--  High Commander Arynyes --
+--------------
+L = DBM:GetModLocalization("Arynyes")
+
+L:SetGeneralLocalization({
+	name = "High Commander Arynyes"
+})
+
+L:SetWarningLocalization({
+
+})
+
+L:SetTimerLocalization({
+
+})
+
+L:SetOptionLocalization({
+
+})
+
+L:SetMiscLocalization({
+
 })
 
 -----------------------
