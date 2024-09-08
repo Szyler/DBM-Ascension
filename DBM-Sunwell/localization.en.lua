@@ -21,7 +21,7 @@ L:SetOptionLocalization{
 	FrameClassColor		= "Use class colors in Spectral Realm frame",
 	FrameUpwards		= "Expand Spectral Realm frame upwards",
 	FrameLocked			= "Set Spectral Realm frame not movable",
-	RangeFrame			= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT:format(10, 46021)
+	RangeFrame			= "Show range check frame"
 }
 
 L:SetMiscLocalization{
@@ -73,8 +73,8 @@ L:SetTimerLocalization{
 L:SetOptionLocalization{
 	WarnPhase		= "Show warning for next phase",
 	TimerPhase		= "Show time for next phase",
-	VaporIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45392),
-	EncapsIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45665)
+	VaporIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45392),
+	EncapsIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45665)
 }
 
 L:SetMiscLocalization{
@@ -94,9 +94,9 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	NovaIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45329),
-	ConflagIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45333),
-	RangeFrame		= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT:format(10, 45333)
+	NovaIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45329),
+	ConflagIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45333),
+	RangeFrame		= "Show range check frame"
 }
 
 L:SetMiscLocalization{
@@ -166,8 +166,8 @@ L:SetOptionLocalization{
 	SpecWarnDarkOrb	= "Show special warning for Dark Orbs",
 	SpecWarnBlueOrb	= "Show special warning for Dragon Orbs",
 	TimerBlueOrb	= "Show timer form Dragon Orbs activate",
-	RangeFrame		= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT:format(10, 45641),
-	BloomIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45641)
+	RangeFrame		= "Show range check frame",
+	BloomIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45641)
 }
 
 L:SetMiscLocalization{
