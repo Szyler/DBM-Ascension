@@ -14,52 +14,76 @@ mod:RegisterEvents(
 	"UNIT_HEALTH"
 )
 
-local warnHuman				= mod:NewAnnounce("WarnHuman", 4)
-local warnVoid				= mod:NewAnnounce("WarnVoid", 4, 46087)
-local warnDarkness			= mod:NewSpellAnnounce(45996, 2)
+local warnDarkness			= mod:NewSpellAnnounce(2146301, 2)
+local timerDarkness			= mod:NewNextTimer(0, 2146301)
+--local warnVoidRift			= mod:NewAnnounce("WarnVoidRift", 4, 2146310)
+--local timerVoidRift			= mod:NewNextTimer(60, 2146310)
+local warnVoidSentinel		= mod:NewAnnounce("WarnSentinel", 4, 2146312)
+local timerVoidSentinel		= mod:NewNextTimer(60, 2146312)
+local SpecWarnVoidSpawn		= mod:NewAnnounce("WarnVoidSpawn", 4, 2146330)
+local warnDarkFiend			= mod:NewAnnounce("WarnFiend", 2, 2146320)
+local timerDarkFiend		= mod:NewNextTimer(60, 2146320)
+local warnVoidCutter		= mod:NewAnnounce("WarnVoidCutter", 2, 2146303)
+local timerVoidCutterSpawn	= mod:NewNextTimer(64, 2146303)
+--local timerVoidCutterActive	= mod:NewNextTimer(64, 2146303)
+
 local warnPhase2			= mod:NewPhaseAnnounce(2)
-local warnFiend				= mod:NewAnnounce("WarnFiend", 2, 46268)
-local warnBlackHole			= mod:NewSpellAnnounce(46282, 3)
-local specWarnVoid			= mod:NewSpecialWarning("specWarnVoid")
-local specWarnBH			= mod:NewSpecialWarning("specWarnBH")
-local specWarnVW			= mod:NewSpecialWarning("specWarnVW", mod:IsTank())
-local specWarnDarknessSoon	= mod:NewSpecialWarning("specWarnDarknessSoon", mod:IsMelee() or mod:IsTank())
-local timerHuman			= mod:NewTimer(60, "TimerHuman")
-local timerVoid				= mod:NewTimer(30, "TimerVoid", 46087)
-local timerNextDarkness		= mod:NewNextTimer(45, 45996)
-local timerDarknessDura		= mod:NewBuffActiveTimer(20, 45996)
-local timerBlackHoleCD		= mod:NewCDTimer(15, 46282)
-local timerPhase			= mod:NewTimer(6, "TimerPhase", 46087)
-local timerSingularity		= mod:NewNextTimer(3.2, 46238)
-local berserkTimer			= mod:NewBerserkTimer(600)
-local soundDarkness			= mod:NewSound(45996)
-local soundBH				= mod:NewSound(46282)
-local soundBH3				= mod:NewSound3(46282)
-local soundDS5				= mod:NewSound5(45996)
+local warnBlackHole			= mod:NewSpellAnnounce(2146370, 3)
+local timerBlackHole		= mod:NewNextTimer(20, 2146370)
 
-local humanCount = 1
-local voidCount = 1
-local warned_phase2 = false
 
+local isphase2 = false
+
+function mod:OnCombatStart(delay)
+	isphase2 = false
+
+	--timerVoidRift:Start(5-delay)
+	timerVoidSentinel:Start(10-delay)
+	timerVoidCutterSpawn:Start(20-delay)
+	--timerVoidCutterActive:Start(25-delay)
+	timerDarkness:Start(30-delay)
+	timerDarkFiend:Start(30-delay)
+
+	if self.Options.ShowFrame then
+		self:CreateFrame()
+	end
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Show()
+	end
+end
+
+function mod:UNIT_HEALTH(uId)
+	if self:GetUnitCreatureId(uId) == 25741 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and isphase2 == false and DBM:AntiSpam(5,2) then
+		isphase2 = true
+		warnPhase2:Show()
+		timerBlackHole:Start(23-delay)
+	end
+end
+
+--[[
+Timers
+	Portals + Sentinal			10 seconds after pull, then every 60 seconds while in Phase 1									
+	Void Cutter					20 seconds after pull, then 55 seconds, then every 60 seconds. Spawns, becomes active after 5 seconds, then is active for 30 seconds.  Visible for 35 seconds total.									
+	Darkness + Dark Fiends		30 seconds after pull, then every 60 seconds									
+	Black Hole					23 seconds after Entropius spawns, then every 20 seconds
+
+Note
+		Timers for Portals stop when Muru hits 50%
+		Timers for Void Cutters and Dark Fiends are not affected by phase transition
+		When timers would happen at the same time, one is pushed to be earlier by 1 second.  Appears that Cutter is the main spell that gets pushed.
+]]--
+
+--[[
 local function phase2()
-	mod.vb.phase = 2
 	warnPhase2:Show()
 	warned_phase2 = true
 	mod:UnscheduleMethod("HumanSpawn")
 	mod:UnscheduleMethod("VoidSpawn")
 	timerBlackHoleCD:Start(15)
-	soundBH3:Schedule(15-3)
 	if mod.Options.HealthFrame then
 		DBM.BossHealth:Clear()
 		DBM.BossHealth:AddBoss(25840, L.Entropius)
 	end
-end
-
-function mod:HumanSpawn()
-	warnHuman:Show(humanCount)
-	humanCount = humanCount + 1
-	timerHuman:Start(nil, humanCount)
-	self:ScheduleMethod(60, "HumanSpawn")
 end
 
 function mod:VoidSpawn()
@@ -72,7 +96,6 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	humanCount = 1
 	voidCount = 1
 	warned_phase2 = false
 	timerHuman:Start(10-delay, humanCount)
@@ -80,8 +103,6 @@ function mod:OnCombatStart(delay)
 	specWarnVW:Schedule(31.5)
 	timerNextDarkness:Start(47-delay)
 	specWarnDarknessSoon:Schedule(42)
-	soundDS5:Schedule(42)
-	soundDarkness:Schedule(47,"Interface\\AddOns\\DBM-Core\\sounds\\beware.ogg")
 	self:ScheduleMethod(10, "HumanSpawn")
 	self:ScheduleMethod(36.5, "VoidSpawn")
 	berserkTimer:Start(-delay)
@@ -93,8 +114,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnVoid:Show()
 		timerNextDarkness:Start()
 		timerDarknessDura:Start()
-		soundDS5:Schedule(40)
-		soundDarkness:Schedule(45,"Interface\\AddOns\\DBM-Core\\sounds\\beware.ogg")
 		specWarnDarknessSoon:Schedule(40)
 	end
 end
@@ -108,8 +127,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnVW:Cancel()
 		timerPhase:Start()
 		specWarnDarknessSoon:Cancel()
-		soundDarkness:Cancel()
-		soundDS5:Cancel()
 		self:Schedule(6, phase2)
 	end
 end
@@ -120,10 +137,8 @@ function mod:SPELL_SUMMON(args)
 	elseif args.spellId == 46282 and self:AntiSpam(2, 1) then
 		warnBlackHole:Show()
 		specWarnBH:Show()
-		soundDarkness:Play("Interface\\AddOns\\DBM-Core\\sounds\\beware.ogg")
 		timerBlackHoleCD:Start()
 		timerSingularity:Start()
-		soundBH3:Schedule(12)
 	end
 end
 
@@ -140,8 +155,7 @@ function mod:UNIT_HEALTH(uId)
 		timerHuman:Cancel()
 		timerVoid:Cancel()
 		specWarnDarknessSoon:Cancel()
-		soundDarkness:Cancel()
-		soundDS5:Cancel()
 		phase2()
 	end
 end
+]]--
