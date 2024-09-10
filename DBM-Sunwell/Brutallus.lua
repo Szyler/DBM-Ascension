@@ -13,72 +13,82 @@ mod.disableHealthCombat = true
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
+	"SPELL_DAMAGE",
+	"SPELL_MISSED",
 	"UNIT_DIED"
 )
 
-local warnMeteorSlash		= mod:NewSpellAnnounce(2145705, 2)
-local timerMeteorSlash10	= mod:NewNextTimer(10, 2145705)
-local timerMeteorSlash14	= mod:NewNextTimer(14, 2145705)
-local timerMeteorSlash20	= mod:NewNextTimer(20, 2145705)
+local warnMeteorSlash			= mod:NewSpellAnnounce(2145705, 2) -- 2145704, 2145705, 2145707, 2145708
+local warnMeteorSlashStack 		= mod:NewSpecialWarningStack(2145705, 5) -- 2145704, 2145705, 2145707, 2145708
+local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705, 2145707, 2145708
 
-local warnTrample			= mod:NewSpellAnnounce(2145709, 2)
-local timerTrampleStart		= mod:NewNextTimer(30, 2145709)
-local timerTrampleEnd		= mod:NewNextTimer(10, 2145709)
+-- 10%, 10%, 13%, 15%, 15%.
 
-local warnFelfireBurn		= mod:NewSpellAnnounce(2145719, 2)
-local timerFelfireBurn		= mod:NewNextTimer(30, 2145719)
+local warnTrample				= mod:NewTargetAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 
-local berserkTimer			= mod:NewBerserkTimer(360)
+local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
+local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
+local warnFelfireBurn			= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
 
-local slashNumber = 0
+local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
+
+local berserkTimer				= mod:NewBerserkTimer(360)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	slashNumber = 0
-	timerMeteorSlash10:Start(10-delay)
-	timerTrampleStart:Start(23-delay)
-	timerFelfireBreath:Start(45-delay)
+	timerMeteorSlash:Start(10-delay)
+	timerNextTrample:Start(23-delay)
+	timerNextFelfireBreath:Start(45-delay)
+	berserkTimer:Start(-delay)
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
+		warnMeteorSlashStack:Show(args.destName, args.amount or 1)
+	elseif args:IsSpellID(2145709, 2145710, 2145711) then
+		timerTargetTrample:Start(args.destName)
+	elseif args:IsSpellID(2145717, 2145718) then
+		warnFelfireBreath:Show(args.destName)
+		timerNextFelfireBreath:Start()
+	elseif args:IsSpellID(2145703) then
+		timerExcitement:Start()
+	end
+end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) and slashNumber + 1 %2 == 0 then
-		--10 second timer for the second swing of every set
-		slashNumber += 1
-		timerMeteorSlash10:Start()
-	elseif args:IsSpellID(2145705, 2145706, 2145707, 2145708) and slashNumber == 1 then
-		--Second round of Meteor Slashes, happens 14 seconds after the previous slash
-		slashNumber += 1
-		timerMeteorSlash14:Start()
-	elseif args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
-		--Starting at the third, all slashes are approx 20 seconds apart.  I swear to god this is random (17-23) and I'm not crazy
-		slashNumber += 1
-		timerMeteorSlash20:Start()
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
+		warnMeteorSlash:Show()
+		timerNextMeteorSlash:Start()
 	elseif args:IsSpellID(2145709, 2145710, 2145711) then
-		warnTrample:Show(args.destName)
-		timerTrampleStart:Start()
-		timerTrampleEnd:Start()
-	elseif args:IsSpellID(2145718, 2145719, 2145720, 2145721) then
-		warnFelfireBurn:Show(args.destName)
-		timerFelfireBurn:Start()
+		timerNextTrample:Start()
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2145709, 2145710, 2145711) then
-		warnTrample:Show(args.destName)
-		timerTrampleEnd:Start()
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2145719, 2145720, 2145721) and dbm:antiSpam(5) then
+		warnFelfireBurn:Show()
+	end
+end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2145703) then
+		timerExcitement:Stop()
+		warnTrample:Show()
+		timerCastTrample:Start()
+		timerMeteorSlash:Start(13)
 	end
 end
 
 function mod:OnCombatEnd()
-	slashNumber = 0
 end
 
 --[[
