@@ -68,9 +68,9 @@ Timers
 	Black Hole					23 seconds after Entropius spawns, then every 20 seconds
 
 Note
-		Timers for Portals stop when Muru hits 50%
-		Timers for Void Cutters and Dark Fiends are not affected by phase transition
-		When timers would happen at the same time, one is pushed to be earlier by 1 second.  Appears that Cutter is the main spell that gets pushed.
+	Timers for Portals stop when Muru hits 50%
+	Timers for Void Cutters and Dark Fiends are not affected by phase transition
+	When timers would happen at the same time, one is pushed to be earlier by 1 second.  Appears that Cutter is the main spell that gets pushed.
 ]]--
 
 --[[
