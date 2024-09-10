@@ -1,4 +1,4 @@
-local Kal 	= DBM:GetModByName("Kal")
+local Kal 	= DBM:GetModByName("Kalecgos")
 local L		= Kal:GetLocalizedStrings()
 
 function Kal:InitializeMenu()
