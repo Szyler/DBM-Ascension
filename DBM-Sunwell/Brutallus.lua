@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(24882)
-mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
+
 
 mod:RegisterCombat("combat")
 mod:RegisterCombat("yell", L.Pull)
@@ -11,74 +11,133 @@ mod:RegisterCombat("yell", L.Pull)
 mod.disableHealthCombat = true
 
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
+	"SPELL_DAMAGE",
+	"SPELL_MISSED",
+	"UNIT_HEALTH",
 	"UNIT_DIED"
 )
 
-local warnMeteorSlash		= mod:NewSpellAnnounce(2145705, 2)
-local timerMeteorSlash10	= mod:NewNextTimer(10, 2145705)
-local timerMeteorSlash14	= mod:NewNextTimer(14, 2145705)
-local timerMeteorSlash20	= mod:NewNextTimer(20, 2145705)
+local warnMeteorSlash			= mod:NewSpellAnnounce(2145705, 2) -- 2145704, 2145705, 2145707, 2145708
+local warnMeteorSlashStack 		= mod:NewSpecialWarningStack(2145705, nil, 3) -- 2145704, 2145705, 2145707, 2145708
+local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705, 2145707, 2145708
 
-local warnTrample			= mod:NewSpellAnnounce(2145709, 2)
-local timerTrampleStart		= mod:NewNextTimer(30, 2145709)
-local timerTrampleEnd		= mod:NewNextTimer(10, 2145709)
+-- 10%, 10%, 13%, 15%, 15%.
 
-local warnFelfireBurn		= mod:NewSpellAnnounce(2145719, 2)
-local timerFelfireBurn		= mod:NewNextTimer(30, 2145719)
+local warnTrample				= mod:NewSpellAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aura_applied
 
-local berserkTimer			= mod:NewBerserkTimer(360)
+local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
+local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
+local warnFelfireBurnYou		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
 
-local slashNumber = 0
+local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
+
+local berserkTimer				= mod:NewBerserkTimer(360)
+
+local hasExcitement = 0
+local oldhasExcitement = 0
+local hp = 100
+local newHP = 100
+local hpAtEnd = 0
+local oldTime = 0
+local currTime = 0
+local timeElapsed = 0
+local timeToEnd = 0
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	slashNumber = 0
-	timerMeteorSlash10:Start(10-delay)
-	timerTrampleStart:Start(23-delay)
-	timerFelfireBreath:Start(45-delay)
+	hasExcitement = 0
+	oldhasExcitement = 0
+	hp = 100
+	newHP = 100
+	timerNextMeteorSlash:Start(10-delay)
+	timerNextFelfireBreath:Start(45-delay)
+	berserkTimer:Start(-delay)
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
+		if args.destName == UnitName("Player") and args.amount and args.amount > 2 then
+			warnMeteorSlashStack:Show(args.amount or 1)
+		end
+	elseif args:IsSpellID(2145709) then --only main target
+		timerTargetTrample:Start(args.destName)
+	elseif args:IsSpellID(2145717, 2145718) then
+		warnFelfireBreath:Show(args.destName)
+		timerNextFelfireBreath:Start()
+	elseif args:IsSpellID(2145703) then
+		timerExcitement:Start(args.destName)
+		hasExcitement = hasExcitement + 1
+	end
+end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) and slashNumber + 1 %2 == 0 then
-		--10 second timer for the second swing of every set
-		slashNumber += 1
-		timerMeteorSlash10:Start()
-	elseif args:IsSpellID(2145705, 2145706, 2145707, 2145708) and slashNumber == 1 then
-		--Second round of Meteor Slashes, happens 14 seconds after the previous slash
-		slashNumber += 1
-		timerMeteorSlash14:Start()
-	elseif args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
-		--Starting at the third, all slashes are approx 20 seconds apart.  I swear to god this is random (17-23) and I'm not crazy
-		slashNumber += 1
-		timerMeteorSlash20:Start()
-	elseif args:IsSpellID(2145709, 2145710, 2145711) then
-		warnTrample:Show(args.destName)
-		timerTrampleStart:Start()
-		timerTrampleEnd:Start()
-	elseif args:IsSpellID(2145718, 2145719, 2145720, 2145721) then
-		warnFelfireBurn:Show(args.destName)
-		timerFelfireBurn:Start()
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
+		warnMeteorSlash:Show()
+		timerNextMeteorSlash:Start()
+	-- elseif args:IsSpellID(2145709, 2145710, 2145711) then
+	-- 	timerNextTrample:Start()
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2145709, 2145710, 2145711) then
-		warnTrample:Show(args.destName)
-		timerTrampleEnd:Start()
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2145719, 2145720, 2145721) and DBM:AntiSpam(5) then
+		if args.destName == UnitName("Player") then
+			warnFelfireBurnYou:Show()
+		else
+			warnFelfireBurn:Show(args.destName)
+		end
+	end
+end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(2145703) then
+		timerExcitement:Stop()
+		warnTrample:Show()
+		timerCastTrample:Start()
+		timerNextMeteorSlash:Stop()
+		timerNextMeteorSlash:Start(13)
 	end
 end
 
 function mod:OnCombatEnd()
-	slashNumber = 0
+end
+
+function mod:UNIT_HEALTH(unit)
+	if (mod:GetUnitCreatureId(unit) == 24882) then
+		if hasExcitement ~= oldhasExcitement then
+			hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+
+			oldhasExcitement = hasExcitement
+			if hasExcitement == 1 	  or hasExcitement == 2 then hpAtEnd = hp - 10
+			elseif hasExcitement == 3 						then hpAtEnd = hp - 13
+			elseif hasExcitement == 4 or hasExcitement == 5 then hpAtEnd = hp - 15
+			elseif hasExcitement == 6 						then hpAtEnd = hp - 17
+			elseif hasExcitement == 7 or hasExcitement == 8 then hpAtEnd = hp - 19
+			end
+			newHP = hp
+			currTime = GetTime()
+		elseif hp ~= newHP then
+			newHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+			oldTime = currTime
+			currTime = GetTime()
+			timeElapsed = currTime - oldTime
+
+			timeToEnd = timeElapsed * (newHP - hpAtEnd)
+			timerNextTrample(timeToEnd)
+        end
+    end
 end
 
 --[[

@@ -16,7 +16,7 @@ mod:RegisterEvents(
 
 local warnPortal						= mod:NewAnnounce("WarnPortal", 4, 46021)
 
-local specWarnBuffet         			= mod:NewSpecialWarningStack(2145512, 10)   	-- 2145512, 2145513 SPELL_AURA_APPLIED
+local specWarnBuffet         			= mod:NewSpecialWarningStack(2145512, nil, 10)   	-- 2145512, 2145513 SPELL_AURA_APPLIED
 local timerNextBuffet        			= mod:NewNextTimer(8, 2145512)               	-- 2145512, 2145513 SPELL_AURA_APPLIED
 
 local timerBreathCast        			= mod:NewCastTimer(2, 2145511)               	-- 2145509, 2145510, 2145511 SPELL_CAST_START
@@ -24,13 +24,17 @@ local timerNextBreath        			= mod:NewNextTimer(20, 2145511)              	--
 
 local timerSpectralBlast     			= mod:NewCastTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
 local timerNextSpectralBlast 			= mod:NewNextTimer(25, 2145504)              	-- 2145503, 2145504 SPELL_CAST_START
+local timerTargetSpectralBlast     		= mod:NewTargetTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
+local warnSpectralBlastYOU 				= mod:NewSpecialWarningYou(2145501, 4)     		-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
 
 local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	-- 2145506 Spell_cast_success 
 
-local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
+local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, nil, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
 
-local warnMindWipe						= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
+local warnCastMindWipe					= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
+local warnStackMindWipe					= mod:NewSpecialWarningStack(2145524, nil, 4)				-- 2145524 SPELL_CAST_START
 local timerCastMindWipe					= mod:NewCastTimer(2, 2145524)					-- 2145524 SPELL_CAST_START
+local timerNextMindWipe 				= mod:NewNextTimer(25, 2145524)              	-- 2145524 SPELL_CAST_START
 
 local warnCorruptorsTouch				= mod:NewSpellAnnounce(2145523, 2)				-- 2145523 SPELL_AURA_APPLIED
 local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 SPELL_AURA_APPLIED
@@ -39,30 +43,39 @@ local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 
 mod:AddBoolOption("HealthFrame", true)
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption("ShowFrame", true)
-mod:AddBoolOption("FrameLocked", false)
-mod:AddBoolOption("FrameClassColor", true, nil, function()
-	mod:UpdateColors()
-end)
-mod:AddBoolOption("FrameUpwards", false, nil, function()
-	mod:ChangeFrameOrientation()
-end)
-mod:AddEditboxOption("FramePoint", "CENTER")
-mod:AddEditboxOption("FrameX", 150)
-mod:AddEditboxOption("FrameY", -50)
+-- mod:AddBoolOption("FrameLocked", false)
+-- mod:AddBoolOption("FrameClassColor", true, nil, function()
+-- 	mod:UpdateColors()
+-- end)
+-- mod:AddBoolOption("FrameUpwards", false, nil, function()
+-- 	mod:ChangeFrameOrientation()
+-- end)
+-- mod:AddEditboxOption("FramePoint", "CENTER")
+-- mod:AddEditboxOption("FrameX", 150)
+-- mod:AddEditboxOption("FrameY", -50)
 
 local portCount = 1
+
+function mod:TargetSpectralBlast()
+	local target = nil
+	target = mod:GetBossTarget(24850)
+	if target == UnitName("player") then
+		warnSpectralBlastYOU:Show()
+	end
+	timerTargetSpectralBlast:Start(target)
+end
 
 function mod:OnCombatStart(delay)
 	portCount = 1
 
-	timerNextBreath:Start(15-delay)
+	timerNextSpectralBlast:Start(8-delay)
 	timerNextBuffet:Start(10-delay)
-	timerNextSpectralBlast:Start(7-delay)
-	timerNextTailSweep:Start(20-delay)
+	timerNextBreath:Start(15-delay)
+	timerNextTailSweep:Start(21-delay)
 
-	if self.Options.ShowFrame then
-		self:CreateFrame()
-	end
+	-- if self.Options.ShowFrame then
+	-- 	self:CreateFrame()
+	-- end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end
@@ -74,18 +87,23 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	self:DestroyFrame()
+	-- self:DestroyFrame()
 	DBM.RangeCheck:Hide()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145512, 2145513) and args.amount and args.amount >= 3 then
-		specWarnBuffet:Show(args.destName, args.amount or 1)
+		if args.destName == UnitName("Player") then
+			specWarnBuffet:Show(args.amount or 1)
+		end
 		timerNextBuffet:Start()
 	elseif args:IsSpellID(2145501, 2145502) and args.amount and args.amount >= 10 and args.amount % 5 == 0 then
-		warnDescentIntoMadness:Show(args.destName, args.amount or 1)
+		warnDescentIntoMadness:Show(args.amount or 1)
 	elseif args:IsSpellID(2145524) then
-		warnMindWipe:Show()
+		if args.destName == UnitName("Player") then
+			warnStackMindWipe:Show(args.amount or 1)
+		end
+		warnStackMindWipe:Show(args.destName)
 	elseif args:IsSpellID(2145523) then
 		warnCorruptorsTouch:Show()
 	end
@@ -98,8 +116,11 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2145504) then
 		timerSpectralBlast:Start()
 		timerNextSpectralBlast:Start()
+		self:ScheduleMethod(0.2, "TargetSpectralBlast")
 	elseif args:IsSpellID(2145524) then
+		warnCastMindWipe:Show()
 		timerCastMindWipe:Start()
+		timerNextMindWipe:Start()
 	elseif args:IsSpellID(2145523) then
 		timerNextCorruptorsTouch:Start()
 	end

@@ -44,9 +44,9 @@ function mod:OnCombatStart(delay)
 	timerDarkness:Start(30-delay)
 	timerDarkFiend:Start(30-delay)
 
-	if self.Options.ShowFrame then
-		self:CreateFrame()
-	end
+	-- if self.Options.ShowFrame then
+	-- 	self:CreateFrame()
+	-- end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end

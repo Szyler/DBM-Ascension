@@ -17,7 +17,7 @@ mod:RegisterEvents(
     "CHAT_MSG_MONSTER_EMOTE",
     "CHAT_MSG_RAID_BOSS_EMOTE",
     "CHAT_MSG_MONSTER_SAY",
-    "CHAT_MSG_RAID_WARNING"
+    "CHAT_MSG_RAID_WARNING",
 	"UNIT_HEALTH"
 )
 
@@ -26,8 +26,8 @@ mod:SetBossHealthInfo(
 	25166, L.Alythess
 )
 
-local warnBossLeaves				= mod:NewSpellAnnounce(spellID, 3)
-local timerBossLeaves				= mod:NewNextTimer(0, spellID)
+local warnBossLeaves				= mod:NewSpellAnnounce(12345, 3)
+local timerBossLeaves				= mod:NewNextTimer(0, 12345)
 --lower HP boss leaves after 10 seconds
 local warnCharge					= mod:NewSpellAnnounce(2145907, 3)
 local timerCharge					= mod:NewNextTimer(30, 2145907)
@@ -35,11 +35,11 @@ local timerCharge					= mod:NewNextTimer(30, 2145907)
 local warnTankCombo					= mod:NewSpellAnnounce(2145919, 3)
 local timerTankCombo				= mod:NewNextTimer(0, 2145919)
 --boss gang bangs a tank, very hot
-local warnPhase2					= mod:NewSpellAnnounce(spellID, 3)
-local timerPhase2					= mod:NewNextTimer(0, spellID)
+local warnPhase2					= mod:NewSpellAnnounce(12345, 3)
+local timerPhase2					= mod:NewNextTimer(0, 12345)
 --Initial boss hits 50% HP and swaps other boss in
-local warnPhase3					= mod:NewSpellAnnounce(spellID, 3)
-local timerPhase3					= mod:NewNextTimer(0, spellID)
+local warnPhase3					= mod:NewSpellAnnounce(12345, 3)
+local timerPhase3					= mod:NewNextTimer(0, 12345)
 --Bosses merge together when secondary boss hits 0 HP
 
 function mod:OnCombatStart(delay)
@@ -52,7 +52,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) = (25165, 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) = 0.5 and DBM:AntiSpam(5,2) then
+	if (self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) == 0.5 and DBM:AntiSpam(5,2) then
 		--SZYLER PLS UNSCHEDULE ALL OTHER TIMERS HERE IDK HOW
 		warnPhase2:Show()
 		timerPhase2:Start(5-delay)
@@ -60,7 +60,8 @@ function mod:UNIT_HEALTH(uId)
 		timerTankCombo:Cancel()
 		timerTankCombo:Start(30-delay)
 		timerCharge:Start(35-delay)
-	elseif self:GetUnitCreatureId(uId) = (25165, 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and DBM:AntiSpam(5,2) then
+	elseif (self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and DBM:AntiSpam(5,2) then
+		-- Add your code here
 		warnPhase3:Show()
 		timerPhase3:Start(8-delay)
 		timerCharge:Cancel()
