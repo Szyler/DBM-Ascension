@@ -29,14 +29,15 @@ local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705,
 
 -- 10%, 10%, 13%, 15%, 15%.
 
-local warnTrample				= mod:NewTargetAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
+local warnTrample				= mod:NewSpellAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
-local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aura_applied
 
 local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
 local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
-local warnFelfireBurn			= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local warnFelfireBurnYou		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
 
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
@@ -68,7 +69,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args.destName == UnitName("Player") and args.amount and args.amount > 2 then
 			warnMeteorSlashStack:Show(args.amount or 1)
 		end
-	elseif args:IsSpellID(2145709, 2145710, 2145711) then
+	elseif args:IsSpellID(2145709) then --only main target
 		timerTargetTrample:Start(args.destName)
 	elseif args:IsSpellID(2145717, 2145718) then
 		warnFelfireBreath:Show(args.destName)
@@ -91,7 +92,11 @@ end
 
 function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2145719, 2145720, 2145721) and dbm:antiSpam(5) then
-		warnFelfireBurn:Show()
+		if args.destName == UnitName("Player") then
+			warnFelfireBurnYou:Show()
+		elseif
+			warnFelfireBurn:Show(args.destName)
+		end
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
@@ -101,6 +106,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerExcitement:Stop()
 		warnTrample:Show()
 		timerCastTrample:Start()
+		timerNextMeteorSlash:Stop()
 		timerNextMeteorSlash:Start(13)
 	end
 end
