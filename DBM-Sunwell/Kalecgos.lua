@@ -29,8 +29,10 @@ local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	--
 
 local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, nil, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
 
-local warnMindWipe						= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
+local warnCastMindWipe					= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
+local warnStackMindWipe					= mod:NewSpecialWarningStack(2145524, nil, 4)				-- 2145524 SPELL_CAST_START
 local timerCastMindWipe					= mod:NewCastTimer(2, 2145524)					-- 2145524 SPELL_CAST_START
+local timerNextMindWipe 				= mod:NewNextTimer(25, 2145524)              	-- 2145524 SPELL_CAST_START
 
 local warnCorruptorsTouch				= mod:NewSpellAnnounce(2145523, 2)				-- 2145523 SPELL_AURA_APPLIED
 local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 SPELL_AURA_APPLIED
@@ -55,10 +57,10 @@ local portCount = 1
 function mod:OnCombatStart(delay)
 	portCount = 1
 
-	timerNextBreath:Start(15-delay)
+	timerNextSpectralBlast:Start(8-delay)
 	timerNextBuffet:Start(10-delay)
-	timerNextSpectralBlast:Start(7-delay)
-	timerNextTailSweep:Start(20-delay)
+	timerNextBreath:Start(15-delay)
+	timerNextTailSweep:Start(21-delay)
 
 	if self.Options.ShowFrame then
 		self:CreateFrame()
@@ -80,12 +82,17 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145512, 2145513) and args.amount and args.amount >= 3 then
-		specWarnBuffet:Show(args.amount or 1)
+		if args.destName == UnitName("Player") then
+			specWarnBuffet:Show(args.amount or 1)
+		end
 		timerNextBuffet:Start()
 	elseif args:IsSpellID(2145501, 2145502) and args.amount and args.amount >= 10 and args.amount % 5 == 0 then
 		warnDescentIntoMadness:Show(args.amount or 1)
 	elseif args:IsSpellID(2145524) then
-		warnMindWipe:Show()
+		if args.destName == UnitName("Player") then
+			warnStackMindWipe:Show(args.amount or 1)
+		end
+		warnStackMindWipe:Show(args.destName)
 	elseif args:IsSpellID(2145523) then
 		warnCorruptorsTouch:Show()
 	end
@@ -99,7 +106,9 @@ function mod:SPELL_CAST_START(args)
 		timerSpectralBlast:Start()
 		timerNextSpectralBlast:Start()
 	elseif args:IsSpellID(2145524) then
+		warnCastMindWipe:Show()
 		timerCastMindWipe:Start()
+		timerNextMindWipe:Start()
 	elseif args:IsSpellID(2145523) then
 		timerNextCorruptorsTouch:Start()
 	end
