@@ -74,7 +74,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnFelfireBreath:Show(args.destName)
 		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
-		timerExcitement:Start()
+		timerExcitement:Start(args.destName)
 		hasExcitement = hasExcitement + 1
 	end
 end
