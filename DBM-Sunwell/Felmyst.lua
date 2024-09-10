@@ -19,8 +19,10 @@ mod:RegisterEvents(
 	"UNIT_AURA"
 )
 
+
+
 local warnGas				= mod:NewSpellAnnounce(45855, 3)
-local warnCorrosion			= mod:NewTargetAnnounce(45866, 2)
+
 local warnEncaps			= mod:NewTargetAnnounce(45665, 4)
 local warnVapor				= mod:NewTargetAnnounce(45392, 3)
 local warnBreath			= mod:NewCountAnnounce(45717, 4)
@@ -38,12 +40,39 @@ local yellEncaps			= mod:NewYellMe(45665)
 local timerGas				= mod:NewCastTimer(1, 45855)
 local timerGasCD			= mod:NewCDTimer(19, 45855)
 local timerCorrosion		= mod:NewTargetTimer(10, 45866)
+
 local timerEncaps			= mod:NewTargetTimer(7, 45665)
 local timerEncapsCD			= mod:NewCDTimer(50, 45665)
 local timerBreath			= mod:NewCDCountTimer(20, 45717)
-local timerPhase			= mod:NewTimer(60, "TimerPhase", 31550)
 
-local berserkTimer			= mod:NewBerserkTimer(600)
+
+
+
+local warnCastCorrosion 		= mod:NewSpellAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_cast_start
+local timerNextCorrosion		= mod:NewNextTimer(10, 2145808) -- 2145808, 2145809, 21458010 spell_cast_start
+local warnCorrosion				= mod:NewTargetAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_aura_applied
+
+local warnCastAcidicBreath 		= mod:NewSpellAnnounce(2145801, 2) -- 2145801, 2145802, 2145803, SPELL_CAST_START
+local timerNextAcidicBreath		= mod:NewNextTimer(12, 2145801) -- 2145801, 2145802, 2145803, SPELL_CAST_START
+local timerAcidicBreath			= mod:NewCastTimer(5, 2145801) -- 2145801, 2145802, 2145803, SPELL_CAST_START
+-- local warnAcidicBreath			= mod:NewTargetAnnounce(2145801, 2) -- 2145801, 2145802, 2145803, SPELL_CAST_START
+
+local warnCastNecroticBreath 	= mod:NewSpellAnnounce(2145801, 2) -- 2145817, 2145818, 2145819, 2145820, 2145821, 12 seconds after Acidic spell_cast_start
+local timerNextNecroticBreath	= mod:NewNextTimer(12, 2145801) -- 2145817, 2145818, 2145819, 2145820, 2145821,  12 seconds after Acidic spell_cast_start
+-- local warnNecroticBreath		= mod:NewTargetAnnounce(2145801, 2) -- 2145817, 2145818, 2145819, 2145820, 2145821, 12 seconds after Acidic spell_cast_start
+
+local warnCastInhale 			= mod:NewSpellAnnounce(2145833, 2) -- 2145833, spell_cast_start
+local timerNextInhale			= mod:NewNextTimer(17, 2145833) -- 2145833, spell_cast_start
+
+local timerNextNecroticDeluge	= mod:NewNextTimer(5, 2145835) -- 2145835, spell_cast_start
+local timerCastNecroticDeluge	= mod:NewCastTimer(4, 2145835) -- 2145835, spell_cast_start of inhale
+
+
+local warnTailSweep 			= mod:NewSpellAnnounce(2145806, 2) -- 2145806 spell_cast_success
+local warnNextTailSweep			= mod:NewNextTimer(10, 2145806) -- 2145806 spell_cast_success 1 sec after Corrosion
+
+local timerPhase				= mod:NewTimer(60, "TimerPhase", 31550)
+local berserkTimer				= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("EncapsIcon", true)
 mod:AddBoolOption("VaporIcon", true)
@@ -90,7 +119,8 @@ end
 function mod:OnCombatStart(delay)
 	breathCounter = 0
 	pull = GetTime()
-	timerGasCD:Start(16-delay)
+	timerNextAcidicBreath:Start(12-delay)
+	timernextCorrosion:Start(21-delay)
 	timerPhase:Start(-delay, L.Air)
 	berserkTimer:Start(-delay)
 	timerEncapsCD:Start()
