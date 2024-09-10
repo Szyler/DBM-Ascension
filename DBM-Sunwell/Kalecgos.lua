@@ -24,6 +24,8 @@ local timerNextBreath        			= mod:NewNextTimer(20, 2145511)              	--
 
 local timerSpectralBlast     			= mod:NewCastTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
 local timerNextSpectralBlast 			= mod:NewNextTimer(25, 2145504)              	-- 2145503, 2145504 SPELL_CAST_START
+local timerTargetSpectralBlast     		= mod:NewTargetTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
+local warnSpectralBlastYOU 				= mod:NewSpecialWarningYou(2145501, 4)     		-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
 
 local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	-- 2145506 Spell_cast_success 
 
@@ -53,6 +55,15 @@ mod:AddBoolOption("ShowFrame", true)
 -- mod:AddEditboxOption("FrameY", -50)
 
 local portCount = 1
+
+function mod:TargetSpectralBlast()
+	local target = nil
+	target = mod:GetBossTarget(24850)
+	if target == UnitName("player") then
+		warnSpectralBlastYOU:Show()
+	end
+	timerTargetSpectralBlast:Start(target)
+end
 
 function mod:OnCombatStart(delay)
 	portCount = 1
@@ -105,6 +116,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2145504) then
 		timerSpectralBlast:Start()
 		timerNextSpectralBlast:Start()
+		self:ScheduleMethod(0.2, "TargetSpectralBlast")
 	elseif args:IsSpellID(2145524) then
 		warnCastMindWipe:Show()
 		timerCastMindWipe:Start()
