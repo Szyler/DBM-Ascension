@@ -53,7 +53,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 25741 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and isphase2 == false and DBM:AntiSpam(5,2) then
+	if self:GetUnitCreatureId(uId) == 25741 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.5 and isphase2 == false and DBM:AntiSpam(5,2) then
 		isphase2 = true
 		warnPhase2:Show()
 		timerBlackHole:Start(23-delay)
