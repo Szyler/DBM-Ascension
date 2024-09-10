@@ -16,7 +16,7 @@ mod:RegisterEvents(
 
 local warnPortal						= mod:NewAnnounce("WarnPortal", 4, 46021)
 
-local specWarnBuffet         			= mod:NewSpecialWarningStack(2145512, 10)   	-- 2145512, 2145513 SPELL_AURA_APPLIED
+local specWarnBuffet         			= mod:NewSpecialWarningStack(2145512, nil, 10)   	-- 2145512, 2145513 SPELL_AURA_APPLIED
 local timerNextBuffet        			= mod:NewNextTimer(8, 2145512)               	-- 2145512, 2145513 SPELL_AURA_APPLIED
 
 local timerBreathCast        			= mod:NewCastTimer(2, 2145511)               	-- 2145509, 2145510, 2145511 SPELL_CAST_START
@@ -27,7 +27,7 @@ local timerNextSpectralBlast 			= mod:NewNextTimer(25, 2145504)              	--
 
 local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	-- 2145506 Spell_cast_success 
 
-local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
+local warnDescentIntoMadness 			= mod:NewSpecialWarningStack(2145501, nil, 5)     	-- 2145500, 2130501, 2130502 SPELL_AURA_APPLIED
 
 local warnMindWipe						= mod:NewSpellAnnounce(2145524, 2)				-- 2145524 SPELL_CAST_START
 local timerCastMindWipe					= mod:NewCastTimer(2, 2145524)					-- 2145524 SPELL_CAST_START
@@ -39,13 +39,13 @@ local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 
 mod:AddBoolOption("HealthFrame", true)
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption("ShowFrame", true)
-mod:AddBoolOption("FrameLocked", false)
-mod:AddBoolOption("FrameClassColor", true, nil, function()
-	mod:UpdateColors()
-end)
-mod:AddBoolOption("FrameUpwards", false, nil, function()
-	mod:ChangeFrameOrientation()
-end)
+-- mod:AddBoolOption("FrameLocked", false)
+-- mod:AddBoolOption("FrameClassColor", true, nil, function()
+-- 	mod:UpdateColors()
+-- end)
+-- mod:AddBoolOption("FrameUpwards", false, nil, function()
+-- 	mod:ChangeFrameOrientation()
+-- end)
 -- mod:AddEditboxOption("FramePoint", "CENTER")
 -- mod:AddEditboxOption("FrameX", 150)
 -- mod:AddEditboxOption("FrameY", -50)
@@ -80,10 +80,10 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145512, 2145513) and args.amount and args.amount >= 3 then
-		specWarnBuffet:Show(args.destName, args.amount or 1)
+		specWarnBuffet:Show(args.amount or 1)
 		timerNextBuffet:Start()
 	elseif args:IsSpellID(2145501, 2145502) and args.amount and args.amount >= 10 and args.amount % 5 == 0 then
-		warnDescentIntoMadness:Show(args.destName, args.amount or 1)
+		warnDescentIntoMadness:Show(args.amount or 1)
 	elseif args:IsSpellID(2145524) then
 		warnMindWipe:Show()
 	elseif args:IsSpellID(2145523) then
