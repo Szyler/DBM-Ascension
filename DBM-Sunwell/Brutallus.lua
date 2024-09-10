@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(24882)
-mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
+
 
 mod:RegisterCombat("combat")
 mod:RegisterCombat("yell", L.Pull)
@@ -107,7 +107,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_HEALTH(unit)
-	if (mod:GetUnitCreatureId(unit) == 17257) then
+	if (mod:GetUnitCreatureId(unit) == 24882) then
 		if hasExcitement ~= oldhasExcitement then
 			hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
 
