@@ -31,7 +31,7 @@ local warnPhase4		= mod:NewPhaseAnnounce(4)
 
 local warnSpikeTarget	= mod:NewTargetAnnounce(46589, 3)
 local specWarnSpike		= mod:NewSpecialWarningMove(46589)
-local specWarnBloom		= mod:NewSpecialWarningMoveAway(45641)
+local specWarnBloom		= mod:NewSpecialWarningMove(45641)
 local specWarnBomb		= mod:NewSpecialWarningSpell(46605, nil, nil, nil, 3)
 local specWarnShield	= mod:NewSpecialWarningSpell(45848)
 local specWarnDarkOrb	= mod:NewSpecialWarning("SpecWarnDarkOrb", true)

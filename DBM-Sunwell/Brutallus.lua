@@ -11,7 +11,7 @@ mod:RegisterCombat("yell", L.Pull)
 mod.disableHealthCombat = true
 
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_APPLIED",

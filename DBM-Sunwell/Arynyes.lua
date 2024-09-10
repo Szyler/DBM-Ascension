@@ -7,7 +7,7 @@ mod:SetUsedIcons()
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",

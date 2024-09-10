@@ -43,8 +43,8 @@ local timerCastNecroticDeluge	= mod:NewCastTimer(4, 2145835) -- 2145835, spell_c
 local warnTailSweep 			= mod:NewSpellAnnounce(2145806, 2) -- 2145806 spell_cast_success
 local warnNextTailSweep			= mod:NewNextTimer(10, 2145806) -- 2145806 spell_cast_success 1 sec after Corrosion
 
-local timerBreath			= mod:NewCDCountTimer(20, 45717)
-local warnBreath			= mod:NewCountAnnounce(45717, 4)
+local timerBreath			= mod:NewCDTimer(20, 45717)
+local warnBreath			= mod:NewSpellAnnounce(45717, 4)
 local warnPhase				= mod:NewAnnounce("WarnPhase", 1, 31550)
 
 local timerPhase				= mod:NewTimer(60, "TimerPhase", 31550)
