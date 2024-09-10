@@ -24,7 +24,7 @@ mod:RegisterEvents(
 )
 
 local warnMeteorSlash			= mod:NewSpellAnnounce(2145705, 2) -- 2145704, 2145705, 2145707, 2145708
-local warnMeteorSlashStack 		= mod:NewSpecialWarningStack(2145705, 5) -- 2145704, 2145705, 2145707, 2145708
+local warnMeteorSlashStack 		= mod:NewSpecialWarningStack(2145705, nil, 3) -- 2145704, 2145705, 2145707, 2145708
 local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705, 2145707, 2145708
 
 -- 10%, 10%, 13%, 15%, 15%.
@@ -65,7 +65,9 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
-		warnMeteorSlashStack:Show(args.destName, args.amount or 1)
+		if args.destName == UnitName("Player") and args.amount and args.amount > 2 then
+			warnMeteorSlashStack:Show(args.amount or 1)
+		end
 	elseif args:IsSpellID(2145709, 2145710, 2145711) then
 		timerTargetTrample:Start(args.destName)
 	elseif args:IsSpellID(2145717, 2145718) then
@@ -99,7 +101,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerExcitement:Stop()
 		warnTrample:Show()
 		timerCastTrample:Start()
-		timerMeteorSlash:Start(13)
+		timerNextMeteorSlash:Start(13)
 	end
 end
 
