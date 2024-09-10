@@ -56,11 +56,15 @@ function mod:UNIT_HEALTH(uId)
 		--SZYLER PLS UNSCHEDULE ALL OTHER TIMERS HERE IDK HOW
 		warnPhase2:Show()
 		timerPhase2:Start(5-delay)
+		timerCharge:Cancel()
+		timerTankCombo:Cancel()
 		timerTankCombo:Start(30-delay)
 		timerCharge:Start(35-delay)
 	elseif self:GetUnitCreatureId(uId) = (25165, 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and DBM:AntiSpam(5,2) then
 		warnPhase3:Show()
 		timerPhase3:Start(8-delay)
+		timerCharge:Cancel()
+		timerTankCombo:Cancel()
 		timerCharge:Start(12-delay)
 	end
 end

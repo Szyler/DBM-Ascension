@@ -52,6 +52,20 @@ function mod:OnCombatStart(delay)
 	end
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 2146322 then
+		warnDarkFiend:Show()
+		timerDarkFiend:Start(60-delay)
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args.spellId == (2146303, 2146304, 2146305) then
+		warnVoidCutter:Show()
+		timerVoidCutterSpawn:Start(60-delay)
+	end
+end
+
 function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 25741 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.5 and isphase2 == false and DBM:AntiSpam(5,2) then
 		isphase2 = true
@@ -106,29 +120,6 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(10, "HumanSpawn")
 	self:ScheduleMethod(36.5, "VoidSpawn")
 	berserkTimer:Start(-delay)
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 45996 and args:GetDestCreatureID() == 25741 then
-		warnDarkness:Show()
-		specWarnVoid:Show()
-		timerNextDarkness:Start()
-		timerDarknessDura:Start()
-		specWarnDarknessSoon:Schedule(40)
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 46177 then
-		warned_phase2 =  true
-		timerNextDarkness:Cancel()
-		timerHuman:Cancel()
-		timerVoid:Cancel()
-		specWarnVW:Cancel()
-		timerPhase:Start()
-		specWarnDarknessSoon:Cancel()
-		self:Schedule(6, phase2)
-	end
 end
 
 function mod:SPELL_SUMMON(args)
