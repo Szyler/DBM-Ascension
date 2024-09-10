@@ -19,6 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
+	"UNIT_HEALTH",
 	"UNIT_DIED"
 )
 
@@ -41,10 +42,23 @@ local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_ap
 
 local berserkTimer				= mod:NewBerserkTimer(360)
 
+local hasExcitement = 0
+local oldhasExcitement = 0
+local hp = 100
+local newHP = 100
+local hpAtEnd = 0
+local oldTime = 0
+local currTime = 0
+local timeElapsed = 0
+local timeToEnd = 0
+
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
+	hasExcitement = 0
+	oldhasExcitement = 0
+	hp = 100
+	newHP = 100
 	timerMeteorSlash:Start(10-delay)
-	timerNextTrample:Start(23-delay)
 	timerNextFelfireBreath:Start(45-delay)
 	berserkTimer:Start(-delay)
 end
@@ -59,6 +73,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
 		timerExcitement:Start()
+		hasExcitement = hasExcitement + 1
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -67,8 +82,8 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
 		warnMeteorSlash:Show()
 		timerNextMeteorSlash:Start()
-	elseif args:IsSpellID(2145709, 2145710, 2145711) then
-		timerNextTrample:Start()
+	-- elseif args:IsSpellID(2145709, 2145710, 2145711) then
+	-- 	timerNextTrample:Start()
 	end
 end
 
@@ -89,6 +104,32 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:OnCombatEnd()
+end
+
+function mod:UNIT_HEALTH(unit)
+	if (mod:GetUnitCreatureId(unit) == 17257) then
+		if hasExcitement ~= oldhasExcitement then
+			hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+
+			oldhasExcitement = hasExcitement
+			if hasExcitement == 1 	  or hasExcitement == 2 then hpAtEnd = hp - 10
+			elseif hasExcitement == 3 						then hpAtEnd = hp - 13
+			elseif hasExcitement == 4 or hasExcitement == 5 then hpAtEnd = hp - 15
+			elseif hasExcitement == 6 						then hpAtEnd = hp - 17
+			elseif hasExcitement == 7 or hasExcitement == 8 then hpAtEnd = hp - 19
+			end
+			newHP = hp
+			currTime = GetTime()
+		elseif hp ~= newHP then
+			newHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+			oldTime = currTime
+			currTime = GetTime()
+			timeElapsed = currTime - oldTime
+
+			timeToEnd = timeElapsed * (newHP - hpAtEnd)
+			timerNextTrample(timeToEnd)
+        end
+    end
 end
 
 --[[
