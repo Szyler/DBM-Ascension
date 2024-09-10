@@ -52,13 +52,13 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166 and (UnitHealth(uId) / UnitHealthMax(uId)) == 0.5 and DBM:AntiSpam(5,2) then
+	if (self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) == 0.5 and DBM:AntiSpam(5,2) then
 		--SZYLER PLS UNSCHEDULE ALL OTHER TIMERS HERE IDK HOW
 		warnPhase2:Show()
 		timerPhase2:Start(5-delay)
 		timerTankCombo:Start(30-delay)
 		timerCharge:Start(35-delay)
-	elseif self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and DBM:AntiSpam(5,2) then
+	elseif (self:GetUnitCreatureId(uId) == 25165 or self:GetUnitCreatureId(uId) == 25166) and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.0 and DBM:AntiSpam(5,2) then
 		-- Add your code here
 		warnPhase3:Show()
 		timerPhase3:Start(8-delay)
