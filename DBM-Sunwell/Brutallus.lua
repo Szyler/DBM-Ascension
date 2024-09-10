@@ -58,7 +58,7 @@ function mod:OnCombatStart(delay)
 	oldhasExcitement = 0
 	hp = 100
 	newHP = 100
-	timerMeteorSlash:Start(10-delay)
+	timerNextMeteorSlash:Start(10-delay)
 	timerNextFelfireBreath:Start(45-delay)
 	berserkTimer:Start(-delay)
 end
