@@ -94,7 +94,7 @@ function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(2145719, 2145720, 2145721) and dbm:antiSpam(5) then
 		if args.destName == UnitName("Player") then
 			warnFelfireBurnYou:Show()
-		elseif
+		else
 			warnFelfireBurn:Show(args.destName)
 		end
 	end
