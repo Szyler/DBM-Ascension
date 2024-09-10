@@ -62,9 +62,9 @@ function mod:OnCombatStart(delay)
 	timerNextBreath:Start(15-delay)
 	timerNextTailSweep:Start(21-delay)
 
-	if self.Options.ShowFrame then
-		self:CreateFrame()
-	end
+	-- if self.Options.ShowFrame then
+	-- 	self:CreateFrame()
+	-- end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end
@@ -76,7 +76,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	self:DestroyFrame()
+	-- self:DestroyFrame()
 	DBM.RangeCheck:Hide()
 end
 
