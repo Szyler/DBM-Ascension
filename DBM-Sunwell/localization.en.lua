@@ -3,7 +3,7 @@ local L
 ---------------
 --  Kalecgos --
 ---------------
-L = DBM:GetModLocalization("Kal")
+L = DBM:GetModLocalization("KalKalecgos")
 
 L:SetGeneralLocalization{
 	name = "Kalecgos"
