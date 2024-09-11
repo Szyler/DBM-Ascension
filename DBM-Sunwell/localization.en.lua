@@ -84,6 +84,31 @@ L:SetMiscLocalization{
 	Breath			= "%s takes a deep breath."
 }
 
+--------------
+--  High Commander Arynyes --
+--------------
+L = DBM:GetModLocalization("Arynyes")
+
+L:SetGeneralLocalization({
+	name = "High Commander Arynyes"
+})
+
+L:SetWarningLocalization({
+
+})
+
+L:SetTimerLocalization({
+
+})
+
+L:SetOptionLocalization({
+
+})
+
+L:SetMiscLocalization({
+	ArynPull			= "I will not fail!"
+})
+
 -----------------------
 --  The Eredar Twins --
 -----------------------
@@ -176,5 +201,18 @@ L:SetMiscLocalization{
 	OrbYell2		= "I have empowered another orb! Use it quickly!",
 	OrbYell3		= "Another orb is ready! Make haste!",
 	OrbYell4		= "I have channeled all I can! The power is in your hands!"
+
+}
+
+----------------
+--  Trash --
+----------------
+L = DBM:GetModLocalization("Trash")
+
+L:SetGeneralLocalization{
+	name = "Trash"
+}
+
+L:SetMiscLocalization{
 
 }
