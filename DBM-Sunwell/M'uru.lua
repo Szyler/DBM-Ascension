@@ -8,8 +8,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_SUMMON",
+	"SPELL_CAST_START",
 	"UNIT_DIED",
 	"UNIT_HEALTH"
 )
