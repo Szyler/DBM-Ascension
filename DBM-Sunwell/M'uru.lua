@@ -60,7 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == (2146303, 2146304, 2146305) then
+	if args:IsSpellID(2146303, 2146304, 2146305) then
 		warnVoidCutter:Show()
 		timerVoidCutterSpawn:Start(60-delay)
 	end
