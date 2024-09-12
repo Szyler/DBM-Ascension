@@ -3055,6 +3055,10 @@ do
 		return schedule(t, self.Show, self.mod, self, ...)
 	end
 
+	function specialWarningPrototype:Countdown(time, numAnnounces, ...)
+		return scheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
+	end
+
 	function specialWarningPrototype:Cancel(t, ...)
 		return unschedule(self.Show, self.mod, self, ...)
 	end
