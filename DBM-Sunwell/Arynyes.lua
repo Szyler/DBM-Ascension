@@ -7,7 +7,7 @@ mod:SetUsedIcons()
 
 mod:RegisterCombat("yell", L.ArynPull)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START 2145870 2145874",
 	"SPELL_CAST_SUCCESS 2145867",
 	"CHAT_MSG_MONSTER_YELL",
