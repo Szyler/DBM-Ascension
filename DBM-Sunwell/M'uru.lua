@@ -14,16 +14,18 @@ mod:RegisterEvents(
 	"UNIT_HEALTH"
 )
 
-local warnDarkness			= mod:NewSpellAnnounce(2146301, 2)
+
+local warnVoidSpike			= mod:NewSpellAnnounce(2146314, 2)			
+local warnDarkness			= mod:NewSpecialWarningYou(2146301, 4)
 local timerDarkness			= mod:NewNextTimer(0, 2146301)
 --local warnVoidRift			= mod:NewAnnounce("WarnVoidRift", 4, 2146310)
 --local timerVoidRift			= mod:NewNextTimer(60, 2146310)
-local warnVoidSentinel		= mod:NewAnnounce("WarnSentinel", 4, 2146312)
+local warnVoidSentinel		= mod:NewSpellAnnounce(2146312, 2)
 local timerVoidSentinel		= mod:NewNextTimer(60, 2146312)
-local SpecWarnVoidSpawn		= mod:NewAnnounce("WarnVoidSpawn", 4, 2146330)
-local warnDarkFiend			= mod:NewAnnounce("WarnFiend", 2, 2146320)
+local SpecWarnVoidSpawn		= mod:NewSpellAnnounce(2146330, 2)--("WarnVoidSpawn", 4, 2146330)
+local warnDarkFiend			= mod:NewSpellAnnounce(2146320, 2)--("WarnFiend", 2, 2146320)
 local timerDarkFiend		= mod:NewNextTimer(60, 2146320)
-local warnVoidCutter		= mod:NewAnnounce("WarnVoidCutter", 2, 2146303)
+local warnVoidCutter		= mod:NewSpellAnnounce(2146303, 2)--("WarnVoidCutter", 2, 2146303)
 local timerVoidCutterSpawn	= mod:NewNextTimer(64, 2146303)
 --local timerVoidCutterActive	= mod:NewNextTimer(64, 2146303)
 
@@ -32,45 +34,49 @@ local warnBlackHole			= mod:NewSpellAnnounce(2146370, 3)
 local timerBlackHole		= mod:NewNextTimer(20, 2146370)
 
 
-local isphase2 = false
-
 function mod:OnCombatStart(delay)
-	isphase2 = false
+	self.vb.phase = 1
 
 	--timerVoidRift:Start(5-delay)
+	-- timerDarkness:Start(3-delay)
+	--timerVoidCutterActive:Start(25-delay)
 	timerVoidSentinel:Start(10-delay)
 	timerVoidCutterSpawn:Start(20-delay)
-	--timerVoidCutterActive:Start(25-delay)
-	timerDarkness:Start(30-delay)
 	timerDarkFiend:Start(30-delay)
-
-	-- if self.Options.ShowFrame then
-	-- 	self:CreateFrame()
-	-- end
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show()
-	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 2146322 then
+	if args:IsSpellID(2146314) then
+		if args:IsPlayer() then
+			warnDarkness:Show()
+		end
+	end
+end
+
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(2146322) and DBM:AntiSpam() then
 		warnDarkFiend:Show()
-		timerDarkFiend:Start(60-delay)
+		timerVoidCutterSpawn:Start(60)
+
+		warnVoidSentinel:Schedule(40)
+		timerVoidSentinel:Start(40)
+
+		timerVoidCutterSpawn:Start(55)
+		warnVoidCutter:Schedule(55)
+	elseif args:IsSpellID(2146314) then
+		warnVoidSpike:Show()
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(2146303, 2146304, 2146305) then
-		warnVoidCutter:Show()
-		timerVoidCutterSpawn:Start(60-delay)
-	end
-end
-
-function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 25741 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.5 and isphase2 == false and DBM:AntiSpam(5,2) then
-		isphase2 = true
-		warnPhase2:Show()
-		timerBlackHole:Start(23-delay)
+function mod:UNIT_HEALTH(unit)
+	if mod:GetUnitCreatureId(unit) == 25741 and self.vb.phase == 1 then
+		local hp = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100
+		if hp <= 50 then
+			self.vb.phase = 2
+			warnPhase2:Show()
+			timerBlackHole:Start(23-delay)
+		end
 	end
 end
 
