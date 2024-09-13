@@ -43,8 +43,9 @@ local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720,
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
 
-local hasExcitement = 0
+local excitementStage = 0
 local oldhasExcitement = 0
+local hasExcitement = false
 local hp = 100
 local prevHP = 100
 local hpAtEnd = 0
@@ -56,6 +57,7 @@ local timeToEnd = 0
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	hasExcitement = 0
+	excitementStage = 0
 	oldhasExcitement = 0
 	hp = 100
 	prevHP = 100
@@ -74,8 +76,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnFelfireBreath:Show(args.destName)
 		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
+		hasExcitement = true
 		timerExcitement:Start(args.destName)
-		hasExcitement = hasExcitement + 1
+		excitementStage = excitementStage + 1
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -105,6 +108,7 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2145703) then
+		hasExcitement = false
 		timerExcitement:Stop()
 		warnTrample:Show()
 		timerCastTrample:Start()
@@ -117,16 +121,16 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_HEALTH(unit)
-	if (mod:GetUnitCreatureId(unit) == 24882) then
+	if (mod:GetUnitCreatureId(unit) == 24882) and hasExcitement then
 		hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
-		if hasExcitement ~= oldhasExcitement then
+		if excitementStage ~= oldhasExcitement then
 
-			oldhasExcitement = hasExcitement
-			if hasExcitement == 1 	  or hasExcitement == 2 then hpAtEnd = hp - 10
-			elseif hasExcitement == 3 						then hpAtEnd = hp - 13
-			elseif hasExcitement == 4 or hasExcitement == 5 then hpAtEnd = hp - 15
-			elseif hasExcitement == 6 						then hpAtEnd = hp - 17
-			elseif hasExcitement == 7 or hasExcitement == 8 then hpAtEnd = hp - 19
+			oldhasExcitement = excitementStage
+			if excitementStage == 1 	  or excitementStage == 2 then hpAtEnd = hp - 10
+			elseif excitementStage == 3 						then hpAtEnd = hp - 13
+			elseif excitementStage == 4 or excitementStage == 5 then hpAtEnd = hp - 15
+			elseif excitementStage == 6 						then hpAtEnd = hp - 17
+			elseif excitementStage == 7 or excitementStage == 8 then hpAtEnd = hp - 19
 			end
 			prevHP = hp
 			currTime = GetTime()
@@ -137,7 +141,7 @@ function mod:UNIT_HEALTH(unit)
 			timeElapsed = currTime - oldTime
 
 			timeToEnd = timeElapsed * (hp - hpAtEnd)
-			if timeToEnd < 5 then
+			if timeToEnd < 5 and timeToEnd > 0 then
 				warnTrampleSoon:Show()
 			end
 
