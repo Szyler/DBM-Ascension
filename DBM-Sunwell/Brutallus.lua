@@ -30,6 +30,7 @@ local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705,
 -- 10%, 10%, 13%, 15%, 15%.
 
 local warnTrample				= mod:NewSpellAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
+local warnTrampleSoon			= mod:NewSoonAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aura_applied
@@ -136,6 +137,10 @@ function mod:UNIT_HEALTH(unit)
 			timeElapsed = currTime - oldTime
 
 			timeToEnd = timeElapsed * (hp - hpAtEnd)
+			if timeToEnd < 5 then
+				warnTrampleSoon:Show()
+			end
+			
 			timerNextTrample:Start(timeToEnd)
         end
     end
