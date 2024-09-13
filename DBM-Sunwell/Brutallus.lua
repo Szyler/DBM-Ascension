@@ -46,7 +46,7 @@ local berserkTimer				= mod:NewBerserkTimer(50)
 local hasExcitement = 0
 local oldhasExcitement = 0
 local hp = 100
-local newHP = 100
+local prevHP = 100
 local hpAtEnd = 0
 local oldTime = 0
 local currTime = 0
@@ -58,7 +58,7 @@ function mod:OnCombatStart(delay)
 	hasExcitement = 0
 	oldhasExcitement = 0
 	hp = 100
-	newHP = 100
+	prevHP = 100
 	timerNextMeteorSlash:Start(10-delay)
 	timerNextFelfireBreath:Start(45-delay)
 end
@@ -120,8 +120,8 @@ end
 
 function mod:UNIT_HEALTH(unit)
 	if (mod:GetUnitCreatureId(unit) == 24882) then
+		hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
 		if hasExcitement ~= oldhasExcitement then
-			hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
 
 			oldhasExcitement = hasExcitement
 			if hasExcitement == 1 	  or hasExcitement == 2 then hpAtEnd = hp - 10
@@ -130,15 +130,15 @@ function mod:UNIT_HEALTH(unit)
 			elseif hasExcitement == 6 						then hpAtEnd = hp - 17
 			elseif hasExcitement == 7 or hasExcitement == 8 then hpAtEnd = hp - 19
 			end
-			newHP = hp
+			prevHP = hp
 			currTime = GetTime()
-		elseif hp ~= newHP then
-			newHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+		elseif hp ~= prevHP then
+			prevHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
 			oldTime = currTime
 			currTime = GetTime()
 			timeElapsed = currTime - oldTime
 
-			timeToEnd = timeElapsed * (newHP - hpAtEnd)
+			timeToEnd = timeElapsed * (hp - hpAtEnd)
 			timerNextTrample(timeToEnd)
         end
     end
