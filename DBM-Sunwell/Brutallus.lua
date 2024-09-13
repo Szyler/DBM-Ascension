@@ -139,7 +139,7 @@ function mod:UNIT_HEALTH(unit)
 			timeElapsed = currTime - oldTime
 
 			timeToEnd = timeElapsed * (hp - hpAtEnd)
-			timerNextTrample(timeToEnd)
+			timerNextTrample:Start(timeToEnd)
         end
     end
 end
