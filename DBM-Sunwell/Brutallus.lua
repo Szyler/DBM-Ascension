@@ -84,7 +84,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
 		warnMeteorSlash:Show()
 		timerNextMeteorSlash:Start()
-		if timerTargetTrample:GetTime() then
+		if timerTargetTrample:GetTime() > 0 then
 			timerTargetTrample:AddTime(2)
 		end
 	-- elseif args:IsSpellID(2145709, 2145710, 2145711) then
@@ -140,7 +140,7 @@ function mod:UNIT_HEALTH(unit)
 			if timeToEnd < 5 then
 				warnTrampleSoon:Show()
 			end
-			
+
 			timerNextTrample:Start(timeToEnd)
         end
     end
