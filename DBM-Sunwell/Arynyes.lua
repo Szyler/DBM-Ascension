@@ -39,7 +39,7 @@ local timerJudgement			= mod:NewNextTimer(30, 2145874)
 local castJudgement				= mod:NewCastTimer(1, 2145874)
 local warnJudgement				= mod:NewSpellAnnounce(2145874, 2)
 
-local berserkTimer				= mod:NewBerserkTimer(360)
+local berserkTimer				= mod:NewBerserkTimer(600)
 
 
 function mod:OnCombatStart(delay)

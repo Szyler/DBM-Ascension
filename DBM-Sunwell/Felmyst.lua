@@ -55,7 +55,7 @@ local warnBreath				= mod:NewSpellAnnounce(45717, 4)
 local warnPhase					= mod:NewAnnounce("WarnPhase", 1, 31550)
 
 local timerPhase				= mod:NewTimer(60, "TimerPhase", 31550)
-local berserkTimer				= mod:NewBerserkTimer(600)
+local berserkTimer				= mod:NewBerserkTimer(720)
 
 
 local breathCounter = 0

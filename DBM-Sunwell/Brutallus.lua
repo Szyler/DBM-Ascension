@@ -41,7 +41,7 @@ local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720,
 
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
-local berserkTimer				= mod:NewBerserkTimer(360)
+local berserkTimer				= mod:NewBerserkTimer(50)
 
 local hasExcitement = 0
 local oldhasExcitement = 0
@@ -61,7 +61,6 @@ function mod:OnCombatStart(delay)
 	newHP = 100
 	timerNextMeteorSlash:Start(10-delay)
 	timerNextFelfireBreath:Start(45-delay)
-	berserkTimer:Start(-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -75,6 +74,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnFelfireBreath:Show(args.destName)
 		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
+		berserkTimer:Start()
 		timerExcitement:Start(args.destName)
 		hasExcitement = hasExcitement + 1
 	end
@@ -103,6 +103,7 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2145703) then
+		berserkTimer:Stop()
 		timerExcitement:Stop()
 		warnTrample:Show()
 		timerCastTrample:Start()

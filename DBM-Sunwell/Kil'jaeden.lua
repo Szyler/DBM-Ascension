@@ -44,7 +44,7 @@ local timerConflagrationCast 	= mod:NewCastTimer(3, 2146673)
 -- make warnings and timers for these, and make the trigger in their respective functions
 -- Change all args.spellID into args:IsSpellID() with comma separated for the spellIDs
 
-
+local berserkTimer				= mod:NewBerserkTimer(900)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1

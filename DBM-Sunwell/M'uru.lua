@@ -32,6 +32,7 @@ local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnBlackHole			= mod:NewSpellAnnounce(2146370, 3)
 local timerBlackHole		= mod:NewNextTimer(20, 2146370)
 
+local berserkTimer				= mod:NewBerserkTimer(600)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
@@ -42,6 +43,7 @@ function mod:OnCombatStart(delay)
 	timerVoidSentinel:Start(10-delay)
 	timerVoidCutterSpawn:Start(20-delay)
 	timerDarkFiend:Start(30-delay)
+	berserkTimer:Start(-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)

@@ -50,7 +50,7 @@ local warnLunarBurnStack			= mod:NewSpecialWarningStack(2146005, nil, 5) -- 2145
 local warnLunarFlare				= mod:NewSpellAnnounce(2146007, 3) -- 2145907, 2145908
 
 
-
+local berserkTimer					= mod:NewBerserkTimer(600)
 
 ----
 local warnBossLeaves				= mod:NewSpellAnnounce(12345, 3)
@@ -73,6 +73,7 @@ function mod:OnCombatStart(delay)
 	timerBossLeaves:Start(10-delay)
 	timerCharge:Start(15-delay)
 	timerTankCombo:Start(40-delay)
+	berserkTimer:Start(-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
 	end

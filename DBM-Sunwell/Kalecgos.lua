@@ -39,6 +39,7 @@ local timerNextMindWipe 				= mod:NewNextTimer(25, 2145524)              	-- 214
 local warnCorruptorsTouch				= mod:NewSpellAnnounce(2145523, 2)				-- 2145523 SPELL_AURA_APPLIED
 local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 SPELL_AURA_APPLIED
 
+local berserkTimer				= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("HealthFrame", true)
 mod:AddBoolOption("RangeFrame", true)
@@ -72,6 +73,7 @@ function mod:OnCombatStart(delay)
 	timerNextBuffet:Start(10-delay)
 	timerNextBreath:Start(15-delay)
 	timerNextTailSweep:Start(21-delay)
+	berserkTimer:Start(-delay)
 
 	-- if self.Options.ShowFrame then
 	-- 	self:CreateFrame()
