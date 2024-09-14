@@ -30,6 +30,7 @@ local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705,
 -- 10%, 10%, 13%, 15%, 15%.
 
 local warnTrample				= mod:NewSpellAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
+local warnTrampleSoon			= mod:NewSoonAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aura_applied
@@ -41,12 +42,12 @@ local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720,
 
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
-local berserkTimer				= mod:NewBerserkTimer(50)
 
-local hasExcitement = 0
+local excitementStage = 0
 local oldhasExcitement = 0
+local hasExcitement = false
 local hp = 100
-local newHP = 100
+local prevHP = 100
 local hpAtEnd = 0
 local oldTime = 0
 local currTime = 0
@@ -56,9 +57,10 @@ local timeToEnd = 0
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	hasExcitement = 0
+	excitementStage = 0
 	oldhasExcitement = 0
 	hp = 100
-	newHP = 100
+	prevHP = 100
 	timerNextMeteorSlash:Start(10-delay)
 	timerNextFelfireBreath:Start(45-delay)
 end
@@ -74,9 +76,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnFelfireBreath:Show(args.destName)
 		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
-		berserkTimer:Start()
+		hasExcitement = true
 		timerExcitement:Start(args.destName)
-		hasExcitement = hasExcitement + 1
+		excitementStage = excitementStage + 1
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -85,6 +87,9 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2145705, 2145706, 2145707, 2145708) then
 		warnMeteorSlash:Show()
 		timerNextMeteorSlash:Start()
+		if timerTargetTrample:GetTime() > 0 then
+			timerTargetTrample:AddTime(2)
+		end
 	-- elseif args:IsSpellID(2145709, 2145710, 2145711) then
 	-- 	timerNextTrample:Start()
 	end
@@ -103,7 +108,7 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2145703) then
-		berserkTimer:Stop()
+		hasExcitement = false
 		timerExcitement:Stop()
 		warnTrample:Show()
 		timerCastTrample:Start()
@@ -116,27 +121,31 @@ function mod:OnCombatEnd()
 end
 
 function mod:UNIT_HEALTH(unit)
-	if (mod:GetUnitCreatureId(unit) == 24882) then
-		if hasExcitement ~= oldhasExcitement then
-			hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+	if (mod:GetUnitCreatureId(unit) == 24882) and hasExcitement then
+		hp = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+		if excitementStage ~= oldhasExcitement then
 
-			oldhasExcitement = hasExcitement
-			if hasExcitement == 1 	  or hasExcitement == 2 then hpAtEnd = hp - 10
-			elseif hasExcitement == 3 						then hpAtEnd = hp - 13
-			elseif hasExcitement == 4 or hasExcitement == 5 then hpAtEnd = hp - 15
-			elseif hasExcitement == 6 						then hpAtEnd = hp - 17
-			elseif hasExcitement == 7 or hasExcitement == 8 then hpAtEnd = hp - 19
+			oldhasExcitement = excitementStage
+			if excitementStage == 1 	  or excitementStage == 2 then hpAtEnd = hp - 10
+			elseif excitementStage == 3 						then hpAtEnd = hp - 13
+			elseif excitementStage == 4 or excitementStage == 5 then hpAtEnd = hp - 15
+			elseif excitementStage == 6 						then hpAtEnd = hp - 17
+			elseif excitementStage == 7 or excitementStage == 8 then hpAtEnd = hp - 19
 			end
-			newHP = hp
+			prevHP = hp
 			currTime = GetTime()
-		elseif hp ~= newHP then
-			newHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
+		elseif hp ~= prevHP then
+			prevHP = math.ceil((math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100)
 			oldTime = currTime
 			currTime = GetTime()
 			timeElapsed = currTime - oldTime
 
-			timeToEnd = timeElapsed * (newHP - hpAtEnd)
-			timerNextTrample(timeToEnd)
+			timeToEnd = timeElapsed * (hp - hpAtEnd)
+			if timeToEnd < 5 and timeToEnd > 0 then
+				warnTrampleSoon:Show()
+			end
+
+			timerNextTrample:Start(timeToEnd)
         end
     end
 end
