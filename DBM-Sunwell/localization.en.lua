@@ -3,7 +3,7 @@ local L
 ---------------
 --  Kalecgos --
 ---------------
-L = DBM:GetModLocalization("KalKalecgos")
+L = DBM:GetModLocalization("Kalecgos")
 
 L:SetGeneralLocalization{
 	name = "Kalecgos"
@@ -50,7 +50,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	Pull			= "Ah, more lambs to the slaughter!"
+	BrutPull			= "Ah, more lambs to the slaughter!"
 }
 
 --------------
@@ -196,7 +196,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	YellPull		= "The expendable have perished. So be it! Now I shall succeed where Sargeras could not! I will bleed this wretched world and secure my place as the true master of the Burning Legion! The end has come! Let the unravelling of this world commence!",
+	KJPull			= "The expendable have perished. So be it! Now I shall succeed where Sargeras could not! I will bleed this wretched world and secure my place as the true master of the Burning Legion! The end has come! Let the unravelling of this world commence!",
 	OrbYell1		= "I will channel my powers into the orbs! Be ready!",
 	OrbYell2		= "I have empowered another orb! Use it quickly!",
 	OrbYell3		= "Another orb is ready! Make haste!",

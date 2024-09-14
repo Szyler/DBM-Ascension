@@ -6,7 +6,7 @@ mod:SetCreatureID(24882)
 
 
 mod:RegisterCombat("combat")
-mod:RegisterCombat("yell", L.Pull)
+mod:RegisterCombat("yell", L.BrutPull)
 
 mod.disableHealthCombat = true
 

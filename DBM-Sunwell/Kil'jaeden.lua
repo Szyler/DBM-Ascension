@@ -46,6 +46,10 @@ local timerConflagrationCast 	= mod:NewCastTimer(3, 2146673)
 
 local berserkTimer				= mod:NewBerserkTimer(900)
 
+-- KJ timers
+local timerEmerge				= mod:NewTimer(17,"Kil'Jaeden is emerging")
+
+
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	timerNextSoulbomb:Start(5-delay)
@@ -89,6 +93,12 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.KJPull or msg:find(L.KJPull) then
+		self.vb.phase = 2
+	end
 end
 
 
