@@ -56,7 +56,7 @@ local timeToEnd = 0
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-	hasExcitement = 0
+	hasExcitement = false
 	excitementStage = 0
 	oldhasExcitement = 0
 	hp = 100
