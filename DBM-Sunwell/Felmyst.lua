@@ -22,6 +22,7 @@ mod:RegisterEvents(
 
 local warnCastCorrosion 		= mod:NewSpellAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_cast_start
 local timerNextCorrosion		= mod:NewNextTimer(45, 2145808) -- 2145808, 2145809, 21458010 spell_cast_start
+local timerCastCorrosion		= mod:NewCastTimer(5, 2145808) -- 2145808, 2145809, 21458010 spell_cast_start
 -- local warnCorrosion				= mod:NewTargetAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_aura_applied
 
 local warnCastAcidicBreath 		= mod:NewSpellAnnounce(2145801, 2) -- 2145801, 2145802, 2145803, SPELL_CAST_START
@@ -72,7 +73,7 @@ end
 
 function mod:OnCombatStart(delay)
 	breathCounter = 0
-	timerNextCorrosion:Start(21-delay)
+	timerNextCorrosion:Start(15-delay)
 	warnNextTailSweep:Start(29-delay)
 	berserkTimer:Start(-delay)
 end
@@ -100,6 +101,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2145808, 2145809, 2145810) then
 		warnCastCorrosion:Show()
 		timerNextCorrosion:Start()
+		timerCastCorrosion:Start()
 		-- warnCorrosion:Show()
 	-- elseif args:IsSpellID(2145833) then
 	-- 	timerNextInhale:Start()
