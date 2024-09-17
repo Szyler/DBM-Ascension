@@ -76,7 +76,7 @@ function mod:UNIT_HEALTH(unit)
 		if hp <= 50 then
 			self.vb.phase = 2
 			warnPhase2:Show()
-			timerBlackHole:Start(23-delay)
+			timerBlackHole:Start(23)
 		end
 	end
 end
