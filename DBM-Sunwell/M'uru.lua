@@ -58,7 +58,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2146322) and DBM:AntiSpam() then
 		warnDarkFiend:Show()
-		timerVoidCutterSpawn:Start(60)
+		timerDarkFiend:Start(60)
 
 		warnVoidSentinel:Schedule(40)
 		timerVoidSentinel:Start(40)
