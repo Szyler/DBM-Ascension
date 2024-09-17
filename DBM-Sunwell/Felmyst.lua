@@ -21,11 +21,11 @@ mod:RegisterEvents(
 
 
 local warnCastCorrosion 		= mod:NewSpellAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_cast_start
-local timerNextCorrosion		= mod:NewNextTimer(10, 2145808) -- 2145808, 2145809, 21458010 spell_cast_start
+local timerNextCorrosion		= mod:NewNextTimer(45, 2145808) -- 2145808, 2145809, 21458010 spell_cast_start
 -- local warnCorrosion				= mod:NewTargetAnnounce(2145808, 2) -- 2145808, 2145809, 21458010 spell_aura_applied
 
 local warnCastAcidicBreath 		= mod:NewSpellAnnounce(2145801, 2) -- 2145801, 2145802, 2145803, SPELL_CAST_START
-local timerNextAcidicBreath		= mod:NewNextTimer(12, 2145801) -- 2145801, 2145802, 2145803, SPELL_CAST_START
+local timerNextAcidicBreath		= mod:NewNextTimer(22, 2145801) -- 2145801, 2145802, 2145803, SPELL_CAST_START
 local timerAcidicBreath			= mod:NewCastTimer(5, 2145801) -- 2145801, 2145802, 2145803, SPELL_CAST_START
 -- local warnAcidicBreath			= mod:NewTargetAnnounce(2145801, 2) -- 2145801, 2145802, 2145803, SPELL_CAST_START
 
@@ -35,13 +35,14 @@ local timerNextNecroticBreath	= mod:NewNextTimer(12, 2145801) -- 2145817, 214581
 
 local warnCastFreezingBreath 	= mod:NewSpellAnnounce(2145822, 2) -- 2145822, 2145823, 2145824, 2145825 12 seconds after Acidic spell_cast_start
 local timerNextFreezingBreath	= mod:NewNextTimer(12, 2145822) -- 2145822, 2145823, 2145824, 2145825,  12 seconds after Acidic spell_cast_start
+local timerCastFreezingBreath	= mod:NewCastTimer(15, 2145835) -- 2145835, spell_cast_start of inhale
 -- local warnFreezingBreath		= mod:NewTargetAnnounce(2145822, 2) -- 2145822, 2145823, 2145824, 2145825, 12 seconds after Acidic spell_cast_start
 
 local warnCastInhale 			= mod:NewSpellAnnounce(2145833, 2) -- 2145833, spell_cast_start
 local timerNextInhale			= mod:NewNextTimer(17, 2145833) -- 2145833, spell_cast_start
 
 local timerNextNecroticDeluge	= mod:NewNextTimer(5, 2145835) -- 2145835, spell_cast_start
-local timerCastNecroticDeluge	= mod:NewCastTimer(4, 2145835) -- 2145835, spell_cast_start of inhale
+local timerCastNecroticDeluge	= mod:NewCastTimer(15, 2145835) -- 2145835, spell_cast_start of inhale
 
 local warnArcaneDetention 		= mod:NewSpellAnnounce(2145834, 2) -- 2145834 spell_cast_start
 local timerNextArcaneDetention 	= mod:NewNextTimer(20, 2145834) -- 2145834 spell_cast_start
@@ -96,7 +97,7 @@ end
 -- end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2145808, 2145809, 21458010) then
+	if args:IsSpellID(2145808, 2145809, 2145810) then
 		warnCastCorrosion:Show()
 		timerNextCorrosion:Start()
 		-- warnCorrosion:Show()
@@ -113,6 +114,14 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
+function mod:necroticBreath()
+	timerCastNecroticDeluge:Start()
+end
+
+function mod:frostBreath()
+	timerCastFreezingBreath:Start()
+end
+
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.Breath or msg:find(L.Breath) then
 		breathCounter = breathCounter + 1
@@ -124,7 +133,10 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		breathCounter = 0
 		timerBreath:Start(42, 1)
 		timerNextNecroticBreath:Start(12)
-		timerNextFreezingBreath:Start(20)
+		self:ScheduleMethod(12, "necroticBreath")
+		timerNextFreezingBreath:Start(27)
+		self:ScheduleMethod(27, "frostBreath")
+
 		timerPhase:Start(110, L.Ground)
 		self:ScheduleMethod(110, "Groundphase")
 	end
