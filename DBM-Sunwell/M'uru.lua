@@ -30,7 +30,7 @@ local timerVoidCutterSpawn	= mod:NewNextTimer(64, 2146303)
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnBlackHole			= mod:NewSpellAnnounce(2146370, 3)
-local timerBlackHole		= mod:NewNextTimer(20, 2146370)
+local timerBlackHole		= mod:NewNextTimer(23, 2146370)
 
 local berserkTimer				= mod:NewBerserkTimer(600)
 
@@ -76,7 +76,7 @@ function mod:UNIT_HEALTH(unit)
 		if hp <= 50 then
 			self.vb.phase = 2
 			warnPhase2:Show()
-			timerBlackHole:Start(23)
+			timerBlackHole:Start()
 		end
 	end
 end
