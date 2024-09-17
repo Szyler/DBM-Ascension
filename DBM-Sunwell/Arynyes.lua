@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25837)
 mod:SetUsedIcons()
 
-mod:RegisterCombat("yell", L.ArynPull)
+mod:RegisterCombat("yell", L.GauntletPull)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 2145870 2145874",
@@ -43,10 +43,7 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 
 
 function mod:OnCombatStart(delay)
-	timerImpBullwark:Start(5-delay)
-	timerVengeSmite:Start(10-delay)
-	timerVengefulRetal:Start(15-delay)
-	timerJudgement:Start(25-delay)
+	self.vb.phase = 1
 	berserkTimer:Start(-delay)
 end
 
@@ -74,13 +71,15 @@ function mod:SPELL_CAST_START(args)
 end
 
 
-function mod:CHAT_MSG_MONSTER_EMOTE(msg)
-
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.ArynPull or msg:find(L.ArynPull) then
+		self.vb.phase = 2
+		timerImpBullwark:Start(5)
+		timerVengeSmite:Start(10)
+		timerVengefulRetal:Start(15)
+		timerJudgement:Start(25)
+	end
 end
-mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_EMOTE
 
 function mod:OnCombatEnd()
 	timerImpBullwark:Cancel()

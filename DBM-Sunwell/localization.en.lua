@@ -106,6 +106,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
+	GauntletPull				= "Man the cannons, summoners; bring forth the imps!",
 	ArynPull			= "I will not fail!"
 })
 
