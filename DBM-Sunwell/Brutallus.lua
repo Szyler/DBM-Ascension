@@ -114,6 +114,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerCastTrample:Start()
 		timerNextMeteorSlash:Stop()
 		timerNextMeteorSlash:Start(13)
+		timerNextTrample:Stop()
 	end
 end
 
@@ -126,11 +127,11 @@ function mod:UNIT_HEALTH(unit)
 		if excitementStage ~= oldhasExcitement then
 
 			oldhasExcitement = excitementStage
-			if excitementStage == 1 	  or excitementStage == 2 then hpAtEnd = hp - 10
-			elseif excitementStage == 3 						then hpAtEnd = hp - 13
-			elseif excitementStage == 4 or excitementStage == 5 then hpAtEnd = hp - 15
-			elseif excitementStage == 6 						then hpAtEnd = hp - 17
-			elseif excitementStage == 7 or excitementStage == 8 then hpAtEnd = hp - 19
+			if excitementStage == 1 	  or excitementStage == 2 then hpAtEnd = hp - 9
+			elseif excitementStage == 3 						then hpAtEnd = hp - 12
+			elseif excitementStage == 4 or excitementStage == 5 then hpAtEnd = hp - 13
+			elseif excitementStage == 6 						then hpAtEnd = hp - 15
+			elseif excitementStage == 7 or excitementStage == 8 then hpAtEnd = hp - 17
 			end
 			prevHP = hp
 			currTime = GetTime()
