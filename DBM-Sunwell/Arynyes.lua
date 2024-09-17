@@ -8,8 +8,8 @@ mod:SetUsedIcons()
 mod:RegisterCombat("yell", L.GauntletPull)
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 2145870 2145874",
-	"SPELL_CAST_SUCCESS 2145867",
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
 	"CHAT_MSG_MONSTER_YELL",
     "CHAT_MSG_MONSTER_EMOTE",
     "CHAT_MSG_RAID_BOSS_EMOTE",
