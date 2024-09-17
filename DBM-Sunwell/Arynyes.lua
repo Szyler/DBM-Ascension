@@ -58,12 +58,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.sourceName == "High Commander Arynyes" and args:IsSpellID(2145870)  then
+	if args.sourceName == "High Commander Arynyes" and args:IsSpellID(2145870, 2145872)  then
 		castVengefulRetal:Start()
 		channelVengefulRetal:Schedule(1)
 		warnVengefulRetal:Show()
 		timerVengefulRetal:Start()
-	elseif args.sourceName == "High Commander Arynyes" and args:IsSpellID(2145874) then
+	elseif args.sourceName == "High Commander Arynyes" and args:IsSpellID(2145874, 2145875, 2145876, 2145877) then
 		castJudgement:Start()
 		warnJudgement:Show()
 		timerJudgement:Start()
