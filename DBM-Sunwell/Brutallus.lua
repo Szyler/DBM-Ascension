@@ -17,8 +17,6 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
-	"SPELL_DAMAGE",
-	"SPELL_MISSED",
 	"UNIT_HEALTH",
 	"UNIT_DIED"
 )
@@ -37,8 +35,9 @@ local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aur
 
 local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
 local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
-local warnFelfireBurnYou		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
-local warnFelfireBurn			= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local specwarnFelfireBurn		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local warnFelfireTargets		= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_damage dbm:antiSpam(5)
+local timerFelFireBurn			= mod:NewTimer(5, "%s: Felfire Burn spreads in:", 2145719)
 
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
@@ -53,6 +52,15 @@ local oldTime = 0
 local currTime = 0
 local timeElapsed = 0
 local timeToEnd = 0
+
+local felfireTargets = {}
+local felfireIcon = 7
+
+local function WarnFelfireTargets()
+	warnFelfireTargets:Show(table.concat(felfireTargets, "<, >"))
+	table.wipe(felfireTargets)
+	felfireIcon = 7
+end
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
@@ -72,15 +80,34 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(2145709) then --only main target
 		timerTargetTrample:Start(args.destName)
-	elseif args:IsSpellID(2145717, 2145718) then
-		warnFelfireBreath:Show(args.destName)
-		timerNextFelfireBreath:Start()
 	elseif args:IsSpellID(2145703) then
 		hasExcitement = true
 		timerExcitement:Start(args.destName)
 		excitementStage = excitementStage + 1
+	elseif args:IsSpellID(2145719, 2145720, 2145721, 2145721) then
+		if  args.sourceName == "Brutallus" then
+			felfireTargets[#felfireTargets + 1] = args.destName
+			timerFelFireBurn:Start(args.destName)
+			if args:IsPlayer() then
+				specwarnFelfireBurn:Show()
+			end
+			self:SetIcon(args.destName, felfireIcon, 60)
+			felfireIcon = felfireIcon - 1
+			self:Unschedule(WarnFelfireTargets)
+			self:Schedule(0.3, WarnFelfireTargets)
+		elseif args.sourceName ~= "Brutallus" then
+			if args:IsPlayer() then
+				specwarnFelfireBurn:Show()
+				timerFelFireBurn:Start(args.destName)
+			end
+			self:SetIcon(args.destName, felfireIcon, 60)
+			felfireIcon = felfireIcon - 1
+			self:Unschedule(WarnFelfireTargets)
+			self:Schedule(0.3, WarnFelfireTargets)
+		end
 	end
 end
+
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_CAST_START(args)
@@ -92,19 +119,11 @@ function mod:SPELL_CAST_START(args)
 		end
 	-- elseif args:IsSpellID(2145709, 2145710, 2145711) then
 	-- 	timerNextTrample:Start()
+	elseif args:IsSpellID(2145717) and args.sourceName == "Brutallus" then
+		timerNextFelfireBreath:Start()
+		warnFelfireBreath:Show()
 	end
 end
-
-function mod:SPELL_DAMAGE(args)
-	if args:IsSpellID(2145719, 2145720, 2145721) and DBM:AntiSpam(5) then
-		if args.destName == UnitName("Player") then
-			warnFelfireBurnYou:Show()
-		else
-			warnFelfireBurn:Show(args.destName)
-		end
-	end
-end
-mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2145703) then
