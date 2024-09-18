@@ -96,6 +96,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		timerTargetFelFireBurn:Start(args.destName)
 		self:SetIcon(args.destName, felfireIcon, 60)
+		if felfireIcon < 1 or felfireIcon > 7 then
+			felfireIcon = 7
+		end
 		felfireIcon = felfireIcon - 1
 		self:Unschedule(WarnFelfireTargets)
 		self:Schedule(0.2, WarnFelfireTargets)
