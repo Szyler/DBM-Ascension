@@ -53,7 +53,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerVengeSmite:Schedule(5)
 		specWarnImpBullwark:Show()
 		warnVengeSmite:Schedule(5)
-		timerImpBullwark:start()
+		timerImpBullwark:Start()
 	end
 end
 
