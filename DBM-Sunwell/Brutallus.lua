@@ -38,9 +38,9 @@ local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718
 
 local specwarnFelfireBurn		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_aura_applied
 local warnFelfireTargets		= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_aura_applied
-local timerFelFireBurn			= mod:NewTimer(5, "%s: Felfire Burn spreads in:", 2145719)
+local timerFelFireBurn			= mod:NewTimer(5, "Felfire Burn turns volatile in:", 2145719)
+local timerFelFireBurnYou		= mod:NewTimer(5, "%s: Felfire Burn spreads in:", 2145719)
 local timerTargetFelFireBurn	= mod:NewTargetTimer(60, 2145719) -- 2145719, 2145720, 2145721 spell_aura_applied
-local timerNextFelFireBurn		= mod:NewNextTimer(60, 2145719) -- 2145719, 2145720, 2145721 spell_cast_start
 
 local timerExcitement			= mod:NewBuffActiveTimer(50, 2145703) -- 2145703 Aura_applied Spell_aura_removed
 
@@ -92,7 +92,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		felfireTargets[#felfireTargets + 1] = args.destName
 		if args:IsPlayer() then
 			specwarnFelfireBurn:Show()
-			timerFelFireBurn:Start(args.destName)
+			timerFelFireBurnYou:Start(args.destName)
 		end
 		timerTargetFelFireBurn:Start(args.destName)
 		self:SetIcon(args.destName, felfireIcon, 60)
@@ -136,6 +136,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2145717) and args.sourceName == "Brutallus" then
 		timerNextFelfireBreath:Start()
 		warnFelfireBreath:Show()
+		timerFelFireBurn:Schedule(1)
 	end
 end
 
