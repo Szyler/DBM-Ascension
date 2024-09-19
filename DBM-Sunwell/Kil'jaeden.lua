@@ -23,6 +23,7 @@ mod:RegisterEvents(
 -- Apolyon
 local warnSoulbomb 					= mod:NewTargetAnnounce(2146682, 2)
 local YellSoulbomb 					= mod:NewFadesYell(2146682)
+local timerTargetSoulbomb 			= mod:NewTargetTimer(10, 2146682)
 local timerNextSoulbomb 			= mod:NewNextTimer(10, 2146682)
 
 local warnSoulrend 					= mod:NewSpellAnnounce(2146680, 2) -- 2146680 Spell_cast_Start
@@ -58,11 +59,13 @@ local warnPhase2					= mod:NewAnnounce("Stage Two: KJ has tiny legs", 3, 801892)
 local timerTargetLegionLightning	= mod:NewTargetTimer(4, 2146510) -- 2146510, 2146511 Spell_cast_start
 local warnTargetLegionLightning		= mod:NewTargetAnnounce(2146510, 2) -- 2146510, 2146511 Spell_cast_start
 local timerNextLegionLightning		= mod:NewNextTimer(20, 2146510) -- 2146510, 2146511 Spell_cast_start
+local warnSpecYouLegionLightning	= mod:NewSpecialWarningYou(2146510) -- 2146510, 2146511 Spell_cast_start
 
-local timerCastAnnihilate			= mod:NewCastTimer(3, 2146557) -- 2146557 Spell_cast_start
-local warnAnnihilate				= mod:NewSpellAnnounce(2146557, 3) -- 2146557 Spell_cast_start
-local timeTargetTimerAnnihilate		= mod:NewTargetTimer(53, 2146557) -- 2146557 Spell_cast_start
-local timerNextAnnihilate			= mod:NewNextTimer(96, 2146557) -- 2146557 Spell_cast_start
+local timerCastAnnihilate			= mod:NewCastTimer(4, 2146555) -- 2146555, 2146556, 2146557, 2146560 Spell_cast_start
+local warnAnnihilate				= mod:NewSpellAnnounce(2146555, 3) -- 2146555, 2146556, 2146557, 2146560 Spell_cast_start
+local timeSpellTimerAnnihilate		= mod:NewCastTimer(55, 2146555) -- 2146555, 2146556, 2146557, 2146560 Spell_cast_start
+local timeSpellTimerAnnihilateShort	= mod:NewCastTimer(13, 2146555) -- 2146555, 2146556, 2146557, 2146560 Spell_cast_start
+local timerNextAnnihilate			= mod:NewNextTimer(96, 2146555) -- 2146555, 2146556, 2146557, 2146560 Spell_cast_start
 
 local timerNextWorldBreaker 		= mod:NewNextTimer(30, 2146520) -- 2146519, 2146520 Spell_cast_start
 local warnWorldBreaker				= mod:NewSpellAnnounce(2146520, 3) -- 2146519, 2146520 Spell_cast_start
@@ -70,22 +73,39 @@ local warnWorldBreaker				= mod:NewSpellAnnounce(2146520, 3) -- 2146519, 2146520
 local timerCastAllConsuming	 		= mod:NewCastTimer(127, 2146521) -- 2146521 Spell_cast_start
 local timerNextAllConsuming	 		= mod:NewNextTimer(68, 2146521) -- 2146521 Spell_cast_start
 
+local warnDarkness 					= mod:NewSpellAnnounce(2146540, 3) -- 2146540, 2146541, 2146542 Spell_cast_start
 local timerNextDarkness				= mod:NewNextTimer(30, 2146540) -- 2146540, 2146541, 2146542 Spell_cast_start
 
+local warnReflections				= mod:NewSpellAnnounce(2146538, 3) -- 2146522 Spell_cast_start
 local timerNextReflections			= mod:NewNextTimer(25, 2146538) -- 2146522 Spell_cast_start
 
 local timerNextFireBloom			= mod:NewNextTimer(30, 2146523) -- 2146523, 2146524, 2146525, 2146526 Spell_cast_start
-local timerTargetFireBloom			= mod:NewTargetTimer(4, 2146523) -- 2146523, 2146524, 2146525, 2146526 Spell_cast_start
+local timerTargetFireBloom			= mod:NewTargetTimer(12, 2146523) -- 2146523, 2146524, 2146525, 2146526 Spell_cast_start
 
+-- local timerNextObliterate			= mod:NewNextTimer(30, 2146575)	-- 2146575, 2146576, 2146578 Spell_cast_start
+local warnObliterate				= mod:NewSpellAnnounce(2146575, 3)	-- 2146575, 2146576, 2146578 Spell_cast_start
+local timerCastObliterate			= mod:NewCastTimer(5, 2146575)	-- 2146575, 2146576, 2146578 Spell_cast_start
+local timerTargetObliterate			= mod:NewTargetTimer(49, 2146575) -- 2146575, 2146576, 2146578 Spell_cast_start
 
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.flamesDown = 0
-	timerNextSoulbomb:Start(5-delay)
+	timerNexttSoulbomb:Start(5-delay)
 	timerNextSoulrend:Start(20-delay)
 end
 
+function mod:LegionLightningTarget()							
+	local target = nil
+	target = mod:GetBossTarget(25315)
+	if target == UnitName("player") then
+		warnSpecYouLegionLightning:Show()
+	else
+		warnTargetLegionLightning:Show(target)
+	end
+	timerTargetLegionLightning:Start(target)
+	self:SetIcon(target, 7, 3)
+end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2146680) then
@@ -104,12 +124,11 @@ function mod:SPELL_CAST_START(args)
 		timerCastImplosion:Start()
 		warnImplosion:Schedule(27)
 	elseif args:IsSpellID(2146510, 2146511) then
-		warnTargetLegionLightning:Show(args.destName)
-		timerTargetLegionLightning:Start(args.destName)
-	elseif args:IsSpellID(2146557) then
+		self:ScheduleMethod(0.2,"LegionLightningTarget");
+		timerNextLegionLightning:Start()
+	elseif args:IsSpellID(2146555, 2146560) then
 		timerCastAnnihilate:Start()
 		warnAnnihilate:Show()
-		timeTargetTimerAnnihilate:Start(args.sourceName)
 	elseif args:IsSpellID(2146520, 2146519) then
 		warnWorldBreaker:Show()
 		timerNextWorldBreaker:Start()
@@ -118,7 +137,14 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2146523, 2146524, 2146525, 2146526) then
 		timerNextFireBloom:Start()
 	elseif args:IsSpellID(2146540, 2146541, 2146542) then
-		timerNextDarkness:Start()
+		warnDarkness:Show()
+		-- timerNextDarkness:Start()
+	elseif args:IsSpellID(2146575, 2146576, 2146578) then
+		warnObliterate:Show()
+		timerCastObliterate:Start()
+		timerTargetObliterate:Start()
+	elseif args:IsSpellID(2146538) then
+		warnReflections:Show()
 	end
 end
 
@@ -128,12 +154,17 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFelRage:Start(args.destName)
 	elseif args:IsSpellID(2146682) then
 		warnSoulbomb:Show(args.destName)
-		timerNextSoulbomb:Start(args.destName)
+		timerNextSoulbomb:Start()
+		timerTargetSoulbomb:Start(args.destName)
 		if args.destName == UnitName("player") then
 			YellSoulbomb:Countdown(10, 3)
 		end
 	elseif args:IsSpellID(2146523, 2146524, 2146525, 2146526) then
 		timerTargetFireBloom:Start(args.destName)
+	elseif args:IsSpellID(2146555) then
+		timeSpellTimerAnnihilate:Start()
+	elseif args:IsSpellID(2146560) then
+		timeSpellTimerAnnihilateShort:Start()
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -141,6 +172,14 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2146688) then
 		timerFelRage:Stop(args.destName)
+	elseif args:IsSpellID(2146555) then
+		timerNextDarkness:Start(10)
+		timerNextFireBloom:Start(24)
+		timerNextReflections:Start(60)
+	elseif args:IsSpellID(2146560) then
+
+	elseif args:IsSpellID(2146575, 2146576, 2146578) then
+		timerNextDarkness:Start(5)
 	end
 end
 
@@ -156,8 +195,8 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 		timerNextFireBloom:Start(10)
 		timerNextWorldBreaker:Start(15)
 		timerNextReflections:Start(25)
-		timerNextAllConsuming:Start(66)
-		timerNextAnnihilate:Start(96)
+		-- timerNextAllConsuming:Start(66) --Percent based. Need Unit_Health
+		-- timerNextAnnihilate:Start(96)
 	end
 end
 mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
