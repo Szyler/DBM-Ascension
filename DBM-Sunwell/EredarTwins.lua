@@ -157,15 +157,10 @@ function mod:SPELL_CAST_START(args)
 		timerCutCombination:Start(sacroTarget)
 		warnCutCombination:Schedule(5)
 		timerSacroTankCombo:Start()
-		if timerDawnRunner:GetTime() < 6 then
-			timerDawnRunner:Update(6)
+		if timerDawnRunner:GetTime() > 24 then
+			timerDawnRunner:Update(0,6)
 			self:UnscheduleMethod("DawnRunner")
 			self:ScheduleMethod(6,"DawnRunner")
-			if self.vb.phase == 4 and timerFireDance:GetTime() < 6 then
-				timerFireDance:Update(6)
-				self:UnscheduleMethod("FireDance")
-				self:ScheduleMethod(6,"FireDance")
-			end
 		end
 	elseif args:IsSpellID(2145916) and args.sourceName == "Grand Warlock Alythess" and self.vb.phase <= 3 then
 		local alythTarget = mod:GetBossTarget(25166)
@@ -176,17 +171,11 @@ function mod:SPELL_CAST_START(args)
 		timerCutCombination:Start(alythTarget)
 		warnCutCombination:Schedule(5)
 		timerAlythTankCombo:Start()
-		if timerFireDance:GetTime() < 6 then
-			timerFireDance:Update(6)
+		if timerFireDance:GetTime() > 24 then
+			timerFireDance:Update(0,6)
 			self:UnscheduleMethod("FireDance")
 			self:ScheduleMethod(6,"FireDance")
-			if self.vb.phase == 4 then
-				if timerDawnRunner:GetTime() < 6 then
-					timerDawnRunner:Update(6)
-				self:UnscheduleMethod("DawnRunner")
-				self:ScheduleMethod(6,"DawnRunner")
-				end
-			end
+
 		end
 	elseif args:IsSpellID(2145929, 2145930, 2145931, 2145932) then
 		warnFlashBurn:Show()
@@ -228,15 +217,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerCutCombination:Start(sacroTarget)
 			warnCutCombination:Schedule(5)
 			timerSacroTankCombo:Start()
-			if timerDawnRunner:GetTime() < 6 then
-				timerDawnRunner:Update(6)
+			if timerDawnRunner:GetTime() > 24 then
+				timerDawnRunner:Update(0,6)
 				self:UnscheduleMethod("DawnRunner")
 				self:ScheduleMethod(6,"DawnRunner")
-				if self.vb.phase == 4 and timerFireDance:GetTime() < 6 then
-					timerFireDance:Update(6)
-					self:UnscheduleMethod("FireDance")
-					self:ScheduleMethod(6,"FireDance")
-				end
+			end
+			if timerFireDance:GetTime() > 24 then
+				timerFireDance:Update(0,6)
+				self:UnscheduleMethod("FireDance")
+				self:ScheduleMethod(6,"FireDance")
 			end
 		elseif msg == L.AlythCombo or msg:find(L.AlythCombo) then
 			local alythTarget = mod:GetBossTarget(25166)
@@ -247,17 +236,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			timerCutCombination:Start(alythTarget)
 			warnCutCombination:Schedule(5)
 			timerAlythTankCombo:Start()
-			if timerFireDance:GetTime() < 6 then
-				timerFireDance:Update(6)
+			if timerFireDance:GetTime() > 24 then
+				timerFireDance:Update(0,6)
 				self:UnscheduleMethod("FireDance")
 				self:ScheduleMethod(6,"FireDance")
-				if self.vb.phase == 4 then
-					if timerDawnRunner:GetTime() < 6 then
-						timerDawnRunner:Update(6)
-					self:UnscheduleMethod("DawnRunner")
-					self:ScheduleMethod(6,"DawnRunner")
-					end
-				end
+			end
+			if timerDawnRunner:GetTime() > 24 then
+				timerDawnRunner:Update(0,6)
+				self:UnscheduleMethod("DawnRunner")
+				self:ScheduleMethod(6,"DawnRunner")
 			end
 		end
 	elseif msg == L.SacroAbsorb or msg:find(L.SacroAbsorb) or msg == L.AlythAbsorb or msg:find(L.AlythAbsorb) then
