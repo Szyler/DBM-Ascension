@@ -119,18 +119,35 @@ L:SetGeneralLocalization{
 	name = "Eredar Twins"
 }
 
+L:SetWarningLocalization{
+	WarnLunarStacks				= "%s stacks: (%d)",--(args.spellName, args.destName, args.amount or 1)
+	WarnSolarStacks				= "%s stacks: (%d)"
+}
+
+L:SetTimerLocalization{
+}
+
 L:SetOptionLocalization{
 	NovaIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45329),
 	ConflagIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45333),
 	RangeFrame		= "Show range check frame"
 }
 
-L:SetMiscLocalization{
-	Nova			= "directs Shadow Nova at (.+)%.",
-	Conflag			= "directs Conflagration at (.+)%.",
-	Sacrolash		= "Lady Sacrolash",
-	Alythess		= "Grand Warlock Alythess"
-}
+L:SetMiscLocalization({
+	Nova						= "directs Shadow Nova at (.+)%.",
+	Conflag						= "directs Conflagration at (.+)%.",
+	Sacrolash					= "Lady Sacrolash",
+	Alythess					= "Grand Warlock Alythess",
+	Sacrolythess				= "Sacro'lythess",
+	TwinsPull					= "Your luck has run its course!",
+	SacroAbsorb					= "Alythess! Your fire burns within me!",
+	AlythAbsorb					= "Sacrolash!",
+	AlythPhase					= "Fires consume.",
+	SacroPhase					= "Shadows engulf.",
+	SacroCombo					= "Fire to the aid of shadow!",
+	AlythCombo					= "Shadow to the aid of fire!",
+	TwinsMerge					= "Edir harach!"
+})
 
 ------------
 --  M'uru --
