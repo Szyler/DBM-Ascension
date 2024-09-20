@@ -1163,9 +1163,9 @@ do
 		end
 		-- process some high volume events without building the whole table which is somewhat faster
 		-- this prevents work-around with mods that used to have their own event handler to prevent this overhead
-		if noArgTableEvents[event] then
-			return handleEvent(nil, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10, extraArg11, extraArg12)
-		else
+		-- if noArgTableEvents[event] then
+		-- 	return handleEvent(nil, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10, extraArg11, extraArg12)
+		-- else
 			twipe(args)
 			args.timestamp = timestamp
 			args.event = event
@@ -1218,7 +1218,7 @@ do
 				args.spellSchool = args.school
 			end
 			return handleEvent(nil, event, args)
-		end
+		-- end
 	end
 	unitMainFrame:SetScript("OnEvent", handleEvent)
 	mainFrame:SetScript("OnEvent", handleEvent)
