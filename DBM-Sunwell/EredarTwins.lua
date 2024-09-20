@@ -25,27 +25,27 @@ mod:SetBossHealthInfo(
 )
 
 --phase 1
-local timerDance					= mod:NewTimer(15,"Fire / Shadow Dance", 2145929)
-local timerTwinFade					= mod:NewTimer(10, "The strongest Twin remain", 148477)	
-
+local timerDance					= mod:NewTimer(15,"Fire Dance/Dawn Runner", 2145929)
+local timerTwinFade					= mod:NewTimer(10, "The strongest Twin remains", 148477)
+	
 -- Alythess Phase
-local warnSolarBurn					= mod:NewAnnounce("%s on >%s< (%d)", 2, 2145905) -- 2145905, 2145906 spell_aura_applied
+local warnSolarBurn					= mod:NewAnnounce("WarnSolarStacks", 2, 2145905) -- 2145905, 2145906 spell_aura_applied
 local timerFlingAlyth				= mod:NewTargetTimer(1, 2145916)
 local warnFireDance					= mod:NewSpellAnnounce(2145928, 3) -- 2145928 	
-local timerFireDance				= mod:NewTimer(30, 2145928)
+local timerFireDance				= mod:NewNextTimer(30, 2145928)
 
 -- Sacrolash abilities in Aly phase
 local timerCrescentMoonKick			= mod:NewTargetTimer(2, 2146019)
---local warnLunarFlare				= mod:NewSpellAnnounce(2146007, 3) -- 2145907, 2145908
+--local warnLunarFlare				= mod:NewAnnounce(,2146007, 3) -- 2145907, 2145908
 local warnCrushingShadow			= mod:NewSpellAnnounce(2146029, 3) -- 2146030 spell_Cast_start
 local timerCrushingShadow			= mod:NewNextTimer(29,2146029)
 
 -- Sacrolash Phase 
-local warnLunarBurn					= mod:NewAnnounce("%s on >%s< (%d)", 2, 2146005)
+local warnLunarBurn					= mod:NewAnnounce("WarnLunarStacks", 2, 2146005)
 local warnFling						= mod:NewTargetAnnounce(2146016, 3) -- 2146017 spell_Cast_start 40s CD, Unless pushed back
 local timerFlingSacro				= mod:NewTargetTimer(1, 2146016)
-local warnShadowDance				= mod:NewSpellAnnounce(2145928, 3)
-local timerShadowDance				= mod:NewTimer(30, 2145928)
+local warnDawnRunner				= mod:NewSpellAnnounce(2146027, 3)
+local timerDawnRunner				= mod:NewNextTimer(30, 2146027)
 
 -- Alythess abilities in Sacro phase
 local timerRisingSunKick			= mod:NewTargetTimer(2, 2145919)
@@ -53,16 +53,16 @@ local timerRisingSunKick			= mod:NewTargetTimer(2, 2145919)
 local warnFlashBurn					= mod:NewSpellAnnounce(2145929, 3) -- 2145929, 2145930, 2145931 spell_Cast_start
 local timerFlashBurn				= mod:NewNextTimer(29, 2145929)
 
-
 -- Sacro'lythess
-
+local warnDawnDancer				= mod:NewSpellAnnounce(2145927)
+local timerDawnDancer				= mod:NewNextTimer(30, 2145927)
 -- everything else
 local timerSacroTankCombo			= mod:NewTimer(30, "Sacrolash Tank combination", 2146016)
 local timerAlythTankCombo			= mod:NewTimer(30, "Alythess Tank combination", 2145916)
-local timerCrashCombination			= mod:NewTimer(4, "Falling Star & Crashing Moon", 2145922)
-local warnCrashCombination			= mod:NewAnnounce("Falling Star & Crashing Moon", 2145922)
-local timerCutCombination			= mod:NewTimer(5, "Crescent Moon & Rising Sun Cut", 2146025)
-local warnCutCombination			= mod:NewAnnounce("Crescent Moon & Rising Sun Cut", 2146025)
+local timerCrashCombination			= mod:NewTimer(4, "Falling Star and Crashing Moon", 2145922)
+local warnCrashCombination			= mod:NewAnnounce("Falling Star and Crashing Moon", 2145922)
+local timerCutCombination			= mod:NewTimer(5, "Crescent Moon and Rising Sun Cut", 2146025)
+local warnCutCombination			= mod:NewAnnounce("Crescent Moon and Rising Sun Cut", 2146025)
 
 local timerRoleReversal				= mod:NewTimer(5, "Role Reversal RP", 992179)
 local timerTagTeam					= mod:NewTimer(5, "Both Twins are emerging", 992179)
@@ -86,11 +86,11 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145905) and args:IsPlayer() then
 		if args.amount == 4 or args.amount >= 8 then
-			warnSolarBurn:Show(args.spellName, args.destName, args.amount or 1)
+			warnSolarBurn:Show(args.spellName, args.amount or 1)
 		end
 	elseif args:IsSpellID(2146005) and args:IsPlayer() then
 		if args.amount == 4 or args.amount >= 8 then
-			warnLunarBurn:Show(args.spellName, args.destName, args.amount or 1)
+			warnLunarBurn:Show(args.spellName, args.amount or 1)
 		end
 	end
 end
@@ -102,47 +102,52 @@ function mod:CancelTimers()
 	timerAlythTankCombo:Cancel()
 	timerSacroTankCombo:Cancel()
 	timerFireDance:Cancel()
-	timerShadowDance:Cancel()
+	timerDawnRunner:Cancel()
 	timerCrushingShadow:Cancel()
 	timerFlashBurn:Cancel()
 	self:UnscheduleMethod("FireDance")
-	self:UnscheduleMethod("ShadowDance")
+	self:UnscheduleMethod("DawnRunner")
 end
 
 function mod:FireDance()
 	self:UnscheduleMethod("FireDance")
 	warnFireDance:Show()
 	timerFireDance:Start()
-	self:ScheduleMethod(30,"FireDance")
+	self:ScheduleMethod(31,"FireDance")
 end
 
-function mod:ShadowDance()
-	self:UnscheduleMethod("ShadowDance")
-	warnShadowDance:Show()
-	timerShadowDance:Start()
-	self:ScheduleMethod(30, "ShadowDance")
+function mod:DawnRunner()
+	self:UnscheduleMethod("DawnRunner")
+	warnDawnRunner:Show()
+	timerDawnRunner:Start()
+	self:ScheduleMethod(31, "DawnRunner")
+end
+
+function mod:DawnDancer()
+	self:UnscheduleMethod("DawnDancer")
+	warnDawnDancer:Show()
+	timerDawnDancer:Start()
+	self:ScheduleMethod(31,"DawnDancer")
 end
 
 function mod:SacroPath()
 	timerSacroTankCombo:Start(30)
-	timerAlythTankCombo:Start(35)
-	timerShadowDance:Start(5)
+	timerDawnRunner:Start(5)
 	timerFireDance:Start(15)
-	self:ScheduleMethod(5,"ShadowDance")
+	self:ScheduleMethod(5,"DawnRunner")
 	self:ScheduleMethod(15,"FireDance")
 end
 
 function mod:AlythPath()
-	timerSacroTankCombo:Start(35)
 	timerAlythTankCombo:Start(30)
-	timerShadowDance:Start(15)
+	timerDawnRunner:Start(15)
 	timerFireDance:Start(5)
-	self:ScheduleMethod(15,"ShadowDance")
+	self:ScheduleMethod(15,"DawnRunner")
 	self:ScheduleMethod(5,"FireDance")
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2146016) and args.sourceName == "Lady Sacrolash" then
+	if args:IsSpellID(2146016) and args.sourceName == "Lady Sacrolash" and self.vb.phase <= 3 then
 		local sacroTarget = mod:GetBossTarget(25165)
 		warnFling:Show(sacroTarget)
 		timerFlingSacro:Start(sacroTarget)
@@ -152,17 +157,17 @@ function mod:SPELL_CAST_START(args)
 		timerCutCombination:Start(sacroTarget)
 		warnCutCombination:Schedule(5)
 		timerSacroTankCombo:Start()
-		if timerShadowDance:GetTime() < 6 then
-			timerShadowDance:Update(6)
-			self:UnscheduleMethod("ShadowDance")
-			self:ScheduleMethod(6,"ShadowDance")
-			if self.vb.phase == 4 then
-				timerFireDance:AddTime(6)
+		if timerDawnRunner:GetTime() < 6 then
+			timerDawnRunner:Update(6)
+			self:UnscheduleMethod("DawnRunner")
+			self:ScheduleMethod(6,"DawnRunner")
+			if self.vb.phase == 4 and timerFireDance:GetTime() < 6 then
+				timerFireDance:Update(6)
 				self:UnscheduleMethod("FireDance")
 				self:ScheduleMethod(6,"FireDance")
 			end
 		end
-	elseif args:IsSpellID(2145916) and args.sourceName == "Grand Warlock Alythess" then
+	elseif args:IsSpellID(2145916) and args.sourceName == "Grand Warlock Alythess" and self.vb.phase <= 3 then
 		local alythTarget = mod:GetBossTarget(25166)
 		timerFlingAlyth:Start(alythTarget)
 		timerCrescentMoonKick:Start(alythTarget)
@@ -176,9 +181,11 @@ function mod:SPELL_CAST_START(args)
 			self:UnscheduleMethod("FireDance")
 			self:ScheduleMethod(6,"FireDance")
 			if self.vb.phase == 4 then
-				timerShadowDance:AddTime(6)
-				self:UnscheduleMethod("ShadowDance")
-				self:ScheduleMethod(6,"ShadowDance")
+				if timerDawnRunner:GetTime() < 6 then
+					timerDawnRunner:Update(6)
+				self:UnscheduleMethod("DawnRunner")
+				self:ScheduleMethod(6,"DawnRunner")
+				end
 			end
 		end
 	elseif args:IsSpellID(2145929, 2145930, 2145931, 2145932) then
@@ -197,13 +204,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.SacroPhase or msg:find(L.SacroPhase) then
 		self:ScheduleMethod(0, "CancelTimers")
 		timerSacroTankCombo:Start(30)
-		timerShadowDance:Start(5)
-		self:ScheduleMethod(5, "ShadowDance")
+		timerDawnRunner:Start(5)
+		self:ScheduleMethod(5, "DawnRunner")
 		if self.vb.phase == 1 then
 			self:SetStage(2)
 			sacroPath = true
 		end
-	elseif msg == L.AlythessPhase or msg:find(L.AlythessPhase) then
+	elseif msg == L.AlythPhase or msg:find(L.AlythPhase) then
 		self:ScheduleMethod(0, "CancelTimers")
 		timerAlythTankCombo:Start()
 		timerFireDance:Start()
@@ -212,18 +219,54 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:SetStage(2)
 			alythPath = true
 		end
+	elseif self.vb.phase == 4 and self:AntiSpam(5, 1) and (msg == L.SacroCombo or msg:find(L.SacroCombo) or msg == L.AlythCombo or msg:find(L.AlythCombo)) then
+		if msg == L.SacroCombo or msg:find(L.SacroCombo) then
+			local sacroTarget = mod:GetBossTarget(25165)
+			timerRisingSunKick:Start(sacroTarget)
+			timerCrashCombination:Start(sacroTarget)
+			warnCrashCombination:Schedule(4)
+			timerCutCombination:Start(sacroTarget)
+			warnCutCombination:Schedule(5)
+			timerSacroTankCombo:Start()
+			if timerDawnRunner:GetTime() < 6 then
+				timerDawnRunner:Update(6)
+				self:UnscheduleMethod("DawnRunner")
+				self:ScheduleMethod(6,"DawnRunner")
+				if self.vb.phase == 4 and timerFireDance:GetTime() < 6 then
+					timerFireDance:Update(6)
+					self:UnscheduleMethod("FireDance")
+					self:ScheduleMethod(6,"FireDance")
+				end
+			end
+		elseif msg == L.AlythCombo or msg:find(L.AlythCombo) then
+			local alythTarget = mod:GetBossTarget(25166)
+			timerFlingAlyth:Start(alythTarget)
+			timerCrescentMoonKick:Start(alythTarget)
+			timerCrashCombination:Start(alythTarget)
+			warnCrashCombination:Schedule(4)
+			timerCutCombination:Start(alythTarget)
+			warnCutCombination:Schedule(5)
+			timerAlythTankCombo:Start()
+			if timerFireDance:GetTime() < 6 then
+				timerFireDance:Update(6)
+				self:UnscheduleMethod("FireDance")
+				self:ScheduleMethod(6,"FireDance")
+				if self.vb.phase == 4 then
+					if timerDawnRunner:GetTime() < 6 then
+						timerDawnRunner:Update(6)
+					self:UnscheduleMethod("DawnRunner")
+					self:ScheduleMethod(6,"DawnRunner")
+					end
+				end
+			end
+		end
 	elseif msg == L.SacroAbsorb or msg:find(L.SacroAbsorb) or msg == L.AlythAbsorb or msg:find(L.AlythAbsorb) then
 		self:ScheduleMethod(0,"CancelTimers")
 		self:SetStage(5)
 		timerTwinsMerge:Start()
 	elseif msg == L.TwinsMerge or msg:find(L.TwinsMerge) then
-		if alythPath == true then
-			timerFireDance:Start(5)
-			self:ScheduleMethod(5,"FireDance")
-		elseif sacroPath == true then
-			timerShadowDance:Start(5)
-			self:ScheduleMethod(5,"ShadowDance")
-		end
+		timerDawnDancer:Start()
+		self:ScheduleMethod(5,"DawnDancer")
 	end
 end
 
