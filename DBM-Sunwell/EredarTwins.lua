@@ -265,6 +265,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:SetStage(5)
 		timerTwinsMerge:Start()
 	elseif msg == L.TwinsMerge or msg:find(L.TwinsMerge) then
+		self:ScheduleMethod(0,"CancelTimers")
 		timerDawnDancer:Start()
 		self:ScheduleMethod(5,"DawnDancer")
 	end
