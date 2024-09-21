@@ -12,6 +12,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_INTERRUPT",
 	"CHAT_MSG_MONSTER_YELL",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
@@ -19,7 +20,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_SAY",
 	"UNIT_DIED"
 )
-
+--Phase 1
 -- Apolyon
 local warnSoulbomb 					= mod:NewTargetAnnounce(2146682, 2)
 local YellSoulbomb 					= mod:NewFadesYell(2146682)
@@ -44,14 +45,16 @@ local timerNextSummonWildImps 		= mod:NewNextTimer(30, 2146676) -- 2146676 Spell
 local timerCastImplosion 			= mod:NewCastTimer(30, 2146691)
 local warnImplosion 				= mod:NewSpellAnnounce(2146691, 3) -- Spell_Damage 2146691
 
--- local warnConflagration 			= mod:NewSpellAnnounce(2146673, 3)
--- local timerConflagrationCast 		= mod:NewCastTimer(3, 2146673)
+local warnSpecYouConflag			= mod:NewSpecialWarningYou(2146673)
+local warnTargetConflag 			= mod:NewTargetAnnounce(2146673, 3)
+local timerTargetConflag			= mod:NewTargetTimer(3, 2146673)
 
 -- make warnings and timers for 	these, and make the trigger in their respective functions
 -- Change all args.spellID into 	args:IsSpellID() with comma separated for the spellIDs
 
 local berserkTimer					= mod:NewBerserkTimer(900)
 
+-- overall KJ
 -- KJ timers	
 local timerEmerge					= mod:NewTimer(17,"Kil'Jaeden is emerging")
 local warnPhase2					= mod:NewAnnounce("Stage Two: KJ has tiny legs", 3, 801892)
@@ -88,6 +91,13 @@ local timerCastObliterate			= mod:NewCastTimer(5, 2146575)	-- 2146575, 2146576, 
 local timerTargetObliterate			= mod:NewTargetTimer(49, 2146575) -- 2146575, 2146576, 2146578 Spell_cast_start
 
 
+-- Phase 2
+
+-- phase 3
+
+-- phase 4
+
+
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.flamesDown = 0
@@ -95,7 +105,7 @@ function mod:OnCombatStart(delay)
 	timerNextSoulrend:Start(20-delay)
 end
 
-function mod:LegionLightningTarget()							
+function mod:LegionLightningTarget()
 	local target = nil
 	target = mod:GetBossTarget(25315)
 	if target == UnitName("player") then
@@ -104,7 +114,19 @@ function mod:LegionLightningTarget()
 		warnTargetLegionLightning:Show(target)
 	end
 	timerTargetLegionLightning:Start(target)
-	self:SetIcon(target, 7, 3)
+	self:SetIcon(target, 8, 3)
+end
+
+function mod:ConflagTarget()
+	local conflagTarget = nil
+	conflagTarget = mod:GetBossTarget(25696)
+	if conflagTarget == UnitName("player") then
+		warnSpecYouConflag:Show()
+	else
+		warnTargetConflag:Show(conflagTarget)
+	end
+	timerTargetConflag:Start(conflagTarget)
+	self:SetIcon(conflagTarget, 8, 3)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -116,6 +138,7 @@ function mod:SPELL_CAST_START(args)
 		-- warnRagingBlow:Show()
 		timerNextRagingBlow:Start()
 	elseif args:IsSpellID(2146673, 2146674, 2146675) then
+		self:ScheduleMethod(0.2,"ConflagTarget");
 		-- warnConflagration:Show()
 		-- timerConflagrationCast:Start()
 	elseif args:IsSpellID(2146676) then
@@ -145,6 +168,14 @@ function mod:SPELL_CAST_START(args)
 		timerTargetObliterate:Start()
 	elseif args:IsSpellID(2146538) then
 		warnReflections:Show()
+	end
+end
+
+function mod:SPELL_CAST_INTERRUPT(args)
+	if args:IsSpellID(2146673, 2146674, 2146675, 2146676) then
+	warnSpecYouConflag:Hide()
+	warnTargetConflag:Hide()
+	timerTargetConflag:Cancel()
 	end
 end
 
@@ -216,5 +247,3 @@ function mod:UNIT_DIED(args)
 		timerNextSummonWildImps:Stop()
 	end
 end
-
-
