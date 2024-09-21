@@ -29,7 +29,7 @@ local timerDance					= mod:NewTimer(15,"Fire Dance/Dawn Runner", 2145929)
 local timerTwinFade					= mod:NewTimer(10, "The strongest Twin remains", 148477)
 	
 -- Alythess Phase
-local warnSolarBurn					= mod:NewAnnounce("WarnSolarStacks", 2, 2145905) -- 2145905, 2145906 spell_aura_applied
+local warnSolarBurn					= mod:NewSpecialWarningStack(2145905, nil, 4) -- 2145905, 2145906 spell_aura_applied
 local timerFlingAlyth				= mod:NewTargetTimer(1, 2145916)
 local warnFireDance					= mod:NewSpellAnnounce(2145928, 3) -- 2145928 	
 local timerFireDance				= mod:NewNextTimer(30, 2145928)
@@ -85,8 +85,8 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2145905) and args:IsPlayer() then
-		if args.amount == 4 or args.amount >= 8 then
-			warnSolarBurn:Show(args.spellName, args.amount or 1)
+		if args.amount then
+			warnSolarBurn:Show(args.amount)
 		end
 	elseif args:IsSpellID(2146005) and args:IsPlayer() then
 		if args.amount == 4 or args.amount >= 8 then
