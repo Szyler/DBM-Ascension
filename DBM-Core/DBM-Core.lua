@@ -1140,15 +1140,15 @@ do
 		SWING_MISSED = true,
 		RANGE_DAMAGE = true,
 		RANGE_MISSED = true,
-		SPELL_DAMAGE = true,
+		--SPELL_DAMAGE = true,
 		SPELL_BUILDING_DAMAGE = true,
-		SPELL_MISSED = true,
+		--SPELL_MISSED = true,
 		SPELL_ABSORBED = true,
 		SPELL_HEAL = true,
 		SPELL_ENERGIZE = true,
 		SPELL_PERIODIC_ENERGIZE = true,
-		SPELL_PERIODIC_MISSED = true,
-		SPELL_PERIODIC_DAMAGE = true,
+		--SPELL_PERIODIC_MISSED = true,
+		--SPELL_PERIODIC_DAMAGE = true,
 		SPELL_PERIODIC_DRAIN = true,
 		SPELL_PERIODIC_LEECH = true,
 		SPELL_DRAIN = true,
@@ -1185,6 +1185,19 @@ do
 						args.sourceGUID = args.destGUID
 						args.sourceFlags = args.destFlags
 					end
+				elseif event == "SPELL_DAMAGE" or event == "SPELL_PERIODIC_DAMAGE"  then
+					args.amount = extraArg4
+					args.overkill = extraArg5
+					args.school = extraArg6
+					args.resisted = extraArg7
+					args.blocked = extraArg8
+					args.absorbed = extraArg9
+					args.critical = extraArg10
+					args.glancing = extraArg11
+					args.crushing = extraArg12
+				elseif event == "SPELL_MISSED" or event == "SPELL_PERIODIC_MISSED" then
+					args.missType = extraArg4
+					args.amountMissed = extraArg5
 				elseif event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE" then
 					args.auraType = extraArg4
 					args.amount = extraArg5
