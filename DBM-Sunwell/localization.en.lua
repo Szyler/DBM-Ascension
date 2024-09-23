@@ -208,18 +208,20 @@ L:SetOptionLocalization{
 	WarnBlueOrb		= "Show warning for Dragon Orbs",
 	SpecWarnDarkOrb	= "Show special warning for Dark Orbs",
 	SpecWarnBlueOrb	= "Show special warning for Dragon Orbs",
-	TimerBlueOrb	= "Show timer form Dragon Orbs activate",
+	TimerBlueOrb	= "Show timer for Dragon Orbs activate",
 	RangeFrame		= "Show range check frame",
 	BloomIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45641)
 }
 
 L:SetMiscLocalization{
-	KJPull			= "The expendable have perished. So be it! Now I shall succeed where Sargeras could not! I will bleed this wretched world and secure my place as the true master of the Burning Legion! The end has come! Let the unravelling of this world commence!",
+	Phase2KJ		= "The expendable have perished. So be it! Now I shall succeed where Sargeras could not! I will bleed this wretched world and secure my place as the true master of the Burning Legion! The end has come! Let the unravelling of this world commence!",
+	Phase3KJ		= "Another step toward destruction!",
+	Phase4KJ		= "I will not be denied! This world shall fall!",
+	Phase5KJ		= "Do not harbor false hope! You cannot win!",
 	OrbYell1		= "I will channel my powers into the orbs! Be ready!",
 	OrbYell2		= "I have empowered another orb! Use it quickly!",
 	OrbYell3		= "Another orb is ready! Make haste!",
 	OrbYell4		= "I have channeled all I can! The power is in your hands!"
-
 }
 
 ----------------

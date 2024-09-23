@@ -218,22 +218,29 @@ function mod:SPELL_CAST_SUCCESS(args)
 
 end
 
-function mod:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L.KJPull or msg:find(L.KJPull) then
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.Phase2KJ or msg:find(L.Phase2KJ) then
 		self.vb.phase = 2
 		warnPhase2:Show()
 		timerEmerge:Start()
 		timerNextFireBloom:Start(10)
 		timerNextWorldBreaker:Start(15)
 		timerNextReflections:Start(25)
-		-- timerNextAllConsuming:Start(66) --Percent based. Need Unit_Health
-		-- timerNextAnnihilate:Start(96)
+	elseif msg == L.Phase3KJ or msg:find(L.Phase3KJ) then
+
+	elseif msg == L.Phase4KJ or msg:find(L.Phase4KJ) then
+
+	elseif msg == L.Phase5KJ or msg:find(L.Phase5KJ) then
+
 	end
 end
-mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_RAID_BOSS_EMOTE = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_EMOTE
-mod.CHAT_MSG_RAID_WARNING = mod.CHAT_MSG_MONSTER_EMOTE
+
+
+function mod:UNIT_HEALTH(uId)
+	if self:GetUnitCreatureId(uId) == 25315 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.82 and self.vb.phase == 2 and self:AntiSpam(20, 1) then
+		warnNextPhaseSoon:Show()
+	end
+end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
