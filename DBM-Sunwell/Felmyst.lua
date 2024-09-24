@@ -113,6 +113,12 @@ function mod:SPELL_CAST_START(args)
 		warnCastAcidicBreath:Show()
 		timerAcidicBreath:Start()
 		timerNextAcidicBreath:Start()
+	elseif args:IsSpellID(2145833) then
+		breathCounter = breathCounter + 1
+		warnCastInhale:Show()
+		if breathCounter < 3 then
+			timerNextInhale:Start(nil, breathCounter+1)
+		end
 	end
 end
 
@@ -124,14 +130,9 @@ function mod:frostBreath()
 	timerCastFreezingBreath:Start()
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
-	if msg == L.Breath or msg:find(L.Breath) then
-		breathCounter = breathCounter + 1
-		warnCastInhale:Show()
-		if breathCounter < 3 then
-			timerNextInhale:Start(nil, breathCounter+1)
-		end
-	elseif msg == L.AirPhase or msg:find(L.AirPhase) then
+function mod:CHAT_MSG_MONSTER_EMOTE(msg)
+	if msg == L.AirPhase or msg:find(L.AirPhase) 
+		or msg == L.AirPhase2 or msg:find(L.AirPhase2) then
 		breathCounter = 0
 		timerBreath:Start(42, 1)
 		timerNextNecroticBreath:Start(12)
