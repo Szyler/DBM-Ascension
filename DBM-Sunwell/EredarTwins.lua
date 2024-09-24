@@ -74,7 +74,7 @@ local alythPath = false
 
 
 function mod:OnCombatStart(delay)
-	self:SetStage(1)
+	self.vb.phase = 1
 	sacroPath = false
 	alythPath = false
 	timerDance:Start(-delay)
@@ -89,7 +89,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnSolarBurn:Show(args.amount)
 		end
 	elseif args:IsSpellID(2146005) and args:IsPlayer() then
-		if args.amount == 4 or args.amount >= 8 then
+		if args.amount and args.amount == 4 or args.amount >= 8 then
 			warnLunarBurn:Show(args.spellName, args.amount or 1)
 		end
 	end
@@ -196,7 +196,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerDawnRunner:Start(5)
 		self:ScheduleMethod(5, "DawnRunner")
 		if self.vb.phase == 1 then
-			self:SetStage(2)
+			self.vb.phase = 2
 			sacroPath = true
 		end
 	elseif msg == L.AlythPhase or msg:find(L.AlythPhase) then
@@ -205,7 +205,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerFireDance:Start()
 		self:ScheduleMethod(5, "FireDance")
 		if self.vb.phase == 1 then
-			self:SetStage(2)
+			self.vb.phase = 2
 			alythPath = true
 		end
 	elseif self.vb.phase == 4 and self:AntiSpam(5, 1) and (msg == L.SacroCombo or msg:find(L.SacroCombo) or msg == L.AlythCombo or msg:find(L.AlythCombo)) then
@@ -249,7 +249,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 	elseif msg == L.SacroAbsorb or msg:find(L.SacroAbsorb) or msg == L.AlythAbsorb or msg:find(L.AlythAbsorb) then
 		self:ScheduleMethod(0,"CancelTimers")
-		self:SetStage(5)
+		self.vb.phase = 5
 		timerTwinsMerge:Start()
 	elseif msg == L.TwinsMerge or msg:find(L.TwinsMerge) then
 		self:ScheduleMethod(0,"CancelTimers")
@@ -262,21 +262,21 @@ function mod:UNIT_HEALTH(uId)
 	local cid = self:GetUnitCreatureId(uId)
 	if cid == 25165 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.50 and self.vb.phase == 2 then
 		--Sacrolash
-		self:SetStage(3)
+		self.vb.phase = 3
 		self:ScheduleMethod(0,"CancelTimers")
 		timerRoleReversal:Start()
 	elseif cid == 25166 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.50 and self.vb.phase == 2 then
 		--Alythess
-		self:SetStage(3)
+		self.vb.phase = 3
 		self:ScheduleMethod(0,"CancelTimers")
 		timerRoleReversal:Start()
 	elseif cid == 25165 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.50 and self.vb.phase == 3 and alythPath == true then
-		self:SetStage(4)
+		self.vb.phase = 4
 		self:ScheduleMethod(0,"CancelTimers")
 		timerTagTeam:Start()
 		self:ScheduleMethod(5,"AlythPath")
 	elseif cid == 25166 and (UnitHealth(uId) / UnitHealthMax(uId)) <= 0.50 and self.vb.phase == 3 and sacroPath == true then
-		self:SetStage(4)
+		self.vb.phase = 4
 		self:ScheduleMethod(0,"CancelTimers")
 		timerTagTeam:Start()
 		self:ScheduleMethod(5,"SacroPath")
