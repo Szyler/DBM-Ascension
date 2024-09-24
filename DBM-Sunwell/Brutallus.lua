@@ -59,6 +59,8 @@ local timeToEnd = 0
 local felfireTargets = {}
 local felfireIcon = 7
 
+mod:AddBoolOption("RangeFrame", true)
+
 local function WarnFelfireTargets()
 	warnFelfireTargets:Show(table.concat(felfireTargets, "<, >"))
 	table.wipe(felfireTargets)
@@ -66,6 +68,9 @@ local function WarnFelfireTargets()
 end
 
 function mod:OnCombatStart(delay)
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Show()
+	end
 	self.vb.phase = 1
 	felfireIcon = 7
 	hasExcitement = false
