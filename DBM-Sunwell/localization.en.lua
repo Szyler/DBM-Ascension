@@ -48,7 +48,9 @@ L = DBM:GetModLocalization("Brutallus")
 L:SetGeneralLocalization{
 	name = "Brutallus"
 }
-
+L:SetOptionLocalization{
+    felFireYellOpt       = "Yell when you are affected by $spell:2145719"
+}
 L:SetMiscLocalization{
 	BrutPull			= "Ah, more lambs to the slaughter!"
 }

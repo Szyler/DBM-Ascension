@@ -60,6 +60,7 @@ local felfireTargets = {}
 local felfireIcon = 7
 
 mod:AddBoolOption("RangeFrame", true)
+mod:AddBoolOption("felFireYellOpt", true)
 
 local function WarnFelfireTargets()
 	warnFelfireTargets:Show(table.concat(felfireTargets, "<, >"))
@@ -98,6 +99,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specwarnFelfireBurn:Show()
 			timerFelFireBurnYou:Start(args.destName)
+			if self.Options.felFireYellOpt then
+				SendChatMessage(L.felFireYell, "YELL")
+				yellSolarWrath:Countdown(60,6)
+			end
 		end
 		timerTargetFelFireBurn:Start(args.destName)
 		self:SetIcon(args.destName, felfireIcon, 60)
