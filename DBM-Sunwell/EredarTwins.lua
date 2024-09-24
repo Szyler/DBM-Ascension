@@ -89,7 +89,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnSolarBurn:Show(args.amount)
 		end
 	elseif args:IsSpellID(2146005) and args:IsPlayer() then
-		if args.amount and args.amount == 4 or args.amount >= 8 then
+		if args.amount and (args.amount == 4 or args.amount >= 8) then
 			warnLunarBurn:Show(args.spellName, args.amount or 1)
 		end
 	end
@@ -208,7 +208,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self.vb.phase = 2
 			alythPath = true
 		end
-	elseif self.vb.phase == 4 and self:AntiSpam(5, 1) and (msg == L.SacroCombo or msg:find(L.SacroCombo) or msg == L.AlythCombo or msg:find(L.AlythCombo)) then
+	elseif self.vb.phase == 4 and DBM:AntiSpam(5, 1) and (msg == L.SacroCombo or msg:find(L.SacroCombo) or msg == L.AlythCombo or msg:find(L.AlythCombo)) then
 		if msg == L.SacroCombo or msg:find(L.SacroCombo) then
 			local sacroTarget = mod:GetBossTarget(25165)
 			timerRisingSunKick:Start(sacroTarget)

@@ -132,7 +132,7 @@ end
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 46268 then
 		warnFiend:Show()
-	elseif args.spellId == 46282 and self:AntiSpam(2, 1) then
+	elseif args.spellId == 46282 and DBM:AntiSpam(2, 1) then
 		warnBlackHole:Show()
 		specWarnBH:Show()
 		timerBlackHoleCD:Start()

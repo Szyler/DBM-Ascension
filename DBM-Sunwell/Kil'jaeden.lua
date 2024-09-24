@@ -237,7 +237,7 @@ end
 
 
 function mod:UNIT_HEALTH(uId)
-	if self:GetUnitCreatureId(uId) == 25315 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.82 and self.vb.phase == 2 and self:AntiSpam(20, 1) then
+	if self:GetUnitCreatureId(uId) == 25315 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.82 and self.vb.phase == 2 and DBM:AntiSpam(20, 1) then
 		warnNextPhaseSoon:Show()
 	end
 end
