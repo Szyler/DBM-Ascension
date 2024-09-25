@@ -131,7 +131,7 @@ function mod:frostBreath()
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L.AirPhase or msg:find(L.AirPhase) 
+	if msg == L.AirPhase or msg:find(L.AirPhase)
 		or msg == L.AirPhase2 or msg:find(L.AirPhase2) then
 		breathCounter = 0
 		timerBreath:Start(42, 1)

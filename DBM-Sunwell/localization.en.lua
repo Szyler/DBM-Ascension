@@ -196,24 +196,24 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnDarkOrb		= "Dark Orbs Spawned",
-	WarnBlueOrb		= "Dragon Orb activated",
-	SpecWarnDarkOrb	= "Dark Orbs Spawned!",
-	SpecWarnBlueOrb	= "Dragon Orbs Activated!"
+	WarnPhaseSoon				= "Next Phase at %s percent health",
+	WarnDarkOrb					= "Dark Orbs Spawned",
+	WarnBlueOrb					= "Dragon Orb activated",
+	SpecWarnDarkOrb				= "Dark Orbs Spawned!",
+	SpecWarnBlueOrb				= "Dragon Orbs Activated!"
 }
 
 L:SetTimerLocalization{
-	TimerBlueOrb	= "Dragon Orbs activate"
+	TimerBlueOrb				= "Dragon Orbs activate",
+	TimerWorldBreaker			= "World Breaker: %s"
 }
 
 L:SetOptionLocalization{
-	WarnDarkOrb		= "Show warning for Dark Orbs",
-	WarnBlueOrb		= "Show warning for Dragon Orbs",
-	SpecWarnDarkOrb	= "Show special warning for Dark Orbs",
-	SpecWarnBlueOrb	= "Show special warning for Dragon Orbs",
-	TimerBlueOrb	= "Show timer for Dragon Orbs activate",
-	RangeFrame		= "Show range check frame",
-	BloomIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(45641)
+	WarnDarkOrb					= "Show warning for Dark Orbs",
+	WarnBlueOrb					= "Show warning for Dragon Orbs",
+	SpecWarnDarkOrb				= "Show special warning for Dark Orbs",
+	SpecWarnBlueOrb				= "Show special warning for Dragon Orbs",
+	TimerBlueOrb				= "Show timer for Dragon Orbs activate"
 }
 
 L:SetMiscLocalization{
@@ -221,6 +221,7 @@ L:SetMiscLocalization{
 	Phase3KJ		= "Another step toward destruction!",
 	Phase4KJ		= "I will not be denied! This world shall fall!",
 	Phase5KJ		= "Do not harbor false hope! You cannot win!",
+	Phase6KJ		= "Kalec... Kalec?",
 	OrbYell1		= "I will channel my powers into the orbs! Be ready!",
 	OrbYell2		= "I have empowered another orb! Use it quickly!",
 	OrbYell3		= "Another orb is ready! Make haste!",
