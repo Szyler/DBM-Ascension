@@ -14,34 +14,32 @@ mod:RegisterEvents(
 )
 
 
-local warnVoidSpike			= mod:NewSpellAnnounce(2146314, 2)			
-local warnDarkness			= mod:NewSpecialWarningYou(2146301, 4)
-local timerDarkness			= mod:NewNextTimer(0, 2146301)
---local warnVoidRift			= mod:NewAnnounce("WarnVoidRift", 4, 2146310)
---local timerVoidRift			= mod:NewNextTimer(60, 2146310)
-local warnVoidSentinel		= mod:NewSpellAnnounce(2146312, 2)
-local timerVoidSentinel		= mod:NewNextTimer(60, 2146312)
-local SpecWarnVoidSpawn		= mod:NewSpellAnnounce(2146330, 2)--("WarnVoidSpawn", 4, 2146330)
-local warnDarkFiend			= mod:NewSpellAnnounce(2146320, 2)--("WarnFiend", 2, 2146320)
-local timerDarkFiend		= mod:NewNextTimer(60, 2146320)
-local warnVoidCutter		= mod:NewSpellAnnounce(2146303, 2)--("WarnVoidCutter", 2, 2146303)
-local timerVoidCutterSpawn	= mod:NewNextTimer(64, 2146303)
---local timerVoidCutterActive	= mod:NewNextTimer(64, 2146303)
+local warnVoidSpike				= mod:NewSpellAnnounce(2146314, 2)			
+local warnDarkness				= mod:NewSpecialWarningYou(2146301, 4)
+local timerDarkness				= mod:NewNextTimer(0, 2146301)
+--local warnVoidRift				= mod:NewAnnounce("WarnVoidRift", 4, 2146310)
+--local timerVoidRift				= mod:NewNextTimer(60, 2146310)
+local warnVoidSentinel			= mod:NewSpellAnnounce(2146312, 2)
+local timerVoidSentinel			= mod:NewNextTimer(60, 2146312)
+local SpecWarnVoidSpawn			= mod:NewSpellAnnounce(2146330, 2)--("WarnVoidSpawn", 4, 2146330)
+local warnDarkFiend				= mod:NewSpellAnnounce(2146320, 2)--("WarnFiend", 2, 2146320)
+local timerDarkFiend			= mod:NewNextTimer(60, 2146320)
+local warnVoidCutter			= mod:NewSpellAnnounce(2146303, 2)--("WarnVoidCutter", 2, 2146303)
+local timerVoidCutterSpawn		= mod:NewNextTimer(64, 2146303)
+--local timerVoidCutterActive		= mod:NewNextTimer(64, 2146303)
+local timerVCutterDuration		= mod:NewTimer(30, "Void Cutter duration", 2146303)
 
-local warnPhase2			= mod:NewPhaseAnnounce(2)
-local warnBlackHole			= mod:NewSpellAnnounce(2146370, 3)
-local timerBlackHole		= mod:NewNextTimer(23, 2146370)
+local warnPhase2				= mod:NewPhaseAnnounce(2)
+local warnBlackHole				= mod:NewSpellAnnounce(2146370, 3)
+local timerBlackHole			= mod:NewNextTimer(30, 2146370)
 
 local berserkTimer				= mod:NewBerserkTimer(600)
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
-
-	--timerVoidRift:Start(5-delay)
-	-- timerDarkness:Start(3-delay)
-	--timerVoidCutterActive:Start(25-delay)
 	timerVoidSentinel:Start(10-delay)
 	timerVoidCutterSpawn:Start(20-delay)
+	timerVCutterDuration:Schedule(23-delay)
 	timerDarkFiend:Start(30-delay)
 	berserkTimer:Start(-delay)
 end
@@ -54,7 +52,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2146322) and DBM:AntiSpam() then
 		warnDarkFiend:Show()
@@ -64,6 +61,7 @@ function mod:SPELL_CAST_START(args)
 		timerVoidSentinel:Start(40)
 
 		timerVoidCutterSpawn:Start(55)
+		timerVCutterDuration:Schedule(58)
 		warnVoidCutter:Schedule(55)
 	elseif args:IsSpellID(2146314) then
 		warnVoidSpike:Show()
@@ -76,7 +74,13 @@ function mod:UNIT_HEALTH(unit)
 		if hp <= 50 then
 			self.vb.phase = 2
 			warnPhase2:Show()
-			timerBlackHole:Start()
+			timerDarkFiend:Cancel()
+			timerVoidCutterSpawn:Cancel()
+			timerVoidSentinel:Cancel()
+			timerBlackHole:Start(25)
+			timerDarkFiend:Start(15)
+			timerVoidCutterSpawn:Start(20)
+			timerVCutterDuration:Schedule(23)
 		end
 	end
 end
