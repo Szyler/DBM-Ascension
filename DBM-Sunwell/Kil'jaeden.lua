@@ -113,6 +113,7 @@ local fireBloomTargets = {}
 local fireBloomIcon = 6
 local obliterateCount
 local worldbreaker
+local longObliterateDone = false
 
 self.vb.phase = 1
 
@@ -134,6 +135,7 @@ function mod:OnCombatStart(delay)
 	timerNextSoulRend:Start(20-delay)
 	obliterateCount = 0
 	worldbreaker = 0
+	longObliterateDone = false
 end
 
 local function CancelTimers()
@@ -234,23 +236,27 @@ function mod:SPELL_CAST_START(args)
 		elseif args:IsSpellID(2146575) then
 			warnObliterate:Show()
 			timerCastObliterate:Start()
-			timerObliterateEruption:Schedule(5)
-			if obliterateCount < 10 then
+			longObliterateDone = false
+			
+		elseif args:IsSpellID(2146576) then
+			timerObliterateEruption:Start()
+
+			if not longObliterateDone and obliterateCount < 10 then
 				warnObliterateCount:Show(10 - obliterateCount)
 				obliterateCount = obliterateCount + 1
-			else
+			elseif not longObliterateDone and obliterateCount == 9 then
+				warnObliterateCount:Show(1)
+				obliterateCount = 0
+				longObliterateDone = true
+			elseif longObliterateDone and obliterateCount < 3 then
+				warnObliterateCount:Show(3 - obliterateCount)
+				obliterateCount = obliterateCount + 1
+			elseif longObliterateDone and obliterateCount == 2 then
 				warnObliterateCount:Show(1)
 				obliterateCount = 0
 			end
-		elseif args:IsSpellID(2146576) then
-			if obliterateCount < 3 then
-				warnObliterateCount:Show(3 - obliterateCount)
-				obliterateCount = obliterateCount + 1
-			else
-				warnObliterateCount:Show(3 - obliterateCount)
-				obliterateCount = 0
-			end
-			if self.vb.phase == 6 and DBM:AntiSPam(15, 3) then
+
+			if self.vb.phase == 6 and DBM:AntiSpam(15, 3) then
 				timerNextDarkness:Start(20)
 			end
 		elseif args:IsSpellID(2146581) then
