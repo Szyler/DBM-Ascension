@@ -272,10 +272,10 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_INTERRUPT(args)
-	if (args.extraSpellId ==2146673 or args.spellId ==  2146673) and args.destName == "Archonisus" then
-	warnSpecYouConflag:Hide()
-	warnTargetConflag:Hide()
-	timerTargetConflag:Cancel()
+	if (args.extraSpellId == 2146673 or args.spellId ==  2146673) and args.destName == "Archonisus" then
+		-- warnSpecYouConflag:Hide()
+		-- warnTargetConflag:Hide()
+		timerTargetConflag:Cancel()
 	end
 end
 
