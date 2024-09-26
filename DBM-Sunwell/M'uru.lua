@@ -57,12 +57,14 @@ function mod:SPELL_CAST_START(args)
 		warnDarkFiend:Show()
 		timerDarkFiend:Start(60)
 
-		warnVoidSentinel:Schedule(40)
-		timerVoidSentinel:Start(40)
-
 		timerVoidCutterSpawn:Start(55)
 		timerVCutterDuration:Schedule(58)
 		warnVoidCutter:Schedule(55)
+
+		if self.vb.phase == 1 then
+			warnVoidSentinel:Schedule(40)
+			timerVoidSentinel:Start(40)
+		end
 	elseif args:IsSpellID(2146314) then
 		warnVoidSpike:Show()
 	end
