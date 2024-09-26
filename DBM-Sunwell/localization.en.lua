@@ -196,11 +196,13 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnPhaseSoon				= "Next Phase at %s percent health",
+	-- WarnPhaseSoon				= "Next Phase at %s percent health",
 	WarnDarkOrb					= "Dark Orbs Spawned",
 	WarnBlueOrb					= "Dragon Orb activated",
 	SpecWarnDarkOrb				= "Dark Orbs Spawned!",
-	SpecWarnBlueOrb				= "Dragon Orbs Activated!"
+	SpecWarnBlueOrb				= "Dragon Orbs Activated!",
+	WarnPhaseSoon				= "Phase %s soon",
+	WarnPhase					= "Phase %s"
 }
 
 L:SetTimerLocalization{

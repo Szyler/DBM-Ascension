@@ -50,7 +50,8 @@ local timerTargetConflag			= mod:NewTargetTimer(2.85, 2146673)
 -- Change all args.spellID into 	args:IsSpellID() with comma separated for the spellIDs
 
 local berserkTimer					= mod:NewBerserkTimer(900)
-local warnNextPhaseSoon				= mod:NewAnnounce("WarnPhaseSoon", 2, nil)
+local warnPhaseSoon					= mod:NewAnnounce("WarnPhaseSoon", 2, nil)
+local warnPhase						= mod:NewAnnounce("WarnPhase", 2, nil)
 
 -- overall KJ
 -- KJ timers	
@@ -321,6 +322,7 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Phase2KJ or msg:find(L.Phase2KJ) then
 		self.vb.phase = 2
+		warnPhase:Show(2)
 		berserkTimer:Start()
 		timerEmerge:Start()
 		timerNextFireBloom:Start(28)
@@ -328,12 +330,14 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextReflections:Start(43)
 	elseif msg == L.Phase3KJ or msg:find(L.Phase3KJ) then
 		self.vb.phase = 3
+		warnPhase:Show(3)
 		self:Schedule(0, CancelTimers)
 		timerCastAllConsuming:Start()
 		timerNextAnnihilate:Start(28)
 		timerDurAllConsuming:Schedule(3)
 	elseif msg == L.Phase4KJ or msg:find(L.Phase4KJ) then
 		self.vb.phase = 4
+		warnPhase:Show(4)
 		self:Schedule(0, CancelTimers)
 		timerObliterateEvent:Start(54)
 		timerNextDarkness:Schedule(54,10)
@@ -343,6 +347,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerDragonOrb:Start(58)
 	elseif msg == L.Phase5KJ or msg:find(L.Phase5KJ) then
 		self.vb.phase = 5
+		warnPhase:Show(5)
 		self:Schedule(0, CancelTimers)
 		timerNextDarkness:Schedule(45,19)
 		timerCastFirestorm:Schedule(54, 24)
@@ -351,19 +356,17 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerDragonOrb:Start(59)
 	elseif msg == L.Phase6KJ or msg:find(L.Phase6KJ) then
 		self.vb.phase = 6
+		warnPhase:Show(6)
 		self:Schedule(0, CancelTimers)
 		timerDragonOrb:Start(20)
 		timerNextDarkness:Start(25)
 		timerNextFireBloom:Start(39)
 		timerNextWorldBreaker:Start(44)
 		timerNextMiniEvent:Start(59)
-	elseif msg == L.OrbYell1 or msg:find(L.OrbYell1) then
-		warnDragonOrb:Show()
-	elseif msg == L.OrbYell2 or msg:find(L.OrbYell2) then
-		warnDragonOrb:Show()
-	elseif msg == L.OrbYell3 or msg:find(L.OrbYell3) then
-		warnDragonOrb:Show()
-	elseif msg == L.OrbYell4 or msg:find(L.OrbYell4) then
+	elseif msg == L.OrbYell1 or msg:find(L.OrbYell1) or
+	    msg == L.OrbYell2 or msg:find(L.OrbYell2) or
+	    msg == L.OrbYell3 or msg:find(L.OrbYell3) or
+	    msg == L.OrbYell4 or msg:find(L.OrbYell4) then
 		warnDragonOrb:Show()
 	end
 end
@@ -371,13 +374,13 @@ mod.CHAT_MSG_MONSTER_SAY = mod.CHAT_MSG_MONSTER_YELL
 
 function mod:UNIT_HEALTH(unit)
 	if self:GetUnitCreatureId(unit) == 25315 then
-	local health = (math.max(0,UnitHealth(unit)) / math.max(1, UnitHealthMax(unit))) * 100
+	local health = DBM_UnitHealthPercent(unit)
 		if health <= 84 and self.vb.phase == 2 and DBM:AntiSpam(35, 6) then
-			warnNextPhaseSoon:Show(health - 4)
+			warnPhaseSoon:Show(3)
 		elseif health <= 64 and self.vb.phase == 3 and DBM:AntiSpam(35, 6) then
-			warnNextPhaseSoon:Show(health - 4)
-		elseif	health <= 44 and self.vb.phase == 4 and DBM:AntiSpam(35, 6) then
-				warnNextPhaseSoon:Show(health - 4)
+			warnPhaseSoon:Show(4)
+		elseif health <= 44 and self.vb.phase == 4 and DBM:AntiSpam(35, 6) then
+			warnPhaseSoon:Show(5)
 		end
 	end
 end
