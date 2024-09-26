@@ -214,20 +214,20 @@ function mod:SPELL_CAST_START(args)
 			timerNextFireBloom:Start()
 			timerCastFireBloom:Start()
 		elseif args:IsSpellID(2146555) then
-				timerChannelAnnihilate:Schedule(4)
-				timerNextDarkness:Schedule(45, 20)
-				timerNextFireBloom:Schedule(50, 28)
-				timerNextWorldBreaker:Schedule(50, 35)
-				timerNextMiniEvent:Schedule(50,48)
-				timerDragonOrb:Start(59)
+			timerChannelAnnihilate:Schedule(4)
+			timerNextDarkness:Schedule(45, 20)
+			timerNextFireBloom:Schedule(50, 28)
+			timerNextWorldBreaker:Schedule(50, 35)
+			timerNextMiniEvent:Schedule(50,48)
+			timerDragonOrb:Start(59)
 		elseif args:IsSpellID(2146560) then
 			timerCastAnnihilate:Start()
-				warnAnnihilate:Show()
-				timerChannelAnnihilate:Schedule(4, 11)
-				timerNextMiniEvent:Start(60)
-				if self.vb.phase == 6 and DBM:AntiSPam(15, 2) then
-					timerNextDarkness:Start(20)
-				end
+			warnAnnihilate:Show()
+			timerChannelAnnihilate:Schedule(4, 11)
+			timerNextMiniEvent:Start(60)
+			if self.vb.phase == 6 and DBM:AntiSPam(15, 2) then
+				timerNextDarkness:Start(20)
+			end
 		elseif args:IsSpellID(2146521) then
 			timerCastAllConsuming:Start()
 		elseif args:IsSpellID(2146540) then
@@ -237,10 +237,8 @@ function mod:SPELL_CAST_START(args)
 			warnObliterate:Show()
 			timerCastObliterate:Start()
 			longObliterateDone = false
-			
 		elseif args:IsSpellID(2146576) then
 			timerObliterateEruption:Start()
-
 			if not longObliterateDone and obliterateCount < 10 then
 				warnObliterateCount:Show(10 - obliterateCount)
 				obliterateCount = obliterateCount + 1
@@ -255,17 +253,16 @@ function mod:SPELL_CAST_START(args)
 				warnObliterateCount:Show(1)
 				obliterateCount = 0
 			end
-
 			if self.vb.phase == 6 and DBM:AntiSpam(15, 3) then
 				timerNextDarkness:Start(20)
 			end
 		elseif args:IsSpellID(2146581) then
 			warnArmageddon:Show()
-				timerCastArmageddon:Start()
-				timerChannelArmageddon:Schedule(2)
-				timerNextDarkness:Schedule(45,15)
-				timerNextFireBloom:Schedule(50,15)
-				timerNextWorldBreaker:Schedule(50,20)
+			timerCastArmageddon:Start()
+			timerChannelArmageddon:Schedule(2)
+			timerNextDarkness:Schedule(45,15)
+			timerNextFireBloom:Schedule(50,15)
+			timerNextWorldBreaker:Schedule(50,20)
 		elseif args:IsSpellID(2146590) then
 			warnArmageddon:Show()
 			timerCastArmageddon:Start()
