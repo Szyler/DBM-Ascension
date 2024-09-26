@@ -12,7 +12,6 @@ MapSizes.lua
 localization.en.lua
 Kalecgos.lua
 KalecgosFrame.lua
-KalecgosFrame.xml
 Brutallus.lua
 Felmyst.lua
 EredarTwins.lua
