@@ -113,6 +113,8 @@ local fireBloomIcon = 6
 local obliterateCount
 local worldbreaker
 
+self.vb.phase = 1
+
 -- Need to add: timerTargetBlueFight (Dragon form, 1 minute, 2146650) [not in combatlog]
 -- seperate triggers for Main Event and Mini Event? [yes]
 -- Correct timers after transition [p2 and p3 timers working] -- fix p4 and p5 [yes]
@@ -182,7 +184,7 @@ function mod:SPELL_CAST_START(args)
 			timerCastImplosion:Start()
 			warnImplosion:Schedule(27)
 		end
-	elseif self.vb.phase >= 2 and args.sourceName =="Kil'jaeden" then
+	elseif self.vb.phase >= 2 and args.sourceName == "Kil'jaeden" then
 		if args:IsSpellID(2146510) then
 			self:ScheduleMethod(0.15,"LegionLightningTarget");
 		elseif args:IsSpellID(2146515, 2146516) and args.sourceName =="Kil'jaeden" then
