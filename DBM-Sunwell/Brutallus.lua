@@ -30,8 +30,8 @@ local timerNextMeteorSlash		= mod:NewNextTimer(10, 2145705) -- 2145704, 2145705,
 local warnTrample				= mod:NewSpellAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
 local warnTrampleSoon			= mod:NewSoonAnnounce(2145709, 3) -- 2145709, 2145710, 2145711 spell_aura_applied
 local timerNextTrample			= mod:NewNextTimer(30, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
-local timerCastTrample			= mod:NewCastTimer(10, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
-local timerTargetTrample		= mod:NewTargetTimer(10, 2145709) -- 2145709 spell_aura_applied
+local timerCastTrample			= mod:NewCastTimer(1, 2145709) -- 2145709, 2145710, 2145711 spell_aura_applied
+local timerTargetTrample		= mod:NewTargetTimer(9, 2145709) -- 2145709 spell_aura_applied
 
 local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
 local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
@@ -121,11 +121,11 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(2145703) then
 		hasExcitement = false
 		timerExcitement:Stop()
-		warnTrample:Show()
-		timerCastTrample:Start()
+		timerNextTrample:Stop()
+		warnTrample:Schedule(1)
+		timerCastTrample:Schedule(1)
 		timerNextMeteorSlash:Stop()
 		timerNextMeteorSlash:Start(13)
-		timerNextTrample:Stop()
 	elseif args:IsSpellID(2145719, 2145720, 2145721, 2145721) then
 		self:SetIcon(args.destName, 0)
 		felfireIcon = felfireIcon + 1
@@ -182,7 +182,7 @@ function mod:UNIT_HEALTH(unit)
 				warnTrampleSoon:Show()
 			end
 
-			timerNextTrample:Start(timeToEnd)
+			timerNextTrample:Start(timeToEnd+1)
         end
     end
 end
