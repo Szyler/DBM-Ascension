@@ -163,11 +163,7 @@ function mod:UNIT_HEALTH(unit)
 		if excitementStage ~= oldhasExcitement then
 
 			oldhasExcitement = excitementStage
-			if excitementStage == 1 	  or excitementStage == 2 then hpAtEnd = hp - 8
-			elseif excitementStage == 3 						then hpAtEnd = hp - 11
-			elseif excitementStage == 4 or excitementStage == 5 then hpAtEnd = hp - 12
-			elseif excitementStage == 6 						then hpAtEnd = hp - 14
-			elseif excitementStage == 7 or excitementStage == 8 then hpAtEnd = hp - 16
+			hpAtEnd = hp - (excitementStage + 8)
 			end
 			prevHP = hp
 			currTime = GetTime()
