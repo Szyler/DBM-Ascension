@@ -36,6 +36,7 @@ local timerTargetTrample		= mod:NewTargetTimer(9, 2145709) -- 2145709 spell_aura
 local warnFelfireBreath			= mod:NewSpellAnnounce(2145717, 2) -- 2145717, 2145718, Spell_cast_start
 local timerNextFelfireBreath	= mod:NewNextTimer(60, 2145717) -- 2145717, 2145718, Spell_cast_start
 
+local yellFelFire				= mod:NewFadesYell(2145719) -- 2145719, 2145720, 2145721 spell_aura_applied
 local specwarnFelfireBurn		= mod:NewSpecialWarningYou(2145719) -- 2145719, 2145720, 2145721 spell_aura_applied
 local warnFelfireTargets		= mod:NewTargetAnnounce(2145719, 3) -- 2145719, 2145720, 2145721 spell_aura_applied
 local timerFelFireBurn			= mod:NewTimer(5, "Felfire Burn turns volatile in:", 2145719)
@@ -100,8 +101,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			specwarnFelfireBurn:Show()
 			timerFelFireBurnYou:Start(args.destName)
 			if self.Options.felFireYellOpt then
-				SendChatMessage(L.felFireYell, "YELL")
-				yellSolarWrath:Countdown(60,6)
+				-- SendChatMessage(L.felFireYell, "YELL")
+				yellFelFire:Countdown(60,6)
 			end
 		end
 		timerTargetFelFireBurn:Start(args.destName)
@@ -164,7 +165,7 @@ function mod:UNIT_HEALTH(unit)
 
 			oldhasExcitement = excitementStage
 			hpAtEnd = hp - (excitementStage + 8)
-			end
+
 			prevHP = hp
 			currTime = GetTime()
 		elseif hp ~= prevHP and hp > hpAtEnd then

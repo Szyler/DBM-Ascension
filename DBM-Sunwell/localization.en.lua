@@ -49,11 +49,11 @@ L:SetGeneralLocalization{
 	name = "Brutallus"
 }
 L:SetOptionLocalization{
-    felFireYellOpt       = "Yell when you are affected by $spell:2145719"
+    -- felFireYellOpt       = "Yell when you are affected by $spell:2145719"
 }
 L:SetMiscLocalization{
 	BrutPull			= "Ah, more lambs to the slaughter!",
-	felFireYellYell		= "Cave in on me!"
+	-- felFireYellYell		= "$spell:2145719 on "..UnitName("PLAYER").."!"
 }
 
 --------------
