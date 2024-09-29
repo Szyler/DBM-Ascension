@@ -97,10 +97,9 @@ local timerNextAnnihilate			= mod:NewNextTimer(96, 2146555) -- 2146555, 2146556,
 
 -- phase 3
 local warnObliterate				= mod:NewSpellAnnounce(2146575, 3)	-- 2146575, 2146576, 2146578 Spell_cast_start
-local timerCastObliterate			= mod:NewCastTimer(5, 2146575)	-- 2146575, 2146576, 2146578 Spell_cast_start
-local timerObliterateEruption		= mod:NewTimer(4, "Obliterate: Eruption",2146575)
+local timerCastObliterate			= mod:NewCastTimer(4, 2146575)	-- 2146575, 2146576, 2146578 Spell_cast_start
 local timerObliterateEvent			= mod:NewTimer(54, "Obliterate Event duration", 2146575)
-local warnObliterateCount			= mod:NewAnnounce("%s Eruptions remaining", 2146575)
+local warnObliterateCount			= mod:NewAnnounce("%s Obliterate remaining", 2146575)
 
 -- phase 4
 local warnArmageddon				= mod:NewSpellAnnounce(2146581, 3)
@@ -188,7 +187,7 @@ function mod:SPELL_CAST_START(args)
 			warnImplosion:Schedule(27)
 		end
 	elseif self.vb.phase >= 2 and args.sourceName == "Kil'jaeden" then
-		if args:IsSpellID(2146510) then
+		if args:IsSpellID(2146509) then
 			self:ScheduleMethod(0.15,"LegionLightningTarget");
 		elseif args:IsSpellID(2146515, 2146516) and args.sourceName =="Kil'jaeden" then
 			if worldbreaker == 0 then
@@ -238,8 +237,8 @@ function mod:SPELL_CAST_START(args)
 			timerCastObliterate:Start()
 			longObliterateDone = false
 		elseif args:IsSpellID(2146576) then
-			timerObliterateEruption:Start()
-			if not longObliterateDone and obliterateCount < 10 then
+			timerCastObliterate:Start()
+			if not longObliterateDone and obliterateCount < 9 then
 				warnObliterateCount:Show(10 - obliterateCount)
 				obliterateCount = obliterateCount + 1
 			elseif not longObliterateDone and obliterateCount == 9 then
@@ -288,7 +287,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsSpellID(2146688) then
 			warnFelRage:Show(args.destName)
 			timerFelRage:Start(args.destName)
-		elseif args:IsSpellID(2146682) then
+		elseif args:IsSpellID(2146681) then
 			if args:IsPlayer() then
 				YellSoulbomb:Countdown(10, 3)
 			end
@@ -342,12 +341,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self.vb.phase = 4
 		warnPhase:Show(4)
 		self:Schedule(0, CancelTimers)
-		timerObliterateEvent:Start(54)
-		timerNextDarkness:Schedule(54,10)
-		timerNextFireBloom:Schedule(54, 24)
-		timerNextWorldBreaker:Schedule(54, 29)
-		timerNextMiniEvent:Schedule(54, 43)
-		timerDragonOrb:Start(58)
+		timerObliterateEvent:Start(45)
+		timerNextDarkness:Schedule(45,10)
+		timerNextFireBloom:Schedule(45, 24)
+		timerNextWorldBreaker:Schedule(45, 29)
+		timerNextMiniEvent:Schedule(45, 43)
+		timerDragonOrb:Start(51)
 	elseif msg == L.Phase5KJ or msg:find(L.Phase5KJ) then
 		self.vb.phase = 5
 		warnPhase:Show(5)
