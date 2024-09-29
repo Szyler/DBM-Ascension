@@ -1,0 +1,20 @@
+﻿## Interface: 30300
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Sunwell|r
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core, DBM-BurningCrusade
+## SavedVariablesPerCharacter: DBMSunwell_SavedVars, DBMSunwell_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Category: BC
+## X-DBM-Mod-Name: Sunwell Plateau
+## X-DBM-Tab-Sort: 307
+## X-DBM-Mod-LoadZone: Sunwell Plateau
+MapSizes.lua
+localization.en.lua
+Kalecgos.lua
+KalecgosFrame.lua
+Brutallus.lua
+Felmyst.lua
+EredarTwins.lua
+M'uru.lua
+Kil'jaeden.lua
+Arynyes.lua

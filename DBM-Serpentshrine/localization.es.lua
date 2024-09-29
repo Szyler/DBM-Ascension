@@ -25,7 +25,6 @@ L:SetOptionLocalization{
 	WarnPhase		= "Anunciar cambios de fase",
 	SpecWarnMark	= "Mostrar aviso cuando el daño del perjuicio de las marcas esté por encima del 100%",
 	TimerMark		= "Mostrar temporizador para las siguientes marcas",
-	RangeFrame		= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT_SHORT:format(10)
 }
 
 L:SetMiscLocalization{
