@@ -114,7 +114,7 @@ local obliterateCount
 local worldbreaker
 local longObliterateDone = false
 
-self.vb.phase = 1
+mod.vb.phase = 1
 
 -- Need to add: timerTargetBlueFight (Dragon form, 1 minute, 2146650) [not in combatlog]
 -- seperate triggers for Main Event and Mini Event? [yes]
