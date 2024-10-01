@@ -45,9 +45,11 @@ local timerNextInhale			= mod:NewNextTimer(17, 2145833) -- 2145833, spell_cast_s
 local timerNextNecroticDeluge	= mod:NewNextTimer(5, 2145835) -- 2145835, spell_cast_start
 local timerCastNecroticDeluge	= mod:NewCastTimer(15, 2145835) -- 2145835, spell_cast_start of inhale
 
-local warnArcaneDetention 		= mod:NewSpellAnnounce(2145834, 2) -- 2145834 spell_cast_start
-local timerNextArcaneDetention 	= mod:NewNextTimer(20, 2145834) -- 2145834 spell_cast_start
-local timerTargetArcaneDetention = mod:NewTargetTimer(10, 2145834) -- 2145834 spell_cast_start
+local warnArcaneDetention 		= mod:NewSpellAnnounce(2145812, 2) -- 2145812, 2145814 spell_cast_start
+local timerNextArcaneDetention 	= mod:NewNextTimer(60, 2145812) -- 2145812, 2145814 spell_cast_start
+local timerTargetArcaneDetention = mod:NewTargetTimer(10, 2145812) -- 2145812, 2145814 spell_cast_start
+local warnDebuffArcaneDetention  = mod:NewSpecialWarningStack(2145814, nil, 12) -- 2145814 spell_aura_applied
+
 
 local warnTailSweep 			= mod:NewSpellAnnounce(2145806, 2) -- 2145806 spell_cast_success
 local warnNextTailSweep			= mod:NewNextTimer(10, 2145806) -- 2145806 spell_cast_success 1 sec after Corrosion
@@ -59,6 +61,7 @@ local warnPhase					= mod:NewAnnounce("WarnPhase", 1, 31550)
 local timerPhase				= mod:NewTimer(60, "TimerPhase", 31550)
 local berserkTimer				= mod:NewBerserkTimer(720)
 
+--Exhale 2145834
 
 local breathCounter = 0
 
@@ -67,14 +70,16 @@ function mod:Groundphase()
 	warnPhase:Show(L.Ground)
 	timerNextCorrosion:Start(2)
 	warnNextTailSweep:Start(9)
-	timerNextArcaneDetention:Start(12)
-	-- timerPhase:Start(60, L.Air)
+	timerNextAcidicBreath:Start(14)
+	timerNextArcaneDetention:Start(24)
 end
 
 function mod:OnCombatStart(delay)
 	breathCounter = 0
 	timerNextCorrosion:Start(15-delay)
-	warnNextTailSweep:Start(29-delay)
+	warnNextTailSweep:Start(22-delay)
+	timerNextAcidicBreath:Start(27-delay)
+	timerNextArcaneDetention:Start(37-delay)
 	berserkTimer:Start(-delay)
 end
 
@@ -85,17 +90,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
--- function mod:SPELL_SUMMON(args)
--- 	if args.spellId == 45392 then
--- 		warnVapor:Show(args.sourceName)
--- 		if args.sourceName == UnitName("player") then
--- 			specWarnVapor:Show()
--- 		end
--- 		if self.Options.VaporIcon then
--- 			self:SetIcon(args.sourceName, 8, 10)
--- 		end
--- 	end
--- end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(2145814) and args:IsPlayer() then
+		warnDebuffArcaneDetention:Show(args.destName, args.amount or 1)
+	end
+end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2145808, 2145809, 2145810) then
@@ -105,9 +104,9 @@ function mod:SPELL_CAST_START(args)
 		-- warnCorrosion:Show()
 	-- elseif args:IsSpellID(2145833) then
 	-- 	timerNextInhale:Start()
-	elseif args:IsSpellID(2145834) then
+	elseif args:IsSpellID(2145812) then
 		warnArcaneDetention:Show()
-		-- timerNextArcaneDetention:Start()
+		timerNextArcaneDetention:Start()
 		timerTargetArcaneDetention:Start(args.destName)
 	elseif args:IsSpellID(2145801, 2145802, 2145803) then
 		warnCastAcidicBreath:Show()
@@ -132,7 +131,12 @@ end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg == L.AirPhase or msg:find(L.AirPhase)
-		or msg == L.AirPhase2 or msg:find(L.AirPhase2) then
+	or msg == L.AirPhase2 or msg:find(L.AirPhase2) then
+		timerNextCorrosion:Stop()
+		warnNextTailSweep:Stop()
+		timerNextAcidicBreath:Stop()
+		timerNextArcaneDetention:Stop()
+		
 		breathCounter = 0
 		timerBreath:Start(42, 1)
 		timerNextNecroticBreath:Start(12)
@@ -140,8 +144,8 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 		timerNextFreezingBreath:Start(27)
 		self:ScheduleMethod(27, "frostBreath")
 
-		timerPhase:Start(110, L.Ground)
-		self:ScheduleMethod(110, "Groundphase")
+		timerPhase:Start(107, L.Ground)
+		self:ScheduleMethod(107, "Groundphase")
 	end
 end
 mod.CHAT_MSG_MONSTER_YELL = mod.CHAT_MSG_MONSTER_EMOTE
