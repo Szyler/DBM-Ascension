@@ -57,6 +57,7 @@ local currTime = 0
 local timeElapsed = 0
 local timeToEnd = 0
 
+local felfireTargetsInit = {}
 local felfireTargets = {}
 local felfireIcon = 7
 
@@ -82,6 +83,13 @@ function mod:OnCombatStart(delay)
 	prevHP = 100
 	timerNextMeteorSlash:Start(10-delay)
 	timerNextFelfireBreath:Start(45-delay)
+
+	for i = 1, GetNumGroupMembers() do
+		local unit = "raid"..i
+		local name = UnitName(unit)
+		local marker = self:GetIcon(name)
+		felfireTargetsInit[#felfireTargetsInit + 1] = {name = name, marker = marker}
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -156,6 +164,12 @@ end
 
 function mod:OnCombatEnd()
 	timerNextTrample:Stop()
+	for i, target in ipairs(felfireTargetsInit) do
+		if target.name then
+			self:SetIcon(target.name, target.marker)
+			break
+		end
+	end
 end
 
 function mod:UNIT_HEALTH(unit)
