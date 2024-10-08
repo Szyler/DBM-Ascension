@@ -876,6 +876,7 @@ local function createRadarFrame()
 		local dot = radarFrame:CreateTexture(nil, "OVERLAY")
 		dot:SetSize(24, 24)
 		dot:SetTexture("Interface\\Minimap\\PartyRaidBlips") -- 249183
+		dot:SetTexCoord(0.5, 0.625, 0, 0.25)
 		dot:Hide()
 		radarFrame.dots[i] = dot
 	end
@@ -892,18 +893,6 @@ do
 	local circleColor, rotation, pixelsperyard, activeDots, prevRange, prevThreshold, prevNumClosePlayer, prevclosestRange, prevColor, prevType = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	local bossMode
 	local unitList = {}
-	local BLIP_TEX_COORDS = {
-		["WARRIOR"]		 = { 0, 0.125, 0, 0.25 },
-		["PALADIN"]		 = { 0.125, 0.25, 0, 0.25 },
-		["HUNTER"]		 = { 0.25, 0.375, 0, 0.25 },
-		["ROGUE"]		 = { 0.375, 0.5, 0, 0.25 },
-		["PRIEST"]		 = { 0.5, 0.625, 0, 0.25 },
-		["DEATHKNIGHT"]	 = { 0.625, 0.75, 0, 0.25 },
-		["SHAMAN"]		 = { 0.75, 0.875, 0, 0.25 },
-		["MAGE"]		 = { 0.875, 1, 0, 0.25 },
-		["WARLOCK"]		 = { 0, 0.125, 0.25, 0.5 },
-		["DRUID"]		 = { 0.25, 0.375, 0.25, 0.5 },
-	}
 
 	local function setDot(id, sinTheta, cosTheta)
 		local dot = radarFrame.dots[id]
@@ -936,7 +925,7 @@ do
 					dot.icon = nil
 					class = class or "PRIEST"
 					dot:SetTexture("Interface\\Minimap\\PartyRaidBlips") -- 249183
-					dot:SetTexCoord(BLIP_TEX_COORDS[class][1], BLIP_TEX_COORDS[class][2], BLIP_TEX_COORDS[class][3], BLIP_TEX_COORDS[class][4])
+					dot:SetVertexColor(RAID_CLASS_COLORS[class]:GetRGB())
 					dot:SetSize(24, 24)
 					dot:SetDrawLayer("OVERLAY", 0)
 				end
