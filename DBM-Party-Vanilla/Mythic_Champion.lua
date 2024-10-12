@@ -96,10 +96,10 @@ local warningLivingBomb                 = mod:NewSpellAnnounce(2129132, 3)
 local timerNextLivingBomb               = mod:NewNextTimer(12, 2129132)
 
 --Local Variables Frost Champion
---local sayIceBarrage			   = mod:NewFadesYell(2129160)
-local absoluteZeroCast          = false -- flag for the first Absolute Zero cast
-local frozenOrbCounter          = 0
-local iceBarrageCounter         = 0
+--local sayIceBarrage               = mod:NewFadesYell(2129160)
+local absoluteZeroCast              = false -- flag for the first Absolute Zero cast
+local frozenOrbCounter              = 0
+local iceBarrageCounter             = 0
 local warningAbsoluteZero           = mod:NewSpellAnnounce(2129169, 3)
 local timerNextAbsoluteZero         = mod:NewNextTimer(68, 2129169)
 --local AbsoluteZeroCast            = mod:NewCastTimer(2, 2129169)
@@ -190,7 +190,7 @@ end
 function mod:SPELL_AURA_APPLIED_DOSE(args)
     if args:IsSpellID(2129107) and args.destName == "Mythic Champion" then
 	   timerNextMeltDown:Start(19 -	meltdownAmount)
-	   warningMeltDown:Show(19 -    meltdownAmount)
+	   warningMeltDown:Show(19 - meltdownAmount)
 	   meltdownAmount = meltdownAmount +1
     end
 end
