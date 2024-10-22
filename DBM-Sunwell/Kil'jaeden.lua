@@ -116,6 +116,8 @@ local longObliterateDone = false
 
 mod.vb.phase = 1
 
+mod:AddBoolOption(L.ConflaglMarkOpt, false)
+
 -- Need to add: timerTargetBlueFight (Dragon form, 1 minute, 2146650) [not in combatlog]
 -- seperate triggers for Main Event and Mini Event? [yes]
 -- Correct timers after transition [p2 and p3 timers working] -- fix p4 and p5 [yes]
@@ -165,8 +167,10 @@ function mod:ConflagTarget()
 	else
 		warnTargetConflag:Show(conflagTarget)
 	end
+	if self.Options.SpineYellOpt then
+		self:SetIcon(conflagTarget, 8, 3)
+	end
 	timerTargetConflag:Start(conflagTarget)
-	self:SetIcon(conflagTarget, 8, 3)
 end
 
 function mod:SPELL_CAST_START(args)

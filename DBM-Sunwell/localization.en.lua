@@ -227,7 +227,8 @@ L:SetMiscLocalization{
 	OrbYell1		= "I will channel my powers into the orbs! Be ready!",
 	OrbYell2		= "I have empowered another orb! Use it quickly!",
 	OrbYell3		= "Another orb is ready! Make haste!",
-	OrbYell4		= "I have channeled all I can! The power is in your hands!"
+	OrbYell4		= "I have channeled all I can! The power is in your hands!",
+	ConflaglMarkOpt	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(2146673)
 }
 
 ----------------
