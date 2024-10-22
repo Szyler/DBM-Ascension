@@ -203,7 +203,7 @@ function mod:SPELL_CAST_START(args)
 			warnReflections:Show()
 			if self.vb.phase == 2 then
 				timerNextReflections:Start(60)
-			elseif self.vb.phase == 6 and DBM:AntiSPam(15, 1) then
+			elseif self.vb.phase == 6 and DBM:AntiSpam(15, 1) then
 				timerNextMiniEvent:Start()
 				timerNextDarkness:Start(20)
 			else
@@ -224,7 +224,7 @@ function mod:SPELL_CAST_START(args)
 			warnAnnihilate:Show()
 			timerChannelAnnihilate:Schedule(4, 11)
 			timerNextMiniEvent:Start(60)
-			if self.vb.phase == 6 and DBM:AntiSPam(15, 2) then
+			if self.vb.phase == 6 and DBM:AntiSpam(15, 2) then
 				timerNextDarkness:Start(20)
 			end
 		elseif args:IsSpellID(2146521) then
