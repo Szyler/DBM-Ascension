@@ -139,10 +139,10 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 		
 		breathCounter = 0
 		timerBreath:Start(42, 1)
-		timerNextNecroticBreath:Start(12)
-		self:ScheduleMethod(12, "necroticBreath")
-		timerNextFreezingBreath:Start(27)
-		self:ScheduleMethod(27, "frostBreath")
+		timerNextNecroticBreath:Start(3)
+		self:ScheduleMethod(3, "necroticBreath")
+		timerNextFreezingBreath:Start(22)
+		self:ScheduleMethod(22, "frostBreath")
 
 		timerPhase:Start(107, L.Ground)
 		self:ScheduleMethod(107, "Groundphase")
