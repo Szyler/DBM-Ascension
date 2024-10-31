@@ -31,6 +31,7 @@ local warnImpale		= mod:NewTargetAnnounce(2135824, 3) --2135823, 2135824, 213582
 local timerBear			= mod:NewTimer(45, "TimerBear", 39414)
 local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
 local specWarnCharge	= mod:NewSpecialWarningYou(2135805)
+local timerCharge		= mod:NewNextTimer(14, 2135805)
 local timerCharge1		= mod:NewTimer(13, "Charge (1)", 2135805)
 local timerCharge2		= mod:NewTimer(14, "Charge (2)", 2135805)
 local timerCharge3		= mod:NewTimer(15, "Charge (3)", 2135805)
