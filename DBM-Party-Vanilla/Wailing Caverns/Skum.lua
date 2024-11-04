@@ -8,7 +8,7 @@ mod:SetEncounterID(589)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 6254"
+	"SPELL_CAST_START"
 )
 
 --TODO, fix range to one classic actually supports
@@ -29,12 +29,8 @@ function mod:OnCombatEnd()
 	end
 end
 
-do
-	local ChainedBolt = DBM:GetSpellInfo(6254)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 6254 then
-		if args.spellName == ChainedBolt and args:IsSrcTypeHostile() then
+function mod:SPELL_CAST_START(args)
+		if args:IsSpellID(6254) then
 			timerChainedBoltCD:Start()
-		end
 	end
 end

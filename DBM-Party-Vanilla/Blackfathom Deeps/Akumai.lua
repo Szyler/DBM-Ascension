@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(4829)
---mod:SetEncounterID(1672)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 3815",
-	"SPELL_CAST_SUCCESS 3490"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningPoisonCloud		= mod:NewSpellAnnounce(3815, 4)
@@ -23,24 +22,12 @@ function mod:OnCombatStart(delay)
 	timerFrenziedRageCD:Start(1-delay)
 end
 
-do
-	local PoisonCloud = DBM:GetSpellInfo(3815)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 3815 then
-		if args.spellName == PoisonCloud then
-			warningPoisonCloud:Show()
-			timerPoisonCloudCD:Start()
-		end
-	end
-end
-
-do
-	local FrenziedRage = DBM:GetSpellInfo(3490)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 3490 then
-		if args.spellName == FrenziedRage then
-			warningFrenziedRage:Show()
-			timerFrenziedRageCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(3815) then
+		warningPoisonCloud:Show()
+		timerPoisonCloudCD:Start()
+	elseif args:IsSpellID(3490) then
+		warningFrenziedRage:Show()
+		timerFrenziedRageCD:Start()
 	end
 end
