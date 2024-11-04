@@ -8,13 +8,14 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: Vanilla
 ## X-DBM-Mod-Has-Heroic-Mode: 0
-## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Blackfathom Deeps
+## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Deadmines,Gnomeregan,Maraudon,Ragefire Chasm,Razorfen Downs,Razorfen Kraul,Scarlet Monastery,Shadowfang Keep,Stockade,Sunken Temple,Uldaman,Wailing Caverns,Zul Farrak
 ## X-DBM-Mod-Name: Party-Vanilla
 ## X-DBM-Mod-Sort: 125
-## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Blackfathom Deeps
+## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Deadmines,Gnomeregan,Maraudon,Ragefire Chasm,Razorfen Downs,Razorfen Kraul,Scarlet Monastery,Shadowfang Keep,Stockade,Sunken Temple,Uldaman,Wailing Caverns,Zul Farrak
 
 MythicChampion.lua
 localization.en.lua
+
 Scholomance\BloodSteward.lua
 Scholomance\Kirtonos.lua
 Scholomance\JandiceBarov.lua
@@ -31,6 +32,7 @@ Scholomance\Ravenian.lua
 Scholomance\Alexei.lua
 Scholomance\Illucia.lua
 Scholomance\Darkmaster.lua
+
 Stratholme\Stonespine.lua
 Stratholme\Swordsmith.lua
 Stratholme\Timmy.lua
@@ -50,6 +52,7 @@ Stratholme\Rivendare.lua
 Stratholme\Siabi.lua
 Stratholme\Skul.lua
 Stratholme\SothosandJarien.lua
+
 Blackrock Depths\Roccor.lua
 Blackrock Depths\Summonerstomb.lua
 Blackrock Depths\Angerforge.lua
@@ -104,6 +107,7 @@ Blackrock Spire\Voone.lua
 Blackrock Spire\Voshgajin.lua
 Blackrock Spire\Wyrmthalak.lua
 Blackrock Spire\Zigris.lua
+
 Dire Maul\Alzzin.lua
 Dire Maul\Fengus.lua
 Dire Maul\Gordok.lua
@@ -125,6 +129,7 @@ Dire Maul\Tendris.lua
 Dire Maul\Thimblejack.lua
 Dire Maul\Tsuzee.lua
 Dire Maul\Zevrim.lua
+
 Blackfathom Deeps\GhamooRa.lua
 Blackfathom Deeps\Gelihast.lua
 Blackfathom Deeps\LorgusJett.lua
@@ -133,8 +138,107 @@ Blackfathom Deeps\TwilightLord.lua
 Blackfathom Deeps\Zora.lua
 Blackfathom Deeps\AkuMai.lua
 
+Deadmines\RhahkZor.lua
+Deadmines\MinerJohnson.lua
+Deadmines\SneedsShredder.lua
+Deadmines\Gilnid.lua
+Deadmines\MrSmite.lua
+Deadmines\CaptainGreenskin.lua
+Deadmines\EdwinVanCleef.lua
+Deadmines\Cookie.lua
 
+Gnomeregan\Grubbis.lua
+Gnomeregan\ViscousFallout.lua
+Gnomeregan\Electrocutioner6000.lua
+Gnomeregan\CrowdPummeler.lua
+Gnomeregan\MekgineerThermaplugg.lua
 
+Maraudon\Noxxion.lua
+Maraudon\Razorlash.lua
+Maraudon\TinkererGizlock.lua
+Maraudon\LordVyletongue.lua
+Maraudon\CelebrastheCursed.lua
+Maraudon\Landslide.lua
+Maraudon\Rotgrip.lua
+Maraudon\PrincessTheradras.lua
 
+Ragefire Chasm\Oggleflint.lua
+Ragefire Chasm\Taragaman.lua
+Ragefire Chasm\Jergosh.lua
+Ragefire Chasm\Bazzalan.lua
 
+Razorfen Downs\Tutenkash.lua
+Razorfen Downs\MordreshFireEye.lua
+Razorfen Downs\Glutton.lua
+Razorfen Downs\Ragglesnout.lua
+Razorfen Downs\AmnennartheColdbringer.lua
+Razorfen Downs\PlaguemawtheRotting.lua
 
+Razorfen Kraul\Roogug.lua
+Razorfen Kraul\AggemThorncurse.lua
+Razorfen Kraul\DeathSpeakerJargba.lua
+Razorfen Kraul\OverlordRamtusk.lua
+Razorfen Kraul\AgathelostheRaging.lua
+Razorfen Kraul\BlindHunter.lua
+Razorfen Kraul\EarthcallerHalmgar.lua
+Razorfen Kraul\CharlgaRazorflank.lua
+
+Scarlet Monastery\InterrogatorVishas.lua
+Scarlet Monastery\BloodmageThalnos.lua
+Scarlet Monastery\HoundmasterLoksey.lua
+Scarlet Monastery\ArcanistDoan.lua
+Scarlet Monastery\Herod.lua
+Scarlet Monastery\Mograine_and_Whitemane.lua
+Scarlet Monastery\HighInquisitorFairbanks.lua
+
+Shadowfang Keep\Rethilgore.lua
+Shadowfang Keep\RazorclawtheButcher.lua
+Shadowfang Keep\BaronSilverlaine.lua
+Shadowfang Keep\CommanderSpringvale.lua
+Shadowfang Keep\OdotheBlindwatcher.lua
+Shadowfang Keep\DeathswornCaptain.lua
+Shadowfang Keep\FenrustheDevourer.lua
+Shadowfang Keep\WolfMasterNandos.lua
+Shadowfang Keep\ArchmageArugal.lua
+
+Stockade\Targorr.lua
+Stockade\KamDeepfury.lua
+Stockade\Hamhock.lua
+Stockade\BazilThredd.lua
+Stockade\DextrenWard.lua
+Stockade\BruegalIronknuckle.lua
+
+Sunken Temple\AvatarofHakkar.lua
+Sunken Temple\JammalantheProphet.lua
+Sunken Temple\Dreamscythe.lua
+Sunken Temple\Weaver.lua
+Sunken Temple\Morphaz.lua
+Sunken Temple\Hazzas.lua
+Sunken Temple\ShadeofEranikus.lua
+
+Uldaman\Revelosh.lua
+Uldaman\TheLostDwarves.lua
+Uldaman\Ironaya.lua
+Uldaman\ObsidianSentinel.lua
+Uldaman\AncientStoneKeeper.lua
+Uldaman\GalgannFirehammer.lua
+Uldaman\Grimlok.lua
+Uldaman\Archaedas.lua
+
+Wailing Caverns\LadyAnacondra.lua
+Wailing Caverns\LordPythas.lua
+Wailing Caverns\LordCobrahn.lua
+Wailing Caverns\Kresh.lua
+Wailing Caverns\Skum.lua
+Wailing Caverns\LordSerpentis.lua
+Wailing Caverns\VerantheEverliving.lua
+Wailing Caverns\MutanustheDevourer.lua
+Wailing Caverns\DeviateFaerieDragon.lua
+
+Zul Farrak\Gahzrilla.lua
+Zul Farrak\Antusul.lua
+Zul Farrak\ThekatheMartyr.lua
+Zul Farrak\WitchDoctorZumrah.lua
+Zul Farrak\HydromancerVelrath.lua
+Zul Farrak\Nekrum_Sezzziz.lua
+Zul Farrak\ChiefUkorzSandscalp.lua
