@@ -16,6 +16,8 @@
 MythicChampion.lua
 localization.en.lua
 
+trash.lua
+
 Scholomance\BloodSteward.lua
 Scholomance\Kirtonos.lua
 Scholomance\JandiceBarov.lua
