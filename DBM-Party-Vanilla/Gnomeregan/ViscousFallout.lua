@@ -8,7 +8,7 @@ mod:SetEncounterID(378)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 21687"
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningToxicVolley			= mod:NewSpellAnnounce(21687, 2, nil, "Healer|RemovePoison")
@@ -19,13 +19,9 @@ function mod:OnCombatStart(delay)
 	timerToxicVolleyCD:Start(1-delay)
 end
 
-do
-	local ToxicVolley = DBM:GetSpellInfo(21687)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 21687 then
-		if args.spellName == ToxicVolley then
-			warningToxicVolley:Show()
-			timerToxicVolleyCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(21687) then
+		warningToxicVolley:Show()
+		timerToxicVolleyCD:Start()
 	end
 end

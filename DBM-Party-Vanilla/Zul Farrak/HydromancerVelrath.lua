@@ -8,7 +8,7 @@ mod:SetEncounterID(593)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 12491"
+	"SPELL_CAST_START"
 )
 
 local specWarnHealingWave			= mod:NewSpecialWarningInterrupt(12491, "HasInterrupt", nil, nil, 1, 2)
@@ -19,16 +19,12 @@ function mod:OnCombatStart(delay)
 	timerHealingWaveCD:Start(1-delay)
 end
 
-do
-	local HealingWave = DBM:GetSpellInfo(12491)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 12491 then
-		if args.spellName == HealingWave and args:IsSrcTypeHostile() then
-			timerHealingWaveCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnHealingWave:Show(args.sourceName)
-				specWarnHealingWave:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(12491) then
+		timerHealingWaveCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnHealingWave:Show(args.sourceName)
+			specWarnHealingWave:Play("kickcast")
 		end
 	end
 end

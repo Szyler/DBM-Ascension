@@ -8,7 +8,7 @@ mod:SetEncounterID(427)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 21833"
+	"SPELL_CAST_SUCCESS"
 )
 
 --TODO, support his other spells? technicaly they won't be cast if you stack on him
@@ -21,13 +21,9 @@ function mod:OnCombatStart(delay)
 	timerGoblinDragonGunCD:Start(12.8-delay)
 end
 
-do
-	local GoblinDragonGun = DBM:GetSpellInfo(21833)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 21833 then
-		if args.spellName == GoblinDragonGun then
-			warningGoblinDragonGun:Show()
-			timerGoblinDragonGunCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(21833) then
+		warningGoblinDragonGun:Show()
+		timerGoblinDragonGunCD:Start()
 	end
 end

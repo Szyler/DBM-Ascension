@@ -8,7 +8,7 @@ mod:SetEncounterID(591)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 8142"
+	"SPELL_CAST_START"
 )
 
 local warnVines			= mod:NewSpellAnnounce(8142, 2)
@@ -19,13 +19,9 @@ function mod:OnCombatStart(delay)
 	timerVinesCD:Start(1-delay)
 end
 
-do
-	local Vines = DBM:GetSpellInfo(8142)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 8142 then
-		if args.spellName == Vines and args:IsDestTypePlayer() then
-			warnVines:Show(args.sourceName)
-			timerVinesCD:Start()
-		end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(8142) then
+		warnVines:Show(args.sourceName)
+		timerVinesCD:Start()
 	end
 end

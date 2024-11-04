@@ -3,14 +3,13 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(4428)
---mod:SetEncounterID(438)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 14515",
-	"SPELL_CAST_SUCCESS 14515",
-	"SPELL_AURA_APPLIED 14515"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningMCCast			= mod:NewCastAnnounce(14515, 3)
@@ -22,26 +21,20 @@ function mod:OnCombatStart(delay)
 --	timerMCCD:Start(6-delay)--Cast Start
 end
 
-do
-	local DominateMind = DBM:GetSpellInfo(14515)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 14515 then
-		if args.spellName == DominateMind then
-			warningMCCast:Show()
-		end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(14515) then
+		warningMCCast:Show()
 	end
+end
 
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 14515 then
-		if args.spellName == DominateMind then
-			timerMCCD:Start()--From Success to start when final, but while AI, success to success :\
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(14515) then
+		timerMCCD:Start()--From Success to start when final, but while AI, success to success :\
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 14515 then
-		if args.spellName == DominateMind then
-			warningMC:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(14515) then
+		warningMC:Show(args.destName)
 	end
 end

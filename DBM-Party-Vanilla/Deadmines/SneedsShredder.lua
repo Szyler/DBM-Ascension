@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(642, 643)--Shredder, Sneed
---mod:SetEncounterID(1144)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 7399 6713 5141",
-	"SPELL_AURA_APPLIED 7399 6713"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningFear			= mod:NewTargetNoFilterAnnounce(7399, 2)
@@ -23,30 +22,22 @@ function mod:OnCombatStart(delay)
 	timerFearCD:Start(1-delay)
 end
 
-do
-	local Terrify, Disarm, EjectSneed = DBM:GetSpellInfo(7399), DBM:GetSpellInfo(6713), DBM:GetSpellInfo(5141)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 7399 then
-		if args.spellName == Terrify and args:IsSrcTypeHostile() then
-			timerFearCD:Start()
-		--elseif args.spellId == 6713 then
-		elseif args.spellName == Disarm and args:IsSrcTypeHostile() then
-			timerDisarmCD:Start()
-		--elseif args.spellId == 5141 then
-		elseif args.spellName == EjectSneed then
-			warningEjectSneed:Show()
-			timerFearCD:Stop()
-			timerDisarmCD:Start(1)
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(7399) then
+		timerFearCD:Start()
+	elseif args:IsSpellID(6713) then
+		timerDisarmCD:Start()
+	elseif args:IsSpellID(5141) then
+		warningEjectSneed:Show()
+		timerFearCD:Stop()
+		timerDisarmCD:Start(1)
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 7399 and args:IsDestTypePlayer() then
-		if args.spellName == Terrify and args:IsDestTypePlayer() then
-			warningFear:Show(args.destName)
-		--elseif args.spellId == 6713 and args:IsDestTypePlayer() then
-		elseif args.spellName == Disarm and args:IsDestTypePlayer() then
-			warningDisarm:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 7399 and args:IsDestTypePlayer() then
+		warningFear:Show(args.destName)
+	elseif args.spellId == 6713 and args:IsDestTypePlayer() then
+		warningDisarm:Show(args.destName)
 	end
 end

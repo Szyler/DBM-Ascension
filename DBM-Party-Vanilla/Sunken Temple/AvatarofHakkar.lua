@@ -8,8 +8,8 @@ mod:SetEncounterID(492)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 12889 12888",
-	"SPELL_AURA_APPLIED 12889 12888"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningCurseofTongues			= mod:NewTargetNoFilterAnnounce(12889, 2, nil, "RemoveCurse")
@@ -23,25 +23,18 @@ function mod:OnCombatStart(delay)
 	timerCauseInsanityCD:Start(1-delay)
 end
 
-do
-	local CurseofTongues, CauseInsanity = DBM:GetSpellInfo(12889), DBM:GetSpellInfo(12888)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 12889 then
-		if args.spellName == CurseofTongues then
-			timerCurseofTonguesCD:Start()
-		--elseif args.spellId == 12888 then
-		elseif args.spellName == CauseInsanity then
-			timerCauseInsanityCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(12889) then
+		timerCurseofTonguesCD:Start()
+	elseif args:IsSpellID(12888) then
+		timerCauseInsanityCD:Start()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 12889 then
-		if args.spellName == CurseofTongues then
-			warningCurseofTongues:Show(args.destName)
-		--elseif args.spellId == 12888 then
-		elseif args.spellName == CauseInsanity then
-			warningCauseInsanity:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(12889) then
+		warningCurseofTongues:Show(args.destName)
+	elseif args:IsSpellID(12888) then
+		warningCauseInsanity:Show(args.destName)
 	end
 end

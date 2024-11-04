@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(11518)
---mod:SetEncounterID(1444)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 6304 20800",
-	"SPELL_AURA_APPLIED 6304 20800"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningCurseofWeakness			= mod:NewTargetNoFilterAnnounce(18267, 2)
@@ -23,25 +22,18 @@ function mod:OnCombatStart(delay)
 	timerImmolateCD:Start(1-delay)
 end
 
-do
-	local CurseofWeakness, Immolate = DBM:GetSpellInfo(18267), DBM:GetSpellInfo(20800)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 18267 then
-		if args.spellName == CurseofWeakness and args:IsSrcTypeHostile() then
-			timerCurseofWeaknessCD:Start()
-		--elseif args.spellId == 20800 then
-		elseif args.spellName == Immolate and args:IsSrcTypeHostile() then
-			timerImmolateCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(18267) then
+		timerCurseofWeaknessCD:Start()
+	elseif args:IsSpellID(20800) then
+		timerImmolateCD:Start()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 18267 then
-		if args.spellName == CurseofWeakness and args:IsDestTypePlayer() then
-			warningCurseofWeakness:Show(args.destName)
-		--elseif args.spellId == 20800 then
-		elseif args.spellName == Immolate and args:IsDestTypePlayer() then
-			warningImmolate:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(18267) then
+		warningCurseofWeakness:Show(args.destName)
+	elseif args:IsSpellID(20800) then
+		warningImmolate:Show(args.destName)
 	end
 end

@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(7356)
---mod:SetEncounterID(585)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 12946",
-	"SPELL_AURA_APPLIED 12946 11442"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningWitheredTouch			= mod:NewTargetNoFilterAnnounce(11442, 2, nil, "RemoveDisease")
@@ -22,23 +21,17 @@ function mod:OnCombatStart(delay)
 	timerPutridStenchCD:Start(1-delay)
 end
 
-do
-	local PutridStench, WitheredTouch = DBM:GetSpellInfo(12946), DBM:GetSpellInfo(11442)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 12946 then
-		if args.spellName == PutridStench then
-			timerPutridStenchCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(12946) then
+		timerPutridStenchCD:Start()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 12946 and self:CheckDispelFilter() then
-		if args.spellName == PutridStench and self:CheckDispelFilter() then
-			specWarnPutridStench:Show(args.destName)
-			specWarnPutridStench:Play("helpdispel")
-		--elseif args.spellId == 11442 and self:CheckDispelFilter() then
-		elseif args.spellName == WitheredTouch and self:CheckDispelFilter() then
-			warningWitheredTouch:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args.spellId == 12946 and self:CheckDispelFilter() then
+		specWarnPutridStench:Show(args.destName)
+		specWarnPutridStench:Play("helpdispel")
+	elseif args.spellId == 11442 and self:CheckDispelFilter() then
+		warningWitheredTouch:Show(args.destName)
 	end
 end

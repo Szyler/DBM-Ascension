@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(4424)
---mod:SetEncounterID(438)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 14900",
-	"SPELL_CAST_SUCCESS 8286"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningSummonBoar		= mod:NewSpellAnnounce(8286, 2)
@@ -24,27 +23,19 @@ function mod:OnCombatStart(delay)
 --	timerHealCD:Start(9.5-delay)
 end
 
-do
-	local ChainHeal = DBM:GetSpellInfo(14900)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 14900 then
-		if args.spellName == ChainHeal and args:IsSrcTypeHostile() then
-			timerHealCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnHeal:Show(args.sourceName)
-				specWarnHeal:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(14900) then
+		timerHealCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnHeal:Show(args.sourceName)
+			specWarnHeal:Play("kickcast")
 		end
 	end
 end
 
-do
-	local SummonBoar = DBM:GetSpellInfo(8286)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 8286 then
-		if args.spellName == SummonBoar then
-			warningSummonBoar:Show()
-			timerSummonBoarCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(8286) then
+		warningSummonBoar:Show()
+		timerSummonBoarCD:Start()
 	end
 end

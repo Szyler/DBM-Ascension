@@ -3,14 +3,13 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(6487)
---mod:SetEncounterID(585)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 9435 8988",
-	"SPELL_CAST_SUCCESS 9433",
-	"SPELL_AURA_APPLIED 13323"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningPolymorph				= mod:NewTargetNoFilterAnnounce(13323, 2)
@@ -27,32 +26,25 @@ function mod:OnCombatStart(delay)
 	timerSilenceCD:Start(9.9-delay)--9.9-16
 end
 
-do
-	local Detonation, ArcaneExplosion, Silence, Polymorph = DBM:GetSpellInfo(9435), DBM:GetSpellInfo(9433), DBM:GetSpellInfo(8988), DBM:GetSpellInfo(13323)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 9435 then
-		if args.spellName == Detonation then
-			specWarnDetonation:Show()
-			specWarnDetonation:Play("justrun")
-			--timerDetonationCD:Start()
-		--elseif args.spellId == 8988 then
-		elseif args.spellName == Silence and args:IsSrcTypeHostile() then
-			warningSilence:Show()
-			timerSilenceCD:Start()
-		end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(9435) then
+		specWarnDetonation:Show()
+		specWarnDetonation:Play("justrun")
+		--timerDetonationCD:Start()
+	elseif args:IsSpellID(8988) then
+		warningSilence:Show()
+		timerSilenceCD:Start()
 	end
+end
 
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 9433 then
-		if args.spellName == ArcaneExplosion and args:IsSrcTypeHostile() then
-			warningArcaneExplosion:Show()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(9433) then
+		warningArcaneExplosion:Show()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 13323 then
-		if args.spellName == Polymorph and args:IsDestTypePlayer() then
-			warningPolymorph:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(13323) then
+		warningPolymorph:Show(args.destName)
 	end
 end

@@ -3,12 +3,11 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(8567)
---mod:SetEncounterID(585)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 12795"
+	"SPELL_CAST_SUCCESS"
 )
 
 --TODO, add Disease Cloud when data is known
@@ -20,12 +19,8 @@ function mod:OnCombatStart(delay)
 end
 --]]
 
-do
-	local Enrage = DBM:GetSpellInfo(12795)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 12795 then
-		if args.spellName == Enrage and args:IsSrcTypeHostile() then
-			warningEnrage:Show()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(12795) then
+		warningEnrage:Show()
 	end
 end

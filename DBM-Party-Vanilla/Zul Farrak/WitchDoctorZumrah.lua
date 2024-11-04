@@ -8,8 +8,8 @@ mod:SetEncounterID(597)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 12491 15245",
-	"SPELL_CAST_SUCCESS 11086"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningWardZumrah				= mod:NewSpellAnnounce(11086, 2)
@@ -27,34 +27,25 @@ function mod:OnCombatStart(delay)
 	timerShadowBoltVolleyCD:Start(1-delay)
 end
 
-do
-	local HealingWave, ShadowBoltVolley = DBM:GetSpellInfo(12491), DBM:GetSpellInfo(15245)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 12491 then
-		if args.spellName == HealingWave and args:IsSrcTypeHostile() then
-			timerHealingWaveCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnHealingWave:Show(args.sourceName)
-				specWarnHealingWave:Play("kickcast")
-			end
-		--elseif args.spellId == 15245 then
-		elseif args.spellName == ShadowBoltVolley and args:IsSrcTypeHostile() then
-			timerShadowBoltVolleyCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnShadowBoltVolley:Show(args.sourceName)
-				specWarnShadowBoltVolley:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(12491) then
+		timerHealingWaveCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnHealingWave:Show(args.sourceName)
+			specWarnHealingWave:Play("kickcast")
+		end
+	elseif args:IsSpellID(15245) then
+		timerShadowBoltVolleyCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnShadowBoltVolley:Show(args.sourceName)
+			specWarnShadowBoltVolley:Play("kickcast")
 		end
 	end
 end
 
-do
-	local WardZumrah = DBM:GetSpellInfo(11086)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 11086 then
-		if args.spellName == WardZumrah then
-			warningWardZumrah:Show()
-			timerWardZumrahCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(11086) then
+		warningWardZumrah:Show()
+		timerWardZumrahCD:Start()
 	end
 end

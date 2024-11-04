@@ -8,7 +8,7 @@ mod:SetEncounterID(428)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 16495"
+	"SPELL_CAST_SUCCESS"
 )
 
 --Puncture too random, and not important enough, so removed. Fatal bite was never seen?
@@ -20,13 +20,9 @@ function mod:OnCombatStart(delay)
 	timerFatalBiteCD:Start(1-delay)
 end
 
-do
-	local FatalBite = DBM:GetSpellInfo(16495)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 15976 then
-		if args.spellName == FatalBite then
-			warningFatalBite:Show()
-			timerFatalBiteCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(15976) then
+		warningFatalBite:Show()
+		timerFatalBiteCD:Start()
 	end
 end

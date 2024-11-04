@@ -3,22 +3,17 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(3974)
---mod:SetEncounterID(585)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 6742"
+	"SPELL_AURA_APPLIED"
 )
 
 local warningBloodLust		= mod:NewTargetNoFilterAnnounce(6742, 2)
 
-do
-	local BloodLust = DBM:GetSpellInfo(6742)
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 6742 then
-		if args.spellName == BloodLust and args:IsDestTypeHostile() then
-			warningBloodLust:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(6742) then
+		warningBloodLust:Show(args.destName)
 	end
 end

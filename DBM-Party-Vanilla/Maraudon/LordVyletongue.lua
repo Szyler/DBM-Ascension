@@ -8,7 +8,7 @@ mod:SetEncounterID(424)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 7964"
+	"SPELL_CAST_SUCCESS"
 )
 
 --TODO, smokebomb health based or this timer accurate?
@@ -20,13 +20,9 @@ function mod:OnCombatStart(delay)
 --	timerSmokeBombCD:Start(1-delay)--Used near instant on pull
 end
 
-do
-	local SmokeBomb = DBM:GetSpellInfo(7964)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 7964 then
-		if args.spellName == SmokeBomb and args:IsSrcTypeHostile() then
-			warningSmokeBomb:Show()
-			timerSmokeBombCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(7964) then
+		warningSmokeBomb:Show()
+		timerSmokeBombCD:Start()
 	end
 end

@@ -3,13 +3,12 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(647)
---mod:SetEncounterID(1144)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 5208",
-	"SPELL_AURA_APPLIED 5208"
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 --TODO, consider a cleave timer if not cast too often
@@ -21,19 +20,14 @@ function mod:OnCombatStart(delay)
 	timerPoisonedHarpoonCD:Start(1-delay)
 end
 
-do
-	local Harpoon = DBM:GetSpellInfo(5208)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 5208 then
-		if args.spellName == Harpoon then
-			timerPoisonedHarpoonCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(5208) then
+		timerPoisonedHarpoonCD:Start()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 5208 then
-		if args.spellName == Harpoon then
-			warningPoisonedHarpoon:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(5208) then
+		warningPoisonedHarpoon:Show(args.destName)
 	end
 end

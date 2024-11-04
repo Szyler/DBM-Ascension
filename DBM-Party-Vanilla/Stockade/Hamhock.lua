@@ -7,7 +7,7 @@ mod:SetCreatureID(1717)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 6742"
+	"SPELL_AURA_APPLIED"
 )
 
 --TODO, add timer for chain lightning if it's not spam cast
@@ -27,12 +27,8 @@ function mod:OnCombatEnd()
 	end
 end
 
-do
-	local BloodLust = DBM:GetSpellInfo(6742)
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 6742 then
-		if args.spellName == BloodLust and args:IsDestTypeHostile() then
-			warningBloodlust:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(6742) then
+		warningBloodlust:Show(args.destName)
 	end
 end

@@ -8,7 +8,7 @@ mod:SetEncounterID(549)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 8374 11876"
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningArcingSmash			= mod:NewSpellAnnounce(8374, 2)
@@ -22,17 +22,12 @@ function mod:OnCombatStart(delay)
 	timerWarStompCD:Start(1-delay)
 end
 
-do
-	local ArcingSmash, WarStomp = DBM:GetSpellInfo(8374),  DBM:GetSpellInfo(11876)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 8374 then
-		if args.spellName == ArcingSmash then
-			warningArcingSmash:Show()
-			timerArcingSmashCD:Start()
-		--elseif args.spellId == 11876 then
-		elseif args.spellName == WarStomp then
-			warningWarStomp:Show()
-			timerWarStompCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(8374) then
+		warningArcingSmash:Show()
+		timerArcingSmashCD:Start()
+	elseif args:IsSpellID(11876) then
+		warningWarStomp:Show()
+		timerWarStompCD:Start()
 	end
 end

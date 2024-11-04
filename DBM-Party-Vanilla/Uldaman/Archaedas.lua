@@ -8,8 +8,8 @@ mod:SetEncounterID(554)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 10252 10258",
-	"SPELL_CAST_SUCCESS 6524"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningAwakenEarthenGuardians		= mod:NewSpellAnnounce(10252, 2)
@@ -24,27 +24,18 @@ function mod:OnCombatStart(delay)
 	timerGroundTremorCD:Start(1-delay)
 end
 
-do
-	local EarthGuardians, VaultWarder = DBM:GetSpellInfo(10252), DBM:GetSpellInfo(10258)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 10252 then
-		if args.spellName == EarthGuardians then
-			warningAwakenEarthenGuardians:Show()
-			timerAwakenEarthenGuardiansCD:Start()
-		--elseif args.spellId == 10258 then
-		elseif args.spellName == VaultWarder then
-			warningAwakenVaultWarder:Show()
-		end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(10252) then
+		warningAwakenEarthenGuardians:Show()
+		timerAwakenEarthenGuardiansCD:Start()
+	elseif args:IsSpellID(10258) then
+		warningAwakenVaultWarder:Show()
 	end
 end
 
-do
-	local GroundTremor = DBM:GetSpellInfo(6524)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 6524 then
-		if args.spellName == GroundTremor then
-			warningGroundTremor:Show()
-			timerGroundTremorCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(6524) then
+		warningGroundTremor:Show()
+		timerGroundTremorCD:Start()
 	end
 end

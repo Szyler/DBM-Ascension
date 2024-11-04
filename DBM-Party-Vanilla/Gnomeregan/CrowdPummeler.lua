@@ -8,7 +8,7 @@ mod:SetEncounterID(381)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 10887 8374"
+	"SPELL_CAST_SUCCESS"
 )
 
 local specWarnCrowdPummel			= mod:NewSpecialWarningSpell(10887, "Melee", nil, nil, 2, 2)
@@ -22,17 +22,12 @@ function mod:OnCombatStart(delay)
 	timerArcingSmashD:Start(1-delay)
 end
 
-do
-	local CrowdPummel, ArcingSmash = DBM:GetSpellInfo(10887), DBM:GetSpellInfo(8374)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 10887 then
-		if args.spellName == CrowdPummel then
-			specWarnCrowdPummel:Show()
-			specWarnCrowdPummel:Play("carefly")
-			timerCrowdPummelCD:Start()
-		--elseif args.spellId == 8374 then
-		elseif args.ArcingSmash == 8374 then
-			timerArcingSmashD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(10887) then
+		specWarnCrowdPummel:Show()
+		specWarnCrowdPummel:Play("carefly")
+		timerCrowdPummelCD:Start()
+	elseif args.spellId == 8374 then
+		timerArcingSmashD:Start()
 	end
 end

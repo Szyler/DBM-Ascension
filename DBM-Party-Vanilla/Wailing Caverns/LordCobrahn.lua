@@ -8,9 +8,9 @@ mod:SetEncounterID(586)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 8040 23381",
-	"SPELL_CAST_SUCCESS 7965",
-	"SPELL_AURA_APPLIED 8040 17330"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningDruidSlumber			= mod:NewTargetNoFilterAnnounce(8040, 2)
@@ -28,41 +28,33 @@ function mod:OnCombatStart(delay)
 	timerHealingTouchCD:Start(1-delay)
 end
 
-do
-	local DruidsSlumber, HealingTouch, SerpentForm, Poison = DBM:GetSpellInfo(8040), DBM:GetSpellInfo(23381), DBM:GetSpellInfo(7965), DBM:GetSpellInfo(17330)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 8040 then
-		if args.spellName == DruidsSlumber and args:IsSrcTypeHostile() then
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnDruidsSlumber:Show(args.sourceName)
-				specWarnDruidsSlumber:Play("kickcast")
-			end
-		--elseif args.spellId == 23381 then
-		elseif args.spellName == HealingTouch and args:IsSrcTypeHostile() then
-			warningHealingTouch:Show()
-			timerHealingTouchCD:Start()
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(8040) then
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnDruidsSlumber:Show(args.sourceName)
+			specWarnDruidsSlumber:Play("kickcast")
 		end
+	elseif args:IsSpellID(23381) then
+		warningHealingTouch:Show()
+		timerHealingTouchCD:Start()
 	end
+end
 
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 7965 then
-		if args.spellName == SerpentForm then
-			timerDruidsSlumberCD:Stop()
-			timerHealingTouchCD:Stop()
-			timerPoisonCD:Start(1)
-		--elseif args.spellId == 17330 then
-		elseif args.spellName == Poison and args:IsSrcTypeHostile() then
-			timerPoisonCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(7965) then
+		timerDruidsSlumberCD:Stop()
+		timerHealingTouchCD:Stop()
+		timerPoisonCD:Start(1)
+	elseif args:IsSpellID(17330) then
+		timerPoisonCD:Start()
 	end
+end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 8040 then
-		if args.spellName == DruidsSlumber and args:IsDestTypePlayer() then
-			warningDruidSlumber:Show(args.destName)
-		--elseif args.spellId == 17330 and self:CheckDispelFilter() then
-		elseif args.spellName == Poison and args:IsDestTypePlayer() and self:CheckDispelFilter() then
-			warningPoison:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(8040) then
+		warningDruidSlumber:Show(args.destName)
+	--elseif args.spellId == 17330 and self:CheckDispelFilter() then
+	elseif args.spellName == Poison and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+		warningPoison:Show(args.destName)
 	end
 end

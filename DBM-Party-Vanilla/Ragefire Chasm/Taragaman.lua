@@ -3,12 +3,11 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(11520)
---mod:SetEncounterID(1446)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 18072 11970"
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningUppercut			= mod:NewSpellAnnounce(18072, 3, nil, "Tank", 2)
@@ -22,17 +21,12 @@ function mod:OnCombatStart(delay)
 	timerFireNovaCD:Start(1-delay)
 end
 
-do
-	local Uppercut, FireNova = DBM:GetSpellInfo(18072), DBM:GetSpellInfo(11970)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 18072 then
-		if args.spellName == Uppercut then
-			warningUppercut:Show()
-			timerUppercutCD:Start()
-		--elseif args.spellId == 11970 then
-		elseif args.spellName == FireNova then
-			warningFireNova:Show()
-			timerFireNovaCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(18072) then
+		warningUppercut:Show()
+		timerUppercutCD:Start()
+	elseif args:IsSpellID(11970) then
+		warningFireNova:Show()
+		timerFireNovaCD:Start()
 	end
 end

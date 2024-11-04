@@ -3,12 +3,11 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(3975)
---mod:SetEncounterID(585)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 8989 8269"
+	"SPELL_AURA_APPLIED"
 )
 
 local warningEnrage					= mod:NewTargetNoFilterAnnounce(8269, 2)
@@ -21,17 +20,12 @@ function mod:OnCombatStart(delay)
 	timerWhirlwindCD:Start(10.5-delay)
 end
 
-do
-	local Whirlwind = DBM:GetSpellInfo(8989)
-	local Enrage = DBM:GetSpellInfo(8269)
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 8269 then
-		if args.spellName == Whirlwind and args:IsDestTypeHostile() then
-			specWarnWhirlwind:Show()
-			specWarnWhirlwind:Play("justrun")
-			timerWhirlwindCD:Start()
-		elseif args.spellName == Enrage and args:IsDestTypeHostile() then
-			warningEnrage:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(8269) then
+		specWarnWhirlwind:Show()
+		specWarnWhirlwind:Play("justrun")
+		timerWhirlwindCD:Start()
+	elseif args.spellName == Enrage and args:IsDestTypeHostile() then
+		warningEnrage:Show(args.destName)
 	end
 end

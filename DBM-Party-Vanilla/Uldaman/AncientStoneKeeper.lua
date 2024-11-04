@@ -8,7 +8,7 @@ mod:SetEncounterID(551)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 10132 10094"
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningSandStorms				= mod:NewSpellAnnounce(10132, 2)
@@ -19,13 +19,10 @@ function mod:OnCombatStart(delay)
 	timerSandStormsCD:Start(1-delay)
 end
 
-do
-	local SandStorms = DBM:GetSpellInfo(10132)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 10132 or args.spellId == 10094 then
-		if args.spellName == SandStorms then
-			warningSandStorms:Show()
-			timerSandStormsCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	--if args.spellId == 10132 or args.spellId == 10094 then
+	if args.spellName == SandStorms then
+		warningSandStorms:Show()
+		timerSandStormsCD:Start()
 	end
 end

@@ -3,12 +3,11 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(645)
---mod:SetEncounterID(1144)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 5174"
+	"SPELL_CAST_START"
 )
 
 local specWarnHeal			= mod:NewSpecialWarningInterrupt(5174, "HasInterrupt", nil, nil, 1, 2)
@@ -19,16 +18,12 @@ function mod:OnCombatStart(delay)
 	timerHealCD:Start(1-delay)
 end
 
-do
-	local CookieCooking = DBM:GetSpellInfo(5174)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 5174 then
-		if args.spellName == CookieCooking then
-			timerHealCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnHeal:Show(args.sourceName)
-				specWarnHeal:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(5174) then
+		timerHealCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnHeal:Show(args.sourceName)
+			specWarnHeal:Play("kickcast")
 		end
 	end
 end

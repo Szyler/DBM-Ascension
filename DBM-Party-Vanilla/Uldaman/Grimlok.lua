@@ -8,9 +8,9 @@ mod:SetEncounterID(553)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 8292 12167",
-	"SPELL_CAST_SUCCESS 6742",
-	"SPELL_AURA_APPLIED 6742 9906"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
 )
 
 local warningBloodlust				= mod:NewTargetNoFilterAnnounce(6742, 3)
@@ -30,46 +30,34 @@ function mod:OnCombatStart(delay)
 	timerBloodlustCD:Start(1-delay)
 end
 
-do
-	local ChainBolt, LightingBolt = DBM:GetSpellInfo(8292), DBM:GetSpellInfo(12167)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 8292 then
-		if args.spellName == ChainBolt and args:IsSrcTypeHostile() then
-			timerChainBoltCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnChainBolt:Show(args.sourceName)
-				specWarnChainBolt:Play("kickcast")
-			end
-		--elseif args.spellId == 12167 then
-		elseif args.spellName == LightingBolt and args:IsSrcTypeHostile() then
-			timerLightningBoltCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnLightningBolt:Show(args.sourceName)
-				specWarnLightningBolt:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(8292) then
+		timerChainBoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnChainBolt:Show(args.sourceName)
+			specWarnChainBolt:Play("kickcast")
+		end
+	elseif args:IsSpellID(12167) then
+		timerLightningBoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnLightningBolt:Show(args.sourceName)
+			specWarnLightningBolt:Play("kickcast")
 		end
 	end
 end
 
-do
-	local Bloodlust, Reflection, CrystallineSlumber = DBM:GetSpellInfo(6742), DBM:GetSpellInfo(9906), DBM:GetSpellInfo(3636)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 6742 then
-		if args.spellName == Bloodlust and args:IsSrcTypeHostile() then
+function mod:SPELL_CAST_SUCCESS(args)
+		if args:IsSpellID(6742) then
 			timerBloodlustCD:Start()
 		end
 	end
 
-	function mod:SPELL_AURA_APPLIED(args)
-		--if args.spellId == 6742 then
-		if args.spellName == Bloodlust and args:IsDestTypeHostile() then
-			warningBloodlust:Show(args.destName)
-		--elseif args.spellId == 9906 then
-		elseif args.spellName == Reflection then
-			warningReflection:Show(args.destName)
-		--elseif args.spellId == 3636 then
-		elseif args.spellName == CrystallineSlumber then
-			warningCrystallineSlumber:Show(args.destName)
-		end
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(6742) then
+		warningBloodlust:Show(args.destName)
+	elseif args:IsSpellID(9906) then
+		warningReflection:Show(args.destName)
+	elseif args:IsSpellID(3636) then
+		warningCrystallineSlumber:Show(args.destName)
 	end
 end

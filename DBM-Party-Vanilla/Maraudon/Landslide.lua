@@ -8,8 +8,8 @@ mod:SetEncounterID(426)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 21808",
-	"SPELL_CAST_SUCCESS 11130 5568"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 --TODO, verify timers further, in classic timers are never very static
@@ -29,28 +29,19 @@ function mod:OnCombatStart(delay)
 	timerLandslideCD:Start(1-delay)
 end
 
-do
-	local Landslide = DBM:GetSpellInfo(21808)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 21808 then
-		if args.spellName == Landslide then
-			warningLandSlide:Show()
-			timerLandslideCD:Start()
-		end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(21808) then
+		warningLandSlide:Show()
+		timerLandslideCD:Start()
 	end
 end
 
-do
-	local KnockAway, Trample = DBM:GetSpellInfo(11130), DBM:GetSpellInfo(5568)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 110762 or args.spellId == 11130 then--Retail, Classic (not confirmed, no actual data yet)
-		if args.spellName == KnockAway then
-			warningKnockAway:Show()
-			timerKnockAwayCD:Start()
-		--elseif args.spellId == 5568 then
-		elseif args.spellName == Trample and args:IsSrcTypeHostile() then
-			warningTrample:Show()
-			timerTrampleCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(110762, 11130) then--Retail, Classic (not confirmed, no actual data yet)
+		warningKnockAway:Show()
+		timerKnockAwayCD:Start()
+	elseif args:IsSpellID(5568) then
+		warningTrample:Show()
+		timerTrampleCD:Start()
 	end
 end

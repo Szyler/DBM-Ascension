@@ -8,8 +8,8 @@ mod:SetEncounterID(380)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 11082 11085",
-	"SPELL_CAST_SUCCESS 11084"
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
 )
 
 local warningShock				= mod:NewSpellAnnounce(11084, 2, nil, "Tank|Healer")
@@ -27,34 +27,25 @@ function mod:OnCombatStart(delay)
 	timerShockCD:Start(1-delay)
 end
 
-do
-	local Megavolt, ChainBolt = DBM:GetSpellInfo(11082), DBM:GetSpellInfo(11085)
-	function mod:SPELL_CAST_START(args)
-		--if args.spellId == 11082 then
-		if args.spellName == Megavolt then
-			timerMegavoltCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnMegavolt:Show(args.sourceName)
-				specWarnMegavolt:Play("kickcast")
-			end
-		--elseif args.spellId == 11085 then
-		elseif args.spellName == ChainBolt then
-			timerChainBoltCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-				specWarnChainBolt:Show(args.sourceName)
-				specWarnChainBolt:Play("kickcast")
-			end
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(11082) then
+		timerMegavoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnMegavolt:Show(args.sourceName)
+			specWarnMegavolt:Play("kickcast")
+		end
+	elseif args:IsSpellID(11085) then
+		timerChainBoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnChainBolt:Show(args.sourceName)
+			specWarnChainBolt:Play("kickcast")
 		end
 	end
 end
 
-do
-	local Shock = DBM:GetSpellInfo(11084)
-	function mod:SPELL_CAST_SUCCESS(args)
-		--if args.spellId == 11084 then
-		if args.spellName == Shock then
-			warningShock:Show()
-			timerShockCD:Start()
-		end
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(11084) then
+		warningShock:Show()
+		timerShockCD:Start()
 	end
 end
