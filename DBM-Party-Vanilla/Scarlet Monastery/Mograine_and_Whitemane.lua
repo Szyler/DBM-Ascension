@@ -6,7 +6,7 @@ mod:SetCreatureID(3977, 3976, 99999)--Whitemane, Mograine
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"UNIT_DIED"

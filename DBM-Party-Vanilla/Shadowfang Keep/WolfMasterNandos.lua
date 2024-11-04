@@ -6,7 +6,7 @@ mod:SetCreatureID(3927)
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START"
 )
 

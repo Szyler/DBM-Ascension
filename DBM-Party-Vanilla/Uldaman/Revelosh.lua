@@ -3,11 +3,10 @@ local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
 mod:SetCreatureID(6910)
-mod:SetEncounterID(547)
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START"
 )
 

@@ -5,7 +5,7 @@ mod:SetRevision(("$Revision: 5021 $"):sub(12, -3))
 mod:SetCreatureID(25507)
 mod:RegisterCombat("combat", 25507)
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 "SPELL_CAST_START"
 )
 

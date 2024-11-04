@@ -6,7 +6,7 @@ mod:SetCreatureID(7796, 7275)--nekrum-gutchewer, shadowpriest-sezzziz
 
 mod:RegisterCombat("combat")
 
-mod:RegisterEventsInCombat(
+mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
