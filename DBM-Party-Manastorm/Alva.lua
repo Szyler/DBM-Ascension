@@ -10,13 +10,16 @@ mod:RegisterEvents(
 	"SPELL_CAST_START" --255464, 255465 , 255374, 255455, 255437, 255397, 255447
 )
 
-local timerNextFrostStrike			= mod:NewNextTimer(15, 255465) -- 255464, 255465 Frost Strike 15s CD
+local timerNextFrostStrike			= mod:NewNextTimer(15, 255465) -- 255387, 255464, 255465 Frost Strike 15s CD
 local timerNextFrostbladeStrike		= mod:NewNextTimer(15, 255428) -- 255428, 255452, 255453 Frostblade Strike 15s CD
 local timerNextIceRock				= mod:NewNextTimer(6, 255374) -- 255374, 255375, 255377 Ice Rock 2 sec cast time, 6s CD
 local timerNextShadowShroudSurge	= mod:NewNextTimer(58, 255455) -- 255455 Shadow Shroud Surge 7 sec cast time, 58s CD
 local timerNextShadowShroudRebirth	= mod:NewNextTimer(9, 255455) -- 255455 Shadow Shroud Rebirth 2 sec cast time 9 seconds after Shadow Shroud Surge
 local timerNextArcingSlice			= mod:NewNextTimer(16, 255437) -- 255437 Arcing slice 3 sec cast time, 16s CD
 local timerNextBlastArrow			= mod:NewNextTimer(56, 255358) -- 255358 Blast Arrow 56s CD
+local timerNextBlastArrow2			= mod:NewNextTimer(7, 255358) -- 255358 Blast Arrow 56s CD
+local timerNextBlastArrow3 			= mod:NewNextTimer(9, 255358) -- 255358 Blast Arrow 56s CD
+
 local timerShadowVeilLance			= mod:NewBuffActiveTimer(28, 255397) -- 255397 Shadow Veil Lance 2.5 sec cast time, 28s duration
 local timerNextFrostRoar			= mod:NewNextTimer(9, 255447) -- 255447 Frost Roar 9/48s CD
 
@@ -33,33 +36,35 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 255465 then -- Frost Strike
+	if args:IsSpellID(255387, 255464, 255465) then -- Frost Strike
 		timerNextFrostStrike:Start()
-	elseif args.spellId == 255464 then -- Frostblade Strike
+	elseif args:IsSpellID(255427, 255428, 255452, 255453) then -- Frostblade Strike
 		timerNextFrostbladeStrike:Start()
-	elseif args.spellId == 255374 then -- Ice Rock
+	elseif args:IsSpellID(255374, 255375, 255377, 255450) or args:IsSpellID(255451) then -- Ice Rock
 		timerNextIceRock:Start()
 		timerCastIceRock:Start()
-	elseif args.spellId == 255455 then -- Shadow Shroud Surge
+	elseif args:IsSpellID(255455) then -- Shadow Shroud Surge
 		timerNextShadowShroudSurge:Start()
 		timerNextShadowShroudRebirth:Start(9)
 		timerCastShadowShroudSurge:Start()
-	elseif args.spellId == 255437 then -- Arcing Slice
+	elseif args:IsSpellID(255437) then -- Arcing Slice
 		timerNextArcingSlice:Start()
 		timerCastArcingSlice:Start()
-	elseif args.spellId == 255397 then -- Shadow Veil Lance
+	elseif args:IsSpellID(255397) then -- Shadow Veil Lance
 		timerShadowVeilLance:Start()
 		timerCastShadowVeilLance:Start()
-	elseif args.spellId == 255447 then -- Frost Roar
+	elseif args:IsSpellID(255447) then -- Frost Roar
 		timerFrostRoar:Start()
-		if triggeredbefore == false then
+		if triggeredbefore == true then
 			timerNextFrostRoar:Start(9)
-			triggeredbefore = true
-		else
-			timerNextFrostRoar:Start(48)
 			triggeredbefore = false
+		else
+			timerNextFrostRoar:Start(47)
+			triggeredbefore = true
 		end
-	elseif args.spellId == 255358 then -- Blast Arrow
+	elseif args:IsSpellID(255358) then -- Blast Arrow
 		timerNextBlastArrow:Start()
+		timerNextBlastArrow2:Start()
+		timerNextBlastArrow3:Start()
 	end
 end
