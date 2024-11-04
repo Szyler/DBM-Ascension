@@ -17,7 +17,7 @@ local timerNextShadowShroudSurge	= mod:NewNextTimer(58, 255455) -- 255455 Shadow
 local timerNextShadowShroudRebirth	= mod:NewNextTimer(9, 255455) -- 255455 Shadow Shroud Rebirth 2 sec cast time 9 seconds after Shadow Shroud Surge
 local timerNextArcingSlice			= mod:NewNextTimer(16, 255437) -- 255437 Arcing slice 3 sec cast time, 16s CD
 local timerNextBlastArrow			= mod:NewNextTimer(56, 255358) -- 255358 Blast Arrow 56s CD
-local timerShadowVeilLance			= mod:NewBuffTimer(28, 255397) -- 255397 Shadow Veil Lance 2.5 sec cast time, 28s duration
+local timerShadowVeilLance			= mod:NewBuffActiveTimer(28, 255397) -- 255397 Shadow Veil Lance 2.5 sec cast time, 28s duration
 local timerNextFrostRoar			= mod:NewNextTimer(9, 255447) -- 255447 Frost Roar 9/48s CD
 
 local timerCastIceRock 				= mod:NewCastTimer(2, 255374) -- Ice Rock 2 sec cast time

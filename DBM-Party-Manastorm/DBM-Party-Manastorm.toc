@@ -6,7 +6,7 @@
 
 
 ## X-DBM-Mod: 1
-## X-DBM-Mod-Category: Manastorm
+## X-DBM-Mod-Category: BC
 ## X-DBM-Mod-Has-Heroic-Mode: 0
 ## X-DBM-Mod-SubCategories: Frozen Reach
 ## X-DBM-Mod-Name: Party-Manastorm
