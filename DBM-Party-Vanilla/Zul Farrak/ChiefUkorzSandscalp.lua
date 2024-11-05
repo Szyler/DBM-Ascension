@@ -11,7 +11,7 @@ mod:RegisterEvents(
 )
 
 --TODO, Add cleave timer?
-local warningEnrage			= mod:NewTargetNoFilterAnnounce(8269, 2)
+local warningEnrage			= mod:NewTargetAnnounce(8269, 2)
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(8269) then

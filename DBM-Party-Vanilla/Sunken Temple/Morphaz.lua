@@ -14,8 +14,8 @@ mod:RegisterEvents(
 local warnWingFlap						= mod:NewSpellAnnounce(12882, 2)
 local warnAcidBreath					= mod:NewSpellAnnounce(12884, 2)
 
-local timerWingFlapCD					= mod:NewAITimer(180, 12882, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerAcidBreathCD					= mod:NewAITimer(180, 12884, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerWingFlapCD					= mod:NewCDTimer(180, 12882)
+local timerAcidBreathCD					= mod:NewCDTimer(180, 12884)
 
 function mod:OnCombatStart(delay)
 	timerWingFlapCD:Start(1-delay)

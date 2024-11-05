@@ -13,8 +13,8 @@ mod:RegisterEvents(
 local warningUppercut			= mod:NewSpellAnnounce(18072, 3, nil, "Tank", 2)
 local warningFireNova			= mod:NewSpellAnnounce(11970, 3)
 
-local timerUppercutCD			= mod:NewAITimer(180, 18072, nil, "Tank", 2, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerFireNovaCD			= mod:NewAITimer(180, 11970, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerUppercutCD			= mod:NewCDTimer(180, 18072)
+local timerFireNovaCD			= mod:NewCDTimer(180, 11970)
 
 function mod:OnCombatStart(delay)
 	timerUppercutCD:Start(1-delay)

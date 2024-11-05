@@ -12,7 +12,7 @@ mod:RegisterEvents(
 
 local warningSandStorms				= mod:NewSpellAnnounce(10132, 2)
 
-local timerSandStormsCD				= mod:NewAITimer(180, 10132, nil, nil, nil, 3)
+local timerSandStormsCD				= mod:NewCDTimer(180, 10132)
 
 function mod:OnCombatStart(delay)
 	timerSandStormsCD:Start(1-delay)

@@ -12,14 +12,14 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningPolymorph				= mod:NewTargetNoFilterAnnounce(13323, 2)
+local warningPolymorph				= mod:NewTargetAnnounce(13323, 2)
 local warningSilence				= mod:NewCastAnnounce(8988, 2)
 local warningArcaneExplosion		= mod:NewSpellAnnounce(9433, 2, nil, false, 2)--Can be spammy if cast multiple times in succession
 
 local specWarnDetonation			= mod:NewSpecialWarningRun(9435, nil, nil, nil, 4, 2)
 
 --local timerDetonationCD			= mod:NewCDTimer(180, 9435, nil, nil, nil, 2)
-local timerSilenceCD				= mod:NewCDTimer(15.5, 8988, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)--15-19
+local timerSilenceCD				= mod:NewCDTimer(15.5, 8988)
 
 function mod:OnCombatStart(delay)
 --	timerDetonationCD:Start(17.5-delay)--17.5-24

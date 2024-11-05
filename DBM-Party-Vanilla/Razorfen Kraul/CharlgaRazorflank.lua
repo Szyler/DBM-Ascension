@@ -12,10 +12,10 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningPurity				= mod:NewTargetNoFilterAnnounce(8361, 2)
+local warningPurity				= mod:NewTargetAnnounce(8361, 2)
 local warningManaSpike			= mod:NewSpellAnnounce(8358, 2)
 
-local specWarnChainBolt			= mod:NewSpecialWarningInterrupt(8292, "HasInterrupt", nil, nil, 1, 2)--Spammy if CheckInterruptFilter is disabled or isn't working
+local specWarnChainBolt			= mod:NewInterruptAnnounce(8292)
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(8292) then

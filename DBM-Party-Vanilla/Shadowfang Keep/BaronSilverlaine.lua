@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningVeilofShadow			= mod:NewTargetNoFilterAnnounce(7068, 2)
+local warningVeilofShadow			= mod:NewTargetAnnounce(7068, 2)
 
-local timerVeilofShadowCD			= mod:NewAITimer(180, 7068, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
+local timerVeilofShadowCD			= mod:NewCDTimer(180, 7068)
 
 function mod:OnCombatStart(delay)
 	timerVeilofShadowCD:Start(1-delay)

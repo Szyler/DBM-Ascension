@@ -11,13 +11,13 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningDeepSlumber			= mod:NewTargetNoFilterAnnounce(12890, 2)
+local warningDeepSlumber			= mod:NewTargetAnnounce(12890, 2)
 local warningAcidBreath				= mod:NewSpellAnnounce(12533, 2)
 local warningWarStomp				= mod:NewSpellAnnounce(24375, 2)
 
-local timerDeepSlumberCD			= mod:NewAITimer(180, 12890, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
-local timerAcidBreathCD				= mod:NewAITimer(180, 12533, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerWarStompCD				= mod:NewAITimer(180, 24375, nil, nil, nil, 2)
+local timerDeepSlumberCD			= mod:NewCDTimer(180, 12890)
+local timerAcidBreathCD				= mod:NewCDTimer(180, 12533)
+local timerWarStompCD				= mod:NewCDTimer(180, 24375)
 
 function mod:OnCombatStart(delay)
 	timerDeepSlumberCD:Start(1-delay)

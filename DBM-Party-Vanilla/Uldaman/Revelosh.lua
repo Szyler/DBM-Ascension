@@ -10,11 +10,11 @@ mod:RegisterEvents(
 	"SPELL_CAST_START"
 )
 
-local specWarnChainLightning			= mod:NewSpecialWarningInterrupt(16006, "HasInterrupt", nil, nil, 1, 2)
-local specWarnLightningBolt				= mod:NewSpecialWarningInterrupt(15801, false, nil, nil, 1, 2)
+local specWarnChainLightning			= mod:NewInterruptAnnounce(16006)
+local specWarnLightningBolt				= mod:NewInterruptAnnounce(15801)
 
-local timerChainLightningCD				= mod:NewAITimer(180, 16006, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerLightningBoltCD				= mod:NewAITimer(180, 15801, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerChainLightningCD				= mod:NewCDTimer(180, 16006)
+local timerLightningBoltCD				= mod:NewCDTimer(180, 15801)
 
 function mod:OnCombatStart(delay)
 	timerChainLightningCD:Start(1-delay)

@@ -13,7 +13,7 @@ mod:RegisterEvents(
 local warningKnockAway			= mod:NewSpellAnnounce(10101, 2)
 local warningActivateBomb		= mod:NewSpellAnnounce(11518, 2)
 
-local timerKnockAwayCD			= mod:NewAITimer(180, 10101, nil, nil, nil, 2)
+local timerKnockAwayCD			= mod:NewCDTimer(180, 10101)
 
 function mod:OnCombatStart(delay)
 	timerKnockAwayCD:Start(1-delay)

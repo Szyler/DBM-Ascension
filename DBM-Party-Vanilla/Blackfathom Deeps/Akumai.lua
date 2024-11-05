@@ -14,8 +14,9 @@ mod:RegisterEvents(
 local warningPoisonCloud		= mod:NewSpellAnnounce(3815, 4)
 local warningFrenziedRage		= mod:NewSpellAnnounce(3490, 4)
 
-local timerPoisonCloudCD		= mod:NewAITimer(180, 3815, nil, nil, nil, 3)
-local timerFrenziedRageCD		= mod:NewAITimer(180, 3490, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerPoisonCloudCD		= mod:NewCDTimer(180, 3815)
+local timerFrenziedRageCD		= mod:NewCDTimer(180, 3490)
+
 
 function mod:OnCombatStart(delay)
 	timerPoisonCloudCD:Start(1-delay)

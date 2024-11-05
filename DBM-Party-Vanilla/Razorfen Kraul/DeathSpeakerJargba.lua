@@ -13,9 +13,9 @@ mod:RegisterEvents(
 )
 
 local warningMCCast			= mod:NewCastAnnounce(14515, 3)
-local warningMC				= mod:NewTargetNoFilterAnnounce(14515, 4, nil, false, 2)--Don't want to announce the MC cast AND the target, 2 second apart warnings for same thing is not agreeable in classic (by default)
+local warningMC				= mod:NewTargetAnnounce(14515, 4, nil, false, 2)--Don't want to announce the MC cast AND the target, 2 second apart warnings for same thing is not agreeable in classic (by default)
 
-local timerMCCD				= mod:NewAITimer(180, 14515, nil, nil, nil, 3)--Uses success, because start can be interrupted by CC, evem though normal interrupts don't work, but boss recasts immediately on CC break
+local timerMCCD				= mod:NewCDTimer(180, 14515)
 
 function mod:OnCombatStart(delay)
 --	timerMCCD:Start(6-delay)--Cast Start

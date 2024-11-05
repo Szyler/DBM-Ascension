@@ -12,10 +12,10 @@ mod:RegisterEvents(
 
 local warningFireNova				= mod:NewSpellAnnounce(11969, 2)
 
-local specWarnFlameSpike			= mod:NewSpecialWarningInterrupt(6725, "HasInterrupt", nil, nil, 1, 2)
-local specWarnFlameLash				= mod:NewSpecialWarningInterrupt(3356, "HasInterrupt", nil, nil, 1, 2)
+local specWarnFlameSpike			= mod:NewInterruptAnnounce(6725)
+local specWarnFlameLash				= mod:NewInterruptAnnounce(3356)
 
-local timerFireNovaCD				= mod:NewAITimer(180, 11969, nil, nil, nil, 2)
+local timerFireNovaCD				= mod:NewCDTimer(180, 11969)
 
 function mod:OnCombatStart(delay)
 	timerFireNovaCD:Start(1-delay)

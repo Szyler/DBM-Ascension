@@ -12,14 +12,14 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningNaralexsNightmare		= mod:NewTargetNoFilterAnnounce(7967, 2)
-local warningTerrify				= mod:NewTargetNoFilterAnnounce(7399, 2)
+local warningNaralexsNightmare		= mod:NewTargetAnnounce(7967, 2)
+local warningTerrify				= mod:NewTargetAnnounce(7399, 2)
 
-local specWarnNaralexsNightmare		= mod:NewSpecialWarningInterrupt(7967, "HasInterrupt", nil, nil, 1, 2)
+local specWarnNaralexsNightmare		= mod:NewInterruptAnnounce(7967)
 
-local timerNaralexsNightmareCD		= mod:NewAITimer(180, 7967, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON..DBM_CORE_L.MAGIC_ICON)
-local timerTerrifyCD				= mod:NewAITimer(180, 7399, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
-local timerThundercrackCD			= mod:NewAITimer(180, 8150, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON..DBM_CORE_L.MAGIC_ICON)
+local timerNaralexsNightmareCD		= mod:NewCDTimer(180, 7967)
+local timerTerrifyCD				= mod:NewCDTimer(180, 7399)
+local timerThundercrackCD			= mod:NewCDTimer(180, 8150)
 
 function mod:OnCombatStart(delay)
 	timerNaralexsNightmareCD:Start(1-delay)

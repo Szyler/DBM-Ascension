@@ -16,13 +16,13 @@ mod:RegisterEvents(
 local warningEarthgrabTotem			= mod:NewSpellAnnounce(8376, 2)
 local warningHealingWard			= mod:NewSpellAnnounce(4971, 4)
 
-local specWarnHealingWaveSelf			= mod:NewSpecialWarningInterrupt(11895, "HasInterrupt", nil, nil, 1, 2)
-local specWarnHealingWaveAlly			= mod:NewSpecialWarningInterrupt(15982, "HasInterrupt", nil, nil, 1, 2)
+local specWarnHealingWaveSelf			= mod:NewInterruptAnnounce(11895)
+local specWarnHealingWaveAlly			= mod:NewInterruptAnnounce(15982)
 local specWarnMinions					= mod:NewSpecialWarningSwitch(11894, "Dps", nil, nil, 1, 2)
 
-local timerHealingWaveSelfCD			= mod:NewAITimer(180, 11895, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerHealingWaveAllyCD			= mod:NewAITimer(180, 15982, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerMinionsCD					= mod:NewAITimer(180, 11894, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerHealingWaveSelfCD			= mod:NewCDTimer(180, 11895)
+local timerHealingWaveAllyCD			= mod:NewCDTimer(180, 15982)
+local timerMinionsCD					= mod:NewCDTimer(180, 11894)
 
 function mod:OnCombatStart(delay)
 	timerHealingWaveSelfCD:Start(1-delay)

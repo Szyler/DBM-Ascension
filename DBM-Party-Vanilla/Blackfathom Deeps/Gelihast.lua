@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningNet			= mod:NewTargetNoFilterAnnounce(6533, 2)
+local warningNet			= mod:NewTargetAnnounce(6533, 2)
 
-local timerNetCD			= mod:NewAITimer(180, 6533, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerNetCD			= mod:NewCDTimer(180, 6533)
 
 function mod:OnCombatStart(delay)
 	timerNetCD:Start(1-delay)

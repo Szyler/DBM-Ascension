@@ -13,10 +13,10 @@ mod:RegisterEvents(
 
 local warningSummonBoar		= mod:NewSpellAnnounce(8286, 2)
 
-local specWarnHeal			= mod:NewSpecialWarningInterrupt(14900, "HasInterrupt", nil, nil, 1, 2)
+local specWarnHeal			= mod:NewInterruptAnnounce(14900)
 
-local timerSummonBoarCD		= mod:NewAITimer(180, 8286, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerHealCD			= mod:NewAITimer(180, 14900, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerSummonBoarCD		= mod:NewCDTimer(180, 8286)
+local timerHealCD			= mod:NewCDTimer(180, 14900)
 
 function mod:OnCombatStart(delay)
 --	timerSummonBoarCD:Start(7-delay)

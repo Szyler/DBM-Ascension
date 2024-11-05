@@ -12,7 +12,7 @@ mod:RegisterEvents(
 
 local warningToxicVolley			= mod:NewSpellAnnounce(21687, 2, nil, "Healer|RemovePoison")
 
-local timerToxicVolleyCD			= mod:NewAITimer(180, 21687, nil, nil, nil, 3, nil, DBM_CORE_L.POISON_ICON)
+local timerToxicVolleyCD			= mod:NewCDTimer(180, 21687)
 
 function mod:OnCombatStart(delay)
 	timerToxicVolleyCD:Start(1-delay)

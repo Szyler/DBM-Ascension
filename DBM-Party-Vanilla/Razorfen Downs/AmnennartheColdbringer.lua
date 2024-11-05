@@ -14,12 +14,12 @@ mod:RegisterEvents(
 --TODO, check/fix frostbolt spellId
 local warningAmnennarsWrath			= mod:NewSpellAnnounce(13009, 2)
 
-local specWarnFrostbolt				= mod:NewSpecialWarningInterrupt(12675, "HasInterrupt", nil, nil, 1, 2)
+local specWarnFrostbolt				= mod:NewInterruptAnnounce(12675)
 local specWarnFrostSpectres			= mod:NewSpecialWarningSwitch(13322, "-Healer", nil, nil, 1, 2)
 
-local timerAmnennarsWrathCD			= mod:NewAITimer(180, 13009, nil, nil, nil, 2)
-local timerFrostboltCD				= mod:NewAITimer(180, 12675, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON..DBM_CORE_L.MAGIC_ICON)
-local timerSummonFrostSpectresCD	= mod:NewAITimer(180, 13322, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerAmnennarsWrathCD			= mod:NewCDTimer(180, 13009)
+local timerFrostboltCD				= mod:NewCDTimer(180, 12675)
+local timerSummonFrostSpectresCD	= mod:NewCDTimer(180, 13322)
 
 function mod:OnCombatStart(delay)
 	timerAmnennarsWrathCD:Start(1-delay)

@@ -15,7 +15,7 @@ mod:RegisterEvents(
 --TODO, fear spread diff ID from initial target? if so, announce initial target
 --TODO, target scan Boulder?
 --TODO, more data that maybe gaze and dust field ona shared special timer?
---local warningRepulsiveGaze		= mod:NewTargetNoFilterAnnounce(21869, 2)
+--local warningRepulsiveGaze		= mod:NewTargetAnnounce(21869, 2)
 local warningRepulsiveGaze			= mod:NewSpellAnnounce(21869, 2)
 local warningBoulder				= mod:NewSpellAnnounce(21832, 2)
 local warningDustField				= mod:NewSpellAnnounce(21909, 2)

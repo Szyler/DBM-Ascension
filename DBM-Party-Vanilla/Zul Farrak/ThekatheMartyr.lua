@@ -11,7 +11,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningFeveredPlague			= mod:NewTargetNoFilterAnnounce(8600, 2, nil, "RemoveDisease")
+local warningFeveredPlague			= mod:NewTargetAnnounce(8600, 2, nil, "RemoveDisease")
 local warningThekaTransoform		= mod:NewSpellAnnounce(11089, 2)
 
 function mod:SPELL_CAST_SUCCESS(args)

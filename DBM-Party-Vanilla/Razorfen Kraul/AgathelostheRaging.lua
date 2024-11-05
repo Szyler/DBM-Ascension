@@ -11,7 +11,7 @@ mod:RegisterEvents(
 )
 
 --https://classic.wowhead.com/spell=8555/left-for-dead nani? is wowhead tripping? no mention of this in comments or guides
-local warningEnrage				= mod:NewTargetNoFilterAnnounce(8269, 2)
+local warningEnrage				= mod:NewTargetAnnounce(8269, 2)
 
 --function mod:OnCombatStart(delay)
 

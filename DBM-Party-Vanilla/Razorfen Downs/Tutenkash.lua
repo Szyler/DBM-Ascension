@@ -11,11 +11,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningCurseofTut				= mod:NewTargetNoFilterAnnounce(12255, 2, nil, "RemoveCurse")
+local warningCurseofTut				= mod:NewTargetAnnounce(12255, 2, nil, "RemoveCurse")
 local warningWebSpray				= mod:NewSpellAnnounce(12252, 2)
 
-local timerCurseofTutCD				= mod:NewAITimer(180, 12255, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
-local timerWebSprayCD				= mod:NewAITimer(180, 12252, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerCurseofTutCD				= mod:NewCDTimer(180, 12255)
+local timerWebSprayCD				= mod:NewCDTimer(180, 12252)
 
 function mod:OnCombatStart(delay)
 	timerCurseofTutCD:Start(1-delay)

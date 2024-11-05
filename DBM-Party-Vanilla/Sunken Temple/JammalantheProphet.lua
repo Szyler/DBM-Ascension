@@ -17,22 +17,22 @@ mod:RegisterEvents(
 local warningHealingWave				= mod:NewCastAnnounce(12492, 2)
 local warningEarthgrabTotem				= mod:NewSpellAnnounce(8376, 2)
 local warningFlamestrike				= mod:NewCastAnnounce(12468, 2)
-local warningHexofJammalan				= mod:NewTargetNoFilterAnnounce(12479, 2)
+local warningHexofJammalan				= mod:NewTargetAnnounce(12479, 2)
 --Ogom
-local warningCurseofWeakness			= mod:NewTargetNoFilterAnnounce(12493, 2, nil, "RemoveCurse")
-local warningShadowWordPain				= mod:NewTargetNoFilterAnnounce(11639, 2, nil, "RemoveMagic")
+local warningCurseofWeakness			= mod:NewTargetAnnounce(12493, 2, nil, "RemoveCurse")
+local warningShadowWordPain				= mod:NewTargetAnnounce(11639, 2, nil, "RemoveMagic")
 
 local specWarnHexofJammalan				= mod:NewSpecialWarningYou(12479, nil, nil, nil, 1, 2)
 local yellHexofJammalan					= mod:NewYell(12479)
 --local yellHexofJammalanFades			= mod:NewShortFadesYell(12479)--Requires BC plus, to distinquish 12479 vs 12480
 --Ogom
-local specWarnShadowBolt				= mod:NewSpecialWarningInterrupt(12471, "HasInterrupt", nil, nil, 1, 2)
+local specWarnShadowBolt				= mod:NewInterruptAnnounce(12471)
 
---local timerHealingWaveCD				= mod:NewAITimer(180, 12492, nil, nil, nil, 3)
-local timerEarthgrabTotemCD				= mod:NewAITimer(180, 8376, nil, nil, nil, 1)
-local timerHexofJammalanCD				= mod:NewAITimer(180, 12479, nil, nil, nil, 3)
+--local timerHealingWaveCD				= mod:NewCDTimer(180, 12492)
+local timerEarthgrabTotemCD				= mod:NewCDTimer(180, 8376)
+local timerHexofJammalanCD				= mod:NewCDTimer(180, 12479)
 --Ogom
-local timerShadowBoltCD					= mod:NewAITimer(180, 12479, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerShadowBoltCD					= mod:NewCDTimer(180, 12479)
 
 function mod:OnCombatStart(delay)
 --	timerHealingWaveCD:Start(1-delay)

@@ -10,7 +10,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningCurseofBlood			= mod:NewTargetNoFilterAnnounce(8282, 2, nil, "RemoveCurse")
+local warningCurseofBlood			= mod:NewTargetAnnounce(8282, 2, nil, "RemoveCurse")
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(8282) then

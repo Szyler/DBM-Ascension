@@ -11,11 +11,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningCurseofWeakness			= mod:NewTargetNoFilterAnnounce(18267, 2)
-local warningImmolate					= mod:NewTargetNoFilterAnnounce(20800, 2, nil, "Healer|RemoveMagic")
+local warningCurseofWeakness			= mod:NewTargetAnnounce(18267, 2)
+local warningImmolate					= mod:NewTargetAnnounce(20800, 2, nil, "Healer|RemoveMagic")
 
-local timerCurseofWeaknessCD			= mod:NewAITimer(180, 18267, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
-local timerImmolateCD					= mod:NewAITimer(180, 20800, nil, "Healer|RemoveMagic", nil, 5, nil, DBM_CORE_L.MAGIC_ICON)
+local timerCurseofWeaknessCD			= mod:NewCDTimer(180, 18267)
+local timerImmolateCD					= mod:NewCDTimer(180, 20800)
 
 function mod:OnCombatStart(delay)
 	timerCurseofWeaknessCD:Start(1-delay)

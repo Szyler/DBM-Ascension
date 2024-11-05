@@ -14,7 +14,7 @@ mod:RegisterEvents(
 
 local warnDeepSleep				= mod:NewSpellAnnounce(9256, 2)
 
-local specWarnHeal				= mod:NewSpecialWarningInterrupt(12039, "HasInterrupt", nil, nil, 1, 2)
+local specWarnHeal				= mod:NewInterruptAnnounce(12039)
 
 local timerDeepSleep			= mod:NewBuffFadesTimer(10, 9256, nil, nil, nil, 6)
 

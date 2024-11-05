@@ -13,12 +13,12 @@ mod:RegisterEvents(
 
 local warningWardZumrah				= mod:NewSpellAnnounce(11086, 2)
 
-local specWarnHealingWave			= mod:NewSpecialWarningInterrupt(12491, "HasInterrupt", nil, nil, 1, 2)
-local specWarnShadowBoltVolley		= mod:NewSpecialWarningInterrupt(15245, "HasInterrupt", nil, nil, 1, 2)
+local specWarnHealingWave			= mod:NewInterruptAnnounce(12491)
+local specWarnShadowBoltVolley		= mod:NewInterruptAnnounce(15245)
 
-local timerWardZumrahCD				= mod:NewAITimer(180, 11086, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerHealingWaveCD			= mod:NewAITimer(180, 12491, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerShadowBoltVolleyCD		= mod:NewAITimer(180, 15245, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerWardZumrahCD				= mod:NewCDTimer(180, 11086)
+local timerHealingWaveCD			= mod:NewCDTimer(180, 12491)
+local timerShadowBoltVolleyCD		= mod:NewCDTimer(180, 15245)
 
 function mod:OnCombatStart(delay)
 	timerWardZumrahCD:Start(1-delay)

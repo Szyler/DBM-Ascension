@@ -10,9 +10,9 @@ mod:RegisterEvents(
 	"SPELL_CAST_START"
 )
 
-local specWarnHeal			= mod:NewSpecialWarningInterrupt(5174, "HasInterrupt", nil, nil, 1, 2)
+local specWarnHeal			= mod:NewInterruptAnnounce(5174)
 
-local timerHealCD			= mod:NewAITimer(180, 5174, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerHealCD			= mod:NewCDTimer(180, 5174)
 
 function mod:OnCombatStart(delay)
 	timerHealCD:Start(1-delay)

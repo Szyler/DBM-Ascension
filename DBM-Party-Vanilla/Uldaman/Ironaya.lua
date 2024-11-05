@@ -13,8 +13,8 @@ mod:RegisterEvents(
 local warningArcingSmash			= mod:NewSpellAnnounce(8374, 2)
 local warningWarStomp				= mod:NewSpellAnnounce(11876, 2)
 
-local timerArcingSmashCD			= mod:NewAITimer(180, 8374, nil, "Tank", 2, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerWarStompCD				= mod:NewAITimer(180, 11876, nil, nil, nil, 2)
+local timerArcingSmashCD			= mod:NewCDTimer(180, 8374)
+local timerWarStompCD				= mod:NewCDTimer(180, 11876)
 
 function mod:OnCombatStart(delay)
 	timerArcingSmashCD:Start(1-delay)

@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningSlow			= mod:NewTargetNoFilterAnnounce(246, 2)
+local warningSlow			= mod:NewTargetAnnounce(246, 2)
 
-local timerSlowCD			= mod:NewAITimer(180, 246, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+local timerSlowCD			= mod:NewCDTimer(180, 246)
 
 function mod:OnCombatStart(delay)
 	timerSlowCD:Start(1-delay)

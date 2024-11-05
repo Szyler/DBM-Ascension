@@ -12,15 +12,15 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningDruidSlumber			= mod:NewTargetNoFilterAnnounce(8040, 2)
+local warningDruidSlumber			= mod:NewTargetAnnounce(8040, 2)
 local warningHealingTouch			= mod:NewCastAnnounce(23381, 2)
-local warningPoison					= mod:NewTargetNoFilterAnnounce(17330, 2, nil, "RemovePoison")
+local warningPoison					= mod:NewTargetAnnounce(17330, 2, nil, "RemovePoison")
 
-local specWarnDruidsSlumber			= mod:NewSpecialWarningInterrupt(8040, "HasInterrupt", nil, nil, 1, 2)
+local specWarnDruidsSlumber			= mod:NewInterruptAnnounce(8040)
 
-local timerDruidsSlumberCD			= mod:NewAITimer(180, 8040, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON..DBM_CORE_L.MAGIC_ICON)
-local timerHealingTouchCD			= mod:NewAITimer(180, 23381, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerPoisonCD					= mod:NewAITimer(180, 23381, nil, "RemovePoison", nil, 5, nil, DBM_CORE_L.POISON_ICON)
+local timerDruidsSlumberCD			= mod:NewCDTimer(180, 8040)
+local timerHealingTouchCD			= mod:NewCDTimer(180, 23381)
+local timerPoisonCD					= mod:NewCDTimer(180, 23381)
 
 function mod:OnCombatStart(delay)
 	timerDruidsSlumberCD:Start(1-delay)

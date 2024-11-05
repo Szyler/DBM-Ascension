@@ -12,9 +12,9 @@ mod:RegisterEvents(
 
 local specWarnCrowdPummel			= mod:NewSpecialWarningSpell(10887, "Melee", nil, nil, 2, 2)
 
-local timerCrowdPummelCD			= mod:NewAITimer(180, 10887, nil, nil, nil, 2)
+local timerCrowdPummelCD			= mod:NewCDTimer(180, 10887)
 
-local timerArcingSmashD				= mod:NewAITimer(180, 8374, nil, "Tank", 2, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerArcingSmashD				= mod:NewCDTimer(180, 8374)
 
 function mod:OnCombatStart(delay)
 	timerCrowdPummelCD:Start(1-delay)

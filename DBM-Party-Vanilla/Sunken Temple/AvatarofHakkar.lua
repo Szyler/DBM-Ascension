@@ -11,11 +11,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningCurseofTongues			= mod:NewTargetNoFilterAnnounce(12889, 2, nil, "RemoveCurse")
-local warningCauseInsanity			= mod:NewTargetNoFilterAnnounce(12888, 4)
+local warningCurseofTongues			= mod:NewTargetAnnounce(12889, 2, nil, "RemoveCurse")
+local warningCauseInsanity			= mod:NewTargetAnnounce(12888, 4)
 
-local timerCurseofTonguesCD			= mod:NewAITimer(180, 12889, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
-local timerCauseInsanityCD			= mod:NewAITimer(180, 12888, nil, nil, nil, 3)
+local timerCurseofTonguesCD			= mod:NewCDTimer(180, 12889)
+local timerCauseInsanityCD			= mod:NewCDTimer(180, 12888)
 
 function mod:OnCombatStart(delay)
 	timerCurseofTonguesCD:Start(1-delay)

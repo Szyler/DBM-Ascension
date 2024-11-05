@@ -11,8 +11,8 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningSmiteSlam		= mod:NewTargetNoFilterAnnounce(6435, 2)
-local warningNimbleReflexes	= mod:NewTargetNoFilterAnnounce(6264, 2)
+local warningSmiteSlam		= mod:NewTargetAnnounce(6435, 2)
+local warningNimbleReflexes	= mod:NewTargetAnnounce(6264, 2)
 
 local timerSmiteStomp		= mod:NewBuffFadesTimer(10, 6432, nil, nil, nil, 2)
 

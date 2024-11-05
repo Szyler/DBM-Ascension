@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningDeadlyPoison			= mod:NewTargetNoFilterAnnounce(744, 2, nil, "RemovePoison")
+local warningDeadlyPoison			= mod:NewTargetAnnounce(744, 2, nil, "RemovePoison")
 
-local timerDeadlyPoisonCD			= mod:NewAITimer(180, 744, nil, "RemovePoison", nil, 5, nil, DBM_CORE_L.POISON_ICON)
+local timerDeadlyPoisonCD			= mod:NewCDTimer(180, 744)
 
 function mod:OnCombatStart(delay)
 	timerDeadlyPoisonCD:Start(1-delay)

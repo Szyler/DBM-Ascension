@@ -13,10 +13,10 @@ mod:RegisterEvents(
 
 local warningFireNova			= mod:NewSpellAnnounce(12470, 2)
 
-local specWarnFireball			= mod:NewSpecialWarningInterrupt(12466, "HasInterrupt", nil, nil, 1, 2)
+local specWarnFireball			= mod:NewInterruptAnnounce(12466)
 
-local timerFireballCD			= mod:NewAITimer(180, 12466, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerFireNovaCD			= mod:NewAITimer(180, 12470, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerFireballCD			= mod:NewCDTimer(180, 12466)
+local timerFireNovaCD			= mod:NewCDTimer(180, 12470)
 
 function mod:OnCombatStart(delay)
 	timerFireballCD:Start(1-delay)

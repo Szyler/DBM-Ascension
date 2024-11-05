@@ -11,11 +11,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningWitheredTouch			= mod:NewTargetNoFilterAnnounce(11442, 2, nil, "RemoveDisease")
+local warningWitheredTouch			= mod:NewTargetAnnounce(11442, 2, nil, "RemoveDisease")
 
 local specWarnPutridStench			= mod:NewSpecialWarningDispel(12946, "RemoveDisease", nil, nil, 1, 2)
 
-local timerPutridStenchCD			= mod:NewAITimer(180, 12946, nil, nil, nil, 5, nil, DBM_CORE_L.DISEASE_ICON)
+local timerPutridStenchCD			= mod:NewCDTimer(180, 12946)
 
 function mod:OnCombatStart(delay)
 	timerPutridStenchCD:Start(1-delay)

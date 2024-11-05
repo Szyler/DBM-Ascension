@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningMoltenMetal	= mod:NewTargetNoFilterAnnounce(5213, 2)
+local warningMoltenMetal	= mod:NewTargetAnnounce(5213, 2)
 
-local timerMoltenMetalCD	= mod:NewAITimer(180, 5213, nil, nil, nil, 3)
+local timerMoltenMetalCD	= mod:NewCDTimer(180, 5213)
 
 function mod:OnCombatStart(delay)
 	timerMoltenMetalCD:Start(1-delay)

@@ -11,7 +11,7 @@ mod:RegisterEvents(
 )
 
 --TODO, add timer for chain lightning if it's not spam cast
-local warningBloodlust				= mod:NewTargetNoFilterAnnounce(6742, 2)
+local warningBloodlust				= mod:NewTargetAnnounce(6742, 2)
 
 mod:AddRangeFrameOption("10")
 

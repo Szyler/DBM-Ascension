@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningPierceArmor			= mod:NewTargetNoFilterAnnounce(12097, 2)
+local warningPierceArmor			= mod:NewTargetAnnounce(12097, 2)
 
-local timerPierceArmorCD			= mod:NewAITimer(180, 12097, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerPierceArmorCD			= mod:NewCDTimer(180, 12097)
 
 function mod:OnCombatStart(delay)
 	timerPierceArmorCD:Start(1-delay)

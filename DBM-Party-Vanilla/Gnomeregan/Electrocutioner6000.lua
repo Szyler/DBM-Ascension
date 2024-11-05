@@ -13,12 +13,12 @@ mod:RegisterEvents(
 
 local warningShock				= mod:NewSpellAnnounce(11084, 2, nil, "Tank|Healer")
 
-local specWarnMegavolt			= mod:NewSpecialWarningInterrupt(11082, "HasInterrupt", nil, nil, 1, 2)
-local specWarnChainBolt			= mod:NewSpecialWarningInterrupt(11085, "HasInterrupt", nil, nil, 1, 2)
+local specWarnMegavolt			= mod:NewInterruptAnnounce(11082)
+local specWarnChainBolt			= mod:NewInterruptAnnounce(11085)
 
-local timerMegavoltCD			= mod:NewAITimer(180, 11082, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerChainBoltCD			= mod:NewAITimer(180, 11085, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerShockCD				= mod:NewAITimer(180, 11084, nil, "Tank|Healer", 2, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerMegavoltCD			= mod:NewCDTimer(180, 11082)
+local timerChainBoltCD			= mod:NewCDTimer(180, 11085)
+local timerShockCD				= mod:NewCDTimer(180, 11084)
 
 function mod:OnCombatStart(delay)
 	timerMegavoltCD:Start(1-delay)

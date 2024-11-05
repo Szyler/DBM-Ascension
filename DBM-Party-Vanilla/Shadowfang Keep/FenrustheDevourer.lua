@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningToxicSaliva				= mod:NewTargetNoFilterAnnounce(7125, 2, nil, "RemovePoison")
+local warningToxicSaliva				= mod:NewTargetAnnounce(7125, 2, nil, "RemovePoison")
 
-local timerToxicSalivaCD				= mod:NewAITimer(180, 7125, nil, nil, nil, 3, nil, DBM_CORE_L.POISON_ICON)
+local timerToxicSalivaCD				= mod:NewCDTimer(180, 7125)
 
 function mod:OnCombatStart(delay)
 	timerToxicSalivaCD:Start(1-delay)

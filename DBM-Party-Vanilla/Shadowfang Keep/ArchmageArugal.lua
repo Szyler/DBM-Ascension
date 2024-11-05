@@ -11,11 +11,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningArugalsCurse			= mod:NewTargetNoFilterAnnounce(7621, 2)
+local warningArugalsCurse			= mod:NewTargetAnnounce(7621, 2)
 local warningShadowPort				= mod:NewSpellAnnounce(7587, 2)
 
-local timerArugalsCurseCD			= mod:NewAITimer(180, 7621, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
-local timerShadowPortCD				= mod:NewAITimer(180, 7587, nil, nil, nil, 6)
+local timerArugalsCurseCD			= mod:NewCDTimer(180, 7621)
+local timerShadowPortCD				= mod:NewCDTimer(180, 7587)
 
 function mod:OnCombatStart(delay)
 	timerArugalsCurseCD:Start(1-delay)

@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningDruidSlumber			= mod:NewTargetNoFilterAnnounce(8040, 2)
+local warningDruidSlumber			= mod:NewTargetAnnounce(8040, 2)
 
-local specWarnDruidsSlumber			= mod:NewSpecialWarningInterrupt(8040, "HasInterrupt", nil, nil, 1, 2)
+local specWarnDruidsSlumber			= mod:NewInterruptAnnounce(8040)
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(8040) then

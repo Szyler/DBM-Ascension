@@ -13,11 +13,11 @@ mod:RegisterEvents(
 )
 
 --TODO, no indication she actually has a heal, only lightning bolt and throns
-local warningFreezeSolid			= mod:NewTargetNoFilterAnnounce(11836, 2)
+local warningFreezeSolid			= mod:NewTargetAnnounce(11836, 2)
 local warningSlam					= mod:NewSpellAnnounce(11902, 2)
 
-local timerFreezeSolidCD			= mod:NewAITimer(180, 11836, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
-local timerSlamCD					= mod:NewAITimer(180, 11902, nil, nil, nil, 2)
+local timerFreezeSolidCD			= mod:NewCDTimer(180, 11836)
+local timerSlamCD					= mod:NewCDTimer(180, 11902)
 
 function mod:OnCombatStart(delay)
 	timerFreezeSolidCD:Start(1-delay)

@@ -12,16 +12,16 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningBloodlust				= mod:NewTargetNoFilterAnnounce(6742, 3)
-local warningReflection				= mod:NewTargetNoFilterAnnounce(9906, 4)
-local warningCrystallineSlumber		= mod:NewTargetNoFilterAnnounce(3636, 4, nil, "RemoveMagic")
+local warningBloodlust				= mod:NewTargetAnnounce(6742, 3)
+local warningReflection				= mod:NewTargetAnnounce(9906, 4)
+local warningCrystallineSlumber		= mod:NewTargetAnnounce(3636, 4, nil, "RemoveMagic")
 
-local specWarnChainBolt				= mod:NewSpecialWarningInterrupt(8292, "HasInterrupt", nil, nil, 1, 2)
-local specWarnLightningBolt			= mod:NewSpecialWarningInterrupt(12167, false, nil, nil, 1, 2)
+local specWarnChainBolt				= mod:NewInterruptAnnounce(8292)
+local specWarnLightningBolt			= mod:NewInterruptAnnounce(12167)
 
-local timerChainBoltCD				= mod:NewAITimer(180, 8292, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerLightningBoltCD			= mod:NewAITimer(180, 12167, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerBloodlustCD				= mod:NewAITimer(180, 6742, nil, nil, nil, 5, nil, DBM_CORE_L.MAGIC_ICON)
+local timerChainBoltCD				= mod:NewCDTimer(180, 8292)
+local timerLightningBoltCD			= mod:NewCDTimer(180, 12167)
+local timerBloodlustCD				= mod:NewCDTimer(180, 6742)
 
 function mod:OnCombatStart(delay)
 	timerChainBoltCD:Start(1-delay)

@@ -13,7 +13,7 @@ mod:RegisterEvents(
 --Puncture too random, and not important enough, so removed. Fatal bite was never seen?
 local warningFatalBite				= mod:NewSpellAnnounce(16495, 3)
 
-local timerFatalBiteCD				= mod:NewAITimer(180, 16495, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerFatalBiteCD				= mod:NewCDTimer(180, 16495)
 
 function mod:OnCombatStart(delay)
 	timerFatalBiteCD:Start(1-delay)

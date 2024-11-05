@@ -10,7 +10,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningBloodLust		= mod:NewTargetNoFilterAnnounce(6742, 2)
+local warningBloodLust		= mod:NewTargetAnnounce(6742, 2)
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(6742) then

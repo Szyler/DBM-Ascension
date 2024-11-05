@@ -12,7 +12,7 @@ mod:RegisterEvents(
 
 local warnVines			= mod:NewSpellAnnounce(8142, 2)
 
-local timerVinesCD		= mod:NewAITimer(180, 8142, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerVinesCD		= mod:NewCDTimer(180, 8142)
 
 function mod:OnCombatStart(delay)
 	timerVinesCD:Start(1-delay)

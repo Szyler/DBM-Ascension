@@ -15,7 +15,7 @@ mod:RegisterEvents(
 local warningFlameSpike				= mod:NewSpellAnnounce(8814, 2)
 local warningFireNova				= mod:NewSpellAnnounce(12470, 2)
 
-local timerFlameSpikeCD				= mod:NewAITimer(180, 8814, nil, nil, nil, 3)
+local timerFlameSpikeCD				= mod:NewCDTimer(180, 8814)
 
 function mod:OnCombatStart(delay)
 --	timerFlameSpikeCD:Start(15.8-delay)

@@ -11,7 +11,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningReflection				= mod:NewTargetNoFilterAnnounce(9941, 2)
+local warningReflection				= mod:NewTargetAnnounce(9941, 2)
 local warningSplinteredObsidian		= mod:NewSpellAnnounce(10072, 2)
 
 function mod:SPELL_CAST_SUCCESS(args)

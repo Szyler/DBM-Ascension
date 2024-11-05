@@ -12,7 +12,7 @@ mod:RegisterEvents(
 
 local warningTrample			= mod:NewSpellAnnounce(5568, 2)
 
-local timerTrampleCD			= mod:NewAITimer(180, 5568, nil, nil, nil, 3)
+local timerTrampleCD			= mod:NewCDTimer(180, 5568)
 
 function mod:OnCombatStart(delay)
 	timerTrampleCD:Start(1-delay)

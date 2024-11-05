@@ -11,9 +11,9 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED"
 )
 
-local warningImmolate				= mod:NewTargetNoFilterAnnounce(9034, 2)
+local warningImmolate				= mod:NewTargetAnnounce(9034, 2)
 
-local timerImmolateCD				= mod:NewAITimer(180, 9034, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+local timerImmolateCD				= mod:NewCDTimer(180, 9034)
 
 function mod:OnCombatStart(delay)
 	timerImmolateCD:Start(1-delay)
