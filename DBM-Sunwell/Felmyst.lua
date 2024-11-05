@@ -52,7 +52,7 @@ local warnDebuffArcaneDetention  = mod:NewSpecialWarningStack(2145814, nil, 12) 
 
 
 local warnTailSweep 			= mod:NewSpellAnnounce(2145806, 2) -- 2145806 spell_cast_success
-local warnNextTailSweep			= mod:NewNextTimer(10, 2145806) -- 2145806 spell_cast_success 1 sec after Corrosion
+local timerNextTailSweep		= mod:NewNextTimer(10, 2145806) -- 2145806 spell_cast_success 1 sec after Corrosion
 
 local timerBreath				= mod:NewCDTimer(20, 45717)
 local warnBreath				= mod:NewSpellAnnounce(45717, 4)
@@ -69,7 +69,7 @@ function mod:Groundphase()
 	breathCounter = 0
 	warnPhase:Show(L.Ground)
 	timerNextCorrosion:Start(2)
-	warnNextTailSweep:Start(9)
+	timerNextTailSweep:Start(9)
 	timerNextAcidicBreath:Start(14)
 	timerNextArcaneDetention:Start(24)
 end
@@ -77,7 +77,7 @@ end
 function mod:OnCombatStart(delay)
 	breathCounter = 0
 	timerNextCorrosion:Start(15-delay)
-	warnNextTailSweep:Start(22-delay)
+	timerNextTailSweep:Start(22-delay)
 	timerNextAcidicBreath:Start(27-delay)
 	timerNextArcaneDetention:Start(37-delay)
 	berserkTimer:Start(-delay)
@@ -133,7 +133,7 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg == L.AirPhase or msg:find(L.AirPhase)
 	or msg == L.AirPhase2 or msg:find(L.AirPhase2) then
 		timerNextCorrosion:Stop()
-		warnNextTailSweep:Stop()
+		timerNextTailSweep:Stop()
 		timerNextAcidicBreath:Stop()
 		timerNextArcaneDetention:Stop()
 		
