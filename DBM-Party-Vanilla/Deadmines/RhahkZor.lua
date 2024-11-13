@@ -1,0 +1,32 @@
+local mod	= DBM:NewMod("RhahkZor", "DBM-Party-Vanilla", 5)
+local L		= mod:GetLocalizedStrings()
+
+mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
+mod:SetCreatureID(644)
+
+mod:RegisterCombat("combat")
+
+mod:RegisterEvents(
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED"
+)
+
+local warningSlam			= mod:NewTargetAnnounce(6304, 2)
+
+local timerSlamCD			= mod:NewCDTimer(180, 6304)
+
+function mod:OnCombatStart(delay)
+	timerSlamCD:Start(1-delay)
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(6304) then
+		timerSlamCD:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(6304) then
+		warningSlam:Show(args.destName)
+	end
+end

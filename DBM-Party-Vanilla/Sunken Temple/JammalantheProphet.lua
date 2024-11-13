@@ -1,0 +1,98 @@
+local mod	= DBM:NewMod(458, "DBM-Party-Vanilla", 17, 237)
+local L		= mod:GetLocalizedStrings()
+
+mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
+mod:SetCreatureID(5710)--5711 Ogom the Wretched
+
+mod:RegisterCombat("combat")
+
+mod:RegisterEvents(
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS",
+	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_REMOVED",
+	"UNIT_DIED"
+)
+
+local warningHealingWave				= mod:NewCastAnnounce(12492, 2)
+local warningEarthgrabTotem				= mod:NewSpellAnnounce(8376, 2)
+local warningFlamestrike				= mod:NewCastAnnounce(12468, 2)
+local warningHexofJammalan				= mod:NewTargetAnnounce(12479, 2)
+--Ogom
+local warningCurseofWeakness			= mod:NewTargetAnnounce(12493, 2, nil, "RemoveCurse")
+local warningShadowWordPain				= mod:NewTargetAnnounce(11639, 2, nil, "RemoveMagic")
+
+local specWarnHexofJammalan				= mod:NewSpecialWarningYou(12479, nil, nil, nil, 1, 2)
+local yellHexofJammalan					= mod:NewYell(12479)
+--local yellHexofJammalanFades			= mod:NewShortFadesYell(12479)--Requires BC plus, to distinquish 12479 vs 12480
+--Ogom
+local specWarnShadowBolt				= mod:NewInterruptAnnounce(12471)
+
+--local timerHealingWaveCD				= mod:NewCDTimer(180, 12492)
+local timerEarthgrabTotemCD				= mod:NewCDTimer(180, 8376)
+local timerHexofJammalanCD				= mod:NewCDTimer(180, 12479)
+--Ogom
+local timerShadowBoltCD					= mod:NewCDTimer(180, 12479)
+
+function mod:OnCombatStart(delay)
+--	timerHealingWaveCD:Start(1-delay)
+	timerEarthgrabTotemCD:Start(1-delay)
+	timerHexofJammalanCD:Start(1-delay)
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(12492) then
+		warningHealingWave:Show()
+		--timerHealingWaveCD:Start()
+	elseif args:IsSpellID(12468) then
+		warningFlamestrike:Show()
+	elseif args:IsSpellID(8376) then
+		warningEarthgrabTotem:Show()
+		timerEarthgrabTotemCD:Start()
+	elseif args:IsSpellID(12471) then
+		timerShadowBoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnShadowBolt:Show(args.sourceName)
+			specWarnShadowBolt:Play("kickcast")
+		end
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(12479) then
+		timerHexofJammalanCD:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(12479) then
+		if args:IsPlayer() then
+			specWarnHexofJammalan:Show()
+			specWarnHexofJammalan:Play("targetyou")
+			yellHexofJammalan:Yell()
+			--yellHexofJammalanFades:Countdown(12479)--Valid in retail, in classic we can't tell what version of debuff is so disabled
+		else
+			warningHexofJammalan:Show(args.destName)
+		end
+	elseif args:IsSpellID(11639) then
+		warningShadowWordPain:Show(args.destName)
+	elseif args:IsSpellID(12493) then
+		warningCurseofWeakness:Show(args.destName)
+	end
+end
+	--[[
+	function mod:SPELL_AURA_REMOVED(args)
+		if args.spellId == 12479 then
+			if args:IsPlayer() then
+				yellHexofJammalanFades:Cancel()--Valid in retail, in classic we can't tell what version of debuff is so disabled
+			end
+		end
+	end
+	--]]
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 5711 then--Ogom the Wretched
+		timerShadowBoltCD:Stop()
+	end
+end

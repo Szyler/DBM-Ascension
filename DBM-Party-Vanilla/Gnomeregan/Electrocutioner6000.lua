@@ -1,0 +1,50 @@
+local mod	= DBM:NewMod(421, "DBM-Party-Vanilla", 7, 231)
+local L		= mod:GetLocalizedStrings()
+
+mod:SetRevision(("$Revision: 5018 $"):sub(12, -3))
+mod:SetCreatureID(6235)
+
+mod:RegisterCombat("combat")
+
+mod:RegisterEvents(
+	"SPELL_CAST_START",
+	"SPELL_CAST_SUCCESS"
+)
+
+local warningShock				= mod:NewSpellAnnounce(11084, 2, nil, "Tank|Healer")
+
+local specWarnMegavolt			= mod:NewInterruptAnnounce(11082)
+local specWarnChainBolt			= mod:NewInterruptAnnounce(11085)
+
+local timerMegavoltCD			= mod:NewCDTimer(180, 11082)
+local timerChainBoltCD			= mod:NewCDTimer(180, 11085)
+local timerShockCD				= mod:NewCDTimer(180, 11084)
+
+function mod:OnCombatStart(delay)
+	timerMegavoltCD:Start(1-delay)
+	timerChainBoltCD:Start(1-delay)
+	timerShockCD:Start(1-delay)
+end
+
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(11082) then
+		timerMegavoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnMegavolt:Show(args.sourceName)
+			specWarnMegavolt:Play("kickcast")
+		end
+	elseif args:IsSpellID(11085) then
+		timerChainBoltCD:Start()
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnChainBolt:Show(args.sourceName)
+			specWarnChainBolt:Play("kickcast")
+		end
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	if args:IsSpellID(11084) then
+		warningShock:Show()
+		timerShockCD:Start()
+	end
+end

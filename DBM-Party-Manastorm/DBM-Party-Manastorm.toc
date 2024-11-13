@@ -1,0 +1,20 @@
+## Interface: 30300
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Party-Manastorm|r
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariablesPerCharacter: DBMPartyManastorm_SavedVars, DBMPartyManastorm_SavedStats
+
+
+## X-DBM-Mod: 1
+## X-DBM-Mod-Category: BC
+## X-DBM-Mod-Has-Heroic-Mode: 0
+## X-DBM-Mod-SubCategories: Frozen Reach
+## X-DBM-Mod-Name: Party-Manastorm
+## X-DBM-Mod-Sort: 126
+## X-DBM-Mod-LoadZone: Frozen Reach
+
+localization.en.lua
+
+Alva.lua
+trash.lua
+
