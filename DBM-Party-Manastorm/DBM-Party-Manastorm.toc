@@ -18,4 +18,16 @@ localization.en.lua
 Alva.lua
 trash.lua
 
-Alva.lua
+Marisa du'Paige.lua
+The Witch's Brew.lua
+Njernthir.lua
+High Chief Winterfall.lua
+Manaclaw.lua
+Gath'Ilzogg.lua
+Surgeon Stitchflesh.lua
+High General Abbendis.lua
+Justicar Keltraesa.lua
+Beastmaster Tivan.lua
+High Priestess Razecta.lua
+Varedis.lua
+Warlord Vedrisian.lua
