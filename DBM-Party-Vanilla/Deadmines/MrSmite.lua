@@ -14,7 +14,7 @@ mod:RegisterEvents(
 local warningSmiteSlam		= mod:NewTargetAnnounce(6435, 2)
 local warningNimbleReflexes	= mod:NewTargetAnnounce(6264, 2)
 
-local timerSmiteStomp		= mod:NewBuffFadesTimer(10, 6432, nil, nil, nil, 2)
+local timerSmiteStomp		= mod:NewBuffActiveTimer(10, 6432)
 
 --function mod:OnCombatStart(delay)
 
