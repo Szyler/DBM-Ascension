@@ -15,19 +15,20 @@
 
 localization.en.lua
 
-Alva.lua
+Frozen Reach\Alva.lua
 trash.lua
 
-Marisa du'Paige.lua
-The Witch's Brew.lua
-Njernthir.lua
-High Chief Winterfall.lua
-Manaclaw.lua
-Gath'Ilzogg.lua
-Surgeon Stitchflesh.lua
-High General Abbendis.lua
-Justicar Keltraesa.lua
-Beastmaster Tivan.lua
-High Priestess Razecta.lua
-Varedis.lua
-Warlord Vedrisian.lua
+Westfall\Marisa du'Paige.lua
+The Grim Marsh\The Witch's Brew.lua
+Iskirr Village\Njernthir.lua
+Winterspring\High Chief Winterfall.lua
+Winterspring\Manaclaw.lua
+Redridge Mountains\Gath'Ilzogg.lua
+Eastern Plaguelands\Surgeon Stitchflesh.lua
+Eastern Plaguelands\High General Abbendis.lua
+Hillsbrad Foothills\Justicar Keltraesa.lua
+Zangarmarsh\Beastmaster Tivan.lua
+Tanaris\High Priestess Razecta.lua
+Shadowmoon Valley\Varedis.lua
+Shadowmoon Valley\Warlord Vedrisian.lua
+
