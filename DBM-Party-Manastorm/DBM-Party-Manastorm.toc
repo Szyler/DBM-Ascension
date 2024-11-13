@@ -8,13 +8,14 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC
 ## X-DBM-Mod-Has-Heroic-Mode: 0
-## X-DBM-Mod-SubCategories: Frozen Reach
+## X-DBM-Mod-SubCategories: Frozen Reach,Westfall,The Grim Marsh,Iskirr Village,Winterspring,Redridge Mountains,Eastern Plaguelands,Hillsbrad Foothills,Tanaris,Zangarmarsh,Shadowmoon Valley
 ## X-DBM-Mod-Name: Party-Manastorm
 ## X-DBM-Mod-Sort: 126
-## X-DBM-Mod-LoadZone: Frozen Reach
+## X-DBM-Mod-LoadZone: Frozen Reach,Westfall,The Grim Marsh,Iskirr Village,Winterspring,Redridge Mountains,Eastern Plaguelands,Hillsbrad Foothills,Tanaris,Zangarmarsh,Shadowmoon Valley
 
 localization.en.lua
 
 Alva.lua
 trash.lua
 
+Alva.lua
