@@ -8,12 +8,13 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: Vanilla
 ## X-DBM-Mod-Has-Heroic-Mode: 0
-## X-DBM-Mod-SubCategories: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Deadmines,Gnomeregan,Maraudon,Ragefire Chasm,Razorfen Downs,Razorfen Kraul,Scarlet Monastery,Shadowfang Keep,Stockade,Sunken Temple,Uldaman,Wailing Caverns,Zul Farrak
+## X-DBM-Mod-SubCategories: Blackfathom Deeps, Blackrock Caverns, Blackrock Depths, Blackrock Spire, Deadmines, Dire Maul, Eonar's Cradle, Forgotten Mine, Frozen Reach, Gnomeregan, Gronn's Spine, Iskirr Village, Maraudon, Ocean Battle, Ocean's Sword, Pools of the Eidola, Ragefire Chasm, Razorfen Downs, Razorfen Kraul, Scarlet Monastery, Scholomance, Shadowfang Keep, Stormwind Stockade, Stratholme, Sunken Temple, Temple of Eternity, The Grim Marsh, The Karazhan Crypts, Uldaman, Wailing Caverns, Zul'Farrak
 ## X-DBM-Mod-Name: Party-Vanilla
 ## X-DBM-Mod-Sort: 125
-## X-DBM-Mod-LoadZone: Blackrock Depths,Blackrock Spire,Dire Maul,Scholomance,Stratholme,Deadmines,Gnomeregan,Maraudon,Ragefire Chasm,Razorfen Downs,Razorfen Kraul,Scarlet Monastery,Shadowfang Keep,Stockade,Sunken Temple,Uldaman,Wailing Caverns,Zul Farrak
+## X-DBM-Mod-LoadZone: Blackfathom Deeps, Blackrock Caverns, Blackrock Depths, Blackrock Spire, Deadmines, Dire Maul, Eonar's Cradle, Forgotten Mine, Frozen Reach, Gnomeregan, Gronn's Spine, Iskirr Village, Maraudon, Ocean Battle, Ocean's Sword, Pools of the Eidola, Ragefire Chasm, Razorfen Downs, Razorfen Kraul, Scarlet Monastery, Scholomance, Shadowfang Keep, Stormwind Stockade, Stratholme, Sunken Temple, Temple of Eternity, The Grim Marsh, The Karazhan Crypts, Uldaman, Wailing Caverns, Zul'Farrak
 
-MythicChampion.lua
+
+Mythic_Champion.lua
 localization.en.lua
 
 trash.lua

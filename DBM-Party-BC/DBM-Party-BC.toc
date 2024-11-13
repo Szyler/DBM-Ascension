@@ -22,7 +22,7 @@
 ## X-DBM-Mod-LoadZone-ruRU: Бастионы Адского Пламени,Кузня Крови,Разрушенные залы,Узилище,Нижетопь,Паровое подземелье,Аукенайские гробницы,Гробницы Маны,Сетеккские залы,Темный лабиринт,Старые предгорья Хилсбрада,Черные топи,Механар,Ботаника,Аркатрац,Терраса Магистров
 ## X-DBM-Mod-LoadZone-esES: Murallas del Fuego Infernal,El Horno de Sangre,Las Salas Arrasadas,Recinto de los Esclavos,La Sotiénaga,La Cámara de Vapor,Criptas Auchenai,Tumbas de Maná,Salas Sethekk,Laberinto de las Sombras,Antiguas Laderas de Trabalomas,La Ciénaga Negra,El Mechanar,El Invernáculo,El Arcatraz,Bancal del Magister
 
-MythicChampion.lua
+Mythic_Champion.lua
 localization.en.lua
 localization.de.lua
 localization.ru.lua
