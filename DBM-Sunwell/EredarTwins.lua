@@ -147,7 +147,7 @@ function mod:AlythPath()
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2146016) and args.sourceName == "Lady Sacrolash" and self.vb.phase <= 3 then
+	if args:IsSpellID(2146016,2146017, 2146018) and args.sourceName == "Lady Sacrolash" and self.vb.phase <= 3 then
 		local sacroTarget = mod:GetBossTarget(25165)
 		warnFling:Show(sacroTarget)
 		timerFlingSacro:Start(sacroTarget)
@@ -162,7 +162,7 @@ function mod:SPELL_CAST_START(args)
 			self:UnscheduleMethod("DawnRunner")
 			self:ScheduleMethod(6,"DawnRunner")
 		end
-	elseif args:IsSpellID(2145916) and args.sourceName == "Grand Warlock Alythess" and self.vb.phase <= 3 then
+	elseif args:IsSpellID(2145916, 2145917, 2145918) and args.sourceName == "Grand Warlock Alythess" and self.vb.phase <= 3 then
 		local alythTarget = mod:GetBossTarget(25166)
 		timerFlingAlyth:Start(alythTarget)
 		timerCrescentMoonKick:Start(alythTarget)

@@ -41,9 +41,9 @@ local timerNextCorruptorsTouch			= mod:NewNextTimer(20, 2145523)					-- 2145523 
 
 local berserkTimer				= mod:NewBerserkTimer(600)
 
-mod:AddBoolOption("HealthFrame", true)
+-- mod:AddBoolOption("HealthFrame", true)
 mod:AddBoolOption("RangeFrame", true)
-mod:AddBoolOption("ShowFrame", true)
+-- mod:AddBoolOption("ShowFrame", true)
 -- mod:AddBoolOption("FrameLocked", false)
 -- mod:AddBoolOption("FrameClassColor", true, nil, function()
 -- 	mod:UpdateColors()
