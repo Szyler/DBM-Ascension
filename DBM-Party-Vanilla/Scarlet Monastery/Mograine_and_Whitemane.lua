@@ -16,7 +16,7 @@ local warnDeepSleep				= mod:NewSpellAnnounce(9256, 2)
 
 local specWarnHeal				= mod:NewInterruptAnnounce(12039)
 
-local timerDeepSleep			= mod:NewBuffFadesTimer(10, 9256, nil, nil, nil, 6)
+local timerDeepSleep			= mod:NewBuffActiveTimer(10, 9256)
 
 function mod:OnCombatStart(delay)
 	self:SetStage(1)

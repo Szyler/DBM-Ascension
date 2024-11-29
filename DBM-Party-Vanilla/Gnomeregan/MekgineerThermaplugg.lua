@@ -19,7 +19,7 @@ function mod:OnCombatStart(delay)
 	timerKnockAwayCD:Start(1-delay)
 end
 
-local BombOne, BombTwo, BombThree, BombFour, BombFive, BombSix = DBM:GetSpellInfo(11518), DBM:GetSpellInfo(11521), DBM:GetSpellInfo(11798), DBM:GetSpellInfo(11524), DBM:GetSpellInfo(11526), DBM:GetSpellInfo(11527)
+-- local BombOne, BombTwo, BombThree, BombFour, BombFive, BombSix = DBM:GetSpellInfo(11518), DBM:GetSpellInfo(11521), DBM:GetSpellInfo(11798), DBM:GetSpellInfo(11524), DBM:GetSpellInfo(11526), DBM:GetSpellInfo(11527)
 function mod:SPELL_CAST_SUCESS(args)
 	if args:IsSpellID(10101, 11130) then
 		warningKnockAway:Show()

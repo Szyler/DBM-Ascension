@@ -8,13 +8,27 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC
 ## X-DBM-Mod-Has-Heroic-Mode: 0
-## X-DBM-Mod-SubCategories: Frozen Reach
+## X-DBM-Mod-SubCategories: Frozen Reach,Westfall,The Grim Marsh,Iskirr Village,Winterspring,Redridge Mountains,Eastern Plaguelands,Hillsbrad Foothills,Tanaris,Zangarmarsh,Shadowmoon Valley
 ## X-DBM-Mod-Name: Party-Manastorm
 ## X-DBM-Mod-Sort: 126
-## X-DBM-Mod-LoadZone: Frozen Reach
+## X-DBM-Mod-LoadZone: Frozen Reach,Westfall,The Grim Marsh,Iskirr Village,Winterspring,Redridge Mountains,Eastern Plaguelands,Hillsbrad Foothills,Tanaris,Zangarmarsh,Shadowmoon Valley
 
 localization.en.lua
 
-Alva.lua
+Frozen Reach\Alva.lua
 trash.lua
+
+Westfall\Marisa du'Paige.lua
+The Grim Marsh\The Witch's Brew.lua
+Iskirr Village\Njernthir.lua
+Winterspring\High Chief Winterfall.lua
+Winterspring\Manaclaw.lua
+Redridge Mountains\Gath'Ilzogg.lua
+Eastern Plaguelands\Surgeon Stitchflesh.lua
+Eastern Plaguelands\High General Abbendis.lua
+Hillsbrad Foothills\Justicar Keltraesa.lua
+Zangarmarsh\Beastmaster Tivan.lua
+Tanaris\High Priestess Razecta.lua
+Shadowmoon Valley\Varedis.lua
+Shadowmoon Valley\Warlord Vedrisian.lua
 

@@ -13,7 +13,8 @@ mod:RegisterEvents(
 --TODO, fix range to one classic actually supports
 local timerChainedBoltCD			= mod:NewCDTimer(180, 6254)
 
-mod:AddRangeFrameOption(10, 6254)
+mod:AddBoolOption("RangeFrame", true)
+
 
 function mod:OnCombatStart(delay)
 	timerChainedBoltCD:Start(1-delay)

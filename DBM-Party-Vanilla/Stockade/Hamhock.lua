@@ -13,7 +13,7 @@ mod:RegisterEvents(
 --TODO, add timer for chain lightning if it's not spam cast
 local warningBloodlust				= mod:NewTargetAnnounce(6742, 2)
 
-mod:AddRangeFrameOption("10")
+mod:AddBoolOption("RangeFrame", true)
 
 function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
