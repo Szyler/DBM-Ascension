@@ -29,6 +29,7 @@ local warnDrawSoul			= mod:NewSpellAnnounce(2144737)
 local warnShear				= mod:NewSpellAnnounce(2144715)
 local warnCrash				= mod:NewSpellAnnounce(2144720)
 local warnBlade				= mod:NewSpellAnnounce(2144742)
+local warnBladeSoon			= mod:NewSoonAnnounce(2144742)
 local warnElites			= mod:NewAnnounce("New waves of Illidari Elites", 804613)
 
 local timerShearCD			= mod:NewNextTimer(30, 2144715)
@@ -148,6 +149,7 @@ end
 local function humanForms(self)
 	self:Unschedule(humanForms)
 	timerChaosBurst:Start()
+	warnBladeSoon:Schedule(10)
 	timerBladeCD:Start(15)
 	timerFlameCrash:Start(25)
 	timerNextParasite:Start(30)
@@ -158,6 +160,7 @@ end
 
 local function phase4Start(self)
 	self:Unschedule(humanForms)
+	warnBladeSoon:Schedule(0)
 	timerBladeCD:Start(5)
 	timerFlameCrash:Start(15)
 	timerHatred:Start()
@@ -171,6 +174,7 @@ end
 local function humanHatredForms(self)
 	self:Unschedule(humanForms)
 	timerChaosBurst:Start()
+	warnBladeSoon:Schedule(10)
 	timerBladeCD:Start(15)
 	timerFlameCrash:Start(25)
 	timerHatred:Start(30)
@@ -192,6 +196,7 @@ function mod:CancelP5timers()
 end
 
 function mod:StartP5timers()
+	warnBladeSoon:Schedule(11)
 	timerBladeCD:Start(16)
 	timerMadness:Start(30)
 	timerSoulShear:Start(37)
@@ -253,6 +258,7 @@ function mod:OnCombatStart(delay)
 		timerFlameCrash:Start(18)
 		timerShearCD:Start(28)
 		timerDrawSoul:Start(33)
+		warnBladeSoon:Schedule(32)
 		timerBladeCD:Start(38)
 		self:Schedule(5, Prepared, self)
 	end
@@ -284,22 +290,27 @@ function mod:SPELL_CAST_START(args)
 		warnCrash:Show()
 	elseif args:IsSpellID(2144742, 2145015) then
 		if bladeCount >= 1 and self.vb.phase == 3 then
+			warnBladeSoon:Schedule(35)
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
 		elseif bladeCount >= 1 and self.vb.phase == 5 then
+			warnBladeSoon:Schedule(35)
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
 		elseif bladeCount >= 1 and self.vb.phase == 6 then
 			warnBlade:Show()
+			warnBladeSoon:Schedule(70)
 			timerBladeCD:Start(75)
 			bladeCount = 0
 		elseif bladeCount == 0 and self.vb.phase == 6 then
+			warnBladeSoon:Schedule(30)
 			timerBladeCD:Start(35)
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
 		else
+			warnBladeSoon:Schedule(25)
 			timerBladeCD:Start(30)
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
@@ -415,6 +426,7 @@ function mod:UNIT_DIED(args)
 				local eyebeamTime = timerEyebeam:GetTime();
 				timerLanding:Start(eyebeamTime+7)
 				timerBladeCD:Start(eyebeamTime+10)
+				warnBladeSoon:Schedule(eyebeamTime+5)
 				timerFlameCrash:Start(eyebeamTime+18)
 				timerNextParasite:Start(eyebeamTime+23)
 				timerShearCD:Start(eyebeamTime+28)
@@ -423,6 +435,7 @@ function mod:UNIT_DIED(args)
 			elseif castBarrage == true then
 				local barrageTime = timerBarrage:GetTime();
 				timerLanding:Start(barrageTime+7)
+				warnBladeSoon:Start(barrageTime+5)
 				timerBladeCD:Start(barrageTime+10)
 				timerFlameCrash:Start(barrageTime+18)
 				timerNextParasite:Start(barrageTime+23)
@@ -431,6 +444,7 @@ function mod:UNIT_DIED(args)
 				timerNextDemon:Start(barrageTime+67)
 			else
 				timerLanding:Start(7)
+				warnBladeSoon:Start(5)
 				timerBladeCD:Start(10)
 				timerFlameCrash:Start(18)
 				timerNextParasite:Start(23)
@@ -455,6 +469,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerFlameCrash:Start(54)
 		timerShearCD:Start(64)
 		timerDrawSoul:Start(69)
+		warnBladeSoon:Schedule(69)
 		timerBladeCD:Start(74)
 		self:Schedule(5, Prepared, self)
 	elseif msg == L.RealPull or msg:find(L.RealPull) and prepared == false or nil then
