@@ -464,7 +464,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Pull or msg:find(L.Pull) then
 		timerLongRPStart:Start()
 		LongPullRP = true
-		self:Schedule(18, illidariElites, self)
+		self:Schedule(44, illidariElites, self)
 		timerElites:Start(44)
 		timerFlameCrash:Start(54)
 		timerShearCD:Start(64)
