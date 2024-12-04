@@ -75,34 +75,34 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2140825) then
-		if 	target3 == nil and target2 ~= nil and target1 ~= nil then
-				target3 = args.DestName
-				self:setIcon(target3, 2)
-				DBM.BossHealth:AddBoss(92171,target3)
-				warnNightmare:Show(target3)
+		if target3 == nil and target2 ~= nil and target1 ~= nil then
+			target3 = args.DestName
+			self:SetIcon(target3, 3)
+			DBM.BossHealth:AddBoss(92171,target3)
+			warnNightmare:Show(target3)
 		elseif target2 == nil and target1 ~= nil then
-				target2 = args.DestName
-				self:setIcon(target2, 2)
-				DBM.BossHealth:AddBoss(92171,target2)
-				warnNightmare:Show(target2)
-		elseif  target1 == nil then
-				target1 = args.DestName
-				self:setIcon(target1, 1)
-				DBM.BossHealth:AddBoss(92171,target1)
-				warnNightmare:Show(target1)
+			target2 = args.DestName
+			self:SetIcon(target2, 2)
+			DBM.BossHealth:AddBoss(92171,target2)
+			warnNightmare:Show(target2)
+		elseif target1 == nil then
+			target1 = args.DestName
+			self:SetIcon(target1, 1)
+			DBM.BossHealth:AddBoss(92171,target1)
+			warnNightmare:Show(target1)
 		end
 	end
 	if args:IsSpellID(2140825) and args.destName == target1 then
 		DBM.BossHealth:RemoveBoss(92171,target1)
-		self:setIcon(target1, 0)
+		self:SetIcon(target1, 0)
 		target1 = nil
 	elseif args:IsSpellID(2140825) and args.destName == target2 then
 		DBM.BossHealth:RemoveBoss(92171,target2)
-		self:setIcon(target2, 0)
+		self:SetIcon(target2, 0)
 		target2 = nil
 	elseif args:IsSpellID(2140825) and args.destName == target3 then
 		DBM.BossHealth:RemoveBoss(92171,target3)
-		self:setIcon(target3, 0)
+		self:SetIcon(target3, 0)
 		target3 = nil
 	end
 end
@@ -110,15 +110,15 @@ end
 function mod:SPELL_AURA_REFRESH(args)
 	if args:IsSpellID(2140825) and args.destName == target1 then
 		DBM.BossHealth:RemoveBoss(92171,target1)
-		self:setIcon(target1, 0)
+		self:SetIcon(target1, 0)
 		target1 = nil
 	elseif args:IsSpellID(2140825) and args.destName == target2 then
 		DBM.BossHealth:RemoveBoss(92171,target2)
-		self:setIcon(target2, 0)
+		self:SetIcon(target2, 0)
 		target2 = nil
 	elseif args:IsSpellID(2140825) and args.destName == target3 then
 		DBM.BossHealth:RemoveBoss(92171,target3)
-		self:setIcon(target3, 0)
+		self:SetIcon(target3, 0)
 		target3 = nil
 	end
 end
@@ -180,19 +180,19 @@ end
 
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
-	if msg == " Anetheron sends %s into a nightmare!" or msg:find(L.Nightmare) then
+	if msg == "Anetheron sends %s into a nightmare!" or msg:find(L.Nightmare) then
 		if target3 == nil and target2 ~= nil and target1 ~= nil then
-				target3 = msg:find(L.Nightmare)
-				self:SetIcon(target3, 3)
-				DBM.BossHealth:AddBoss(92171,target3)
+			target3 = msg:find(L.Nightmare)
+			self:SetIcon(target3, 3)
+			DBM.BossHealth:AddBoss(92171,target3)
 		elseif target2 == nil and target1 ~= nil then
-				target2 = msg:find(L.Nightmare)
-				self:SetIcon(target2, 2)
-				DBM.BossHealth:AddBoss(92171,target2)
+			target2 = msg:find(L.Nightmare)
+			self:SetIcon(target2, 2)
+			DBM.BossHealth:AddBoss(92171,target2)
 		elseif 	target1 == nil then
-				target1 = msg:find(L.Nightmare)
-				self:SetIcon(target1, 1)
-				DBM.BossHealth:AddBoss(92171,target1)
+			target1 = msg:find(L.Nightmare)
+			self:SetIcon(target1, 1)
+			DBM.BossHealth:AddBoss(92171,target1)
 		end
 	end
 end
