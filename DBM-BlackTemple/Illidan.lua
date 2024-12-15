@@ -325,7 +325,7 @@ function mod:SPELL_CAST_START(args)
 		timerHateCrash:Start()
 	elseif args:IsSpellID(2145051,2145052) then
 		warnMadness:Show()
-		timerMadness:Start(110)
+		timerMadness:Start()
 	elseif args:IsSpellID(2144908) then
 		timerChainLightning:Start(3)
 		timerChainLightningCD:Start()
@@ -384,7 +384,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		castBarrage = true
 	end
 	if args:IsSpellID(2145061) and args.destName == "Illidan Stormrage" then
-		timerUnleash:Start(110)
+		timerUnleash:Start()
 		timerMotes:Start(5)
 		warnUnleash:Show()
 	end
