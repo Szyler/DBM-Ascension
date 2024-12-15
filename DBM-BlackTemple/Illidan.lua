@@ -236,6 +236,26 @@ local function Prepared(self)
 	prepared = true
 end
 
+local function timerPhaseTransitionFirst(timer1, timer2, shouldStop)
+	if shouldStop == nil then
+		shouldStop = true
+	end
+	local elapsed1, total1 = timer1:GetTime()
+	if elapsed1 == 0 and total1 == 0 then
+		return false
+	end
+	local remainingTimer1 = total1 - elapsed1
+	local _, total2 = timer2:GetTime()
+	if remainingTimer1 > total2 then
+		if shouldStop then
+			timer2:Stop()
+		end
+		return true
+	else
+		return false
+	end
+end
+
 function mod:OnCombatStart(delay)
 	illidan = true
 	self.vb.phase = 1
@@ -280,14 +300,17 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2144737, 2144738, 2144739, 2144740) then
 		warnDrawSoul:Show()
 		timerDrawSoul:Start()
+		stopTimerPhaseTransition(timerNextDemon, timerDrawSoul)
 	elseif args:IsSpellID(2144868) then
 		specWarnShadowDemon:Show()
 	elseif args:IsSpellID(2144715) then -- Shear
 		timerShearCD:Start()
 		warnShear:Show()
+		stopTimerPhaseTransition(timerNextDemon, timerShearCD)
 	elseif args:IsSpellID(2144720, 2144721, 2144722, 2144723) then -- Flame Crash
 		timerFlameCrash:Start()
 		warnCrash:Show()
+		timerPhaseTransitionFirst(timerNextDemon, timerFlameCrash)
 	elseif args:IsSpellID(2144742, 2145015) then
 		if bladeCount >= 1 and self.vb.phase == 3 then
 			warnBladeSoon:Schedule(35)
