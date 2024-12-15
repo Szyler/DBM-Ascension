@@ -109,13 +109,13 @@ local specWarnHatred 		= mod:NewSpecialWarning("Unleash Hatred!", 2145065)
 local timerMotes			= mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
 local timerP5RP				= mod:NewTimer(49, "Illidan tranformation RP", 2145004)
 local timerDyingRP			= mod:NewTimer(23, "Illidan dying RP", 2145004)
-local timerSoulShear		= mod:NewNextTimer(35, 2145040)
+local timerSoulShear		= mod:NewNextTimer(108, 2145040)
 local timerHateCrash		= mod:NewNextTimer(35, 2145025)
-local timerMadness			= mod:NewNextTimer(110, 2145051)
-local timerUnleash			= mod:NewNextTimer(110, 2145061)
-local timerNextHateBeam		= mod:NewNextTimer(110, 2145074)
+local timerMadness			= mod:NewNextTimer(108, 2145051)
+local timerUnleash			= mod:NewNextTimer(108, 2145061)
+local timerNextHateBeam		= mod:NewNextTimer(108, 2145074)
 local timerHateBeam			= mod:NewTimer(12,"Eye Beam", 2145074)
-local timerStruggle			= mod:NewNextTimer(110, 2145081)
+local timerStruggle			= mod:NewNextTimer(108, 2145081)
 local timerStruggling		= mod:NewTimer(10, "Illidan is struggling", 2145081)
 
 local ParasiteTargets = {}
@@ -294,17 +294,17 @@ function mod:SPELL_CAST_START(args)
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and self.vb.phase == 5 then
+		elseif bladeCount >= 1 and self.vb.phase == 4 then
 			warnBladeSoon:Schedule(35)
 			timerBladeCD:Start()
 			warnBlade:Show()
 			bladeCount = bladeCount + 1
-		elseif bladeCount >= 1 and self.vb.phase == 6 then
+		elseif bladeCount >= 1 and self.vb.phase == 5 then
 			warnBlade:Show()
 			warnBladeSoon:Schedule(70)
 			timerBladeCD:Start(75)
 			bladeCount = 0
-		elseif bladeCount == 0 and self.vb.phase == 6 then
+		elseif bladeCount == 0 and self.vb.phase == 5 then
 			warnBladeSoon:Schedule(30)
 			timerBladeCD:Start(35)
 			warnBlade:Show()
@@ -317,13 +317,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(2145040) then
 		warnSoulShear:Show()
-		if shearCount == 0 then
-			timerSoulShear:Start()
-			shearCount = shearCount + 1
-		elseif shearCount == 1 then
-			shearCount = 0
-			timerSoulShear:Start(75)
-		end
+		timerSoulShear:Start()
 	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
 		warnHateCrash:Show()
 		if self.vb.phase == 6 and crashCount == 0 then
