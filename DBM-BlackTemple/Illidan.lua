@@ -110,7 +110,7 @@ local timerMotes			= mod:NewTimer(5, "Motes of Hatres spawning", 2145072)
 local timerP5RP				= mod:NewTimer(49, "Illidan tranformation RP", 2145004)
 local timerDyingRP			= mod:NewTimer(23, "Illidan dying RP", 2145004)
 local timerSoulShear		= mod:NewNextTimer(108, 2145040)
-local timerHateCrash		= mod:NewNextTimer(35, 2145025)
+local timerHateCrash		= mod:NewNextTimer(108, 2145025)
 local timerMadness			= mod:NewNextTimer(108, 2145051)
 local timerUnleash			= mod:NewNextTimer(108, 2145061)
 local timerNextHateBeam		= mod:NewNextTimer(108, 2145074)
@@ -322,13 +322,7 @@ function mod:SPELL_CAST_START(args)
 		timerSoulShear:Start()
 	elseif args:IsSpellID(2145022, 2145023, 2145024, 2145025) then
 		warnHateCrash:Show()
-		if self.vb.phase == 6 and crashCount == 0 then
-			timerHateCrash:Start()
-			crashCount = crashCount + 1
-		elseif self.vb.phase == 6 and crashCount == 1 then
-			timerHateCrash:Start(74)
-			crashCount = 0
-		end
+		timerHateCrash:Start()
 	elseif args:IsSpellID(2145051,2145052) then
 		warnMadness:Show()
 		timerMadness:Start(110)
