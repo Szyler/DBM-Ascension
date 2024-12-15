@@ -150,7 +150,7 @@ local function humanForms(self)
 	self:Unschedule(humanForms)
 	timerChaosBurst:Start()
 	warnBladeSoon:Schedule(10)
-	timerBladeCD:Start(15)
+	timerBladeCD:Start(18)
 	timerFlameCrash:Start(25)
 	timerNextParasite:Start(30)
 	timerShearCD:Start(35)
@@ -293,6 +293,8 @@ function mod:SPELL_CAST_START(args)
 			warnBladeSoon:Schedule(35)
 			timerBladeCD:Start()
 			warnBlade:Show()
+			bladeCount = bladeCount + 1
+		elseif bladeCount >= 2 and self.vb.phase == 3 then
 			bladeCount = bladeCount + 1
 		elseif bladeCount >= 1 and self.vb.phase == 4 then
 			warnBladeSoon:Schedule(35)
@@ -475,6 +477,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerParasite:Cancel()
 		timerDrawSoul:Cancel()
 		timerShearCD:Cancel()
+		timerNextParasite:Cancel()
 		bladeCount = 0
 	elseif msg == L.DemonWithinQuote or msg:find(L.DemonWithinQuote) then
 		timerNextHuman:Start()
