@@ -527,6 +527,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.Trapped1 or msg == L.Trapped2 or msg == L.Trapped3 then
 		timerStun:Start()
 		warnTrapped:Show()
+		timerBladeCD:Cancel()
+		warnBladeSoon:Cancel()
+		timerFlameCrash:Cancel()
+		timerParasite:Cancel()
+		timerDrawSoul:Cancel()
+		timerShearCD:Cancel()
+		timerNextDemon:Cancel()
 	elseif msg == L.Phase5 or msg:find(L.Phase5) then
 		if mod:IsDifficulty("heroic25") then
 			self.vb.phase = 5
