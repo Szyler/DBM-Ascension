@@ -247,7 +247,7 @@ local function timerPhaseTransitionFirst(timer1, timer2, shouldStop)
 	end
 	local remainingTimer1 = total1 - elapsed1
 	local _, total2 = timer2:GetTime()
-	if remainingTimer1 > total2 then
+	if remainingTimer1 < total2 then
 		if shouldStop then
 			timer2:Stop()
 		end
@@ -301,13 +301,13 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2144737, 2144738, 2144739, 2144740) then
 		warnDrawSoul:Show()
 		timerDrawSoul:Start()
-		stopTimerPhaseTransition(timerNextDemon, timerDrawSoul)
+		timerPhaseTransitionFirst(timerNextDemon, timerDrawSoul)
 	elseif args:IsSpellID(2144868) then
 		specWarnShadowDemon:Show()
 	elseif args:IsSpellID(2144715) then -- Shear
 		timerShearCD:Start()
 		warnShear:Show()
-		stopTimerPhaseTransition(timerNextDemon, timerShearCD)
+		timerPhaseTransitionFirst(timerNextDemon, timerShearCD)
 	elseif args:IsSpellID(2144720, 2144721, 2144722, 2144723) then -- Flame Crash
 		timerFlameCrash:Start()
 		warnCrash:Show()
