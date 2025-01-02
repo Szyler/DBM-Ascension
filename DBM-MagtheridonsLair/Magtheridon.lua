@@ -32,11 +32,11 @@ local warnInterrupt			= mod:NewAnnounce("Magtheridon interrupted", 3, "Interface
 local warnPhaseTwo			= mod:NewAnnounce("Magtheridon is free!", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 local warnPhaseThree		= mod:NewAnnounce("Phase 3", 3, "Interface\\Icons\\Achievement_Boss_Magtheridon")
 
-local timerNextQuake		= mod:NewNextTimer(60, 2132310)
-local timerNextSpecialNova	= mod:NewTimer(55, "!!Pre-Quake Blast Nova!!", 2132301, 3)
-local timerNextNova			= mod:NewTimer(55, "Blast Nova #%s", 2132301)
+local timerNextQuake		= mod:NewNextTimer(70, 2132310)
+local timerNextSpecialNova	= mod:NewTimer(34, "!!Pre-Quake Blast Nova!!", 2132301, 3)
+local timerNextNova			= mod:NewTimer(82, "Blast Nova #%s", 2132301)
 local timerPhaseTwo			= mod:NewPhaseTimer(120, 30205, "Magtheridon breaks free")
-local timerFallingRoof		= mod:NewTimer(10, "Roof is collapsing!")
+local timerFallingRoof		= mod:NewTimer(32, "Roof is collapsing!")
 
 --Heroic
 -- local AnnounceHandofDeath 	= mod:NewTargetAnnounce(2132323,2)
@@ -107,6 +107,13 @@ function mod:NextHandofDeath()
 	timerNextHandofDeath:Start()
 	deathAbility=2
 	self:ScheduleMethod(30,"NextHandofDeath")
+end
+
+function mod:NextDebris()							
+	self:UnscheduleMethod("NextDebris")
+	timerFallingRoof:Cancel()
+	timerFallingRoof:Start()
+	self:ScheduleMethod(32,"NextDebris")
 end
 
 function mod:OnCombatEnd()
@@ -183,14 +190,14 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextQuake:Cancel()
 		timerNextNova:Cancel()
 		if mod:IsDifficulty("heroic10", "heroic25") then
-		timerNextFingerofDeath:Start(21)
-			timerNextHandofDeath:Start(36)
+			timerNextFingerofDeath:Start(21)
+			timerNextHandofDeath:Start(48)
 			self:ScheduleMethod(21,"NextFingerofDeath");
-			self:ScheduleMethod(36,"NextHandofDeath");
+			self:ScheduleMethod(48,"NextHandofDeath");
 		end
 		timerPhaseTwo:Cancel()
 		timerNextQuake:Start(41)
-		timerNextNova:Start(66, tostring(Nova))
+		timerNextNova:Start(68, tostring(Nova))
 		below30 = false;
 		isMag	= true;
 		self.vb.phase = 2
@@ -198,23 +205,20 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 	if msg == L.DBM_MAG_YELL_PHASE3 then
 		warnPhaseThree:Show()
-		timerFallingRoof:Start()
+		timerFallingRoof:Start(10)
+		self:ScheduleMethod(10,"NextDebris")
+		timerNextSpecialNova:Start()
+		specWarnNova:Schedule(34)
 		if mod:IsDifficulty("heroic10", "heroic25") then
 			timerNextFingerofDeath:Cancel()
 			timerNextHandofDeath:Cancel()
 			self:UnscheduleMethod("NextFingerofDeath")
 			self:UnscheduleMethod("NextHandofDeath")
-			if deathAbility == 2 then
-				timerNextFingerofDeath:Start(21)
-				timerNextHandofDeath:Start(36)
-				self:ScheduleMethod(21,"NextFingerofDeath");
-				self:ScheduleMethod(36,"NextHandofDeath");
-			else
-				timerNextFingerofDeath:Start(36)
-				timerNextHandofDeath:Start(21)
-				self:ScheduleMethod(36,"NextFingerofDeath");
-				self:ScheduleMethod(21,"NextHandofDeath");
-			end
+
+			timerNextFingerofDeath:Start(21)
+			timerNextHandofDeath:Start(36)
+			self:ScheduleMethod(21,"NextFingerofDeath");
+			self:ScheduleMethod(36,"NextHandofDeath");
 		end
 	end
 end
@@ -226,44 +230,51 @@ function mod:SPELL_CAST_START(args)
 		WarnQuake:Show()
 		timerNextQuake:Start()
 
-		local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
-		local remainingTimerNextHand = totalHand - elapsedHand
-		local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
-		local remainingTimerNextFinger = totalFinger - elapsedFinger
-		if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
-			if remainingTimerNextFinger < remainingTimerNextHand then
-				timerNextFingerofDeath:AddTime(7)
-			else
-				timerNextHandofDeath:AddTime(7)
-			end
-		end
+		-- local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
+		-- local remainingTimerNextHand = totalHand - elapsedHand
+		-- local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
+		-- local remainingTimerNextFinger = totalFinger - elapsedFinger
+		-- if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
+		-- 	if remainingTimerNextFinger < remainingTimerNextHand then
+		-- 		timerNextFingerofDeath:AddTime(7)
+		-- 	else
+		-- 		timerNextHandofDeath:AddTime(7)
+		-- 	end
+		-- end
 	elseif args:IsSpellID(2132301) then
 		Nova = Nova + 1;
 		WarnNova:Show()
-		if Nova >= 7 then
-			timerNextSpecialNova:Start()
-			specWarnNova:Schedule(45)
-		else
-			timerNextNova:Start(55, tostring(Nova))
+		-- if Nova >= 7 then
+		-- 	timerNextSpecialNova:Start()
+		-- 	specWarnNova:Schedule(45)
+		-- else
+			timerNextNova:Start(82, tostring(Nova))
 
-			local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
-			local remainingTimerNextHand = totalHand - elapsedHand
-			local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
-			local remainingTimerNextFinger = totalFinger - elapsedFinger
-			if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
-				if remainingTimerNextFinger < remainingTimerNextHand then
-					timerNextFingerofDeath:AddTime(3)
-				else
-					timerNextHandofDeath:AddTime(3)
-				end
-			end
-		end
+			timerNextHandofDeath:AddTime(10)
+			timerNextFingerofDeath:AddTime(10)
+
+			-- local elapsedHand, totalHand = timerNextHandofDeath:GetTime()
+			-- local remainingTimerNextHand = totalHand - elapsedHand
+			-- local elapsedFinger, totalFinger = timerNextFingerofDeath:GetTime()
+			-- local remainingTimerNextFinger = totalFinger - elapsedFinger
+			-- if math.min(remainingTimerNextFinger, remainingTimerNextHand) - 7 < 0 then
+			-- 	if remainingTimerNextFinger < remainingTimerNextHand then
+			-- 		timerNextFingerofDeath:AddTime(3)
+			-- 	else
+			-- 		timerNextHandofDeath:AddTime(3)
+			-- 	end
+			-- end
+		-- end
 	end
 
 	if args:IsSpellID(2132323, 2132324, 2132325, 2132326) then
 			self:ScheduleMethod(0.2, "HandofDeath")
+			timerNextHandofDeath:Start(40)
+			-- timerNextFingerofDeath:Cancel()
 	elseif args:IsSpellID(2132319, 2132320, 2132321, 2132322) then
 			self:ScheduleMethod(0.2, "FingerofDeath")
+			timerNextFingerofDeath:Start(40)
+			-- timerNextHandofDeath:Cancel()
 	end
 end
 
