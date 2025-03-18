@@ -103,12 +103,13 @@ local remainingForce
 local drawFlames
 
 function mod:OnCombatStart(delay)
-prewarn 		= 0
-phase 			= 0
-terror 			= 0
-lastDoomfire 	= 0
-lastForce 		= 0
-drawFlames		= 0
+	prewarn 		= 0
+	phase 			= 0
+	terror 			= 0
+	lastDoomfire 	= 0
+	lastForce 		= 0
+	drawFlames		= 0
+	self:UnscheduleMethod("LightningStrikes")
 end
 
 function mod:AddPhase()
@@ -342,4 +343,6 @@ function mod:CombatEnd()
 	self:ScheduleMethod("CancelP0Timers")
 	self:ScheduleMethod("CancelP1Timers")
 	self:ScheduleMethod("CancelP2Timers")
+	self:UnscheduleMethod("LightningStrikes")
+	berserkTimer:Cancel()
 end
