@@ -59,7 +59,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(32445, 85228, 85229) then
+	if args:IsSpellID() then
 		-- self:Unschedule(timerWrathSkipped);
 		local elapsed, total = timerNextDesperate:GetTime()
 		if total - elapsed < 12 then
@@ -74,13 +74,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(196718, 196754, 196719, 351009) then -- Cast start of Repentance (3s)
+	if args:IsSpellID(2130700, 2130701, 2130702, 2130703) then -- Cast start of Repentance (3s)
 			--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
 		warningRepentanceSoon:Cancel()
 		timerRepentanceCast:Start()
 		timerRepentance:Start()
 		warningRepentanceSoon:Schedule(48)
-	elseif args:IsSpellID(85120) then
+	elseif args:IsSpellID(2130728, 2130729, 2130730, 2130731) then
 		warningDesperate:Show()
 		timerDesperateCast:Start()
 		timerNextDesperate:Start()
