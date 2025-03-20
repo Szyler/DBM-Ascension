@@ -22,7 +22,7 @@ local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
 local timerTerminate		= mod:NewTargetTimer(10, 2131007)
 local timerTerminateCD		= mod:NewCDTimer(15, 2131007) --15 seconds??
 local timerEvo				= mod:NewBuffActiveTimer(20, 2131004)
-local timerNextEvo			= mod:NewNextTimer(130, 2131004)
+local timerNextEvo			= mod:NewNextTimer(125, 2131004)
 local timerNextHateful		= mod:NewNextTimer(6, 2131003)--, mod:IsTank() or mod:IsHealer())
 local timerNextHatefulHc	= mod:NewNextTimer(6, 85267)--, mod:IsTank() or mod:IsHealer())
 
@@ -49,9 +49,9 @@ local iconText2 = {
 function mod:OnCombatStart(delay)
 	timerTerminateCD:Start(30-delay)
 	berserkTimer:Start(-delay)
-	timerNextEvo:Start(95-delay)
-	warnEvoSoon:Schedule(85-delay)
-	warnBreakCrystal:Schedule((95-35)-delay);
+	timerNextEvo:Start(105-delay)
+	warnEvoSoon:Schedule(100-delay)
+	warnBreakCrystal:Schedule((105-35)-delay);
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
@@ -96,7 +96,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnEvo:Show()
 		timerNextEvo:Start()
 		timerEvo:Start()
-		warnEvoSoon:Schedule(125);
+		warnEvoSoon:Schedule(120);
 		warnBreakCrystal:Cancel();
 		warnBreakCrystal:Schedule(125-30);
 	end
