@@ -17,17 +17,17 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_WHISPER"
 )
 
-local warningFlameCast		= mod:NewCastAnnounce(30004, 4)
-local warningArcaneCast		= mod:NewCastAnnounce(29973, 4)
-local warningBlizzard		= mod:NewSpellAnnounce(29969, 3)
-local warningElementals		= mod:NewSpellAnnounce(37053, 3)
-local warningChains			= mod:NewTargetAnnounce(29991, 2)
+local warningFlameCast		= mod:NewCastAnnounce(2131220, 4)
+local warningArcaneCast		= mod:NewCastAnnounce(2131232, 4)
+local warningBlizzard		= mod:NewSpellAnnounce(2131115, 3)
+local warningElementals		= mod:NewSpellAnnounce(2131242, 3)
+local warningChains			= mod:NewTargetAnnounce(2131213, 2)
 local warningFlameTargets	= mod:NewTargetAnnounce(29946, 4)
-local warningSheepTargets	= mod:NewTargetAnnounce(85273, 3)
-local warningPoly			= mod:NewSpellAnnounce(85273, 3)
+local warningSheepTargets	= mod:NewTargetAnnounce(2131241, 3)
+local warningPoly			= mod:NewSpellAnnounce(2131241, 3)
 
 local specWarnDontMove		= mod:NewSpecialWarning("DBM_ARAN_DO_NOT_MOVE")
-local specWarnArcane		= mod:NewSpecialWarningRun(29973)
+local specWarnArcane		= mod:NewSpecialWarningRun(2131232)
 local specWarnBlizzard		= mod:NewSpecialWarningMove(29951)
 local specWarnBossShield	= mod:NewSpecialWarning(L.DBM_ARAN_VULNERABLE)
 local specWarnPoly			= mod:NewSpecialWarning(L.VolatilePoly)
@@ -35,15 +35,15 @@ local specWarnFull			= mod:NewSpecialWarning(L.ArcaneSpiral)
 --local specWarnDoubleCast	= mod:NewSpecialWarning(L.DoubleCast);
 
 local timerSpecial			= mod:NewTimer(30, L.timerSpecial, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
-local timerFlameCast		= mod:NewCastTimer(4, 30004)
-local timerArcaneExplosion	= mod:NewCastTimer(10, 29973)
--- local timerBlizzadCast		= mod:NewCastTimer(3.7, 29969)
+local timerFlameCast		= mod:NewCastTimer(4, 2131220)
+local timerArcaneExplosion	= mod:NewCastTimer(10, 2131232)
+-- local timerBlizzadCast		= mod:NewCastTimer(3.7, 2131115)
 local timerFlame			= mod:NewBuffActiveTimer(20.5, 29946)
 local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
--- local timerElementals		= mod:NewBuffActiveTimer(90, 37053)
-local timerChains			= mod:NewTargetTimer(10, 29991)
-local timerShield			= mod:NewBuffActiveTimer(60, 85182)
-local timerPoly				= mod:NewTargetTimer(30, 85273)
+-- local timerElementals		= mod:NewBuffActiveTimer(90, 2131242)
+local timerChains			= mod:NewTargetTimer(10, 2131213)
+local timerShield			= mod:NewBuffActiveTimer(60, 2131251)
+local timerPoly				= mod:NewTargetTimer(30, 2131241)
 local timerBoom				= mod:NewTimer(5, L.ArcaneSpiralTimer, "Interface\\Icons\\spell_nature_wispsplode")
 
 local berserkTimer			= mod:NewBerserkTimer(900)
@@ -115,19 +115,19 @@ function mod:SPELL_CAST_START(args)
 --			end
 --			lastTarget = destName;
 --		end
-	if args:IsSpellID(30004) then
+	if args:IsSpellID(2131220, 2131219) then
 		warningFlameCast:Show()
 		timerFlameCast:Start()
 		timerSpecial:Start(35,self:UpdateSpecials("Wreath"))
-	elseif args:IsSpellID(29973, 85436) then
+	elseif args:IsSpellID(2131232, 2131233, 2131234, 2131235) then
 		warningArcaneCast:Show()
 		timerArcaneExplosion:Start()
 		specWarnArcane:Show()
 		timerSpecial:Start(35,self:UpdateSpecials("Explosion"))
-	elseif args:IsSpellID(85273) then
+	elseif args:IsSpellID(2131241) then
 		specWarnPoly:Show()
 		timerSpecial:Start(35,self:UpdateSpecials("Poly"))
---	elseif args:IsSpellID(29969) then       - deprecated, Ascension's Aran doesn't use CAST_START for Blizzard.
+--	elseif args:IsSpellID(2131115) then       - deprecated, Ascension's Aran doesn't use CAST_START for Blizzard.
 --		warningBlizzard:Show()
 --		timerBlizzadCast:Show()
 --		timerBlizzad:Schedule(3.7)--may need tweaking
@@ -137,7 +137,7 @@ end
 
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(29991) then
+	if args:IsSpellID(2131213) then
 		warningChains:Show(args.destName)
 		timerChains:Start(args.destName)
 	elseif args:IsSpellID(29946) then
@@ -152,12 +152,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		self:Unschedule(warnFlameWreathTargets)
 		self:Schedule(0.3, warnFlameWreathTargets)
-	elseif args:IsSpellID(85182) then
+	elseif args:IsSpellID(2131251) then
 		timerShield:Start()
 		specWarnBossShield:Schedule(60)
 		timerSpecial:Cancel()
 		self.vb.phase = 2
-	elseif args:IsSpellID(85273) then -- Volatile Polymorph
+	elseif args:IsSpellID(2131241) then -- Volatile Polymorph
 		--warningPoly:Show(args.destName)
 		SheepTargets[#SheepTargets + 1] = args.destName;
 		timerPoly:Start(args.destName);
@@ -180,9 +180,9 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(29991) then
+	if args:IsSpellID(2131213) then
 		timerChains:Cancel(args.destName)
-	elseif args:IsSpellID(85273) then  -- Volatile Polymorph
+	elseif args:IsSpellID(2131241) then  -- Volatile Polymorph
 		timerPoly:Cancel(args.destName);
 		if self.Options.SheepIcons then
 			self:RemoveIcon(args.destName);
@@ -217,7 +217,7 @@ do
 	
 	local lastElemental = 0
 	function mod:SPELL_SUMMON(args)
-		if args:IsSpellID(29962, 37051, 37052, 37053) then -- Summon Water elementals
+		if args:IsSpellID(29962, 37051, 37052, 2131242) then -- Summon Water elementals
 			if time() - lastElemental > 5 then
 				warningElementals:Show()
 			--  timerElementals:Show()
@@ -251,7 +251,7 @@ end
 do 
 	local lastBlizzard = 0
 	function mod:SPELL_PERIODIC_DAMAGE(args)
-		if args:IsSpellID(29951, 85250) and args:IsPlayer() and GetTime() - lastBlizzard > 2 then
+		if args:IsSpellID(2131215, 2131216, 2131217, 2131218) and args:IsPlayer() and GetTime() - lastBlizzard > 2 then
 			specWarnBlizzard:Show()
 			lastBlizzard = GetTime()
 		end
