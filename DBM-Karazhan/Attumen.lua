@@ -15,16 +15,16 @@ mod:RegisterEvents(
 )
 
 local warnPhase2			= mod:NewPhaseAnnounce(2)
-local warningCurseSoon		= mod:NewSoonAnnounce(85154, 2)
-local warningCurse			= mod:NewSpellAnnounce(85154, 3)
-local warnCharge			= mod:NewTargetAnnounce(85157, 3)
+local warningCurseSoon		= mod:NewSoonAnnounce(2130500, 2)
+local warningCurse			= mod:NewSpellAnnounce(2130500, 3)
+local warnCharge			= mod:NewTargetAnnounce(2130504, 3)
 local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
 local warnSunder			= mod:NewAnnounce(L.AttSunder, 2, 85178)
-local warnFireball			= mod:NewTargetAnnounce(85209, 2)  -- heroic
+local warnFireball			= mod:NewTargetAnnounce(2130506, 2)  -- heroic
 
-local timerCurse			= mod:NewNextTimer(30, 85154)
-local timerChargeCD			= mod:NewCDTimer(28, 85157)
-local timerFireball			= mod:NewCDTimer(12, 85209)   -- heroic
+local timerCurse			= mod:NewNextTimer(30, 2130500)
+local timerChargeCD			= mod:NewCDTimer(28, 2130504)
+local timerFireball			= mod:NewCDTimer(12, 2130506)   -- heroic
 
 local Phase	= 1
 local lastCurse = 0
@@ -49,13 +49,13 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85154, 85155, 85156) then     
+	if args:IsSpellID(2130500, 2130501, 2130502, 2130503) then     
 		warningCurse:Show()
 		timerCurse:Start()
-	elseif args:IsSpellID(85157, 85158, 85159) then -- 3 different spell IDs? why Ascension?
+	elseif args:IsSpellID(2130504) then
 		timerChargeCD:Start()
 		warnCharge:Show(args.destName)
-	elseif args:IsSpellID(85209) then   -- heroic
+	elseif args:IsSpellID(2130506, 2130507, 2130508, 2130509) then   -- heroic
 		warnFireball:Show(args.destName)
 		timerFireball:Show()
 	end

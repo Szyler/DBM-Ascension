@@ -15,12 +15,12 @@ mod:RegisterEvents(
 local warnEvoSoon			= mod:NewPreWarnAnnounce(2131004, 10, 2)
 local warnEvo				= mod:NewSpellAnnounce(2131004, 3)
 local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
-local warnTerminate			= mod:NewTargetAnnounce(2131008, 3)
+local warnTerminate			= mod:NewTargetAnnounce(2131007, 3)
 local specWarnTerminate		= mod:NewSpecialWarning(L.TerminationTarget); --,1,2131008, 2131009, 2131010, 2131011)
 local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
 
-local timerTerminate		= mod:NewTargetTimer(10, 2131008)
-local timerTerminateCD		= mod:NewCDTimer(15, 2131008) --15 seconds??
+local timerTerminate		= mod:NewTargetTimer(10, 2131007)
+local timerTerminateCD		= mod:NewCDTimer(15, 2131007) --15 seconds??
 local timerEvo				= mod:NewBuffActiveTimer(20, 2131004)
 local timerNextEvo			= mod:NewNextTimer(130, 2131004)
 local timerNextHateful		= mod:NewNextTimer(6, 2131003)--, mod:IsTank() or mod:IsHealer())
@@ -73,7 +73,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerEvo:Stop()
 		self.vb.phase = 2
 		--warnBreakCrystal:Cancel();
-	elseif args:IsSpellID(2131008, 2131009, 2131010, 2131011) then
+	elseif args:IsSpellID(2131007) then
 		if self.Options.CuratorIcon then
 			terminateIcon = (terminateIcon <= ((mod:IsDifficulty("heroic25") and 5) or (mod:IsDifficulty("heroic10") and 6) or 7)) and 7 or (terminateIcon - 1);
 			self:SetIcon(args.destName, terminateIcon, 10)
