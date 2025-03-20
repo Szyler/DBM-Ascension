@@ -20,23 +20,23 @@ mod:RegisterEvents(
 	"UNIT_DIED"
 )
 
-local warningWeakened	= mod:NewTargetAnnounce(30065, 2)
-local warningImpSoon	= mod:NewSoonAnnounce(30066, 2)
-local warningImp		= mod:NewSpellAnnounce(30066, 3)
-local warningSacSoon	= mod:NewSoonAnnounce(85190, 3)
-local warningSacrifice	= mod:NewTargetAnnounce(85190, 4)
-local warnCurse			= mod:NewTargetAnnounce(85275, 3)
-local warnLink			= mod:NewTargetAnnounce(85277, 3)
+local warningWeakened	= mod:NewTargetAnnounce(2131121, 2)
+local warningImpSoon	= mod:NewSoonAnnounce(2131114, 2)
+local warningImp		= mod:NewSpellAnnounce(2131114, 3)
+local warningSacSoon	= mod:NewSoonAnnounce(2131129, 3)
+local warningSacrifice	= mod:NewTargetAnnounce(2131129, 4)
+local warnCurse			= mod:NewTargetAnnounce(2131112, 3)
+local warnLink			= mod:NewTargetAnnounce(2131122, 3)
 
-local specWarnSacrifice	= mod:NewSpecialWarningYou(85190)
-local specWarnCurse		= mod:NewSpecialWarningYou(85275)
+local specWarnSacrifice	= mod:NewSpecialWarningYou(2131129)
+local specWarnCurse		= mod:NewSpecialWarningYou(2131112)
 
-local timerWeakened		= mod:NewBuffActiveTimer(31, 30065)
-local timerSacrifice	= mod:NewTargetTimer(30, 85190)
-local timerSacrificeCD	= mod:NewNextTimer(43, 85190)
-local TimerCurseDur		= mod:NewTargetTimer(10, 85275)
-local timerNextCurse	= mod:NewNextTimer(20, 85275)
-local timerLink			= mod:NewTargetTimer(10, 85277)
+local timerWeakened		= mod:NewBuffActiveTimer(31, 2131121)
+local timerSacrifice	= mod:NewTargetTimer(30, 2131129)
+local timerSacrificeCD	= mod:NewNextTimer(43, 2131129)
+local TimerCurseDur		= mod:NewTargetTimer(10, 2131112)
+local timerNextCurse	= mod:NewNextTimer(20, 2131112)
+local timerLink			= mod:NewTargetTimer(10, 2131122)
 local timerAmplifyCD	= mod:NewNextTimer(9, 85289)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
@@ -50,7 +50,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85190) then
+	if args:IsSpellID(2131129) then
 		DBM.BossHealth:AddBoss(17248, L.DChains)
 		warningSacrifice:Show(args.destName)
 		timerSacrifice:Start(args.destName)
@@ -60,33 +60,33 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnSacrifice:Show()
 		end
-	elseif args:IsSpellID(30065) then
+	elseif args:IsSpellID(2131121) then
 		warningWeakened:Show(args.destName)
 		timerWeakened:Start()
 		warningImpSoon:Schedule(26)
 		timerLink:Cancel()
 		timerAmplifyCD:Cancel()
-	elseif args:IsSpellID(85275) then
+	elseif args:IsSpellID(2131112, 2131113, 2131114, 2131115) then
 		warnCurse:Show(args.destName)
 		TimerCurseDur:Start(args.destName)
 		timerNextCurse:Start()
 		if args:IsPlayer() then
 			specWarnCurse:Show()
 		end
-	elseif args:IsSpellID(85277) then
+	elseif args:IsSpellID(2131122, 2131123) then
 		warnLink:Show(args.destName)
 		timerLink:Start(args.destName)
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(85190) then
+	if args:IsSpellID(2131129) then
 		timerSacrifice:Cancel(args.destName)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(30066) then
+	if args:IsSpellID(2131114) then
 		warningImpSoon:Cancel()
 		warningImp:Show()
 		DBM.BossHealth:AddBoss(17229, L.Kilrek)
