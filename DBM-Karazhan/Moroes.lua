@@ -17,41 +17,41 @@ mod:RegisterEvents(
 )
 
 local warnPhase2Soon		= mod:NewAnnounce("WarnPhase2Soon")
-local warningVanishSoon		= mod:NewSoonAnnounce(29448, 2)
-local warningVanish			= mod:NewSpellAnnounce(29448, 3)
-local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 37066)
+local warningVanishSoon		= mod:NewSoonAnnounce(2130600, 2)
+local warningVanish			= mod:NewSpellAnnounce(2130600, 3)
+local warningGarrote		= mod:NewAnnounce(L.DBM_MOROES_GARROTE, 3, 2130601)
 -- local warningGouge			= mod:NewTargetAnnounce(29425, 4)
 local warningBlind			= mod:NewTargetAnnounce(34694, 3)
-local warningMortalStrike	= mod:NewTargetAnnounce(29572, 2)
-local warningManaBurn		= mod:NewCastAnnounce(29405, 3, nil, false)
-local warningGreaterHeal	= mod:NewCastAnnounce(35096, 3, nil, false)
+local warningMortalStrike	= mod:NewTargetAnnounce(2130630, 2)
+local warningManaBurn		= mod:NewCastAnnounce(2130608, 3, nil, false)
+local warningGreaterHeal	= mod:NewCastAnnounce(2130620, 3, nil, false)
 local warningHolyLight		= mod:NewCastAnnounce(29562, 3, nil, false)
 local warningPWS			= mod:NewTargetAnnounce(85217, 3)
-local warningPain			= mod:NewTargetAnnounce(85174, 3)
+local warningPain			= mod:NewTargetAnnounce(2130616, 3)
 local warningWall			= mod:NewTargetAnnounce(29390, 3)
 local warningDispel			= mod:NewTargetAnnounce(15090, 3)
-local warningHFire			= mod:NewTargetAnnounce(29563, 3)
-local warningHoJ			= mod:NewTargetAnnounce(13005, 3)
-local warningDShield		= mod:NewTargetAnnounce(29382, 3)
+local warningHFire			= mod:NewTargetAnnounce(2130625, 3)
+local warningHoJ			= mod:NewTargetAnnounce(2130632, 3)
+local warningDShield		= mod:NewTargetAnnounce(2130637, 3)
 
 local specWarnDinner		= mod:NewSpecialWarning(L.DinnerServed)
 
-local timerVanish			= mod:NewNextTimer(30, 29448)
+local timerVanish			= mod:NewNextTimer(30, 2130600)
 -- local timerGouge			= mod:NewTargetTimer(6, 29425)
 local timerBlind			= mod:NewTargetTimer(10, 34694)
-local timerMortalStrike		= mod:NewTargetTimer(5, 29572)
-local timerHoJ				= mod:NewCDTimer(50, 13005)
-local timerDinner			= mod:NewCDTimer(24, 85090)
-local timerDinner25m		= mod:NewCDTimer(36, 85090)
+local timerMortalStrike		= mod:NewTargetTimer(5, 2130630)
+local timerHoJ				= mod:NewCDTimer(50, 2130632)
+local timerDinner			= mod:NewCDTimer(24, 2130649)
+local timerDinner25m		= mod:NewCDTimer(36, 2130649)
 local timerMoroesEnrage		= mod:NewTimer(720, "Frenzy", 351007)
 
 -- local lastVanish = 0
 
 --Ascension Specific
-local warningDinner		= mod:NewSpellAnnounce(85090, 3)
---local warningFood		= mod:NewTargetTimer(30, 85090, "%s");
+local warningDinner		= mod:NewSpellAnnounce(2130649, 3)
+--local warningFood		= mod:NewTargetTimer(30, 2130649, "%s");
 
-local timerDance		= mod:NewTimer(27, L.DBM_MOROES_SOULBURST, 85089);
+local timerDance		= mod:NewTimer(27, L.DBM_MOROES_SOULBURST, 2130645, 2130646, 2130647, 2130648);
 local danceType = {[0] = "Circle", [1] = "Star", [2] = "Line"};
 local danceCount = 0;
 
@@ -77,13 +77,13 @@ function mod:DanceTimer(t,noInc)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(29405) then
+	if args:IsSpellID(2130608) then
 		warningManaBurn:Show()
-	elseif args:IsSpellID(35096) then
+	elseif args:IsSpellID(2130620) then
 		warningGreaterHeal:Show()
 	elseif args:IsSpellID(29562) then
 		warningHolyLight:Show()
-	elseif args:IsSpellID(29563) then
+	elseif args:IsSpellID(2130625,2130626, 2130627, 2130628) then
 		warningHFire:Show(args.destName)
 	end
 end
@@ -91,18 +91,18 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(15090) then
 		warningDispel:Show(args.destName)
-	elseif args:IsSpellID(85174) then
+	elseif args:IsSpellID(2130616, 2130617, 2130618, 2130619) then
 		warningPain:Show(args.destName)
 	end
 end
 	
 
 local foodData = {
-	[85090] = {name = "Apple", yell = "YellApple"}, -- Sweet / Apple
-	[85091] = {name = "Wine", yell = "YellWine"}, -- Thirst / Wine
-	[85092] = {name = "Oranges", yell = "YellFruit"}, -- Tart / Oranges
-	[85093] = {name = "Boar", yell = "YellBoar"}, -- Savory / Boar
-	[85094] = {name = "Fish", yell = "YellFish"}, -- Fishy / Fish
+	[2130649] = {name = "Apple", yell = "YellApple"}, -- Sweet / Apple
+	[2130650] = {name = "Wine", yell = "YellWine"}, -- Thirst / Wine
+	[2130651] = {name = "Oranges", yell = "YellFruit"}, -- Tart / Oranges
+	[2130652] = {name = "Boar", yell = "YellBoar"}, -- Savory / Boar
+	[2130653] = {name = "Fish", yell = "YellFish"}, -- Fishy / Fish
 };
 
 function mod:YellFood()
@@ -113,7 +113,7 @@ function mod:YellFood()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(29448) then
+	if args:IsSpellID(2130600) then
 		warningVanish:Show()
 		-- lastVanish = GetTime()
 	-- elseif args:IsSpellID(29425) then
@@ -122,24 +122,24 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(34694) then
 		warningBlind:Show(args.destName)
 		timerBlind:Show(args.destName)
-	elseif args:IsSpellID(29382) then
+	elseif args:IsSpellID(2130637) then
 		warningDShield:Show(args.destName)
-	elseif args:IsSpellID(13005) then
+	elseif args:IsSpellID(2130632) then
 		warningHoJ:Show(args.destName)
 	elseif args:IsSpellID(29390) then
 		warningWall:Show(args.destName)
-	elseif args:IsSpellID(29572) then
+	elseif args:IsSpellID(2130630) then
 		warningMortalStrike:Show(args.destName)
 		timerMortalStrike:Show(args.destName)
 	elseif args:IsSpellID(85217) then
 		warningPWS:Show(args.destName)
-	elseif args:IsSpellID(37066, 85223, 85224) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
+	elseif args:IsSpellID(2130601, 2130602, 2130603, 2130604) then         -- Garrote has 3 different IDs for 3 difficulties. Why Ascension?
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		-- if (GetTime() - lastVanish) < 20 then
 		timerVanish:Start()
 --			warningVanishSoon:Schedule(23)
 		-- end
-	elseif args:IsSpellID(85089) then -- Soul Burst Debuff
+	elseif args:IsSpellID(2130645, 2130646, 2130647, 2130648) then -- Soul Burst Debuff
 		local elapsed, total = timerDance:GetTime(danceType[(danceCount % 3)]);
 		if elapsed > 10 then
 			self:UnscheduleMethod("DanceTimer");
@@ -165,7 +165,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(37066, 85223, 85224) then
+	if args:IsSpellID(2130601, 2130602, 2130603, 2130604) then
 		warningGarrote:Show(args.spellName, args.destName, args.amount or 1)
 		-- if (GetTime() - lastVanish) < 20 then
 		timerVanish:Start()

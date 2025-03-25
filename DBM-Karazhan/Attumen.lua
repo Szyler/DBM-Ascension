@@ -19,7 +19,7 @@ local warningCurseSoon		= mod:NewSoonAnnounce(2130500, 2)
 local warningCurse			= mod:NewSpellAnnounce(2130500, 3)
 local warnCharge			= mod:NewTargetAnnounce(2130504, 3)
 local warnAttumen			= mod:NewSpellAnnounce(29714, 3)
-local warnSunder			= mod:NewAnnounce(L.AttSunder, 2, 85178)
+local warnSunder			= mod:NewAnnounce(L.AttSunder, 2, 2130505)
 local warnFireball			= mod:NewTargetAnnounce(2130506, 2)  -- heroic
 
 local timerCurse			= mod:NewNextTimer(30, 2130500)
@@ -35,15 +35,15 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(43127, 29833) then
+	if args:IsSpellID(2130500, 2130501, 2130502, 2130503) then
 		warningCurse:Show()
-	elseif args:IsSpellID(85178) then
+	elseif args:IsSpellID(2130505) then
 		warnSunder:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
-	if args:IsSpellID(85178) then
+	if args:IsSpellID(2130505) then
 		warnSunder:Show(args.spellName, args.destName, args.amount or 1)
 	end
 end

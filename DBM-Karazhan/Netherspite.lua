@@ -18,15 +18,15 @@ local warningPortalSoon		= mod:NewAnnounce("DBM_NS_WARN_PORTAL_SOON", 2, "Interf
 local warningBanishSoon		= mod:NewAnnounce("DBM_NS_WARN_BANISH_SOON", 2, "Interface\\Icons\\Spell_Shadow_Cripple")
 local warningPortal			= mod:NewAnnounce("warningPortal", 3, "Interface\\Icons\\Spell_Arcane_PortalIronForge")
 local warningBanish			= mod:NewAnnounce("warningBanish", 3, "Interface\\Icons\\Spell_Shadow_Cripple")
-local warningBreathCast		= mod:NewSpellAnnounce(38523, 2)
+local warningBreathCast		= mod:NewSpellAnnounce(2131314, 2)
 local warningVoid			= mod:NewSpellAnnounce(37063, 3)
 
 local specWarnVoid			= mod:NewSpecialWarningMove(30533)
-local specWarnBreath		= mod:NewSpecialWarningYou(38523)
+local specWarnBreath		= mod:NewSpecialWarningYou(2131314)
 
 local timerPortalPhase		= mod:NewTimer(50, "timerPortalPhase", "Interface\\Icons\\Spell_Arcane_PortalIronForge")
 local timerBanishPhase		= mod:NewTimer(31, "timerBanishPhase", "Interface\\Icons\\Spell_Shadow_Cripple")
-local timerBreathCast		= mod:NewCastTimer(4, 38523)
+local timerBreathCast		= mod:NewCastTimer(4, 2131314)
 
 local berserkTimer			= mod:NewBerserkTimer(540)
 
@@ -52,7 +52,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(38523) then
+	if args:IsSpellID(2131314, 2131315, 2131316, 2131317) then
 		warningBreathCast:Show()
 		timerBreathCast:Start()
 		if args:IsPlayer() then

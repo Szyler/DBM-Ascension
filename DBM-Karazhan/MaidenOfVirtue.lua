@@ -13,25 +13,25 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED"
 )
 
-local warningHolyFire			= mod:NewTargetAnnounce(85122, 3)
+local warningHolyFire			= mod:NewTargetAnnounce(2130704, 3)
 
--- local timerRepentance		= mod:NewBuffActiveTimer(6, 85177)
-local warningRepentance			= mod:NewSpellAnnounce(85177, 3)
-local warningRepentanceSoon		= mod:NewSoonAnnounce(85177, 2)
-local timerRepentance			= mod:NewNextTimer(53, 85177)
-local timerRepentanceCast		= mod:NewCastTimer(3, 85177)
+-- local timerRepentance		= mod:NewBuffActiveTimer(6, 2130700)
+local warningRepentance			= mod:NewSpellAnnounce(2130700, 3)
+local warningRepentanceSoon		= mod:NewSoonAnnounce(2130700, 2)
+local timerRepentance			= mod:NewNextTimer(53, 2130700)
+local timerRepentanceCast		= mod:NewCastTimer(3, 2130700)
 
 
 -- Ascension specific
 local warningSpecDespRun		= mod:NewSpecialWarning(L.WarnPrayerRun)
-local warningDesperate			= mod:NewSpellAnnounce(85108, 2)
--- local timerDesperates		= mod:NewBuffActiveTimer(3, 85120)
-local timerDesperateExplode		= mod:NewBuffActiveTimer(14, 85103)
-local timerNextDesperate		= mod:NewNextTimer(53, 85120)
-local timerDesperateCast		= mod:NewCastTimer(4, 85120)
--- local timerWrathSkipped		= mod:NewCDTimer(12, 32445)
-local timerWrath				= mod:NewNextTimer(12, 32445)
-local warnSoonWrath				= mod:NewSoonAnnounce(32445, 2)
+local warningDesperate			= mod:NewSpellAnnounce(2130728, 2)
+-- local timerDesperates		= mod:NewBuffActiveTimer(3, 2130728)
+local timerDesperateExplode		= mod:NewBuffActiveTimer(14, 2130736)
+local timerNextDesperate		= mod:NewNextTimer(53, 2130728)
+local timerDesperateCast		= mod:NewCastTimer(4, 2130728)
+-- local timerWrathSkipped		= mod:NewCDTimer(12, 2130708)
+local timerWrath				= mod:NewNextTimer(12, 2130708)
+local warnSoonWrath				= mod:NewSoonAnnounce(2130708, 2)
 
 mod:AddBoolOption("RangeFrame", true)
 
@@ -53,13 +53,13 @@ function mod:OnCombatEnd()
 end	
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(85122) then
+	if args:IsSpellID(2130704, 2130705, 2130706, 2130707) then
 		warningHolyFire:Show(args.destName)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID() then
+	if args:IsSpellID(2130708, 2130709, 2130710, 2130711) then
 		-- self:Unschedule(timerWrathSkipped);
 		local elapsed, total = timerNextDesperate:GetTime()
 		if total - elapsed < 12 then
@@ -75,7 +75,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(2130700, 2130701, 2130702, 2130703) then -- Cast start of Repentance (3s)
-			--elseif args:IsSpellID(85177, 85307, 196743) then -- Actual spell of Repentance
+			--elseif args:IsSpellID(2130700, 85307, 196743) then -- Actual spell of Repentance
 		warningRepentanceSoon:Cancel()
 		timerRepentanceCast:Start()
 		timerRepentance:Start()
@@ -90,7 +90,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(29522) then
+	if args:IsSpellID(2130704) then
 		timerHolyFire:Cancel()
 	end
 end

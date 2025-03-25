@@ -14,7 +14,7 @@ mod:RegisterEvents(
 
 local warnEvoSoon			= mod:NewPreWarnAnnounce(2131004, 10, 2)
 local warnEvo				= mod:NewSpellAnnounce(2131004, 3)
-local warnArcaneInfusion	= mod:NewSpellAnnounce(30403, 3)
+local warnArcaneInfusion	= mod:NewSpellAnnounce(213005, 3)
 local warnTerminate			= mod:NewTargetAnnounce(2131007, 3)
 local specWarnTerminate		= mod:NewSpecialWarning(L.TerminationTarget); --,1,2131008, 2131009, 2131010, 2131011)
 local warnBreakCrystal		= mod:NewAnnounce(L.BreakCrystalWarning, 2);
@@ -67,7 +67,7 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30403) then
+	if args:IsSpellID(213005) then
 		warnArcaneInfusion:Show()
 		timerNextEvo:Stop()
 		timerEvo:Stop()
