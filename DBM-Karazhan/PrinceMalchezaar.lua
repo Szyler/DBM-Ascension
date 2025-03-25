@@ -19,30 +19,32 @@ mod:RegisterEvents(
 
 local warnPhase2				= mod:NewPhaseAnnounce(2)
 local warnPhase3				= mod:NewPhaseAnnounce(3)
-local warningNovaCast			= mod:NewCastAnnounce(30852, 3)
+local warningNovaCast			= mod:NewCastAnnounce(2131412, 3)
 -- local warningInfernalSoon		= mod:NewSoonAnnounce(37277, 2) -- not needed
 local warningInfernal			= mod:NewSpellAnnounce(37277, 3)
-local warningEnfeeble			= mod:NewTargetAnnounce(30843, 4)
+local warningEnfeeble			= mod:NewTargetAnnounce(2131400, 4)
 local warningAmpMagic			= mod:NewSpellAnnounce(39095, 3)
-local warningSWP				= mod:NewTargetAnnounce(30898, 2, nil, false)
-local warningDoom				= mod:NewSpellAnnounce(85069, 1)
-local warningShadowRealm		= mod:NewTargetAnnounce(85077, 3)
-local priWarnSunder				= mod:NewAnnounce(L.PriSunder, 3, 85198)
+local warningSWP				= mod:NewTargetAnnounce(2131402, 2, nil, false)
+local warningDoom				= mod:NewSpellAnnounce(2131430, 1)
+local warningShadowRealm		= mod:NewTargetAnnounce(2131416, 3)
+local priWarnSunder				= mod:NewAnnounce(L.PriSunder, 3, 2131407)
+local warningDecapitate			= mod:NewTargetAnnounce(2131420, 3)
 
-local specWarnEnfeeble			= mod:NewSpecialWarningYou(30843)
-local specWarnNova				= mod:NewSpecialWarningRun(30852)
-local specWarnSWP				= mod:NewSpecialWarningYou(30898)	
-local specWarnSRealm			= mod:NewSpecialWarningYou(85077)
+local specWarnEnfeeble			= mod:NewSpecialWarningYou(2131400)
+local specWarnNova				= mod:NewSpecialWarningRun(2131412)
+local specWarnSWP				= mod:NewSpecialWarningYou(2131402)	
+local specWarnSRealm			= mod:NewSpecialWarningYou(2131416)
 --local specWarnInfernal			= mod:NewSpecialWarning(L.InfernalOnYou) not used
 
-local timerNovaCast				= mod:NewCastTimer(2, 30852)
+local timerNovaCast				= mod:NewCastTimer(2, 2131412)
 local timerNextInfernal			= mod:NewTimer(20, "Summon Infernal #%s", 37277)
-local timerEnfeeble				= mod:NewNextTimer(30, 30843)
-local timerDoom					= mod:NewNextTimer(24, 85069)
-local timerNova					= mod:NewNextTimer(30, 30852)
-local timerShadowRealm			= mod:NewNextTimer(45, 85077)
-local timerShadowRealmTank		= mod:NewNextTimer(45, 85077)
+local timerEnfeeble				= mod:NewNextTimer(30, 2131400)
+local timerDoom					= mod:NewNextTimer(24, 2131430)
+local timerNova					= mod:NewNextTimer(30, 2131412)
+local timerShadowRealm			= mod:NewNextTimer(45, 2131416)
+local timerShadowRealmTank		= mod:NewNextTimer(45, 2131416)
 local timerAmpDmg				= mod:NewTimer(25, L.AmplifyDamage, 85207)
+local timerDecapitate			= mod:NewNextTimer(30, 2131420)
 
 local miscCrystalKill1			= mod:NewAnnounce(L.ShadowCrystalDead1, 3, 85078, nil,false)
 local miscCrystalKill2			= mod:NewAnnounce(L.ShadowCrystalDead2, 3, 85078, nil,false)
@@ -80,11 +82,14 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30852, 85293) then
+	if args:IsSpellID(2131412, 2131413, 2131414, 2131415) then
 		warningNovaCast:Show()
 		timerNovaCast:Start()
 		specWarnNova:Show()
 		timerNova:Start()
+	elseif args:IsSpellID(2131420) then
+		warningDecapitate:Show(args.destName)
+		timerDecapitate:start()
 	end
 end
 
@@ -118,7 +123,7 @@ end
 --end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(30854, 85317, 85291) then
+	if args:IsSpellID(2131402, 2131403, 2131404, 2131405) then
 		warningSWP:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnSWP:Show()
@@ -127,7 +132,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
-	elseif args:IsSpellID(30843) then
+	elseif args:IsSpellID(2131400) then
 		enfeebleTargets[#enfeebleTargets + 1] = args.destName
 		timerEnfeeble:Start()
 		if args:IsPlayer() then
@@ -135,7 +140,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		self:Unschedule(showEnfeebleWarning)
 		self:Schedule(0.3, showEnfeebleWarning)
-	elseif args:IsSpellID(85198) then
+	elseif args:IsSpellID(2131407) then
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
 	-- elseif args:IsSpellID(85208) then -- Aura doesn't show in combatlog, can't be tracked
 	-- 	phase = 2
@@ -166,14 +171,14 @@ end
 -- end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(85069) then
+	if args:IsSpellID(2131430, 2131431, 2131432, 2131433) then
 		warningDoom:Show()
 		if phase == 3 then
 			timerDoom:Start(12)
 		else
 			timerDoom:Start()
 		end
-	elseif args:IsSpellID(85077) then
+	elseif args:IsSpellID(2131416) then
 		warningShadowRealm:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnSRealm:Show()
@@ -191,7 +196,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		ampDmg = ampDmg + 1;
 		warningAmpMagic:Show()
 		timerAmpDmg:Start(tostring(ampDmg))
-	elseif args:IsSpellID(85198) then
+	elseif args:IsSpellID(2131407) then
 		priWarnSunder:Show("Sunder Armor", args.destName, args.amount or 1)
 	end
 end
