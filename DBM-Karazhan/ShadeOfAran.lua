@@ -22,7 +22,7 @@ local warningArcaneCast		= mod:NewCastAnnounce(2131232, 4)
 local warningBlizzard		= mod:NewSpellAnnounce(2131115, 3)
 local warningElementals		= mod:NewSpellAnnounce(2131242, 3)
 local warningChains			= mod:NewTargetAnnounce(2131213, 2)
-local warningFlameTargets	= mod:NewTargetAnnounce(29946, 4)
+local warningFlameTargets	= mod:NewTargetAnnounce(2131220, 4)
 local warningSheepTargets	= mod:NewTargetAnnounce(2131241, 3)
 local warningPoly			= mod:NewSpellAnnounce(2131241, 3)
 
@@ -38,7 +38,7 @@ local timerSpecial			= mod:NewTimer(30, L.timerSpecial, "Interface\\Icons\\INV_E
 local timerFlameCast		= mod:NewCastTimer(4, 2131220)
 local timerArcaneExplosion	= mod:NewCastTimer(10, 2131232)
 -- local timerBlizzadCast		= mod:NewCastTimer(3.7, 2131115)
-local timerFlame			= mod:NewBuffActiveTimer(20.5, 29946)
+local timerFlame			= mod:NewBuffActiveTimer(20.5, 2131220)
 local timerBlizzad			= mod:NewBuffActiveTimer(30, 29951)
 -- local timerElementals		= mod:NewBuffActiveTimer(90, 2131242)
 local timerChains			= mod:NewTargetTimer(10, 2131213)
@@ -140,7 +140,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(2131213) then
 		warningChains:Show(args.destName)
 		timerChains:Start(args.destName)
-	elseif args:IsSpellID(29946) then
+	elseif args:IsSpellID(2131220) then
 		WreathTargets[#WreathTargets + 1] = args.destName
 		timerFlame:Start()
 		if args:IsPlayer() then
@@ -171,7 +171,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			self:Schedule(0.3, warnSheepTargets);
 		end
-	elseif args:IsSpellID(29963)  then
+	elseif args:IsSpellID(2131241)  then
 		if args:IsPlayer() then
 			local elapsed, total = timerSpecial:GetTime(self:UpdateSpecials());
 			timerSpecial:Update(elapsed, total+10, self:UpdateSpecials());

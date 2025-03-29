@@ -18,15 +18,15 @@ local WarnStrawman		= mod:NewAnnounce("Strawman", 2, nil, nil, false)
 local WarnTinhead		= mod:NewAnnounce("Tinhead", 2, nil, nil, false)
 local WarnTido			= mod:NewAnnounce("Tito", 2, nil, nil, false)
 local WarnCrone			= mod:NewAnnounce("The Crone", 2, nil, nil, false)
-local WarnCL			= mod:NewCastAnnounce(32337, 3)
-local warnScream		= mod:NewSpellAnnounce(31013, 3)
+local WarnCL			= mod:NewCastAnnounce(2130820, 3)
+local warnScream		= mod:NewSpellAnnounce(2130804, 3)
 
 local timerRoar				= mod:NewTimer(14.5, "Roar", "Interface\\Icons\\Ability_Druid_ChallangingRoar", nil, false)
 local timerStrawman			= mod:NewTimer(24, "Strawman", "Interface\\Icons\\INV_Helmet_34", nil, false)
 local timerTinhead			= mod:NewTimer(34, "Tinhead", "Interface\\Icons\\INV_Helmet_02", nil, false)
 local timerTito				= mod:NewTimer(11, "Tito", "Interface\\Icons\\Ability_Mount_WhiteDireWolf", nil, false)
-local timerScream			= mod:NewTimer(30, "Frightened Scream", 31013)
-local timerCL				= mod:NewCDTimer(10, 32337)
+local timerScream			= mod:NewTimer(30, "Frightened Scream", 2130804)
+local timerCL				= mod:NewCDTimer(10, 2130820)
 local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
 mod:AddBoolOption("AnnounceBosses", true, "announce")
@@ -76,7 +76,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(31013) then
+	if args:IsSpellID(2130804) then
 		timerScream:Start()
 		warnScream:Show()
 	end
@@ -87,8 +87,8 @@ function mod:SPELL_CAST_START(args)
 		if self.Options.AnnounceBosses then
 			WarnTido:Schedule(1)
 		end
-	elseif args:IsSpellID(32337) then
+	elseif args:IsSpellID(2130820, 2130821, 2130822, 2130823) then
 		WarnCL:Show()
 		timerCL:Start()
-		end
 	end
+end

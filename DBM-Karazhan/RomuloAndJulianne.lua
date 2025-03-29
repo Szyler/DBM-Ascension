@@ -20,18 +20,18 @@ mod:RegisterEvents(
 
 local warnPhase2		= mod:NewPhaseAnnounce(2)
 local warnPhase3		= mod:NewPhaseAnnounce(3)
-local warningHeal		= mod:NewCastAnnounce(30878, 4)
-local warningDaring		= mod:NewTargetAnnounce(30841, 3)
-local warningDevotion	= mod:NewTargetAnnounce(30887, 3)
+local warningHeal		= mod:NewCastAnnounce(2130849, 4)
+local warningDaring		= mod:NewTargetAnnounce(2130852, 3)
+local warningDevotion	= mod:NewTargetAnnounce(2130848, 3)
 local warningPosion		= mod:NewAnnounce("warningPosion", 2, 30830, mod:IsHealer() or mod:IsTank())
 
 -- Heroic
 local WarnHeartbroken		= mod:NewAnnounce(L.WarnHeartbroken, 2, 85237) 
 local WarnLove				= mod:NewAnnounce(L.WarnLove, 2, 85236) 
 
-local timerHeal				= mod:NewCastTimer(5, 30878)
-local timerDaring			= mod:NewTargetTimer(8, 30841)
-local timerDevotion			= mod:NewTargetTimer(10, 30887)
+local timerHeal				= mod:NewCastTimer(5, 2130849)
+local timerDaring			= mod:NewTargetTimer(8, 2130852)
+local timerDevotion			= mod:NewTargetTimer(10, 2130848)
 local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
 local timerNextSpotlight	= mod:NewTimer(30, L.OperaSpotlight, 85112)
 
@@ -70,32 +70,32 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(30878) then
+	if args:IsSpellID(2130849) then
 		warningHeal:Show()
-		if mod:IsDifficulty("normal25", "heroic10", "heroic25") then
+		-- if mod:IsDifficulty("normal25", "heroic10", "heroic25") then
 			timerHeal:Start()
-		else
-			timerHeal:Start(2)
-		end
+		-- else
+		-- 	timerHeal:Start(2)
+		-- end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(30822, 30830) then
 		warningPosion:Show(args.spellName, args.destName, args.amount or 1)
-	elseif args:IsSpellID(30841) then
+	elseif args:IsSpellID(2130852) then
 		warningDaring:Show(args.destName)
 		timerDaring:Start(args.destName)
-	elseif args:IsSpellID(30887) then
+	elseif args:IsSpellID(2130848) then
 		warningDevotion:Show(args.destName)
 		timerDevotion:Start(args.destName)
-	elseif args:IsSpellID(85237) then  -- Heartbroken
+	elseif args:IsSpellID(2130843) then  -- Heartbroken
 		heartbrokenStacks = args.amount
 		if args.amount and (GetTime() - LoversSpam) > 5 and args.amount >= 10 and args.amount % 5 == 0 then
 			LoversSpam = GetTime()
 			WarnHeartbroken:Show(args.amount, args.spellName)
 		end
-	elseif args:IsSpellID(85236) then
+	elseif args:IsSpellID(2130842) then
 		if heartbrokenStacks > 0 then
 			heartbrokenStacks = heartbrokenStacks - 0.5
 		end
@@ -110,9 +110,9 @@ end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(30841) then
+	if args:IsSpellID(2130852) then
 		timerDaring:Cancel(args.destName)
-	elseif args:IsSpellID(30887) then
+	elseif args:IsSpellID(2130848) then
 		timerDevotion:Cancel(args.destName)
 	end
 end

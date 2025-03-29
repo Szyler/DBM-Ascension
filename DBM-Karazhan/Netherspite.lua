@@ -19,79 +19,79 @@ local warningBanishSoon		= mod:NewAnnounce("DBM_NS_WARN_BANISH_SOON", 2, "Interf
 local warningPortal			= mod:NewAnnounce("warningPortal", 3, "Interface\\Icons\\Spell_Arcane_PortalIronForge")
 local warningBanish			= mod:NewAnnounce("warningBanish", 3, "Interface\\Icons\\Spell_Shadow_Cripple")
 local warningBreathCast		= mod:NewSpellAnnounce(2131314, 2)
-local warningVoid			= mod:NewSpellAnnounce(37063, 3)
+local warningVoid			= mod:NewSpecialWarningYou(2131306)
 
 local specWarnVoid			= mod:NewSpecialWarningMove(30533)
 local specWarnBreath		= mod:NewSpecialWarningYou(2131314)
 
-local timerPortalPhase		= mod:NewTimer(50, "timerPortalPhase", "Interface\\Icons\\Spell_Arcane_PortalIronForge")
-local timerBanishPhase		= mod:NewTimer(31, "timerBanishPhase", "Interface\\Icons\\Spell_Shadow_Cripple")
+local timerPortalPhase		= mod:NewTimer(52, "timerPortalPhase", "Interface\\Icons\\Spell_Arcane_PortalIronForge")
+local timerBanishPhase		= mod:NewTimer(38, "timerBanishPhase", "Interface\\Icons\\Spell_Shadow_Cripple")
 local timerBreathCast		= mod:NewCastTimer(4, 2131314)
 
 local berserkTimer			= mod:NewBerserkTimer(540)
 
-mod:AddBoolOption(L.SaySmol, false)
+-- mod:AddBoolOption(L.SaySmol, false)
 
-function mod:SaySmol()
-	if self.smol and self.Options.SaySmol then
-		SendChatMessage(UnitName("PLAYER"), "SAY");
-	end
-end
+-- function mod:SaySmol()
+-- 	if self.smol and self.Options.SaySmol then
+-- 		SendChatMessage(UnitName("PLAYER"), "SAY");
+-- 	end
+-- end
 
 mod:RegisterOnUpdateHandler(mod.SaySmol,2);
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
-	timerPortalPhase:Start(62-delay)
-	warningBanishSoon:Schedule(57-delay)
-	self.smol = false;
+	timerPortalPhase:Start(8-delay)
+	-- warningBanishSoon:Schedule(57-delay)
+	-- self.smol = false;
 end
 
-function mod:OnCombatEnd()
-	self.smol = false;
-end
+-- function mod:OnCombatEnd()
+-- 	self.smol = false;
+-- end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(2131314, 2131315, 2131316, 2131317) then
+	if args:IsSpellID(2131314) then
 		warningBreathCast:Show()
 		timerBreathCast:Start()
 		if args:IsPlayer() then
 			specWarnBreath:Show()
 		end
-	elseif args:IsSpellID(38549) then
+	elseif args:IsSpellID(2131310, 2131311, 2131312, 2131313) then
 		timerPortalPhase:Start()
-		warningBanishSoon:Schedule(45)
+		warningBanishSoon:Schedule(47)
 		timerBanishPhase:Cancel()
 	end
 end
 
-function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(37014, 37063) then
+function mod:SPELL_DAMAGE(args)
+	if args:IsSpellID(2131306, 2131307, 2131308, 2131309) and DBM:AntiSpam(3) then
 		warningVoid:Show()
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(38549) then
+	if args:IsSpellID(2131300) then
 		warningBanish:Show()
 		timerPortalPhase:Cancel()
-		warningPortalSoon:Schedule(25)
-		warningPortal:Schedule(31)
+		warningPortalSoon:Schedule(32)
+		warningPortal:Schedule(38)
 		timerBanishPhase:Start()
-	elseif args:IsSpellID(30421) and args:IsPlayer() then
-		self.smol = false;
+	-- elseif args:IsSpellID(30421) and args:IsPlayer() then
+	-- 	self.smol = false;
 	end
 end
 
-do 
-	local lastVoid = 0
-	function mod:SPELL_PERIODIC_DAMAGE(args)
-		if args:IsSpellID(30533) and args:IsPlayer() and ((GetTime() - lastVoid) > 2) then
-			specWarnVoid:Show()
-			lastVoid = GetTime()
-		end
-	end
-end
+-- do 
+-- 	local lastVoid = 0
+-- 	function mod:SPELL_PERIODIC_DAMAGE(args)
+-- 		if args:IsSpellID(30533) and args:IsPlayer() and ((GetTime() - lastVoid) > 2) then
+-- 			specWarnVoid:Show()
+-- 			lastVoid = GetTime()
+-- 		end
+-- 	end
+-- end
 
 -- function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)        -- deprecated due to not working on Ascension.
 --	if msg == L.DBM_NS_EMOTE_PHASE_2 then
