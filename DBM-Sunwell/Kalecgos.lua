@@ -25,6 +25,7 @@ local timerNextBreath        			= mod:NewNextTimer(20, 2145511)              	--
 local timerSpectralBlast     			= mod:NewCastTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
 local timerNextSpectralBlast 			= mod:NewNextTimer(25, 2145504)              	-- 2145503, 2145504 SPELL_CAST_START
 local timerTargetSpectralBlast     		= mod:NewTargetTimer(4, 2145504)               	-- 2145503, 2145504 SPELL_CAST_START
+local timerPortalDuration	 			= mod:NewCastTimer(20, 2145504)              	-- 2145503, 2145504 SPELL_CAST_START
 local warnSpectralBlastYOU 				= mod:NewSpecialWarningYou(2145504, 4)     		-- 2145503, 2145504 SPELL_CAST_START
 
 local timerNextTailSweep     			= mod:NewNextTimer(30, 2145506)              	-- 2145506 Spell_cast_success 
@@ -118,6 +119,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(2145503, 2145504) then
 		timerSpectralBlast:Start()
 		timerNextSpectralBlast:Start()
+		timerPortalDuration:Start()
 		self:ScheduleMethod(0.2, "TargetSpectralBlast")
 	elseif args:IsSpellID(2145524) then
 		warnCastMindWipe:Show()
