@@ -12,3 +12,4 @@
 ## X-DBM-Mod-LoadZone: Onyxia's Lair
 localization.en.lua
 Onyxia.lua
+Basalthane.lua
