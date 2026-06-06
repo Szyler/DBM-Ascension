@@ -35,3 +35,8 @@ L:SetMiscLocalization{
 	EmoteSpear		= "A scream releases as the spear is picked up by"
 }
 
+L = DBM:GetModLocalization("Basalthane")
+
+L:SetGeneralLocalization{
+	name = "Basalthane"
+}
